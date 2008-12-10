@@ -1,0 +1,8 @@
+SPRING BLAZEDS INTEGRATION CHANGELOG
+=========================
+http://www.springframework.org/flex
+
+Changes in version 1.0.0.M1 (12.15.2008)
+-------------------------------------
+General
+* 
