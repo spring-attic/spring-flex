@@ -15,7 +15,7 @@
 			<property name="target.dir" value="${package.docs.dir}"/>
 		</ant>
 
-		<ant dir="../spring-webflow-reference" target="doc" inheritAll="false">
+		<ant dir="../spring-flex-reference" target="doc" inheritAll="false">
 			<property name="package.output.dir" value="${package.output.dir}"/>
 			<propertyset>
 				<propertyref builtin="commandline"/>
