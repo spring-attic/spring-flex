@@ -12,35 +12,44 @@ import org.springframework.core.JdkVersion;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
+import flex.messaging.config.ApacheXPathServerConfigurationParser;
 import flex.messaging.config.ConfigurationFileResolver;
 import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.ConfigurationParser;
 import flex.messaging.config.MessagingConfiguration;
 
+/**
+ * Implementation of {@link ConfigurationManager} that uses Spring's {@link ResourceLoader} abstraction for resolving BlazeDS xml configuration files.
+ * 
+ * @author Jeremy Grelle
+ */
 public class FlexConfigurationManager implements ConfigurationManager {
 	
 	private static final Log log = LogFactory.getLog(FlexConfigurationManager.class);
 
-	static final String DEFAULT_CONFIG_PATH = "/WEB-INF/flex/services-config.xml";
+	private static final String DEFAULT_CONFIG_PATH = "/WEB-INF/flex/services-config.xml";
 	
 	private final ResourceLoader resourceLoader;
 
-	protected final String configurationPath;
+	private final String configurationPath;
 	
-	protected ConfigurationFileResolver configurationResolver = null;
-	protected ConfigurationParser parser = null;
+	private ConfigurationParser parser = null;
 
 	public FlexConfigurationManager(ResourceLoader resourceLoader, String configurationPath) {
 		this.resourceLoader = resourceLoader;
 		this.configurationPath = StringUtils.hasText(configurationPath) ? configurationPath : DEFAULT_CONFIG_PATH;
 	}
 
+	/**
+	 * Parses the BlazeDS config files and returns a populated MessagingConfiguration
+	 * 
+	 * @param servletConfig the servlet config for the web application
+	 */
 	public MessagingConfiguration getMessagingConfiguration(ServletConfig servletConfig) {
 		Assert.isTrue(JdkVersion.isAtLeastJava14(),
-				"Spring and Flex integration requires a minimum of Java 1.4");
+				"Spring BlazeDS Integration requires a minimum of Java 1.4");
 		Assert.notNull(servletConfig, "FlexConfigurationManager requires a non-null ServletConfig - "
 				+ "Is it being used outside a WebApplicationContext?");
 
@@ -59,66 +68,25 @@ public class FlexConfigurationManager implements ConfigurationManager {
 		return configuration;
 	}
 
-	private ConfigurationParser getDefaultConfigurationParser() {
-		ConfigurationParser parser = null;
-		Class parserClass = null;
-		String className = null;
-
-		// Always try Sun JRE 1.4 / Apache Xalan Based Implementation first to
-		// avoid performance problems with Sun JRE 1.5 Based Implementation
-		if (parser == null) {
-			try {
-				if (ClassUtils.isPresent("org.apache.xpath.CachedXPathAPI")) {
-					className = "flex.messaging.config.ApacheXPathServerConfigurationParser";
-					parserClass = ClassUtils.forName(className);
-					parser = (ConfigurationParser) parserClass.newInstance();
-				}
-			} catch (Throwable t) {
-				if (log.isWarnEnabled()) {
-					log.warn("Could not load Flex configuration parser as: " + className);
-				}
-			}
-		}
-
-		// Try Sun JRE 1.5 Based Implementation
-		if (parser == null) {
-			try {
-				className = "flex.messaging.config.XPathServerConfigurationParser";
-				parserClass = ClassUtils.forName(className);
-
-				// double-check, on some systems the above loads but the import classes don't
-				ClassUtils.forName("javax.xml.xpath.XPathExpressionException");
-
-				parser = (ConfigurationParser) parserClass.newInstance();
-			} catch (Throwable t) {
-				if (log.isWarnEnabled()) {
-					log.warn("Could not load configuration parser as: " + className);
-				}
-			}
-		}
-		
-		if (parser != null) {
-			if (log.isInfoEnabled()) {
-				log.info("Loaded Flex Services Configuration Parser: " + parser.getClass().getName());
-			}
-		} else {
-			throw new IllegalStateException("Could not load a default Flex Services Configuration Parser");
-		}
-
-		return parser;
-	}
-
 	public void reportTokens() {
 		parser.reportTokens();
 	}
 
+	/**
+	 * Sets the parser to be used in building a MessagingConfiguration.  Defaults to the BlazeDS Apache Xalan based implementation. 
+	 * @param parser the configuration parser to be used
+	 */
 	public void setConfigurationParser(ConfigurationParser parser) {
 		this.parser = parser;
+	}
+	
+	private ConfigurationParser getDefaultConfigurationParser() {
+		return new ApacheXPathServerConfigurationParser();
 	}
 
 	private static class ResourceResolverAdapter implements ConfigurationFileResolver {
 
-		private Stack configurationPathStack = new Stack();
+		private Stack<String> configurationPathStack = new Stack<String>();
 
 		private final ResourceLoader resourceLoader;
 

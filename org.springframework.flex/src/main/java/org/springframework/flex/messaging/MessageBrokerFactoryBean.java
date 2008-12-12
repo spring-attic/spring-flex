@@ -26,17 +26,32 @@ import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.MessagingConfiguration;
 
 /**
+ * {@link FactoryBean} that creates a local {@link MessageBroker} instance
+ * within a Spring web application context. The resulting Spring-managed
+ * MessageBroker can be used to export Spring beans for direct remoting from a
+ * Flex client.
  * 
- * TODO - Do we need to implement the "useContextClassLoader" option?
+ * By default, this FactoryBean will look for a BlazeDS config file at
+ * /WEB-INF/flex/services-config.xml. This location may be overridden using the
+ * servicesConfigPath property. Spring's {@link ResourceLoader} abstraction is
+ * used to load the config resources, so the location may be specified using
+ * ant-style paths.
+ * 
+ * Http-based messages should be routed to the MessageBroker using the
+ * {@link DispatcherServlet}.
+ * 
+ * @see MessageBrokerHandlerAdapter
  * 
  * @author Jeremy Grelle
  */
-public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAware, BeanNameAware, ResourceLoaderAware,
+public class MessageBrokerFactoryBean implements FactoryBean,
+		BeanClassLoaderAware, BeanNameAware, ResourceLoaderAware,
 		InitializingBean, DisposableBean, ServletConfigAware {
 
 	private static String FLEXDIR = "/WEB-INF/flex/";
 
-	private static final Log logger = LogFactory.getLog(MessageBrokerFactoryBean.class);
+	private static final Log logger = LogFactory
+			.getLog(MessageBrokerFactoryBean.class);
 
 	private MessageBroker messageBroker;
 
@@ -59,8 +74,9 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
 		return this.messageBroker;
 	}
 
-	public Class getObjectType() {
-		return (this.messageBroker != null ? this.messageBroker.getClass() : MessageBroker.class);
+	public Class<? extends MessageBroker> getObjectType() {
+		return (this.messageBroker != null ? this.messageBroker.getClass()
+				: MessageBroker.class);
 	}
 
 	public boolean isSingleton() {
@@ -75,7 +91,8 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
 		this.name = name;
 	}
 
-	public void setConfigurationManager(ConfigurationManager configurationManager) {
+	public void setConfigurationManager(
+			ConfigurationManager configurationManager) {
 		this.configurationManager = configurationManager;
 	}
 
@@ -92,92 +109,98 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		
+
 		// Set the servlet config as thread local
-	        FlexContext.setThreadLocalObjects(null, null, null, null, null, servletConfig);
-		
+		FlexContext.setThreadLocalObjects(null, null, null, null, null,
+				servletConfig);
+
 		// Get the configuration manager
 		if (configurationManager == null) {
-			configurationManager = new FlexConfigurationManager(resourceLoader, servicesConfigPath);
+			configurationManager = new FlexConfigurationManager(resourceLoader,
+					servicesConfigPath);
 		}
 
 		// Load configuration
-		MessagingConfiguration config = configurationManager.getMessagingConfiguration(servletConfig);
+		MessagingConfiguration messagingConfig = configurationManager
+				.getMessagingConfiguration(servletConfig);
 
 		// Set up logging system ahead of everything else.
-		config.createLogAndTargets();
+		messagingConfig.createLogAndTargets();
 
 		// Create broker.
-		messageBroker = config.createBroker(name, beanClassLoader);
-		
-		// Set the servlet config as thread local
-                FlexContext.setThreadLocalObjects(null, null, messageBroker, null, null, servletConfig);
+		messageBroker = messagingConfig.createBroker(name, beanClassLoader);
 
-	        setupInternalPathResolver();
+		// Set the servlet config as thread local
+		FlexContext.setThreadLocalObjects(null, null, messageBroker, null,
+				null, servletConfig);
+
+		setupInternalPathResolver();
 
 		if (logger.isInfoEnabled()) {
 			logger.info(VersionInfo.buildMessage());
 		}
 
-		// Create endpoints, services, security, and logger on the broker based on configuration
-		config.configureBroker(messageBroker);
+		// Create endpoints, services, security, and logger on the broker based
+		// on configuration
+		messagingConfig.configureBroker(messageBroker);
 
 		long timeBeforeStartup = 0;
 		if (logger.isInfoEnabled()) {
 			timeBeforeStartup = System.currentTimeMillis();
-			logger.info("MessageBroker with id '" + messageBroker.getId() + "' is starting.");
+			logger.info("MessageBroker with id '" + messageBroker.getId()
+					+ "' is starting.");
 		}
 
 		// initialize the httpSessionToFlexSessionMap
 		synchronized (HttpFlexSession.mapLock) {
-			if (servletConfig.getServletContext().getAttribute(HttpFlexSession.SESSION_MAP) == null)
-				servletConfig.getServletContext().setAttribute(HttpFlexSession.SESSION_MAP,
-						new ConcurrentHashMap());
+			if (servletConfig.getServletContext().getAttribute(
+					HttpFlexSession.SESSION_MAP) == null)
+				servletConfig.getServletContext().setAttribute(
+						HttpFlexSession.SESSION_MAP, new ConcurrentHashMap());
 		}
 
 		messageBroker.start();
-		
+
 		if (logger.isInfoEnabled()) {
 			long timeAfterStartup = System.currentTimeMillis();
 			Long diffMillis = new Long(timeAfterStartup - timeBeforeStartup);
-			logger.info("MessageBroker with id '" + messageBroker.getId() + "' is ready (startup time: '"
-					+ diffMillis + "' ms)");
+			logger.info("MessageBroker with id '" + messageBroker.getId()
+					+ "' is ready (startup time: '" + diffMillis + "' ms)");
 		}
-		
-		// Report replaced tokens
-	        configurationManager.reportTokens();
 
-	        // Report any unused properties.
-	        config.reportUnusedProperties();
+		// Report replaced tokens
+		configurationManager.reportTokens();
+
+		// Report any unused properties.
+		messagingConfig.reportUnusedProperties();
 	}
 
-	
 	public void destroy() throws Exception {
 		FlexContext.clearThreadLocalObjects();
-		if (messageBroker != null)
-	        {
-	            messageBroker.stop();
-	            if (messageBroker.isManaged())
-	            {
-	                MBeanLifecycleManager.unregisterRuntimeMBeans(messageBroker);
-	            }
-	        }
+		if (messageBroker != null) {
+			messageBroker.stop();
+			if (messageBroker.isManaged()) {
+				MBeanLifecycleManager.unregisterRuntimeMBeans(messageBroker);
+			}
+		}
 	}
-	
 
 	private void setupInternalPathResolver() {
-		messageBroker.setInternalPathResolver(new MessageBroker.InternalPathResolver() {
-			public InputStream resolve(String filename) {
+		messageBroker
+				.setInternalPathResolver(new MessageBroker.InternalPathResolver() {
+					public InputStream resolve(String filename) {
 
-				try {
-					return resourceLoader.getResource(FLEXDIR + filename).getInputStream();
-				} catch (IOException e) {
-					throw new IllegalStateException("Could not resolve Flex internal resource at: "
-							+ FLEXDIR + filename);
-				}
+						try {
+							return resourceLoader.getResource(
+									FLEXDIR + filename).getInputStream();
+						} catch (IOException e) {
+							throw new IllegalStateException(
+									"Could not resolve Flex internal resource at: "
+											+ FLEXDIR + filename);
+						}
 
-			}
-		});
+					}
+				});
 	}
 
 }
