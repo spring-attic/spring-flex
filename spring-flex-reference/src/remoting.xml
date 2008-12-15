@@ -54,7 +54,7 @@
     	</para>
     	<programlisting language="xml"><![CDATA[
 <!-- Expose the productService bean for BlazeDS remoting -->
-<bean id="product" class="org.springframework.flex.messaging.FlexRemotingServiceExporter">
+<bean id="product" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
     <property name="messageBroker" ref="mySpringManagedMessageBroker"/>
     <property name="service" ref="productService"/>
 </bean>]]>

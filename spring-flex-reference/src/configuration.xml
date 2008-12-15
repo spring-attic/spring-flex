@@ -83,7 +83,7 @@
 </bean>
 
 <!-- Dispatches requests mapped to a MessageBroker -->
-<bean class="org.springframework.flex.messaging.MessageBrokerHandlerAdapter"/>]]>    
+<bean class="org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter"/>]]>    
 		</programlisting>
 		<para>
 			Channel definitions in the BlazeDS services-config.xml must correspond to the chosen mapping.  For example, to set up a typical AMF channel in 
