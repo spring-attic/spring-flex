@@ -1,8 +1,17 @@
 SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
-http://www.springframework.org/flex
+http://www.springsource.org/projects/blaze-ds-integration
 
 Changes in version 1.0.0.M1 (12.15.2008)
 -------------------------------------
 General
-* 
+* Performed an initial code drop at http://src.springframework.org/svn/spring-flex
+* Organized project structure to use spring-build and create OSGi-ready build artifacts
+* Added an initial draft of the reference manual
+
+New Features
+* Configure and bootstrap the BlazeDS MessageBroker as a Spring-managed object
+* Allow Flex remoting messages to be routed to a Spring-managed MessageBroker through the DispatcherServlet
+* Use Spring's ResourceLoader abstraction to load BlazeDS xml configuration files
+* Support for exporting Spring beans for Flex remoting
+* Specify included and excluded methods when exporting Spring beans for Flex remoting

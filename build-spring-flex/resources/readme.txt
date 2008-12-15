@@ -1,16 +1,17 @@
 SPRING BLAZEDS INTEGRATION 1.0.0.M1 (December 2008)
 ----------------------------------
-http://www.springframework.org/flex
+http://www.springsource.org/projects/blaze-ds-integration
 
 1. INTRODUCTION
 ---------------
-Spring BlazeDS Integration is 
+Spring BlazeDS Integration is a new addition to the Spring Portfolio that provides first-class support for building
+Spring-powered RIAs using Adobe Flex.
 
 2. RELEASE NOTES
 ----------------
-Spring BlazeDS Integration requires Java SE 1.4 and Spring Framework 2.5.0 or above to run.
+Spring BlazeDS Integration requires Java SE 5.0, Spring Framework 2.5.0, and Adobe BlazeDS 3.2.0 or above to run.
 
-Java SE 1.4 with Ant 1.7 is required to build.
+Java SE 5 with Ant 1.7 is required to build.
 
 Release distribution contents:
 
