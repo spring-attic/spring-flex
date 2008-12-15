@@ -1,10 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="configuration">
-    <title>Configuring the BlazeDS MessageBroker in Spring</title>
+    <title>Configuring the BlazeDS MessageBroker with Spring</title>
     <sect1 id="configuration-introduction">
         <title>Introduction</title>
         <para>
-           
+        	The central component that must be configured to use Spring BlazeDS Integration is the <code>MessageBroker</code>.  HTTP messages from the Flex client
+        	will be routed through the Spring <code>DispatcherServlet</code> to the Spring-managed <code>MessageBroker</code>.  There is no need to configure the 
+        	BlazeDS <code>MessageBrokerServlet</code> when using the Spring-managed <code>MessageBroker</code>.
         </para>
     </sect1>
+    <sect1 id="configuration-dispatcherservlet">
+    	<title>Configuring the Spring DispatcherServlet</title>
+    	<para>
+    		The <code>DispatcherServlet</code> must be configured as normal in web.xml to bootstrap a Spring WebApplicationContext. For example:
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<!-- The front controller of this Spring Web application, responsible for handling all application requests -->
+<servlet>
+    <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/config/web-application-config.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+</servlet>]]>
+		</programlisting>
+    </sect1>
+    <sect1 id="configuration-messagebroker">
+    	<title>Configuring the MessageBroker in Spring</title>
+    	<para>
+    		The <code>MessageBrokerFactoryBean</code> must be configured as a bean in your Spring WebApplicationContext in order to bootstrap the <code>MessageBroker</code>. 
+    		For example, the <code>MessageBrokerFactoryBean</code> configured in its simplest form:
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<!-- Bootstraps and exposes the BlazeDS MessageBroker -->
+<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean" />]]>    	
+    	</programlisting>
+    	<para>
+    		The <code>MessageBrokerFactoryBean</code> will look for a BlazeDS xml configuration file in its default location: /WEB-INF/flex/services-config.xml.  The location
+    		may be overridden using the <code>servicesConfigPath</code> property.  The <code>MessageBrokerFactoryBean</code> uses Spring's <code>ResourceLoader</code> abstraction,
+    		so that typical Spring resource paths may be used.  For example, to load the configuration from the application's classpath:
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<!-- Bootstraps and exposes the BlazeDS MessageBroker -->
+<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean" >
+	<property name="servicesConfigPath" value="classpath*:services-config.xml" />
+</bean>]]>    	
+    	</programlisting>
+    </sect1>
+    <sect1 id="configuration-mapping">
+    	<title>Mapping Requests to the MessageBroker</title>
+    	<para>To properly route incoming requests to the Spring-managed <code>MessageBroker</code>, request mapping must be configured in three places:</para>
+    	<orderedlist>
+    		<listitem><para><code>DispatcherServlet</code> mapping in web.xml</para></listitem>
+    		<listitem><para><code>HandlerMapping</code> in the Spring WebApplicationContext</para></listitem>
+    		<listitem><para>Channel definitions in the BlazeDS services-config.xml</para></listitem>
+    	</orderedlist>
+    	<para>
+    		The simplest request mapping scenario is when the Flex front-end is the only client type for the application.  In this case you can just map /messagebroker as the top-level
+    		path for requests.  The mapping in web.xml would be:
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<!-- Map all /messagbroker requests to the DispatcherServlet for handling -->
+<servlet-mapping>
+    <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+    <url-pattern>/messagebroker/*</url-pattern>
+</servlet-mapping>]]>    
+		</programlisting>
+		<para>
+			Then the <code>HandlerMapping</code> in the Spring WebApplicationContext maps all requests to the Spring-managed <code>MessageBroker</code> via 
+			the <code>MessageBrokerHandlerAdapter</code>:
+		</para>
+		<programlisting language="xml"><![CDATA[
+<!-- Maps request paths at /* to the BlazeDS MessageBroker -->
+<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="mappings">
+        <value>
+            /*=mySpringManagedMessageBroker
+        </value>
+    </property>
+</bean>
+
+<!-- Dispatches requests mapped to a MessageBroker -->
+<bean class="org.springframework.flex.messaging.MessageBrokerHandlerAdapter"/>]]>    
+		</programlisting>
+		<para>
+			Channel definitions in the BlazeDS services-config.xml must correspond to the chosen mapping.  For example, to set up a typical AMF channel in 
+			BlazeDS that matches the above mapping strategy:
+		</para>
+		<programlisting language="xml"><![CDATA[
+<channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
+    <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+    <properties>
+        <polling-enabled>false</polling-enabled>
+    </properties>
+</channel-definition>]]> 		
+		</programlisting>
+		<para>
+			See the <ulink url="http://livedocs.adobe.com/blazeds/1/blazeds_devguide/">BlazeDS documentation</ulink> for more information on configuring communication 
+			channels in services-config.xml.
+		</para>
+		<para>
+			It could often be the case that your application needs to serve more than just Flex-based clients.  For example, you may be constructing a RESTful architecture
+			that is meant to serve multiple client-types.  You could potentially even be consuming RESTful endpoints using the Flex HTTPService component.  In this case, 
+			you will want to choose a more flexible mapping strategy, such as mapping <code>/spring/*</code> to the <code>DispatcherServlet</code>, mapping <code>/messagebroker/*</code>
+			to the Spring-managed <code>MessageBroker</code>, and modifying any BlazeDS channel definitions accordingly.  
+		</para>
+    </sect1>
+    
 </chapter>

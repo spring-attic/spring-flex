@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="messaging">
+    <title>Integration with the BlazeDS Message Service</title>
+    <sect1 id="messaging-introduction">
+        <title>Introduction</title>
+        <para>
+        	Coming in Future 1.0 Milestones
+        </para>
+    </sect1>
+</chapter>

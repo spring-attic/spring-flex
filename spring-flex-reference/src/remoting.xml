@@ -4,7 +4,68 @@
     <sect1 id="remoting-introduction">
         <title>Introduction</title>
         <para>
-           
+        	Using a Spring-managed <code>MessageBroker</code> enables Spring beans to be easily exported for direct remoting calls from a Flex client.  This approach
+        	is quite similar to that taken with other remoting technologies in the core Spring Framework.  Remoting is applied to existing Spring-managed beans
+        	as an external configuration concern.  The <code>MessageBroker</code> transparently handles the process of serialization and deserialization between
+        	the Flex AMF data format and Java. 
         </para>
+    </sect1>
+    <sect1 id="remoting-service-config">
+    	<title>Configuring remoting-config.xml</title>
+    	<para>
+    		Though the remoting support in Spring BlazeDS Integration removes the need to define individual remoting destinations in the BlazeDS remoting-config.xml,
+    		it currently still requires a minimal setup for the BlazeDS <code>RemotingService</code>.  The minimal setup for remoting-config.xml is as follows:   
+    	</para>    	
+    	<programlisting language="xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="remoting-service"
+    class="flex.messaging.services.RemotingService">
+
+    <adapters>
+        <adapter-definition id="java-object" class="flex.messaging.services.remoting.adapters.JavaAdapter" default="true"/>
+    </adapters>
+
+    <default-channels>
+        <channel ref="my-amf"/>
+    </default-channels>
+    
+</service>]]>    	
+    	</programlisting>
+    	<para>
+    		The requirement to have this minimal remoting-config.xml will be removed in a future milestone release of Spring BlazeDS Integration. 
+    	</para>
+    	<para>
+    		If you have an existing remoting-config.xml for a legacy BlazeDS application, the <code>FlexRemotingServiceExporter</code> will be able to work transparently with it,
+    		allowing you to gradually migrate to all Spring-managed remoting destinations.
+    	</para>
+    </sect1>
+    <sect1 id="remoting-exporter">
+    	<title>Using the FlexRemotingServiceExporter</title>
+    	<para>
+    		The <code>FlexRemotingServiceExporter</code> is used to export existing Spring-managed services for direct remoting from a Flex client.  Given the following
+    		Spring bean definition for a <code>productService</code> bean:
+    	</para>
+    	<programlisting language="xml"><![CDATA[    
+<bean id="productService" class="flex.samples.product.ProductServiceImpl" />]]>
+    	</programlisting>
+    	<para>
+    		and assuming the existance of a Spring-managed <code>MessageBroker</code> with a bean name of <code>mySpringManagedMessageBroker</code>, the following 
+    		<code>FlexRemotingServiceExporter</code> definition will expose the service for remoting to the Flex client as a remote service destination named <code>product</code>: 
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<!-- Expose the productService bean for BlazeDS remoting -->
+<bean id="product" class="org.springframework.flex.messaging.FlexRemotingServiceExporter">
+    <property name="messageBroker" ref="mySpringManagedMessageBroker"/>
+    <property name="service" ref="productService"/>
+</bean>]]>
+    	</programlisting>
+    	<para>
+    		By default, the remote service destination exposed to the Flex client will use bean name of the <code>FlexRemotingServiceExporter</code> as the service id of the 
+    		destination, but this may be overridden using the <code>serviceId</code> property.
+    	</para>
+    	<para>
+    		The methods that are exposed to be called by the Flex client can be more tightly controlled through used of the <code>includeMethods</code> and <code>excludeMethods</code>
+    		properties of the <code>FlexRemotingServiceExporter</code>.
+    	</para>
     </sect1>
 </chapter>

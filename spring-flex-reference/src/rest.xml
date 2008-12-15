@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="rest">
+    <title>Using AMFView in a Spring 3.0 RESTful Architecture</title>
+    <sect1 id="rest-introduction">
+        <title>Introduction</title>
+        <para>
+        	Coming in Future 1.0 Milestones
+        </para>
+    </sect1>
+</chapter>

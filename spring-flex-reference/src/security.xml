@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="security">
+    <title>Securing BlazeDS Destinations with Spring Security</title>
+    <sect1 id="security-introduction">
+        <title>Introduction</title>
+        <para>
+        	Coming in Future 1.0 Milestones
+        </para>
+    </sect1>
+</chapter>
