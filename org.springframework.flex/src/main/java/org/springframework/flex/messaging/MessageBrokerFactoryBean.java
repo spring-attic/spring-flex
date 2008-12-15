@@ -14,6 +14,8 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.flex.messaging.config.FlexConfigurationManager;
+import org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.web.context.ServletConfigAware;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;

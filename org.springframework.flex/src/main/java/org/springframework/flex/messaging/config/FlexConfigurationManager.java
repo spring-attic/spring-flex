@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging;
+package org.springframework.flex.messaging.config;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging;
+package org.springframework.flex.messaging.servlet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;

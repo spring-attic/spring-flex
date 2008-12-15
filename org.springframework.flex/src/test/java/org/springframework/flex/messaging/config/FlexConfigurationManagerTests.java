@@ -1,9 +1,10 @@
-package org.springframework.flex.messaging;
+package org.springframework.flex.messaging.config;
 
 import javax.servlet.ServletConfig;
 
 import junit.framework.TestCase;
 
+import org.springframework.flex.messaging.config.FlexConfigurationManager;
 import org.springframework.mock.web.MockServletConfig;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 

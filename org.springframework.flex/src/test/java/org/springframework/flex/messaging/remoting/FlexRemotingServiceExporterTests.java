@@ -1,6 +1,9 @@
-package org.springframework.flex.messaging;
+package org.springframework.flex.messaging.remoting;
 
 import java.util.Iterator;
+
+import org.springframework.flex.messaging.AbstractMessageBrokerTests;
+import org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
