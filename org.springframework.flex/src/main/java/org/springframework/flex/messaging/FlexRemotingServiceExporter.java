@@ -19,6 +19,26 @@ import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
 
+/**
+ * An exporter for exposing a Spring-managed bean to a Flex client for direct
+ * remoting calls.
+ * 
+ * <p>
+ * The exported service will be exposed to the Flex client as a BlazeDS remoting
+ * service destination. By default, the service id of the destination will be
+ * the same as the bean name of this exporter. This may be overridden using the
+ * serviceId property.
+ * </p>
+ * 
+ * <p>
+ * The methods on the exported service that are exposed to the Flex client can be
+ * controlled using the includeMethods and excludeMethods properties.
+ * </p>
+ * 
+ * @see MessageBrokerFactoryBean
+ * 
+ * @author Jeremy Grelle
+ */
 public class FlexRemotingServiceExporter implements FlexFactory,
 		InitializingBean, DisposableBean, BeanNameAware {
 

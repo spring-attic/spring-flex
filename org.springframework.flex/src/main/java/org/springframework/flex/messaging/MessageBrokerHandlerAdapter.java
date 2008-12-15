@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.HandlerAdapter;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import flex.messaging.FlexContext;
@@ -18,6 +19,8 @@ import flex.messaging.endpoints.Endpoint;
 /**
  * {@link HandlerAdapter} for routing HTTP messages to a Spring-managed
  * {@link MessageBroker}.
+ * 
+ * @see MessageBroker, {@link HandlerMapping}
  * 
  * @author Jeremy Grelle
  */

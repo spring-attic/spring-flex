@@ -31,14 +31,19 @@ import flex.messaging.config.MessagingConfiguration;
  * MessageBroker can be used to export Spring beans for direct remoting from a
  * Flex client.
  * 
+ * <p>
  * By default, this FactoryBean will look for a BlazeDS config file at
  * /WEB-INF/flex/services-config.xml. This location may be overridden using the
  * servicesConfigPath property. Spring's {@link ResourceLoader} abstraction is
  * used to load the config resources, so the location may be specified using
  * ant-style paths.
+ * </p>
  * 
+ * <p>
  * Http-based messages should be routed to the MessageBroker using the
- * {@link DispatcherServlet}.
+ * {@link DispatcherServlet} in combination with the
+ * {@link MessageBrokerHandlerAdapter}.
+ * </p>
  * 
  * @see MessageBrokerHandlerAdapter
  * 
