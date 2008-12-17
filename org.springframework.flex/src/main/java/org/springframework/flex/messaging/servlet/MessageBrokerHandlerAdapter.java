@@ -12,6 +12,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import flex.messaging.FlexContext;
+import flex.messaging.HttpFlexSession;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageException;
 import flex.messaging.endpoints.Endpoint;
@@ -46,6 +47,7 @@ public class MessageBrokerHandlerAdapter implements HandlerAdapter,
 			// Set this first so it is in place for the session creation event.
 			FlexContext.setThreadLocalObjects(null, null, broker, req, res,
 					servletConfig);
+			HttpFlexSession.getFlexSession(req);
 
 			String contextPath = req.getContextPath();
 			String pathInfo = req.getPathInfo();
