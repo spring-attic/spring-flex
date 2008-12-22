@@ -8,6 +8,7 @@ import javax.servlet.ServletConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.JdkVersion;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -20,22 +21,25 @@ import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.ConfigurationParser;
 import flex.messaging.config.MessagingConfiguration;
 
+
 /**
  * Implementation of {@link ConfigurationManager} that uses Spring's {@link ResourceLoader} abstraction for resolving BlazeDS xml configuration files.
  * 
  * @author Jeremy Grelle
  */
-public class FlexConfigurationManager implements ConfigurationManager {
+public class FlexConfigurationManager implements ConfigurationManager, ResourceLoaderAware {
 	
 	private static final Log log = LogFactory.getLog(FlexConfigurationManager.class);
 
 	private static final String DEFAULT_CONFIG_PATH = "/WEB-INF/flex/services-config.xml";
 	
-	private final ResourceLoader resourceLoader;
+	private ResourceLoader resourceLoader;
 
-	private final String configurationPath;
-	
+	private String configurationPath;
+
 	private ConfigurationParser parser = null;
+	
+	public FlexConfigurationManager() {}
 
 	public FlexConfigurationManager(ResourceLoader resourceLoader, String configurationPath) {
 		this.resourceLoader = resourceLoader;
@@ -78,6 +82,22 @@ public class FlexConfigurationManager implements ConfigurationManager {
 	 */
 	public void setConfigurationParser(ConfigurationParser parser) {
 		this.parser = parser;
+	}
+	
+	/**
+	 * Set the path for the BlazeDS XML configuration file.  
+	 * @param configurationPath the path for the configuration file
+	 */
+	public void setConfigurationPath(String configurationPath) {
+		this.configurationPath = configurationPath;
+	}
+	
+	/**
+	 * Set the {@link ResourceLoader} to be used to load BlazeDS XML configuration resources
+	 * @param resourceLoader the {@link ResourceLoader} for loading configuration resources
+	 */
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;		
 	}
 	
 	private ConfigurationParser getDefaultConfigurationParser() {
