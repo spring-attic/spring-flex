@@ -36,6 +36,9 @@
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.http" rev="3.2.0.3978" conf="compile->runtime"/>
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.remoting" rev="3.2.0.3978" conf="compile->runtime"/>
 
+		<!-- Optional runtime dependencies -->
+		<dependency org="org.springframework.security" name="org.springframework.security" rev="2.0.4.A" conf="optional->runtime" />
+		
 		<!-- test time only dependencies -->
 		<dependency org="org.apache.log4j" name="com.springsource.org.apache.log4j" rev="1.2.15" conf="test->runtime"/>
 		<dependency org="org.easymock" name="com.springsource.org.easymock" rev="2.3.0" conf="test->runtime" />
