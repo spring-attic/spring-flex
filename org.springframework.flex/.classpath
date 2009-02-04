@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.beans/2.5.6.A/org.springframework.beans-2.5.6.A.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
@@ -23,7 +22,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.4.0/com.springsource.javax.servlet-2.4.0.jar">
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.4.0/com.springsource.javax.servlet-2.4.0.jar" sourcepath="/FLEX_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.4.0/com.springsource.javax.servlet-sources-2.4.0.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
@@ -53,7 +52,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/edu.emory.mathcs.backport/com.springsource.edu.emory.mathcs.backport/3.0.0/com.springsource.edu.emory.mathcs.backport-3.0.0.jar" sourcepath="/FLEX_IVY_CACHE/edu.emory.mathcs.backport/com.springsource.edu.emory.mathcs.backport/3.0.0/com.springsource.edu.emory.mathcs.backport-sources-3.0.0.jar">
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/edu.emory.mathcs.backport/com.springsource.edu.emory.mathcs.backport/2.2.0/com.springsource.edu.emory.mathcs.backport-2.2.0.jar" sourcepath="/FLEX_IVY_CACHE/edu.emory.mathcs.backport/com.springsource.edu.emory.mathcs.backport/2.2.0/com.springsource.edu.emory.mathcs.backport-sources-2.2.0.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
@@ -69,5 +68,6 @@
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.http/3.2.0.3978/com.springsource.flex.messaging.services.http-3.2.0.3978.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.remoting/3.2.0.3978/com.springsource.flex.messaging.services.remoting-3.2.0.3978.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-2.0.4.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-sources-2.0.4.A.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

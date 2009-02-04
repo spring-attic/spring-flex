@@ -2,8 +2,11 @@ package org.springframework.flex.messaging;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +20,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.flex.messaging.config.FlexConfigurationManager;
 import org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.web.context.ServletConfigAware;
+import org.springframework.web.context.ServletContextAware;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import flex.management.MBeanLifecycleManager;
@@ -53,7 +57,7 @@ import flex.messaging.config.MessagingConfiguration;
  */
 public class MessageBrokerFactoryBean implements FactoryBean,
 		BeanClassLoaderAware, BeanNameAware, ResourceLoaderAware,
-		InitializingBean, DisposableBean, ServletConfigAware {
+		InitializingBean, DisposableBean, ServletContextAware {
 
 	private static String FLEXDIR = "/WEB-INF/flex/";
 
@@ -70,9 +74,9 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 
 	private ResourceLoader resourceLoader;
 
-	private ServletConfig servletConfig;
-
 	private String servicesConfigPath;
+
+	private ServletContext servletContext;
 
 	/**
 	 * Return the singleton MessageBroker.
@@ -111,12 +115,14 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 		this.servicesConfigPath = servicesConfigPath;
 	}
 
-	public void setServletConfig(ServletConfig servletConfig) {
-		this.servletConfig = servletConfig;
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;		
 	}
 
 	public void afterPropertiesSet() throws Exception {
 
+		ServletConfig servletConfig = new DelegatingServletConfig();
+		
 		// Set the servlet config as thread local
 		FlexContext.setThreadLocalObjects(null, null, null, null, null,
 				servletConfig);
@@ -209,5 +215,27 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 					}
 				});
 	}
+	
+	/**
+	 * Internal implementation of the {@link ServletConfig} interface,
+	 * to be passed to BlazeDS.
+	 */
+	private class DelegatingServletConfig implements ServletConfig {
 
+		public String getServletName() {
+			return name;
+		}
+
+		public ServletContext getServletContext() {
+			return servletContext;
+		}
+
+		public String getInitParameter(String paramName) {
+			return null;
+		}
+
+		public Enumeration getInitParameterNames() {
+			return Collections.enumeration(Collections.EMPTY_SET);
+		}
+	}
 }

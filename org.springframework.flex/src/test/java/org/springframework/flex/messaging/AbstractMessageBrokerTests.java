@@ -1,17 +1,15 @@
 package org.springframework.flex.messaging;
 
-import javax.servlet.ServletConfig;
+import junit.framework.TestCase;
 
-import org.springframework.mock.web.MockServletConfig;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
 import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
-import junit.framework.TestCase;
 
 public abstract class AbstractMessageBrokerTests extends TestCase {
 
-	private ServletConfig config = new MockServletConfig();
 	private StaticWebApplicationContext context = new StaticWebApplicationContext();
 	private MessageBrokerFactoryBean mbfb;
 
@@ -25,9 +23,9 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
 	}
 
 	protected final MessageBroker createMessageBroker() throws Exception {
-		context.setServletConfig(config);
+		context.setServletContext(new MockServletContext());
 		mbfb = new MessageBrokerFactoryBean();
-		mbfb.setServletConfig(config);
+		mbfb.setServletContext(context.getServletContext());
 		mbfb.setResourceLoader(context);
 		mbfb.setBeanName("testMessageBroker");
 		mbfb.setBeanClassLoader(context.getClassLoader());

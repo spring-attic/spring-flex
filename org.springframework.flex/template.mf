@@ -3,11 +3,12 @@ Bundle-Name: Spring BlazeDS Integration
 Bundle-Vendor: SpringSource
 Bundle-ManifestVersion: 2
 Import-Template: 
+ org.springframework.security.*;version="[2.0.4.A,3.0.0)",
  org.springframework.*;version="[2.5.6.A, 3.0.0)",
  org.apache.commons.logging;version="[1.1.1, 2.0.0)",
  javax.servlet;version="[2.4.0, 3.0.0)",
  javax.servlet.http;version="[2.4.0, 3.0.0)",
- edu.emory.mathcs.backport.java.util.concurrent;version="[3.0.0, 3.1.0)",
+ edu.emory.mathcs.backport.java.util.concurrent;version="[2.2.0, 3.0.0)",
  flex.management;version="[3.2.0, 4.0.0)",
  flex.messaging.*;version="[3.2.0, 4.0.0)"
  
