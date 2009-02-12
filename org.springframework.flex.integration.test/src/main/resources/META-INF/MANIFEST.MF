@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-Name: Spring BlazeDS Integration Test Bundle
-Web-ContextPath: flex-integration-test
-Bundle-ManifestVersion: 2
-Module-Type: Web
-Bundle-SymbolicName: org.springframework.flex.integration.test
-Bundle-Version: 1.0.0
-
