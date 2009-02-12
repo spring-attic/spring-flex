@@ -16,6 +16,12 @@
 	
 	<!-- Dispatches requests mapped to a MessageBroker -->
 	<bean class="org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter"/>
+	
+	<!-- Installs Spring Security support -->
+	<bean class="org.springframework.flex.messaging.security.SpringSecurityLoginCommand">
+		<constructor-arg ref="mySpringManagedMessageBroker"/>
+		<constructor-arg ref="authenticationManager"/>
+	</bean>
 
 	<!-- Bootstraps and exposes the BlazeDS MessageBroker -->
 	<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean" />	

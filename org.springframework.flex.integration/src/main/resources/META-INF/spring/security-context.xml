@@ -1,0 +1,25 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd"> 
+    
+    <http>
+    	<intercept-url pattern="/**/protected/**" access="ROLE_USER"/>
+    	<intercept-url pattern="/**/messagebroker/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
+    	<anonymous/>
+    	<http-basic/>
+    	<logout logout-success-url="/bye.html"/>
+    </http>
+    
+    <authentication-manager alias="authenticationManager"/>
+    
+    <authentication-provider>
+		<user-service>
+	    	<user name="jeremy" password="atlanta" authorities="ROLE_USER, ROLE_ADMIN" />
+	      	<user name="keith" password="melbourne" authorities="ROLE_USER" />
+		</user-service>
+	</authentication-provider>
+    
+    
+</beans:beans>

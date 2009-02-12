@@ -40,6 +40,10 @@
         <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
         </channel-definition>
+        
+        <channel-definition id="my-protected-amf" class="mx.messaging.channels.AMFChannel">
+            <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/protected/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+        </channel-definition>
 
         <channel-definition id="my-secure-amf" class="mx.messaging.channels.SecureAMFChannel">
             <endpoint url="https://{server.name}:{server.port}/{context.root}/messagebroker/amfsecure" class="flex.messaging.endpoints.SecureAMFEndpoint"/>

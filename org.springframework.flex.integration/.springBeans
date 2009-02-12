@@ -7,7 +7,18 @@
 	</configSuffixes>
 	<enableImports><![CDATA[false]]></enableImports>
 	<configs>
+		<config>src/main/resources/META-INF/spring/security-context.xml</config>
+		<config>src/main/resources/META-INF/spring/web-context.xml</config>
 	</configs>
 	<configSets>
+		<configSet>
+			<name><![CDATA[Web App]]></name>
+			<allowBeanDefinitionOverriding>true</allowBeanDefinitionOverriding>
+			<incomplete>false</incomplete>
+			<configs>
+				<config>src/main/resources/META-INF/spring/security-context.xml</config>
+				<config>src/main/resources/META-INF/spring/web-context.xml</config>
+			</configs>
+		</configSet>
 	</configSets>
 </beansProjectDescription>
