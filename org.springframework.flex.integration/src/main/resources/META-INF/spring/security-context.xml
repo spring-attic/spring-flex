@@ -4,13 +4,14 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd"> 
     
-    <http>
+    <http entry-point-ref="preAuthenticatedEntryPoint">
     	<intercept-url pattern="/**/protected/**" access="ROLE_USER"/>
     	<intercept-url pattern="/**/messagebroker/**" access="ROLE_ANONYMOUS, ROLE_USER"/>
     	<anonymous/>
-    	<http-basic/>
     	<logout logout-success-url="/bye.html"/>
     </http>
+    
+    <beans:bean id="preAuthenticatedEntryPoint" class="org.springframework.security.ui.preauth.PreAuthenticatedProcessingFilterEntryPoint" />
     
     <authentication-manager alias="authenticationManager"/>
     
@@ -20,6 +21,5 @@
 	      	<user name="keith" password="melbourne" authorities="ROLE_USER" />
 		</user-service>
 	</authentication-provider>
-    
     
 </beans:beans>

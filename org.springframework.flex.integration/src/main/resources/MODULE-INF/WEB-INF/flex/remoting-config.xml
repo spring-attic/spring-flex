@@ -9,5 +9,21 @@
     <default-channels>
         <channel ref="my-amf"/>
     </default-channels>
+    
+    <destination id="blazeManagedPingService">
+    	<properties>
+            <source>org.springframework.flex.integration.service.PingService</source>
+            <scope>application</scope>
+        </properties>
+	    <security>
+	        <security-constraint>
+	            <auth-method>Custom</auth-method>
+	            <roles>
+	                <role>roDestUser</role>
+	            </roles>
+	        </security-constraint>
+	    </security>
+    </destination>
+    
 
 </service>

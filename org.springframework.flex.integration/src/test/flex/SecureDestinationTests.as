@@ -27,7 +27,7 @@ package {
   	
   		private var responseChecker:ResponseChecker;
   		
-  		override public function setUp():void {
+  		override public function setUp():void  {
 			
 			protectedCs.addChannel(new AMFChannel("myAmf", 
     		"http://{server.name}:{server.port}/flex-integration/spring/protected/messagebroker/amf"));
@@ -37,45 +37,55 @@ package {
 			responseChecker = new ResponseChecker();
   		}
   		
-  		public function testProtectedChannelConnect():void {
-  			var params:Object = new Object();
-  			params.param1 = 'val1';
+  		public function testPingService_ProtectedDestination():void {
   			
-  			var service:HTTPService = new HTTPService();
-  			service.url="http://localhost:8080/flex-integration/spring/protected/messagebroker/amf";
-  			service.method="POST";
+  			protectedPingService.destination = "pingRemote";
   			
-  			service.addEventListener("result",function(event:Event):void {
-  				Alert.show("result received: "+event.toString());
+  			protectedPingService.ping.addEventListener("result", function(event:ResultEvent):void {	
+  				responseChecker.result(event);
   			});
   			
-  			service.addEventListener("fault",function(event:Event):void {
-  				Alert.show("fault received: "+event.toString());
-  			});
+  			protectedPingService.addEventListener("fault", function faultHandler (event:FaultEvent):void {
+  				responseChecker.expected = true;
+           		responseChecker.result(event);
+        	});
   			
-  			service.send(params);
+  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
+        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
+        		Alert.show(FaultEvent(responseChecker.resultEvent).toString());
+        	},5000));
+  			
+  			protectedPingService.ping();
   		}
   		
-//  		public function testPingService_ProtectedDestination():void {
-//  			
-//  			protectedPingService.destination = "pingRemote";
-//  			
-//  			protectedPingService.ping.addEventListener("result", function(event:ResultEvent):void {	
-//  				responseChecker.result(event);
-//  			});
-//  			
-//  			protectedPingService.addEventListener("fault", function faultHandler (event:FaultEvent):void {
-//  				responseChecker.expected = true;
-//           		responseChecker.result(event);
-//        	});
-//  			
-//  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
-//        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
-//        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
-//        	},5000));
-//  			
-//  			protectedPingService.ping();
-//  		}
+  		public function testBlazeManagedSecureService():void {
+  			
+  			var blazeService:RemoteObject = new RemoteObject();
+  	  		var cs:ChannelSet = new ChannelSet();
+	  		cs.addChannel(new AMFChannel("myAmf", 
+			"http://{server.name}:{server.port}/flex-integration/spring/messagebroker/amf"));
+			blazeService.channelSet = cs;
+			
+			blazeService.destination = "blazeManagedPingService";
+			
+			blazeService.ping.addEventListener("result", function(event:ResultEvent):void {	
+  				responseChecker.result(event);
+  			});
+  			
+  			blazeService.addEventListener("fault", function faultHandler (event:FaultEvent):void {
+  				responseChecker.expected = true;
+           		responseChecker.result(event);
+        	});
+  			
+  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
+        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
+        		Alert.show(FaultEvent(responseChecker.resultEvent).toString());
+        	},5000000));
+			
+			blazeService.ping();
+  		}
   	
 	}	
 }
