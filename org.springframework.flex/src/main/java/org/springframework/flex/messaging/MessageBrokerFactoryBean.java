@@ -19,8 +19,9 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.flex.messaging.config.FlexConfigurationManager;
 import org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter;
-import org.springframework.web.context.ServletConfigAware;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import flex.management.MBeanLifecycleManager;
@@ -68,7 +69,7 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 
 	private String name;
 
-	private ClassLoader beanClassLoader = getClass().getClassLoader();
+	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
 	private ConfigurationManager configurationManager;
 
@@ -234,6 +235,7 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 			return null;
 		}
 
+		@SuppressWarnings("unchecked")
 		public Enumeration getInitParameterNames() {
 			return Collections.enumeration(Collections.EMPTY_SET);
 		}

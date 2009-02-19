@@ -15,8 +15,10 @@ import org.springframework.security.util.UrlMatcher;
  * 
  * @author Jeremy Grelle
  */
+@SuppressWarnings("unchecked")
 public class EndpointDefinitionSource extends DefaultFilterInvocationDefinitionSource {
 
+	
 	public EndpointDefinitionSource(UrlMatcher urlMatcher,
 			LinkedHashMap requestMap) {
 		super(urlMatcher, requestMap);

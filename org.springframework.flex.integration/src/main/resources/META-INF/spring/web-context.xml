@@ -17,14 +17,69 @@
 	<!-- Dispatches requests mapped to a MessageBroker -->
 	<bean class="org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter"/>
 	
+	<!-- Bootstraps and exposes the BlazeDS MessageBroker -->
+	<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean" />
+	
 	<!-- Installs Spring Security support -->
 	<bean class="org.springframework.flex.messaging.security.SpringSecurityLoginCommand">
 		<constructor-arg ref="mySpringManagedMessageBroker"/>
-		<constructor-arg ref="authenticationManager"/>
+		<constructor-arg ref="_authenticationManager"/>
+	</bean>	
+	
+	<bean id="securityPostProcessor" class="org.springframework.flex.messaging.security.MessageBrokerSecurityPostProcessor">
+		<constructor-arg>
+			<list>
+				<idref bean="exceptionTranslator"/>
+				<idref bean="endpointInterceptor"/>
+			</list>
+		</constructor-arg>
 	</bean>
-
-	<!-- Bootstraps and exposes the BlazeDS MessageBroker -->
-	<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean" />	
+	
+	<bean id="endpointInterceptor" class="org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor">
+		<constructor-arg>
+			<bean class="org.springframework.flex.messaging.security.EndpointInterceptor">
+				<property name="accessDecisionManager" ref="_accessManager"/>
+				<property name="authenticationManager" ref="_authenticationManager"/>
+				<property name="objectDefinitionSource">
+					<bean class="org.springframework.flex.messaging.security.EndpointDefinitionSource">
+						<constructor-arg>
+							<bean class="org.springframework.security.util.AntUrlPathMatcher"/>
+						</constructor-arg>
+						<constructor-arg>
+							<map>
+								<entry> 
+									<key>
+										<bean class="org.springframework.security.intercept.web.RequestKey">
+											<constructor-arg value="**/messagebroker/protected/**"/>
+										</bean>
+									</key>
+									<bean class="org.springframework.security.ConfigAttributeDefinition">
+										<constructor-arg value="ROLE_USER"/>
+									</bean>							
+								</entry>
+								<entry> 
+									<key>
+										<bean class="org.springframework.security.intercept.web.RequestKey">
+											<constructor-arg value="**/messagebroker/**"/>
+										</bean>
+									</key>
+									<bean class="org.springframework.security.ConfigAttributeDefinition">
+										<constructor-arg value="ROLE_ANONYMOUS, ROLE_USER"/>
+									</bean>							
+								</entry>
+							</map>
+						</constructor-arg>
+					</bean>
+				</property>
+			</bean>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="exceptionTranslator" class="org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor">
+		<constructor-arg>
+			<bean class="org.springframework.flex.messaging.security.SecurityExceptionTranslationAdvice"/>
+		</constructor-arg>
+	</bean>
 	
 	<bean id="pingService" class="org.springframework.flex.integration.service.PingService" />
 	
@@ -32,66 +87,5 @@
 		<property name="messageBroker" ref="mySpringManagedMessageBroker"/>
 		<property name="service" ref="pingService"/>
 	</bean>
- 
-    <!-- Implementation of ProductDAO using low-level JDBC -->
-    <!-- <bean id="productDAO" class="flex.spring.samples.product.ProductDAO" >
-        <constructor-arg ref="dataSource"/>
-    </bean> -->
-    
-	<!-- Expose the productDAO bean for BlazeDS remoting -->
-	<!-- <bean id="product" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
-	    <property name="messageBroker" ref="mySpringManagedMessageBroker"/>
-	    <property name="service" ref="productDAO"/>
-	</bean>-->
-    
-    <!-- Implementation of ContactDAO using Spring's JdbcTemplate -->
-    <!-- <bean id="contactDAO" class="flex.spring.samples.contact.ContactDAO" >
-        <constructor-arg ref="dataSource"/>
-    </bean>-->
-    
-	<!-- Expose the contactDAO bean for BlazeDS remoting -->
-	<!-- <bean id="contact" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
-	    <property name="messageBroker" ref="mySpringManagedMessageBroker"/>
-	    <property name="service" ref="contactDAO"/>
-	</bean>-->
-
-    <!-- Implementation of CompanyDAO using Spring's JdbcTemplate -->
-    <!-- <bean id="companyDAO" class="flex.spring.samples.company.CompanyDAO" >
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg ref="industryDAO"/>
-    </bean>-->
-    
-	<!-- Expose the companyDAO bean for BlazeDS remoting -->
-	<!-- <bean id="company" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
-	    <property name="messageBroker" ref="mySpringManagedMessageBroker"/>
-	    <property name="service" ref="companyDAO"/>
-	</bean>-->
-
-    <!-- Implementation of IndustryDAO using Spring's JdbcTemplate -->
-    <!-- <bean id="industryDAO" class="flex.spring.samples.industry.IndustryDAO" >
-        <constructor-arg ref="dataSource"/>
-    </bean>-->
-    
-	<!-- Expose the IndustryDAO bean for BlazeDS remoting -->
-	<!-- <bean id="industry" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
-	    <property name="messageBroker" ref="mySpringManagedMessageBroker"/>
-	    <property name="service" ref="industryDAO"/>
-	</bean>-->
-
-	<!-- Create and populate the tables if the springflexdemodb database -->
-	<!-- <bean id="dbInit" class="flex.spring.samples.util.DatabaseInitializer">
-        <constructor-arg ref="dataSource"/>
-	</bean>-->
-    
-    <!-- Simple Spring-managed DataSource for embedded h2 database (http://www.h2database.com). H2 is used instead of HSQLDB in this Test Drive
-    	 because it has better support for retrieving autogenerated keys using the JDBC 3 approach which is used by Spring's JdbcTemplate.
-    	 The "jdbc:h2:~/sprinflexdemodb/sprinflexdemodb" URL points to a springflexdemodb database in the springdemodb directory 
-    	 under the user's directory (represented by ~). H2 creates the database automatically if it doesn't exists, in which case, the dbInit bean
-    	 takes care of creating and populating the sample tables.  
-	-->
-    <!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.h2.Driver" />
-        <property name="url" value="jdbc:h2:~/sprinflexdemodb/sprinflexdemodb" />
-    </bean>-->
     
 </beans>
