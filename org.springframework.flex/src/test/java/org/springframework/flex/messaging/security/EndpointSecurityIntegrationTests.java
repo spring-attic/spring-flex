@@ -26,6 +26,7 @@ import org.springframework.security.vote.RoleVoter;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageException;
+import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.endpoints.Endpoint;
 import flex.messaging.messages.Message;
@@ -62,8 +63,9 @@ public class EndpointSecurityIntegrationTests extends
 	}
 
 	private void initializeInterceptors() throws Exception {
-
-		if (!AopUtils.isAopProxy(getMessageBroker().getEndpoint("my-amf"))) {
+		setDirty();
+		//if (!AopUtils.isAopProxy(getMessageBroker().getEndpoint("my-amf"))) {
+			
 			SecurityExceptionTranslationAdvice translator = new SecurityExceptionTranslationAdvice();
 
 			EndpointInterceptor interceptor = new EndpointInterceptor();
@@ -75,24 +77,28 @@ public class EndpointSecurityIntegrationTests extends
 			advisors.add(new EndpointServiceMessagePointcutAdvisor(translator));
 			advisors.add(new EndpointServiceMessagePointcutAdvisor(interceptor));
 			
-			MessageBrokerSecurityPostProcessor processor = new MessageBrokerSecurityPostProcessor(advisors);
+			MessageBrokerSecurityStartupProcessor processor = new MessageBrokerSecurityStartupProcessor(advisors);
 			
-			processor.postProcessAfterInitialization(getMessageBroker(), "myMessageBroker");
-		}
+			addStartupProcessor(processor);
+		//}
 	}
 
 	@SuppressWarnings("unchecked")
-	public void testPostProcessed() throws Exception {
+	public void testStartupProcessed() throws Exception {
 		MessageBroker broker = getMessageBroker();
 		Iterator i = broker.getEndpoints().values().iterator();
 		while (i.hasNext()) {
 			Object endpoint = i.next();
 			assertTrue("Proxied endpoint1 must implement Endpoint",
 					endpoint instanceof Endpoint);
-			assertTrue("Endpoint should be proxied", AopUtils
-					.isAopProxy(endpoint));
+			//assertTrue("Endpoint should be proxied", AopUtils
+			//		.isAopProxy(endpoint));
 			assertTrue("Endpoint should be started", ((Endpoint) endpoint)
 					.isStarted());
+			if (endpoint instanceof AMFEndpoint) {
+				AMFEndpoint amfEndpoint = (AMFEndpoint) endpoint;
+				System.out.println(amfEndpoint);
+			}
 		}
 	}
 
@@ -108,6 +114,8 @@ public class EndpointSecurityIntegrationTests extends
 			assertTrue(ex.getCode().equals(
 					SecurityException.CLIENT_AUTHENTICATION_CODE));
 			assertTrue(ex.getRootCause() instanceof AuthenticationException);
+		} catch (MessageException ex) {
+			fail("A SecurityException should be thrown");
 		}
 
 	}
@@ -129,6 +137,8 @@ public class EndpointSecurityIntegrationTests extends
 			assertTrue(ex.getCode().equals(
 					SecurityException.CLIENT_AUTHORIZATION_CODE));
 			assertTrue(ex.getRootCause() instanceof AccessDeniedException);
+		} catch (MessageException ex) {
+			fail("A SecurityException should be thrown");
 		}
 	}
 
@@ -149,5 +159,11 @@ public class EndpointSecurityIntegrationTests extends
 			assertFalse(ex instanceof SecurityException);
 		}
 	}
+	
+	public class MyEndpoint extends AMFEndpoint {
+		
+	}
+	
+	
 
 }

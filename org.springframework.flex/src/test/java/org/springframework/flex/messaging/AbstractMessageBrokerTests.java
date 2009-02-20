@@ -1,5 +1,8 @@
 package org.springframework.flex.messaging;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.TestCase;
 
 import org.springframework.mock.web.MockServletContext;
@@ -12,6 +15,7 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
 
 	private StaticWebApplicationContext context = new StaticWebApplicationContext();
 	private MessageBrokerFactoryBean mbfb;
+	private Set<MessageBrokerStartupProcessor> startupProcessors = new HashSet<MessageBrokerStartupProcessor>();
 
 	protected final MessageBroker getMessageBroker() throws Exception {
 		if (FlexContext.getMessageBroker() != null) {
@@ -19,7 +23,6 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
 		} else {
 			return createMessageBroker();
 		}
-		
 	}
 
 	protected final MessageBroker createMessageBroker() throws Exception {
@@ -30,9 +33,21 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
 		mbfb.setBeanName("testMessageBroker");
 		mbfb.setBeanClassLoader(context.getClassLoader());
 		mbfb.setServicesConfigPath("classpath:org/springframework/flex/messaging/services-config.xml");
+		mbfb.setStartupProcessors(startupProcessors);
 		mbfb.afterPropertiesSet();
 		
 		return (MessageBroker) mbfb.getObject();
+	}
+	
+	protected final void setDirty() {
+		if (FlexContext.getMessageBroker() != null) {
+			FlexContext.getMessageBroker().stop();
+		}
+		startupProcessors.clear();
+	}
+	
+	protected final void addStartupProcessor(MessageBrokerStartupProcessor processor) {
+		startupProcessors.add(processor);
 	}
 
 }

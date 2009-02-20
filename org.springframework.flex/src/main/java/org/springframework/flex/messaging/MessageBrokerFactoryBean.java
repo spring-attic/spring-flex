@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -79,6 +81,8 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 
 	private ServletContext servletContext;
 
+	private Set<MessageBrokerStartupProcessor> startupProcessors = new HashSet<MessageBrokerStartupProcessor>();
+
 	/**
 	 * Return the singleton MessageBroker.
 	 */
@@ -89,6 +93,10 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 	public Class<? extends MessageBroker> getObjectType() {
 		return (this.messageBroker != null ? this.messageBroker.getClass()
 				: MessageBroker.class);
+	}
+	
+	public Set<MessageBrokerStartupProcessor> getStartupProcessors() {
+		return startupProcessors;
 	}
 
 	public boolean isSingleton() {
@@ -118,6 +126,10 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;		
+	}
+
+	public void setStartupProcessors(Set<MessageBrokerStartupProcessor> startupProcessors) {
+		this.startupProcessors = startupProcessors;
 	}
 
 	public void afterPropertiesSet() throws Exception {
@@ -173,8 +185,12 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 						HttpFlexSession.SESSION_MAP, new ConcurrentHashMap());
 		}
 
+		messageBroker = processBeforeStart(messageBroker);
+		
 		messageBroker.start();
 
+		messageBroker = processAfterStart(messageBroker);
+		
 		if (logger.isInfoEnabled()) {
 			long timeAfterStartup = System.currentTimeMillis();
 			Long diffMillis = new Long(timeAfterStartup - timeBeforeStartup);
@@ -187,6 +203,20 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 
 		// Report any unused properties.
 		messagingConfig.reportUnusedProperties();
+	}
+
+	private MessageBroker processAfterStart(MessageBroker broker) {
+		for(MessageBrokerStartupProcessor processor : startupProcessors) {
+			broker = processor.processAfterStartup(broker);
+		}
+		return broker;
+	}
+
+	private MessageBroker processBeforeStart(MessageBroker broker) {
+		for(MessageBrokerStartupProcessor processor : startupProcessors) {
+			broker = processor.processBeforeStartup(broker);
+		}
+		return broker;
 	}
 
 	public void destroy() throws Exception {

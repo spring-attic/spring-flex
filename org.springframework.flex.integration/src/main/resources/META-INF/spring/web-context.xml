@@ -18,7 +18,13 @@
 	<bean class="org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter"/>
 	
 	<!-- Bootstraps and exposes the BlazeDS MessageBroker -->
-	<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean" />
+	<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean">
+		<property name="startupProcessors">
+			<set>
+				<ref bean="securityStartupProcessor"/>
+			</set>
+		</property>
+	</bean>
 	
 	<!-- Installs Spring Security support -->
 	<bean class="org.springframework.flex.messaging.security.SpringSecurityLoginCommand">
@@ -26,7 +32,7 @@
 		<constructor-arg ref="_authenticationManager"/>
 	</bean>	
 	
-	<bean id="securityPostProcessor" class="org.springframework.flex.messaging.security.MessageBrokerSecurityPostProcessor">
+	<bean id="securityStartupProcessor" class="org.springframework.flex.messaging.security.MessageBrokerSecurityStartupProcessor">
 		<constructor-arg>
 			<list>
 				<idref bean="exceptionTranslator"/>

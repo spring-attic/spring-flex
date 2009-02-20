@@ -17,19 +17,20 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.Advised;
 
 import flex.messaging.MessageBroker;
+import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.endpoints.Endpoint;
 
-public class MessageBrokerSecurityPostProcessorTests extends TestCase {
+public class MessageBrokerSecurityStartupProcessorTests extends TestCase {
 
 	MessageBroker broker;
 	@Mock AbstractEndpoint endpoint1;
-	@Mock AbstractEndpoint endpoint2;
+	@Mock AMFEndpoint endpoint2;
 	@Mock MethodInterceptor advice1;
 	@Mock MethodInterceptor advice2;
 	EndpointServiceMessagePointcutAdvisor advisor1;
 	EndpointServiceMessagePointcutAdvisor advisor2;
-	MessageBrokerSecurityPostProcessor processor;
+	MessageBrokerSecurityStartupProcessor processor;
 	
 	@SuppressWarnings("unchecked")
 	public void setUp() {
@@ -57,9 +58,9 @@ public class MessageBrokerSecurityPostProcessorTests extends TestCase {
 		List<EndpointSecurityAdvisor> advisors = new ArrayList<EndpointSecurityAdvisor>();
 		advisors.add(advisor1);
 		advisors.add(advisor2);
-		processor = new MessageBrokerSecurityPostProcessor(advisors);
+		processor = new MessageBrokerSecurityStartupProcessor(advisors);
 		
-		MessageBroker processedBroker = (MessageBroker) processor.postProcessAfterInitialization(broker, "myMessageBroker");
+		MessageBroker processedBroker = (MessageBroker) processor.processBeforeStartup(broker);
 		assertSame(broker, processedBroker);
 		
 		Collection endpoints = processedBroker.getEndpoints().values();
@@ -68,16 +69,17 @@ public class MessageBrokerSecurityPostProcessorTests extends TestCase {
 		while(i.hasNext()) {
 			Endpoint endpoint = (Endpoint) i.next();
 			
-			assertTrue(endpoint instanceof AbstractEndpoint);
-			assertTrue(endpoint instanceof Advised);
-			
-			Advised advisedEndpoint = (Advised) endpoint;
-			
-			assertTrue(advisedEndpoint.getAdvisors().length == 2);
-			assertTrue(advisedEndpoint.isFrozen());
-			assertTrue(advisedEndpoint.isProxyTargetClass());
-			assertTrue(advisedEndpoint.indexOf(advisor1) == 0);
-			assertTrue(advisedEndpoint.indexOf(advisor2) == 1);
+			if (endpoint instanceof Advised) {
+				assertTrue(endpoint instanceof AbstractEndpoint);
+				
+				Advised advisedEndpoint = (Advised) endpoint;
+				
+				assertTrue(advisedEndpoint.getAdvisors().length == 2);
+				assertTrue(advisedEndpoint.isFrozen());
+				assertTrue(advisedEndpoint.isProxyTargetClass());
+				assertTrue(advisedEndpoint.indexOf(advisor1) == 0);
+				assertTrue(advisedEndpoint.indexOf(advisor2) == 1);
+			}
 		}
 	}
 }
