@@ -26,6 +26,8 @@ import org.springframework.security.util.AntUrlPathMatcher;
 import org.springframework.security.vote.AffirmativeBased;
 import org.springframework.security.vote.RoleVoter;
 
+import flex.messaging.MessageBroker;
+import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.Message;
 
@@ -42,7 +44,7 @@ public class EndpointInterceptorTests extends TestCase {
 	@SuppressWarnings("unchecked")
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		
+	
 		LinkedHashMap requestMap = new LinkedHashMap();
 		requestMap.put(new RequestKey("**/messagebroker/amf"),
 				new ConfigAttributeDefinition("ROLE_USER"));
@@ -68,6 +70,10 @@ public class EndpointInterceptorTests extends TestCase {
 	
 	public void tearDown() {
 		SecurityContextHolder.getContext().setAuthentication(null);
+	}
+	
+	public void testStart() {
+		advisedEndpoint.start();
 	}
 	
 	public void testServiceUnauthenticated() throws Exception {

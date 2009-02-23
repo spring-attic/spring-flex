@@ -91,8 +91,8 @@ public class EndpointSecurityIntegrationTests extends
 			Object endpoint = i.next();
 			assertTrue("Proxied endpoint1 must implement Endpoint",
 					endpoint instanceof Endpoint);
-			//assertTrue("Endpoint should be proxied", AopUtils
-			//		.isAopProxy(endpoint));
+			assertTrue("Endpoint should be proxied", AopUtils
+						.isAopProxy(endpoint));
 			assertTrue("Endpoint should be started", ((Endpoint) endpoint)
 					.isStarted());
 			if (endpoint instanceof AMFEndpoint) {

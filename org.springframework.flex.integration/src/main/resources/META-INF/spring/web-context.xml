@@ -35,8 +35,8 @@
 	<bean id="securityStartupProcessor" class="org.springframework.flex.messaging.security.MessageBrokerSecurityStartupProcessor">
 		<constructor-arg>
 			<list>
-				<idref bean="exceptionTranslator"/>
-				<idref bean="endpointInterceptor"/>
+				<ref bean="exceptionTranslator"/>
+				<ref bean="endpointInterceptor"/>
 			</list>
 		</constructor-arg>
 	</bean>
@@ -56,12 +56,10 @@
 								<entry> 
 									<key>
 										<bean class="org.springframework.security.intercept.web.RequestKey">
-											<constructor-arg value="**/messagebroker/protected/**"/>
+											<constructor-arg value="**/protected/messagebroker/**"/>
 										</bean>
 									</key>
-									<bean class="org.springframework.security.ConfigAttributeDefinition">
-										<constructor-arg value="ROLE_USER"/>
-									</bean>							
+									<value type="org.springframework.security.ConfigAttributeDefinition">ROLE_USER</value>					
 								</entry>
 								<entry> 
 									<key>
@@ -69,9 +67,7 @@
 											<constructor-arg value="**/messagebroker/**"/>
 										</bean>
 									</key>
-									<bean class="org.springframework.security.ConfigAttributeDefinition">
-										<constructor-arg value="ROLE_ANONYMOUS, ROLE_USER"/>
-									</bean>							
+									<value type="org.springframework.security.ConfigAttributeDefinition">ROLE_ANONYMOUS, ROLE_USER</value>						
 								</entry>
 							</map>
 						</constructor-arg>
@@ -81,9 +77,19 @@
 		</constructor-arg>
 	</bean>
 	
+	<bean id="editorConfig" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+	  <property name="customEditors">
+	    <map>
+	      <entry key="org.springframework.security.ConfigAttributeDefinition">
+	        <bean class="org.springframework.security.ConfigAttributeEditor"/>
+	      </entry>
+	    </map>
+	  </property>
+	</bean>
+	
 	<bean id="exceptionTranslator" class="org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor">
 		<constructor-arg>
-			<bean class="org.springframework.flex.messaging.security.SecurityExceptionTranslationAdvice"/>
+			<bean class="org.springframework.flex.messaging.security.SecurityExceptionTranslationInterceptor"/>
 		</constructor-arg>
 	</bean>
 	

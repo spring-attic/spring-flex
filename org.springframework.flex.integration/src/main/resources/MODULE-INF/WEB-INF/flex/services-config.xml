@@ -39,6 +39,14 @@
 
         <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <security>
+		        <security-constraint>
+		            <auth-method>Custom</auth-method>
+		            <roles>
+		                <role>roDestUser</role>
+		            </roles>
+		        </security-constraint>
+		    </security>
         </channel-definition>
         
         <channel-definition id="my-protected-amf" class="mx.messaging.channels.AMFChannel">

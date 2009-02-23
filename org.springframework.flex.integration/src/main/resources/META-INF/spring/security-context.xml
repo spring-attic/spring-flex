@@ -5,7 +5,6 @@
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd"> 
     
     <http entry-point-ref="preAuthenticatedEntryPoint">
-    	<anonymous/>
     	<logout logout-success-url="/bye.html"/>
     </http>
     
