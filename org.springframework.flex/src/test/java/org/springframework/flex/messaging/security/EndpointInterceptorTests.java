@@ -26,9 +26,8 @@ import org.springframework.security.util.AntUrlPathMatcher;
 import org.springframework.security.vote.AffirmativeBased;
 import org.springframework.security.vote.RoleVoter;
 
-import flex.messaging.MessageBroker;
-import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.AbstractEndpoint;
+import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
 
 public class EndpointInterceptorTests extends TestCase {
@@ -123,6 +122,17 @@ public class EndpointInterceptorTests extends TestCase {
 		Message result = advisedEndpoint.serviceMessage(inMessage);
 		
 		assertSame(outMessage, result);	
+	}
+	
+	public void testLoginCommand() throws Exception {
+		CommandMessage loginMessage = new CommandMessage(CommandMessage.LOGIN_OPERATION);
+		when(endpoint.serviceMessage(loginMessage)).thenReturn(outMessage);
+		
+		Message result = advisedEndpoint.serviceMessage(loginMessage);
+		
+		assertSame(outMessage, result);
+		
+		verify(endpoint, never()).getUrlForClient();
 	}
 	
 	

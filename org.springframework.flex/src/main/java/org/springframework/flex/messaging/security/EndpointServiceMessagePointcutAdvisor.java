@@ -9,7 +9,7 @@ import org.springframework.util.ReflectionUtils;
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.Message;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "serial" })
 public class EndpointServiceMessagePointcutAdvisor extends
 		StaticMethodMatcherPointcutAdvisor implements EndpointSecurityAdvisor {
 

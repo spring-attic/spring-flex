@@ -7,6 +7,8 @@ import org.springframework.security.intercept.InterceptorStatusToken;
 import org.springframework.security.intercept.ObjectDefinitionSource;
 
 import flex.messaging.endpoints.AbstractEndpoint;
+import flex.messaging.messages.CommandMessage;
+import flex.messaging.messages.Message;
 
 @SuppressWarnings("unchecked")
 public class EndpointInterceptor extends AbstractSecurityInterceptor implements MethodInterceptor{
@@ -30,15 +32,27 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
 	}
 
 	public Object invoke(MethodInvocation mi) throws Throwable {
-		Object result = null;
-		InterceptorStatusToken token = beforeInvocation(mi.getThis());
-
-		try {
-			result = mi.proceed();
-		} finally {
-			result = afterInvocation(token, result);
+		Message message = (Message) mi.getArguments()[0];
+		if (isLoginCommand(message)) {
+			return mi.proceed();
+		} else {
+			Object result = null;
+			InterceptorStatusToken token = beforeInvocation(mi.getThis());
+	
+			try {
+				result = mi.proceed();
+			} finally {
+				result = afterInvocation(token, result);
+			}
+	
+			return result;
 		}
+	}
 
-		return result;
+	private boolean isLoginCommand(Message message) {
+		if (message instanceof CommandMessage) {
+			return (((CommandMessage)message).getOperation() == CommandMessage.LOGIN_OPERATION);
+		}
+		return false;
 	}
 }

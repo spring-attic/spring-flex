@@ -61,14 +61,6 @@
 									</key>
 									<value type="org.springframework.security.ConfigAttributeDefinition">ROLE_USER</value>					
 								</entry>
-								<entry> 
-									<key>
-										<bean class="org.springframework.security.intercept.web.RequestKey">
-											<constructor-arg value="**/messagebroker/**"/>
-										</bean>
-									</key>
-									<value type="org.springframework.security.ConfigAttributeDefinition">ROLE_ANONYMOUS, ROLE_USER</value>						
-								</entry>
 							</map>
 						</constructor-arg>
 					</bean>
@@ -89,7 +81,7 @@
 	
 	<bean id="exceptionTranslator" class="org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor">
 		<constructor-arg>
-			<bean class="org.springframework.flex.messaging.security.SecurityExceptionTranslationInterceptor"/>
+			<bean class="org.springframework.flex.messaging.security.SecurityExceptionTranslationAdvice"/>
 		</constructor-arg>
 	</bean>
 	

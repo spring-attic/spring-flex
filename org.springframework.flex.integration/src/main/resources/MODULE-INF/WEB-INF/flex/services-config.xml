@@ -43,7 +43,7 @@
 		        <security-constraint>
 		            <auth-method>Custom</auth-method>
 		            <roles>
-		                <role>roDestUser</role>
+		                <role>ROLE_USER</role>
 		            </roles>
 		        </security-constraint>
 		    </security>
