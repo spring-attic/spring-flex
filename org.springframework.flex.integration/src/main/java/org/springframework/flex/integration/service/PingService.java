@@ -6,4 +6,8 @@ public class PingService {
 		return "pong";
 	}
 	
+	public String foo() {
+		return "bar";
+	}
+	
 }

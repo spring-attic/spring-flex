@@ -2,6 +2,7 @@ package org.springframework.flex.messaging.security;
 
 import static org.mockito.Mockito.*;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import org.mockito.Mock;
@@ -29,12 +30,25 @@ public class EndpointDefinitionSourceTests extends TestCase {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void testGetAttributes() {
+	public void testGetAttributes_ForProtectedURL() {
 		LinkedHashMap requestMap = new LinkedHashMap();
 		requestMap.put(new RequestKey("**/messagebroker/**"), new ConfigAttributeDefinition("ROLE_USER"));
 		source = new EndpointDefinitionSource(new AntUrlPathMatcher(), requestMap);
 		
 		when(mockEndpoint.getUrlForClient()).thenReturn("http://localhost:8080/app/spring/messagebroker/amf");
+		
+		ConfigAttributeDefinition def = source.getAttributes(mockEndpoint);
+		
+		assertTrue(def.getConfigAttributes().size() > 0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void testGetAttributes_ForProtectedEndpointId() {
+		HashMap endpointMap = new HashMap();
+		endpointMap.put("foo", new ConfigAttributeDefinition("ROLE_USER"));
+		source = new EndpointDefinitionSource(new AntUrlPathMatcher(), new LinkedHashMap(), endpointMap);
+		
+		when(mockEndpoint.getId()).thenReturn("foo");
 		
 		ConfigAttributeDefinition def = source.getAttributes(mockEndpoint);
 		

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.flex.messaging.MessageBrokerFactoryBean;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import flex.messaging.FactoryInstance;
@@ -32,8 +34,8 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  * </p>
  * 
  * <p>
- * The methods on the exported service that are exposed to the Flex client can be
- * controlled using the includeMethods and excludeMethods properties.
+ * The methods on the exported service that are exposed to the Flex client can
+ * be controlled using the includeMethods and excludeMethods properties.
  * </p>
  * 
  * @see MessageBrokerFactoryBean
@@ -48,6 +50,8 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 	private Object service;
 
 	private String serviceId;
+
+	private String[] channels;
 
 	private MessageBroker broker;
 
@@ -69,6 +73,18 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 
 	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
+	}
+
+	public void setChannelIds(String[] channels) {
+		this.channels = StringUtils.trimArrayElements(channels);
+	}
+	
+	public void setIncludeMethods(String[] includeMethods) {
+		this.includeMethods = StringUtils.trimArrayElements(includeMethods);
+	}
+
+	public void setExcludeMethods(String[] excludeMethods) {
+		this.excludeMethods = StringUtils.trimArrayElements(excludeMethods);
 	}
 
 	public FactoryInstance createFactoryInstance(String id, ConfigMap properties) {
@@ -105,6 +121,9 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 		// Register and start the destination
 		RemotingDestination destination = (RemotingDestination) remotingService
 				.createDestination(getServiceId());
+
+		configureChannels(destination);
+
 		destination.setFactory(this);
 		destination.start();
 
@@ -114,6 +133,25 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 
 		configureIncludes(destination);
 		configureExcludes(destination);
+	}
+
+	private void configureChannels(RemotingDestination destination) {
+		if (ObjectUtils.isEmpty(channels)) {
+			return;
+		}
+		
+		for (String channelId : channels) {
+			Assert
+					.isTrue(
+							broker.getChannelIds().contains(channelId),
+							"The channel "
+									+ channelId
+									+ " is not known to the MessageBroker "
+									+ broker.getId()
+									+ " and cannot be set on the destination "
+									+ getServiceId());
+		}
+		destination.setChannels(CollectionUtils.arrayToList(channels));
 	}
 
 	private void configureExcludes(RemotingDestination destination) {
@@ -142,8 +180,7 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 
 	private List<RemotingMethod> getRemotingMethods(String[] methodNames) {
 		List<RemotingMethod> remotingMethods = new ArrayList<RemotingMethod>();
-		for (int i = 0; i < methodNames.length; i++) {
-			String name = methodNames[i];
+		for (String name : methodNames) {
 			Assert.isTrue(ClassUtils.hasAtLeastOneMethodWithName(service
 					.getClass(), name), "Could not find method with name '"
 					+ name + "' on the exported service of type "
@@ -185,13 +222,4 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 			return service;
 		}
 	}
-
-	public void setIncludeMethods(String[] includeMethods) {
-		this.includeMethods = includeMethods;
-	}
-
-	public void setExcludeMethods(String[] excludeMethods) {
-		this.excludeMethods = excludeMethods;
-	}
-
 }

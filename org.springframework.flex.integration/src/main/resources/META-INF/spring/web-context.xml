@@ -63,6 +63,16 @@
 								</entry>
 							</map>
 						</constructor-arg>
+						<constructor-arg>
+							<map>
+								<entry> 
+									<key>
+										<value>my-protected-by-id-amf</value>
+									</key>
+									<value type="org.springframework.security.ConfigAttributeDefinition">ROLE_USER</value>					
+								</entry>
+							</map>
+						</constructor-arg>
 					</bean>
 				</property>
 			</bean>
@@ -90,7 +100,8 @@
 	<bean id="pingRemote" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
 		<property name="messageBroker" ref="mySpringManagedMessageBroker"/>
 		<property name="service" ref="pingService"/>
-		<property name="excludeMethods"></property>
+		<property name="channelIds" value="my-amf, my-protected-amf, my-protected-by-id-amf"/>
+		<property name="excludeMethods" value="foo"/>
 	</bean>
     
 </beans>

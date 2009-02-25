@@ -3,7 +3,7 @@ package org.springframework.flex.messaging.remoting;
 import java.util.Iterator;
 
 import org.springframework.flex.messaging.AbstractMessageBrokerTests;
-import org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter;
+import org.springframework.util.CollectionUtils;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -127,6 +127,33 @@ public class FlexRemotingServiceExporterTests extends AbstractMessageBrokerTests
 		try {
 			exporter.afterPropertiesSet();
 			fail("Invalid exclude method not detected.");
+		} catch (IllegalArgumentException ex) {
+			// Expected
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void testDestinationConfiguredWithValidChannels() throws Exception {
+		RemotingService remotingService = getRemotingService();
+		
+		String[] channelIds = new String[]{"my-secure-amf"};
+		exporter.setChannelIds(channelIds);
+		
+		exporter.afterPropertiesSet();
+		
+		RemotingDestination remotingDestination = (RemotingDestination) remotingService
+			.getDestination(DEFAULT_SERVICE_ID);
+		assertTrue("Custom channels not set",remotingDestination.getChannels().containsAll(CollectionUtils.arrayToList(channelIds)));
+		assertFalse("Default channel not overriden", remotingDestination.getChannels().contains("my-amf"));
+	}
+	
+	public void testDestinationConfiguredWithInvalidChannels() throws Exception {
+		String[] channelIds = new String[]{"my-fubar"};
+		exporter.setChannelIds(channelIds);
+		
+		try {
+			exporter.afterPropertiesSet();
+			fail("Invalid channel not detected");
 		} catch (IllegalArgumentException ex) {
 			// Expected
 		}

@@ -24,6 +24,10 @@ package {
   	
   		private var protectedCs:ChannelSet = new ChannelSet();
   	
+  		private var protectedByChannelIdPingService:RemoteObject = new RemoteObject();
+  	
+		private var protectedByChannelIdCs:ChannelSet = new ChannelSet();
+  	
   		private var blazeService:RemoteObject = new RemoteObject();
   	
 		private var blazeProtectedCs:ChannelSet = new ChannelSet();
@@ -37,6 +41,11 @@ package {
 			
 			protectedPingService.channelSet = protectedCs;
 			
+			protectedByChannelIdCs.addChannel(new AMFChannel("myAmf", 
+    		"http://{server.name}:{server.port}/flex-integration/spring/protected2/messagebroker/amf"));
+			
+			protectedByChannelIdPingService.channelSet = protectedByChannelIdCs;
+			
 			blazeProtectedCs.addChannel(new AMFChannel("myAmf", 
 			"http://{server.name}:{server.port}/flex-integration/spring/messagebroker/amf"));
 			
@@ -45,7 +54,7 @@ package {
 			responseChecker = new ResponseChecker();
   		}
   		
-  		public function testSpringManagedSecureChannel_NotAuthenticated():void {
+  		public function testSpringManagedSecureChannelUrl_NotAuthenticated():void {
   			
   			protectedPingService.destination = "pingRemote";
   			
@@ -66,6 +75,29 @@ package {
         	},5000));
   			
   			protectedPingService.ping();
+  		}
+  		
+  		public function testSpringManagedSecureChannelId_NotAuthenticated():void {
+  			
+  			protectedByChannelIdPingService.destination = "pingRemote";
+  			
+  			protectedByChannelIdPingService.ping.addEventListener("result", function(event:ResultEvent):void {	
+  				responseChecker.result(event);
+  			});
+  			
+  			protectedByChannelIdPingService.addEventListener("fault", function(event:FaultEvent):void {
+  				responseChecker.expected = true;
+           		responseChecker.result(event);
+        	});
+  			
+  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
+        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
+        		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
+        		assertEquals("The fault code was incorrect", "Client.Authentication",FaultEvent(responseChecker.resultEvent).fault.faultCode);
+        	},5000));
+  			
+  			protectedByChannelIdPingService.ping();
   		}
   		
   		public function testSpringManagedSecureChannel_LoginInvalidCredentials():void {

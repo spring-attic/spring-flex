@@ -5,7 +5,7 @@
               http://www.springframework.org/schema/security http://www.springframework.org/schema/flex/spring-flex-1.0.0.xsd"> 
     
     <!-- expanded version -->
-    <messageBroker id="defaultId" configuration-manager-ref="" services-config-path="/WEB-INF/flex/services-config.xml">
+    <messageBroker id="customId" configuration-manager-ref="" services-config-path="/WEB-INF/flex/services-config.xml">
     	<config-processor ref="myCustomConfigProcessorBean"/>
     	<mapping pattern="/*"/>
     	<security auth-manager-ref="_authenticationManager" access-decision-manager-ref="_accessManager" 
@@ -13,14 +13,27 @@
 	    	<secure-endpoint channel="my-secure-amf" access="ROLE_USER, ROLE_ADMIN"/>
 	    	<secure-endpoint pattern="**/messagebroker/*" access="ROLE_ANONYMOUS"/>
 		</security>
-		<remote-service ref="ping" service-id="pingRemote" exclude-methods="" include-methods=""/>
-		<remote-service ref="productService" channel-id="" adapter-class="foo.bar.CustomJavaAdapter"/>
     </messageBroker>
-    
+
+	<remoting>
+    	<remote-service ref="ping" service-id="pingRemote" exclude-methods="foo, bar" include-methods="baz"/>
+		<remote-service ref="productService" channels="my-amf, my-secure-amf"/>
+    </remoting>
+
     <!-- minimal version -->
     <messageBroker>
     	<security/>
-    	<remote-service ref="ping"/>
     </messageBroker>
-    
+
+    <remoting>
+    	<remote-service ref="ping"/>
+		<remote-service ref="productService"/>
+    </remoting>
+
 </beans:beans>
+
+
+<!-- nested remoting with "beans" as the top-level namespace-->
+<bean id="foo" class="com.bar.MyClass">
+    <flex:remote-service/>
+</bean>

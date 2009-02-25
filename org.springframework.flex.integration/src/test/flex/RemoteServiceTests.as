@@ -72,6 +72,28 @@ package {
   			
   			pingService.ping();
   		}
+  		
+  		public function testPingService_ExcludedMethod():void {
+  			
+  			pingService.destination = "pingService";
+  			
+  			
+  			pingService.ping.addEventListener("result", function(event:ResultEvent):void {	
+  				responseChecker.result(event);
+  			});
+  			
+  			pingService.addEventListener("fault", function faultHandler (event:FaultEvent):void {
+  				responseChecker.expected = true;
+           		responseChecker.result(event);
+        	});            
+        	
+        	responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
+        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
+        	},5000));
+  			
+  			pingService.foo();
+  		}
   	
 	}	
 }
