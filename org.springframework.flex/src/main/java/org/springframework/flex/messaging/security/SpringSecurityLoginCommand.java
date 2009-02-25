@@ -1,8 +1,12 @@
 package org.springframework.flex.messaging.security;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.InitializingBean;
+import javax.servlet.ServletConfig;
+
+import org.springframework.flex.messaging.config.MessageBrokerConfigProcessor;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationManager;
 import org.springframework.security.context.SecurityContextHolder;
@@ -11,7 +15,8 @@ import org.springframework.util.Assert;
 
 import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
-import flex.messaging.security.AppServerLoginCommand;
+import flex.messaging.io.MessageIOConstants;
+import flex.messaging.security.LoginCommand;
 import flex.messaging.security.LoginManager;
 
 /**
@@ -22,20 +27,13 @@ import flex.messaging.security.LoginManager;
  * the current {@link AuthenticationManager}. 
  * </p>
  * 
- * <p>
- * This class is only needed if using BlazeDS-specific security mechanisms.  For example, when securing a remoting destination
- * by role using services-config.xml, or when manually calling login() or logout() on a ChannelSet in the Flex client. 
- * </p>
- * 
  * @author Jeremy Grelle
  *
  * @see org.springframework.flex.messaging.MessageBrokerFactoryBean
  */
-public class SpringSecurityLoginCommand extends AppServerLoginCommand implements InitializingBean{
+public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerConfigProcessor{
 
 	private AuthenticationManager authManager;
-	
-	private MessageBroker messageBroker;
 	
 	private boolean invalidateFlexSession = true;
 
@@ -49,10 +47,8 @@ public class SpringSecurityLoginCommand extends AppServerLoginCommand implements
 
 	private boolean perClientAuthentication = false;
 	
-	public SpringSecurityLoginCommand(MessageBroker messageBroker, AuthenticationManager authManager) {
-		Assert.notNull(messageBroker, "MessageBroker is required.");
+	public SpringSecurityLoginCommand(AuthenticationManager authManager) {
 		Assert.notNull(authManager, "AuthenticationManager is required.");
-		this.messageBroker = messageBroker;
 		this.authManager = authManager;
 	}
 
@@ -64,6 +60,22 @@ public class SpringSecurityLoginCommand extends AppServerLoginCommand implements
 		
 		return authentication;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean doAuthorization(Principal principal, List roles) {
+		Assert.isInstanceOf(Authentication.class, principal, "This LoginCommand expects a Principal of type "+Authentication.class.getName());
+		Authentication auth = (Authentication) principal;
+		if ((auth == null) || (auth.getPrincipal() == null) || (auth.getAuthorities() == null)) {
+            return false;
+        }
+		
+        for (int i = 0; i < auth.getAuthorities().length; i++) {
+            if (roles.contains(auth.getAuthorities()[i].getAuthority())) {
+                return true;
+            }
+        }
+		return false;
+	}
 
 	public boolean logout(Principal principal) {
 		if (invalidateFlexSession) {
@@ -72,13 +84,38 @@ public class SpringSecurityLoginCommand extends AppServerLoginCommand implements
 		SecurityContextHolder.clearContext();
 		return true;
 	}
+	
+	public void start(ServletConfig config) {
+		//Nothing to do
+	}
 
-	public void afterPropertiesSet() throws Exception {
-		
-		LoginManager loginManager = messageBroker.getLoginManager();
+	public void stop() {
+		SecurityContextHolder.clearContext();
+	}
+	
+	public MessageBroker processAfterStartup(MessageBroker broker) {
+		return broker;
+	}
+
+	public MessageBroker processBeforeStartup(MessageBroker broker) {
+		LoginManager loginManager = broker.getLoginManager();
 		loginManager.setLoginCommand(this);
 		loginManager.setPerClientAuthentication(perClientAuthentication);
-		loginManager.start();
-		
+		return broker;
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected String extractPassword(Object credentials)
+    {
+        String password = null;
+        if (credentials instanceof String)
+        {
+            password = (String)credentials;
+        }
+        else if (credentials instanceof Map)
+        {
+            password = (String)((Map)credentials).get(MessageIOConstants.SECURITY_CREDENTIALS);
+        }
+        return password;
+    }
 }

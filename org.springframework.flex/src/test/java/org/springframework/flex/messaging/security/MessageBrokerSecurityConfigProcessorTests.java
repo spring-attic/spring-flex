@@ -24,7 +24,7 @@ import flex.messaging.endpoints.BaseHTTPEndpoint;
 import flex.messaging.endpoints.Endpoint;
 import flex.messaging.endpoints.amf.AMFFilter;
 
-public class MessageBrokerSecurityStartupProcessorTests extends TestCase {
+public class MessageBrokerSecurityConfigProcessorTests extends TestCase {
 
 	MessageBroker broker;
 	@Mock
@@ -37,7 +37,7 @@ public class MessageBrokerSecurityStartupProcessorTests extends TestCase {
 	MethodInterceptor advice2;
 	EndpointServiceMessagePointcutAdvisor advisor1;
 	EndpointServiceMessagePointcutAdvisor advisor2;
-	MessageBrokerSecurityStartupProcessor processor;
+	MessageBrokerSecurityConfigProcessor processor;
 
 	@SuppressWarnings("unchecked")
 	public void setUp() {
@@ -65,7 +65,7 @@ public class MessageBrokerSecurityStartupProcessorTests extends TestCase {
 		List<EndpointSecurityAdvisor> advisors = new ArrayList<EndpointSecurityAdvisor>();
 		advisors.add(advisor1);
 		advisors.add(advisor2);
-		processor = new MessageBrokerSecurityStartupProcessor(advisors);
+		processor = new MessageBrokerSecurityConfigProcessor(advisors);
 
 		MessageBroker processedBroker = (MessageBroker) processor
 				.processAfterStartup(broker);

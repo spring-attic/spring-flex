@@ -20,6 +20,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.flex.messaging.config.FlexConfigurationManager;
+import org.springframework.flex.messaging.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.context.ServletContextAware;
@@ -81,7 +82,7 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 
 	private ServletContext servletContext;
 
-	private Set<MessageBrokerStartupProcessor> startupProcessors = new HashSet<MessageBrokerStartupProcessor>();
+	private Set<MessageBrokerConfigProcessor> configProcessors = new HashSet<MessageBrokerConfigProcessor>();
 
 	/**
 	 * Return the singleton MessageBroker.
@@ -95,8 +96,8 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 				: MessageBroker.class);
 	}
 	
-	public Set<MessageBrokerStartupProcessor> getStartupProcessors() {
-		return startupProcessors;
+	public Set<MessageBrokerConfigProcessor> getConfigProcessors() {
+		return configProcessors;
 	}
 
 	public boolean isSingleton() {
@@ -128,8 +129,8 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 		this.servletContext = servletContext;		
 	}
 
-	public void setStartupProcessors(Set<MessageBrokerStartupProcessor> startupProcessors) {
-		this.startupProcessors = startupProcessors;
+	public void setConfigProcessors(Set<MessageBrokerConfigProcessor> startupProcessors) {
+		this.configProcessors = startupProcessors;
 	}
 
 	public void afterPropertiesSet() throws Exception {
@@ -206,14 +207,14 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 	}
 
 	private MessageBroker processAfterStart(MessageBroker broker) {
-		for(MessageBrokerStartupProcessor processor : startupProcessors) {
+		for(MessageBrokerConfigProcessor processor : configProcessors) {
 			broker = processor.processAfterStartup(broker);
 		}
 		return broker;
 	}
 
 	private MessageBroker processBeforeStart(MessageBroker broker) {
-		for(MessageBrokerStartupProcessor processor : startupProcessors) {
+		for(MessageBrokerConfigProcessor processor : configProcessors) {
 			broker = processor.processBeforeStartup(broker);
 		}
 		return broker;

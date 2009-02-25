@@ -19,20 +19,20 @@
 	
 	<!-- Bootstraps and exposes the BlazeDS MessageBroker -->
 	<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean">
-		<property name="startupProcessors">
+		<property name="configProcessors">
 			<set>
-				<ref bean="securityStartupProcessor"/>
+				<ref bean="loginCommand"/>
+				<ref bean="securityConfigProcessor"/>
 			</set>
 		</property>
 	</bean>
 	
 	<!-- Installs Spring Security support -->
-	<bean class="org.springframework.flex.messaging.security.SpringSecurityLoginCommand">
-		<constructor-arg ref="mySpringManagedMessageBroker"/>
+	<bean id="loginCommand" class="org.springframework.flex.messaging.security.SpringSecurityLoginCommand">
 		<constructor-arg ref="_authenticationManager"/>
 	</bean>	
 	
-	<bean id="securityStartupProcessor" class="org.springframework.flex.messaging.security.MessageBrokerSecurityStartupProcessor">
+	<bean id="securityConfigProcessor" class="org.springframework.flex.messaging.security.MessageBrokerSecurityConfigProcessor">
 		<constructor-arg>
 			<list>
 				<ref bean="exceptionTranslator"/>
@@ -90,6 +90,7 @@
 	<bean id="pingRemote" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
 		<property name="messageBroker" ref="mySpringManagedMessageBroker"/>
 		<property name="service" ref="pingService"/>
+		<property name="excludeMethods"></property>
 	</bean>
     
 </beans>

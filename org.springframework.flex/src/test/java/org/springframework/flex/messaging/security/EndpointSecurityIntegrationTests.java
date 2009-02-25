@@ -77,7 +77,7 @@ public class EndpointSecurityIntegrationTests extends
 			advisors.add(new EndpointServiceMessagePointcutAdvisor(translator));
 			advisors.add(new EndpointServiceMessagePointcutAdvisor(interceptor));
 			
-			MessageBrokerSecurityStartupProcessor processor = new MessageBrokerSecurityStartupProcessor(advisors);
+			MessageBrokerSecurityConfigProcessor processor = new MessageBrokerSecurityConfigProcessor(advisors);
 			
 			addStartupProcessor(processor);
 		//}

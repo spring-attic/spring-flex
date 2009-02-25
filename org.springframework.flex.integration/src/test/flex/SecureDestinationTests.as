@@ -45,141 +45,96 @@ package {
 			responseChecker = new ResponseChecker();
   		}
   		
-//  		public function testSpringManagedSecureChannel_NotAuthenticated():void {
-//  			
-//  			protectedPingService.destination = "pingRemote";
-//  			
-//  			protectedPingService.ping.addEventListener("result", function(event:ResultEvent):void {	
-//  				responseChecker.result(event);
-//  			});
-//  			
-//  			protectedPingService.addEventListener("fault", function(event:FaultEvent):void {
-//  				responseChecker.expected = true;
-//           		responseChecker.result(event);
-//        	});
-//  			
-//  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
-//        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
-//        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
-//        		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
-//        		assertEquals("The fault code was incorrect", "Channel.Authentication.Error",FaultEvent(responseChecker.resultEvent).fault.faultCode);
-//        	},5000));
-//  			
-//  			protectedPingService.ping();
-//  		}
-  		
-//  		public function testBlazeManagedSecureChannel_NotAuthenticated():void {
-//			
-//			blazeService.destination = "blazeManagedPingService";
-//			
-//			blazeService.ping.addEventListener("result", function(event:ResultEvent):void {	
-//  				responseChecker.result(event);
-//  			});
-//  			
-//  			blazeService.addEventListener("fault", function(event:FaultEvent):void {
-//  				responseChecker.expected = true;
-//           		responseChecker.result(event);
-//        	});
-//  			
-//  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
-//        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
-//        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
-//        		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
-//        		assertEquals("The fault code was incorrect", "Channel.Authentication.Error",FaultEvent(responseChecker.resultEvent).fault.faultCode);
-//        	},5000));
-//			
-//			blazeService.ping();
-//  		}
-  		
-//  		public function testSpringManagedSecureChannel_LoginInvalidCredentials():void {
-//  			assertFalse(protectedCs.authenticated);
-//  			var token:AsyncToken = protectedCs.login("bogus_user","bogus_password");
-//  			token.addResponder(
-//  				new AsyncResponder(
-//  					function(result:ResultEvent, token:Object = null):void{
-//  						responseChecker.result(result);
-//  					},
-//  					function(result:FaultEvent, token:Object = null):void{
-//  						responseChecker.expected = true;
-//  						responseChecker.result(result);
-//  					}
-//  				)
-//  			);
-//  			
-//  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
-//        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
-//        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
-//        		Alert.show(FaultEvent(responseChecker.resultEvent).toString());
-//        		assertEquals("The fault code was incorrect", "Channel.Authentication.Error",FaultEvent(responseChecker.resultEvent).fault.faultCode);
-//        	},5000));
-//  		}
-  		
-  		public function testBlazeManagedSecureChannel_LoginInvalidCredentials():void {
-  			assertFalse(blazeProtectedCs.authenticated); 
+  		public function testSpringManagedSecureChannel_NotAuthenticated():void {
   			
-  			blazeProtectedCs.addEventListener("channelFault", function(event:Event):void{
-  				responseChecker.expected = true;
+  			protectedPingService.destination = "pingRemote";
+  			
+  			protectedPingService.ping.addEventListener("result", function(event:ResultEvent):void {	
   				responseChecker.result(event);
   			});
   			
+  			protectedPingService.addEventListener("fault", function(event:FaultEvent):void {
+  				responseChecker.expected = true;
+           		responseChecker.result(event);
+        	});
+  			
   			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
-        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent.toString(),responseChecker.expected);
-        		//assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
-        		Alert.show(responseChecker.resultEvent.toString());
-        		assertEquals("The fault code was incorrect", "Channel.Authentication.Error",FaultEvent(responseChecker.resultEvent).fault.faultCode);
+        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
+        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
+        		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
+        		assertEquals("The fault code was incorrect", "Client.Authentication",FaultEvent(responseChecker.resultEvent).fault.faultCode);
         	},5000));
   			
-  			blazeProtectedCs.channels[0].setCredentials("bogus_user:bogus_password");
-  			blazeProtectedCs.channels[0].connect(blazeProtectedCs);
-  			
+  			protectedPingService.ping();
   		}
   		
-//  		public function testBlazeManagedSecureChannel_LoginLogoutValidCredentials():void {
-//  			assertFalse("Client already authenticated",blazeProtectedCs.authenticated);
-//  			
-//  			blazeProtectedCs.addEventListener("result", 
-//  				function(result:ResultEvent, token:Object = null):void{
-//					responseChecker.expected = true;
-//					responseChecker.result(result);
-//				}
-//  			);
-//  			
-//  			blazeProtectedCs.addEventListener("fault",
-//  				function(result:FaultEvent, token:Object = null):void{
-//					responseChecker.result(result);
-//				}
-//  			);
-//  			
-//  			var token:AsyncToken = blazeProtectedCs.login("jeremy","atlanta");
-//  			token.addResponder(
-//  				new AsyncResponder(
-//  					function(result:ResultEvent, token:Object = null):void{
-//  						responseChecker.expected = true;
-//  						responseChecker.result(result);
-//  					},
-//  					function(result:FaultEvent, token:Object = null):void{
-//  						result.preventDefault();
-//  					}
-//  				)
-//  			);
-//  			
-//  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
-//        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
-//        		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
-//        		Alert.show(ResultEvent(responseChecker.resultEvent).toString());
-//        		//assertEquals("The fault code was incorrect", "Channel.Authentication.Error",FaultEvent(responseChecker.resultEvent).fault.faultCode);
-//     
-//        	},5000)); 			
-//  			
-//			responseChecker.addEventListener("finalResultReceived",addAsync(function(event:Event):void{ 
-//				assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
-//        		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
-//        		Alert.show(ResultEvent(responseChecker.resultEvent).toString());
-//        		token = blazeProtectedCs.logout();
-//	    		//assertEquals("The fault code was incorrect", "Channel.Authentication.Error",FaultEvent(responseChecker.resultEvent).fault.faultCode);
-//			},5000));
-//  			
-//  		}
+  		public function testSpringManagedSecureChannel_LoginInvalidCredentials():void {
+  			assertFalse(protectedCs.authenticated);
+  			var token:AsyncToken = protectedCs.login("bogus_user","bogus_password");
+  			token.addResponder(
+  				new AsyncResponder(
+  					function(result:ResultEvent, token:Object = null):void{
+  						responseChecker.result(result);
+  					},
+  					function(result:FaultEvent, token:Object = null):void{
+  						responseChecker.expected = true;
+  						responseChecker.result(result);
+  					}
+  				)
+  			);
+  			
+  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
+        		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
+        		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
+        		assertEquals("The fault code was incorrect", "Client.Authentication",FaultEvent(responseChecker.resultEvent).fault.faultCode);
+        		assertEquals("The fault detail was incorrect", "Bad credentials", FaultEvent(responseChecker.resultEvent).fault.faultString);
+        	},5000));
+  		}
+  		
+  		public function testSpringManagedSecureChannel_LoginLogoutValidCredentials():void {
+  			assertFalse("Client already authenticated",protectedCs.authenticated);
+  			
+  			var token:AsyncToken = protectedCs.login("jeremy","atlanta");
+  			token.addResponder(
+  				new AsyncResponder(
+  					function(result:ResultEvent, token:Object = null):void{
+  						responseChecker.expected = true;
+  						responseChecker.result(result);
+  					},
+  					function(result:FaultEvent, token:Object = null):void{
+  						responseChecker.result(result);
+  					}
+  				)
+  			);
+  			
+  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
+        		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
+        		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
+        		assertEquals("ResultEvent does not indicate success", "success", ResultEvent(responseChecker.resultEvent).result);
+        		assertTrue("Login was not successful", protectedCs.authenticated);
+        		token = protectedCs.logout();
+        		token.addResponder(
+          			new AsyncResponder(
+          				function(result:ResultEvent, token:Object = null):void{
+          					responseChecker.result(result);
+          				},
+          				function(result:FaultEvent, token:Object = null):void{
+          					responseChecker.result(result);
+          				}
+          			)
+          		);
+        	},5000)); 			
+  			
+			responseChecker.addEventListener("resultReceived2",addAsync(function(event:Event):void{ 
+        		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
+        		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
+        		assertEquals("ResultEvent does not indicate success", "success", ResultEvent(responseChecker.resultEvent).result);
+        		assertFalse("Not logged out",protectedCs.authenticated);
+			},5000));
+  			
+  		}
   	
 	}	
 }
@@ -198,7 +153,7 @@ class ResponseChecker extends EventDispatcher {
 		if(count == 1) {
 			dispatchEvent(new Event("resultReceived"));
 		} else {
-			dispatchEvent(new Event("finalResultReceived"));
+			dispatchEvent(new Event("resultReceived"+count));
 		}
 	}
 }

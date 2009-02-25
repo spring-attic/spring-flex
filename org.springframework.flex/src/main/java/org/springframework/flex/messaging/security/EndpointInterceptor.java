@@ -33,7 +33,7 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
 
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		Message message = (Message) mi.getArguments()[0];
-		if (isLoginCommand(message)) {
+		if (isPassThroughCommand(message)) {
 			return mi.proceed();
 		} else {
 			Object result = null;
@@ -49,9 +49,11 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
 		}
 	}
 
-	private boolean isLoginCommand(Message message) {
+	private boolean isPassThroughCommand(Message message) {
 		if (message instanceof CommandMessage) {
-			return (((CommandMessage)message).getOperation() == CommandMessage.LOGIN_OPERATION);
+			CommandMessage command = (CommandMessage) message;
+			return (command.getOperation() == CommandMessage.CLIENT_PING_OPERATION ||
+					command.getOperation() == CommandMessage.LOGIN_OPERATION);
 		}
 		return false;
 	}
