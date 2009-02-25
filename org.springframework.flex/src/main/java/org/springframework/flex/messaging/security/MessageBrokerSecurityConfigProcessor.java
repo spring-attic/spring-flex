@@ -14,19 +14,24 @@ import org.springframework.util.ReflectionUtils;
 import flex.messaging.MessageBroker;
 import flex.messaging.endpoints.amf.AMFFilter;
 
-public class MessageBrokerSecurityConfigProcessor implements MessageBrokerConfigProcessor, BeanClassLoaderAware {
+public class MessageBrokerSecurityConfigProcessor implements
+		MessageBrokerConfigProcessor, BeanClassLoaderAware {
 
 	private EndpointSecurityAdvisor[] advisors;
 	private ClassLoader proxyClassLoader = ClassUtils.getDefaultClassLoader();
-	
-	public MessageBrokerSecurityConfigProcessor(List<EndpointSecurityAdvisor> advisors) {
-		Assert.notEmpty(advisors, "A non-empty list of EndpointServiceMessagePointcutAdvisors is required");
-		this.advisors = advisors.toArray(new EndpointSecurityAdvisor[advisors.size()]);
+
+	public MessageBrokerSecurityConfigProcessor(
+			List<EndpointSecurityAdvisor> advisors) {
+		Assert
+				.notEmpty(advisors,
+						"A non-empty list of EndpointServiceMessagePointcutAdvisors is required");
+		this.advisors = advisors.toArray(new EndpointSecurityAdvisor[advisors
+				.size()]);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public MessageBroker processAfterStartup(MessageBroker broker) {
-		Iterator i = broker.getEndpoints().keySet().iterator(); 
+		Iterator i = broker.getEndpoints().keySet().iterator();
 		while (i.hasNext()) {
 			String key = (String) i.next();
 			Object endpoint = broker.getEndpoints().get(key);
@@ -38,33 +43,41 @@ public class MessageBrokerSecurityConfigProcessor implements MessageBrokerConfig
 			Object proxy = factory.getProxy(proxyClassLoader);
 			fixFilterChain(endpoint, proxy);
 			broker.getEndpoints().put(key, proxy);
-		}	
+		}
 		return broker;
 	}
 
 	private void fixFilterChain(Object endpoint, Object proxy) {
-		Field filterChainField = ReflectionUtils.findField(endpoint.getClass(), "filterChain");
+		// This is a nasty workaround, required because the advised Endpoint
+		// passes a reference to itself to some of the filters in the chain.
+		// It would be nice if the endpoints actually exposed their filter chain for
+		// easier modification.
+		Field filterChainField = ReflectionUtils.findField(endpoint.getClass(),
+				"filterChain");
 		if (filterChainField != null) {
-			Assert.isAssignable(AMFFilter.class, filterChainField.getType(), "filterChain field is expected to be of type AMFFilter");
+			Assert.isAssignable(AMFFilter.class, filterChainField.getType(),
+					"filterChain field is expected to be of type AMFFilter");
 			ReflectionUtils.makeAccessible(filterChainField);
-			AMFFilter filter = (AMFFilter) ReflectionUtils.getField(filterChainField, endpoint);
-			while(filter != null) {
-				Field endpointField = ReflectionUtils.findField(filter.getClass(), "endpoint");
+			AMFFilter filter = (AMFFilter) ReflectionUtils.getField(
+					filterChainField, endpoint);
+			while (filter != null) {
+				Field endpointField = ReflectionUtils.findField(filter
+						.getClass(), "endpoint");
 				if (endpointField != null) {
 					ReflectionUtils.makeAccessible(endpointField);
 					ReflectionUtils.setField(endpointField, filter, proxy);
 				}
 				filter = filter.getNext();
 			}
-			
+
 		}
 	}
 
-	public MessageBroker processBeforeStartup(MessageBroker broker) {	
+	public MessageBroker processBeforeStartup(MessageBroker broker) {
 		return broker;
 	}
 
 	public void setBeanClassLoader(ClassLoader classLoader) {
-		proxyClassLoader = classLoader;		
+		proxyClassLoader = classLoader;
 	}
 }
