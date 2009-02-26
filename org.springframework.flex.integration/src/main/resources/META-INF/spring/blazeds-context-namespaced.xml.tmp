@@ -13,22 +13,19 @@
 	    	<secure-endpoint channel="my-secure-amf" access="ROLE_USER, ROLE_ADMIN"/>
 	    	<secure-endpoint pattern="**/messagebroker/*" access="ROLE_ANONYMOUS"/>
 		</security>
+		<remoting-adapter class="foo.bar.CustomAdapter"/>
     </messageBroker>
 
-	<remoting>
-    	<remote-service ref="ping" service-id="pingRemote" exclude-methods="foo, bar" include-methods="baz"/>
-		<remote-service ref="productService" channels="my-amf, my-secure-amf"/>
-    </remoting>
+    <remote-service ref="ping" service-id="pingRemote" exclude-methods="foo, bar" include-methods="baz"/>
+	<remote-service ref="productService" channels="my-amf, my-secure-amf"/>
 
     <!-- minimal version -->
     <messageBroker>
     	<security/>
     </messageBroker>
 
-    <remoting>
-    	<remote-service ref="ping"/>
-		<remote-service ref="productService"/>
-    </remoting>
+	<remote-service ref="ping"/>
+	<remote-service ref="productService"/>
 
 </beans:beans>
 
