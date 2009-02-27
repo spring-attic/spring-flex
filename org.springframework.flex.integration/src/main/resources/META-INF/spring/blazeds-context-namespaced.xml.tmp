@@ -5,7 +5,7 @@
               http://www.springframework.org/schema/security http://www.springframework.org/schema/flex/spring-flex-1.0.0.xsd"> 
     
     <!-- expanded version -->
-    <messageBroker id="customId" configuration-manager="someCustomBean" services-config-path="/WEB-INF/flex/services-config.xml">
+    <message-broker id="customId" configuration-manager="someCustomBean" services-config-path="/WEB-INF/flex/services-config.xml" disable-default-mapping="false">
     	<config-processor ref="myCustomConfigProcessorBean"/>
     	<mapping pattern="/*"/>
     	<secured auth-manager="_authenticationManager" access-decision-manager="_accessManager" 
@@ -14,7 +14,7 @@
 	    	<secured-endpoint pattern="**/messagebroker/*" access="ROLE_ANONYMOUS"/>
 		</secured>
 		<remoting-adapter class="foo.bar.CustomAdapter"/>
-    </messageBroker>
+    </message-broker>
 
     <remote-service ref="ping" service-id="pingRemote" exclude-methods="foo, bar" include-methods="baz"/>
 	<remote-service ref="productService" channels="my-amf, my-secure-amf"/>

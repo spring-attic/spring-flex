@@ -7,7 +7,71 @@
 	elementFormDefault="qualified" attributeFormDefault="unqualified"
 	version="1.0">
 	
+	<xsd:annotation>
+		<xsd:documentation>
+			<![CDATA[
+Spring BlazeDS Integration Configuration Schema
+Authors: Jeremy Grelle
+<br>
+A XML-based DSL for configuring Spring BlazeDS Integration.
+]]>
+		</xsd:documentation>
+	</xsd:annotation>
+	
 	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" />
 	
-	
+	<xsd:element name="message-broker">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[
+TODO
+]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:choice minOccurs="0" maxOccurs="unbounded">
+						<xsd:element name="mapping" type="xsd:string">
+						
+						</xsd:element>
+						<xsd:element name="config-processor">
+						
+						</xsd:element>
+						<xsd:element name="secured">
+						
+						</xsd:element>
+					</xsd:choice>
+					<xsd:attribute name="services-config-path" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+TODO								
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="configuration-manager" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+TODO								
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="disable-default-mapping" type="xsd:boolean">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+TODO								
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+		
+	</xsd:element>
 </xsd:schema>
