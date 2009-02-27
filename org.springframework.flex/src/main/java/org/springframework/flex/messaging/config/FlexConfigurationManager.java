@@ -39,7 +39,9 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 
 	private ConfigurationParser parser = null;
 	
-	public FlexConfigurationManager() {}
+	public FlexConfigurationManager() {
+		this.configurationPath = DEFAULT_CONFIG_PATH;
+	}
 
 	public FlexConfigurationManager(ResourceLoader resourceLoader, String configurationPath) {
 		this.resourceLoader = resourceLoader;
@@ -118,7 +120,7 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 			try {
 				Resource resource = resourceLoader.getResource(path);
 				if (resource.exists()) {
-					pushConfigurationFile(path);
+					pushConfigurationFile(resource.getURL().toString());
 					if (log.isInfoEnabled()) {
 						log.info("Loading Flex services configuration from: "+resource.toString());
 					}
