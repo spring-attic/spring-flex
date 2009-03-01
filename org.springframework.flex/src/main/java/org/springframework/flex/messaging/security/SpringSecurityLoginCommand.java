@@ -36,6 +36,8 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
 	private AuthenticationManager authManager;
 	
 	private boolean invalidateFlexSession = true;
+	
+	private boolean perClientAuthentication = false;
 
 	public void setInvalidateFlexSession(boolean invalidateFlexSession) {
 		this.invalidateFlexSession = invalidateFlexSession;
@@ -44,9 +46,19 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
 	public void setPerClientAuthentication(boolean perClientAuthentication) {
 		this.perClientAuthentication = perClientAuthentication;
 	}
-
-	private boolean perClientAuthentication = false;
 	
+	public AuthenticationManager getAuthManager() {
+		return authManager;
+	}
+
+	public boolean isInvalidateFlexSession() {
+		return invalidateFlexSession;
+	}
+
+	public boolean isPerClientAuthentication() {
+		return perClientAuthentication;
+	}
+
 	public SpringSecurityLoginCommand(AuthenticationManager authManager) {
 		Assert.notNull(authManager, "AuthenticationManager is required.");
 		this.authManager = authManager;

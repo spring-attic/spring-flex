@@ -37,6 +37,7 @@
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.remoting" rev="3.2.0.3978" conf="compile->runtime"/>
 
 		<!-- Optional runtime dependencies -->
+		<dependency org="org.springframework" name="org.springframework.transaction" rev="2.5.6.A" conf="optional->runtime" />
 		<dependency org="org.springframework.security" name="org.springframework.security" rev="2.0.4.A" conf="optional->runtime" />
 		<dependency org="net.sourceforge.cglib" name="com.springsource.net.sf.cglib" rev="2.1.3" conf="optional->runtime"/>
 		

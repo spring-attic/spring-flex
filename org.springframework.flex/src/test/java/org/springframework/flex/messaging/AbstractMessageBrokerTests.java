@@ -31,7 +31,7 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
 		mbfb = new MessageBrokerFactoryBean();
 		mbfb.setServletContext(context.getServletContext());
 		mbfb.setResourceLoader(context);
-		mbfb.setBeanName("testMessageBroker");
+		mbfb.setBeanName(super.getName()+"MessageBroker");
 		mbfb.setBeanClassLoader(context.getClassLoader());
 		mbfb.setServicesConfigPath("classpath:org/springframework/flex/messaging/services-config.xml");
 		mbfb.setConfigProcessors(startupProcessors);

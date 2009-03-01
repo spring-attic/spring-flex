@@ -31,7 +31,7 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 	
 	private static final Log log = LogFactory.getLog(FlexConfigurationManager.class);
 
-	private static final String DEFAULT_CONFIG_PATH = "/WEB-INF/flex/services-config.xml";
+	static final String DEFAULT_CONFIG_PATH = "/WEB-INF/flex/services-config.xml";
 	
 	private ResourceLoader resourceLoader;
 

@@ -1,7 +1,10 @@
 package org.springframework.flex.messaging.security;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import org.springframework.security.ConfigAttributeDefinition;
@@ -52,6 +55,15 @@ public class EndpointDefinitionSource extends DefaultFilterInvocationDefinitionS
 		}
         return attributes;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Collection getConfigAttributeDefinitions() {
+		Collection pathDefinitions = super.getConfigAttributeDefinitions();
+		LinkedHashSet allDefinitions = new LinkedHashSet();
+		allDefinitions.addAll(endpointMap.values());
+		allDefinitions.addAll(pathDefinitions);
+        return Collections.unmodifiableCollection(allDefinitions);
+    }
 
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class clazz) {

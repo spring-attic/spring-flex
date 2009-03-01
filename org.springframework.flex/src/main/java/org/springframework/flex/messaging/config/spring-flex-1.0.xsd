@@ -31,18 +31,38 @@ TODO
 		<xsd:complexType>
 			<xsd:complexContent>
 				<xsd:extension base="beans:identifiedType">
-					<xsd:choice minOccurs="0" maxOccurs="unbounded">
-						<xsd:element name="mapping" type="xsd:string">
-						
+					<xsd:sequence minOccurs="0" maxOccurs="1">
+						<xsd:choice minOccurs="0" maxOccurs="unbounded">
+							<xsd:element name="mapping" type="mappingType">
+								<xsd:annotation>
+									<xsd:documentation>
+										<![CDATA[
+TODO
+]]>
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="config-processor" type="configProcessorType">
+								<xsd:annotation>
+									<xsd:documentation>
+										<![CDATA[
+TODO
+]]>
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:choice>
+						<xsd:element name="secured" minOccurs="0" maxOccurs="1" type="securedType">
+							<xsd:annotation>
+								<xsd:documentation>
+									<![CDATA[
+TODO
+]]>
+								</xsd:documentation>
+							</xsd:annotation>
 						</xsd:element>
-						<xsd:element name="config-processor">
-						
-						</xsd:element>
-						<xsd:element name="secured">
-						
-						</xsd:element>
-					</xsd:choice>
-					<xsd:attribute name="services-config-path" type="xsd:string">
+					</xsd:sequence>
+					<xsd:attribute name="services-config-path" type="xsd:string" default="/WEB-INF/flex/services-config.xml">
 						<xsd:annotation>
 							<xsd:documentation>
 								<![CDATA[
@@ -60,7 +80,7 @@ TODO
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
-					<xsd:attribute name="disable-default-mapping" type="xsd:boolean">
+					<xsd:attribute name="disable-default-mapping" type="xsd:boolean" default="false">
 						<xsd:annotation>
 							<xsd:documentation>
 								<![CDATA[
@@ -72,6 +92,192 @@ TODO
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
-		
 	</xsd:element>
+	
+	<xsd:element name="remote-service">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[
+TODO
+]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="ref" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+TODO								
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="message-broker" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+TODO								
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="service-id" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+TODO								
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="channels" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+TODO								
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="include-methods" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+TODO								
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="exclude-methods" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+TODO								
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="mappingType">
+		<xsd:attribute name="pattern" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="configProcessorType">
+		<xsd:attribute name="ref" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="securedType">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="secured-channel" type="securedChannelType">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+	TODO								
+	]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="secured-endpoint-path" type="securedEndpointPathType">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+	TODO								
+	]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:choice>
+		<xsd:attribute name="authentication-manager" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="access-decision-manager" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="per-client-authentication" type="xsd:boolean" default="false">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="invalidate-flex-session" type="xsd:boolean" default="true">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="securedChannelType">
+		<xsd:attribute name="channel" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="access" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="securedEndpointPathType">
+		<xsd:attribute name="pattern" type="xsd:string" use="optional" default="**/messagebroker/*">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="access" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
 </xsd:schema>

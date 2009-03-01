@@ -64,23 +64,21 @@ public class EndpointSecurityIntegrationTests extends
 
 	private void initializeInterceptors() throws Exception {
 		setDirty();
-		//if (!AopUtils.isAopProxy(getMessageBroker().getEndpoint("my-amf"))) {
-			
-			SecurityExceptionTranslationAdvice translator = new SecurityExceptionTranslationAdvice();
+	
+		SecurityExceptionTranslationAdvice translator = new SecurityExceptionTranslationAdvice();
 
-			EndpointInterceptor interceptor = new EndpointInterceptor();
-			interceptor.setAuthenticationManager(mgr);
-			interceptor.setAccessDecisionManager(adm);
-			interceptor.setObjectDefinitionSource(source);
+		EndpointInterceptor interceptor = new EndpointInterceptor();
+		interceptor.setAuthenticationManager(mgr);
+		interceptor.setAccessDecisionManager(adm);
+		interceptor.setObjectDefinitionSource(source);
 
-			List<EndpointSecurityAdvisor> advisors = new ArrayList<EndpointSecurityAdvisor>();
-			advisors.add(new EndpointServiceMessagePointcutAdvisor(translator));
-			advisors.add(new EndpointServiceMessagePointcutAdvisor(interceptor));
-			
-			MessageBrokerSecurityConfigProcessor processor = new MessageBrokerSecurityConfigProcessor(advisors);
-			
-			addStartupProcessor(processor);
-		//}
+		List<EndpointSecurityAdvisor> advisors = new ArrayList<EndpointSecurityAdvisor>();
+		advisors.add(new EndpointServiceMessagePointcutAdvisor(translator));
+		advisors.add(new EndpointServiceMessagePointcutAdvisor(interceptor));
+		
+		MessageBrokerSecurityConfigProcessor processor = new MessageBrokerSecurityConfigProcessor(advisors);
+		
+		addStartupProcessor(processor);
 	}
 
 	@SuppressWarnings("unchecked")
