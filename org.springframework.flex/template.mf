@@ -11,7 +11,6 @@ Import-Template:
  edu.emory.mathcs.backport.java.util.concurrent;version="[2.2.0, 3.0.0)",
  flex.management;version="[3.2.0, 4.0.0)",
  flex.messaging.*;version="[3.2.0, 4.0.0)",
- org.aopalliance.*;version="[1.0.0, 1.0.0]",
- org.w3c.dom.*;version="[0.0.0, infinity)"
- 
- 
+ org.aopalliance.*;version="[1.0.0, 1.0.0]"
+Unversioned-Imports: 
+ org.w3c.dom

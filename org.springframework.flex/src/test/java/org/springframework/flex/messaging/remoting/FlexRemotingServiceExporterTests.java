@@ -20,6 +20,9 @@ public class FlexRemotingServiceExporterTests extends AbstractMessageBrokerTests
 	Object testService = new StubService();
 
 	public void setUp() throws Exception {
+		if (getCurrentConfigPath() != getServicesConfigPath()){
+			setDirty();
+		}		
 		configureExporter();
 	}
 
@@ -137,7 +140,7 @@ public class FlexRemotingServiceExporterTests extends AbstractMessageBrokerTests
 		RemotingService remotingService = getRemotingService();
 		
 		String[] channelIds = new String[]{"my-secure-amf"};
-		exporter.setChannelIds(channelIds);
+		exporter.setChannels(channelIds);
 		
 		exporter.afterPropertiesSet();
 		
@@ -149,7 +152,7 @@ public class FlexRemotingServiceExporterTests extends AbstractMessageBrokerTests
 	
 	public void testDestinationConfiguredWithInvalidChannels() throws Exception {
 		String[] channelIds = new String[]{"my-fubar"};
-		exporter.setChannelIds(channelIds);
+		exporter.setChannels(channelIds);
 		
 		try {
 			exporter.afterPropertiesSet();

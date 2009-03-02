@@ -37,6 +37,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String ENDPOINT_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointInterceptor";
 	private static final String SERVICE_MESSAGE_ADVISOR_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor";
 	private static final String ENDPOINT_DEFINITION_SOURCE_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointDefinitionSource";
+	private static final String REMOTING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.remoting.RemotingServiceConfigProcessor";
 		
 	// --------------------------- XML Config Attributes ---------------------//
 	private static final String CONFIGURATION_MANAGER_ATTR = "configuration-manager";
@@ -52,8 +53,6 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String CHANNEL_ATTR = "channel";
 
 	// --------------------------- Bean Configuration Properties -------------//
-	private static final String CONFIGURATION_MANAGER_PROPERTY = "configurationManager";
-	private static final String SERVICES_CONFIG_PATH_PROPERTY = "servicesConfigPath";
 	private static final String URL_MAP_PROPERTY = "urlMap";
 	private static final String CONFIG_PROCESSORS_PROPERTY = "configProcessors";
 	private static final String PER_CLIENT_AUTHENTICATION_PROPERTY = "perClientAuthentication";
@@ -68,11 +67,13 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String SECURED_ELEMENT = "secured";
 	private static final String SECURED_CHANNEL_ELEMENT = "secured-channel";
 	private static final String SECURED_ENDPOINT_PATH_ELEMENT = "secured-endpoint-path";
+	private static final String REMOTING_SERVICE_ELEMENT = "remoting-service";
 	
 	// --------------------------- Infrastructure Bean IDs -------------------//
 	private static final String HANDLER_MAPPING_SUFFIX = "DefaultHandlerMapping";
 	private static final String LOGIN_COMMAND_SUFFIX = "LoginCommand";
 	private static final String SECURITY_PROCESSOR_SUFFIX = "SecurityProcessor";
+	private static final String REMOTING_PROCESSOR_SUFFIX = "RemotingProcessor";
 	
 	// --------------------------- Default Values ----------------------------//
 	private static final Object DEFAULT_MAPPING_PATH = "/*";
@@ -101,18 +102,9 @@ public class MessageBrokerBeanDefinitionParser extends
 
 		validateMessageBroker(element, parserContext);
 
-		String servicesConfigPath = element
-				.getAttribute(SERVICES_CONFIG_PATH_ATTR);
-		if (StringUtils.hasText(servicesConfigPath)) {
-			builder.addPropertyValue(SERVICES_CONFIG_PATH_PROPERTY,
-					servicesConfigPath);
-		}
-
-		String configMgr = element.getAttribute(CONFIGURATION_MANAGER_ATTR);
-		if (StringUtils.hasText(configMgr)) {
-			builder.addPropertyReference(CONFIGURATION_MANAGER_PROPERTY,
-					configMgr);
-		}
+		ParsingUtils.mapOptionalAttributes(element, builder, SERVICES_CONFIG_PATH_ATTR);
+		
+		ParsingUtils.mapOptionalBeanRefAttributes(element, builder, CONFIGURATION_MANAGER_ATTR);
 
 		registerHandlerAdapterIfNecessary(element, parserContext);
 		
@@ -120,8 +112,10 @@ public class MessageBrokerBeanDefinitionParser extends
 			registerHandlerMappings(element, parserContext, DomUtils.getChildElementsByTagName(element, MAPPING_PATTERN_ELEMENT));
 		}
 		
-		registerConfigProcessors(parserContext, configProcessors, DomUtils.getChildElementsByTagName(element, CONFIG_PROCESSOR_ELEMENT));
-	
+		registerCustomConfigProcessors(parserContext, configProcessors, DomUtils.getChildElementsByTagName(element, CONFIG_PROCESSOR_ELEMENT));
+		
+		configureRemotingService(element, parserContext, configProcessors, DomUtils.getChildElementByTagName(element, REMOTING_SERVICE_ELEMENT));
+		
 		configureSecurity(element, parserContext, configProcessors, DomUtils.getChildElementByTagName(element, SECURED_ELEMENT));
 		
 		if (!configProcessors.isEmpty()) {
@@ -131,6 +125,23 @@ public class MessageBrokerBeanDefinitionParser extends
 		parserContext.popAndRegisterContainingComponent();
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void configureRemotingService(Element parent,
+			ParserContext parserContext, ManagedSet configProcessors,
+			Element remotingServiceElement) {
+		Element source = remotingServiceElement != null ? remotingServiceElement : parent; 
+		BeanDefinitionBuilder remotingProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(REMOTING_PROCESSOR_CLASS_NAME);
+		
+		if (remotingServiceElement != null) {
+			ParsingUtils.mapAllAttributes(remotingServiceElement, remotingProcessorBuilder);
+		}
+		
+		String brokerId = parent.getAttribute(ID_ATTRIBUTE);
+		
+		registerInfrastructureComponent(source, parserContext, remotingProcessorBuilder, brokerId+REMOTING_PROCESSOR_SUFFIX);
+		configProcessors.add(new RuntimeBeanReference(brokerId+REMOTING_PROCESSOR_SUFFIX));
+	}
+
 	@SuppressWarnings("unchecked")
 	private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet configProcessors, Element securedElement) {
 		
@@ -165,7 +176,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	}
 
 	@SuppressWarnings("unchecked")
-	private void registerConfigProcessors(ParserContext parserContext, Set configProcessors, List configProcessorElements) {
+	private void registerCustomConfigProcessors(ParserContext parserContext, Set configProcessors, List configProcessorElements) {
 		if (!CollectionUtils.isEmpty(configProcessorElements)) {
 			Iterator i = configProcessorElements.iterator();
 			while(i.hasNext()) {

@@ -19,7 +19,7 @@ class WebInfResourceLoader implements ResourceLoader {
 	public Resource getResource(String location) {
 		if (location.startsWith("/WEB-INF/flex/"))
 		{
-			location = location.replace("/WEB-INF/flex/", "classpath:org/springframework/flex/messaging/");
+			location = location.replace("/WEB-INF/flex/", "classpath:org/springframework/flex/messaging/config/");
 		}
 		return context.getResource(location);
 	}

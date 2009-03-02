@@ -25,7 +25,7 @@ abstract class RemoteServiceExporterBeanDefinitionFactory {
 	protected static final String MESSAGE_BROKER_PROPERTY = "messageBroker";
 	protected static final String SERVICE_PROPERTY = "service";
 	protected static final String SERVICE_ID_PROPERTY = "serviceId";
-	protected static final String CHANNELS_PROPERTY = "channelIds";
+	protected static final String CHANNELS_PROPERTY = "channels";
 	protected static final String INCLUDE_METHODS_PROPERTY = "includeMethods";
 	protected static final String EXCLUDE_METHODS_PROPERTY = "excludeMethods";
 	
@@ -37,9 +37,6 @@ abstract class RemoteServiceExporterBeanDefinitionFactory {
 		
 		String serviceId = element.getAttribute(SERVICE_ID_ATTR);
 		String brokerId = element.getAttribute(MESSAGE_BROKER_ATTR);
-		String channels = element.getAttribute(CHANNELS_ATTR);
-		String includeMethods = element.getAttribute(INCLUDE_METHODS_ATTR);
-		String excludeMethods = element.getAttribute(EXCLUDE_METHODS_ATTR);
 		
 		builder.addPropertyReference(SERVICE_PROPERTY, exportedBeanReference);
 
@@ -48,18 +45,8 @@ abstract class RemoteServiceExporterBeanDefinitionFactory {
 		
 		brokerId = StringUtils.hasText(brokerId) ? brokerId : BeanIds.MESSAGE_BROKER; 
 		builder.addPropertyReference(MESSAGE_BROKER_PROPERTY, brokerId);
-		
-		if (StringUtils.hasText(channels)) {
-			builder.addPropertyValue(CHANNELS_PROPERTY, channels);
-		}
-		
-		if (StringUtils.hasText(includeMethods)) {
-			builder.addPropertyValue(INCLUDE_METHODS_PROPERTY, includeMethods);
-		}
-		
-		if (StringUtils.hasText(excludeMethods)) {
-			builder.addPropertyValue(EXCLUDE_METHODS_PROPERTY, excludeMethods);
-		}
+
+		ParsingUtils.mapOptionalAttributes(element, builder, CHANNELS_ATTR, INCLUDE_METHODS_ATTR, EXCLUDE_METHODS_ATTR);
 		
 		String beanName = registerInfrastructureComponent(element, parserContext, builder);
 		

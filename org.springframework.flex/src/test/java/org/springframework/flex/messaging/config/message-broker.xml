@@ -40,6 +40,11 @@
 		<flex:secured per-client-authentication="true" invalidate-flex-session="false"/>
 	</flex:message-broker>
 	
+	<flex:message-broker id="customRemotingService">
+		<flex:remoting-service default-adapter-class="org.springframework.flex.messaging.config.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter" 
+			default-adapter-id="my-default-adapter" default-channels="my-amf, my-secure-amf"/>
+	</flex:message-broker>
+	
 	<flex:message-broker id="endpointSecured">
 		<flex:secured>
 			<flex:secured-channel access="ROLE_USER" channel="my-amf"/>

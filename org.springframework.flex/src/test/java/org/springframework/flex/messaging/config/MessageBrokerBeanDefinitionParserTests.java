@@ -1,7 +1,9 @@
 package org.springframework.flex.messaging.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 
@@ -19,6 +21,8 @@ import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import flex.messaging.MessageBroker;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.security.LoginCommand;
+import flex.messaging.services.RemotingService;
+import flex.messaging.services.remoting.adapters.JavaAdapter;
 
 public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexNamespaceTests {
 	
@@ -28,6 +32,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexNamespac
 		broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
 		assertNotNull("MessageBroker bean not found for default ID", broker);
 		assertTrue("MessageBroker should be started",broker.isStarted());
+		assertNotNull("MessageBroker should have a RemotingService", broker.getServiceByType(RemotingService.class.getName()));
 		assertNotNull("MessageBrokerHandlerAdapter not found", getApplicationContext().getBean(BeanIds.MESSAGE_BROKER_HANDLER_ADAPTER, MessageBrokerHandlerAdapter.class));
 		SimpleUrlHandlerMapping defaultMapping = (SimpleUrlHandlerMapping) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER+"DefaultHandlerMapping", SimpleUrlHandlerMapping.class);
 		assertTrue("Default mapping not correct", defaultMapping.getUrlMap().containsKey("/*"));
@@ -126,6 +131,23 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexNamespac
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void testMessageBroker_CustomRemotingService() {
+		broker = (MessageBroker) getApplicationContext().getBean("customRemotingService", MessageBroker.class);
+		assertNotNull("MessageBroker bean not found for custom id", broker);
+		RemotingService remotingService = (RemotingService) broker.getServiceByType(RemotingService.class.getName());
+		assertNotNull("RemotingService not found", remotingService);
+		String defaultAdapterId = remotingService.getDefaultAdapter();
+		assertEquals("Default adapter id not set on RemotingService", "my-default-adapter", defaultAdapterId);
+		assertEquals("Default adapter class not found", 
+				"org.springframework.flex.messaging.config.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter", 
+				remotingService.getRegisteredAdapters().get(defaultAdapterId));
+		List expectedChannels = new ArrayList();
+		expectedChannels.add("my-amf");
+		expectedChannels.add("my-secure-amf");
+		assertEquals("Default channels not set", expectedChannels, remotingService.getDefaultChannels());
+	}
+	
 	public static final class TestConfigurationManager extends FlexConfigurationManager{
 		
 		protected boolean invoked = false;
@@ -152,6 +174,10 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexNamespac
 			beforeProcessed = true;
 			return broker;
 		}
+		
+	}
+	
+	public static final class TestJavaAdapter extends JavaAdapter {
 		
 	}
 }

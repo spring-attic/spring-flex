@@ -75,7 +75,7 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 		this.serviceId = serviceId;
 	}
 
-	public void setChannelIds(String[] channels) {
+	public void setChannels(String[] channels) {
 		this.channels = StringUtils.trimArrayElements(channels);
 	}
 	

@@ -17,6 +17,7 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
 	private StaticWebApplicationContext context = new StaticWebApplicationContext();
 	private MessageBrokerFactoryBean mbfb;
 	private Set<MessageBrokerConfigProcessor> startupProcessors = new LinkedHashSet<MessageBrokerConfigProcessor>();
+	private String currentConfigPath;
 
 	protected final MessageBroker getMessageBroker() throws Exception {
 		if (FlexContext.getMessageBroker() != null) {
@@ -33,7 +34,8 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
 		mbfb.setResourceLoader(context);
 		mbfb.setBeanName(super.getName()+"MessageBroker");
 		mbfb.setBeanClassLoader(context.getClassLoader());
-		mbfb.setServicesConfigPath(getServicesConfigPath());
+		currentConfigPath = getServicesConfigPath();
+		mbfb.setServicesConfigPath(currentConfigPath);
 		mbfb.setConfigProcessors(startupProcessors);
 		mbfb.afterPropertiesSet();
 		
@@ -42,6 +44,10 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
 	
 	protected String getServicesConfigPath() {
 		return "classpath:org/springframework/flex/messaging/services-config.xml";
+	}
+	
+	protected String getCurrentConfigPath() {
+		return currentConfigPath;
 	}
 	
 	protected final void setDirty() {

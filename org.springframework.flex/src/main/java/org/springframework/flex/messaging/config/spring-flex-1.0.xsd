@@ -52,6 +52,15 @@ TODO
 								</xsd:annotation>
 							</xsd:element>
 						</xsd:choice>
+						<xsd:element name="remoting-service" minOccurs="0" maxOccurs="1" type="remotingServiceType">
+							<xsd:annotation>
+								<xsd:documentation>
+									<![CDATA[
+TODO
+]]>
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
 						<xsd:element name="secured" minOccurs="0" maxOccurs="1" type="securedType">
 							<xsd:annotation>
 								<xsd:documentation>
@@ -271,6 +280,35 @@ TODO
 			</xsd:annotation>
 		</xsd:attribute>
 		<xsd:attribute name="access" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="remotingServiceType">
+		<xsd:attribute name="default-adapter-id" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="default-adapter-class" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+TODO								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="default-channels" type="xsd:string">
 			<xsd:annotation>
 				<xsd:documentation>
 					<![CDATA[

@@ -10,6 +10,7 @@ import org.springframework.flex.messaging.config.MessageBrokerConfigProcessor;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.endpoints.AMFEndpoint;
@@ -38,7 +39,7 @@ public class RemotingServiceConfigProcessor implements
 	}
 
 	public void setDefaultChannels(String[] defaultChannels) {
-		this.defaultChannels = defaultChannels;
+		this.defaultChannels = StringUtils.trimArrayElements(defaultChannels);
 	}
 
 	public MessageBroker processAfterStartup(MessageBroker broker) {
