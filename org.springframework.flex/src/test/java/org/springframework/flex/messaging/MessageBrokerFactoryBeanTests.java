@@ -6,8 +6,8 @@ import flex.messaging.services.RemotingService;
 
 public class MessageBrokerFactoryBeanTests extends AbstractMessageBrokerTests {
 
-	public void testInitialization() throws Exception {
-		
+	public void testBrokerInitialization() throws Exception {
+	
 		MessageBroker broker = getMessageBroker();
 		
 		assertNotNull("MessageBroker was not created.", broker);

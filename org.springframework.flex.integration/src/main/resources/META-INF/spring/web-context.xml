@@ -1,107 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:flex="http://www.springframework.org/schema/flex"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/flex 
+           http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
 
-	<!-- Maps request paths at /* to the BlazeDS MessageBroker -->
-	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-	    <property name="mappings">
-	        <value>
-	            /*=mySpringManagedMessageBroker
-	        </value>
-	    </property>
-	</bean>
+	<flex:message-broker>
+		<flex:secured>
+			<flex:secured-channel access="ROLE_USER" channel="my-protected-by-id-amf"/>	
+			<flex:secured-endpoint-path access="ROLE_USER" pattern="**/protected/messagebroker/**"/>		
+		</flex:secured>
+	</flex:message-broker>	
 	
-	<!-- Dispatches requests mapped to a MessageBroker -->
-	<bean class="org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter"/>
-	
-	<!-- Bootstraps and exposes the BlazeDS MessageBroker -->
-	<bean id="mySpringManagedMessageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean">
-		<property name="configProcessors">
-			<set>
-				<ref bean="loginCommand"/>
-				<ref bean="securityConfigProcessor"/>
-			</set>
-		</property>
-	</bean>
-	
-	<!-- Installs Spring Security support -->
-	<bean id="loginCommand" class="org.springframework.flex.messaging.security.SpringSecurityLoginCommand">
-		<constructor-arg ref="_authenticationManager"/>
-	</bean>	
-	
-	<bean id="securityConfigProcessor" class="org.springframework.flex.messaging.security.MessageBrokerSecurityConfigProcessor">
-		<constructor-arg>
-			<list>
-				<ref bean="exceptionTranslator"/>
-				<ref bean="endpointInterceptor"/>
-			</list>
-		</constructor-arg>
-	</bean>
-	
-	<bean id="endpointInterceptor" class="org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor">
-		<constructor-arg>
-			<bean class="org.springframework.flex.messaging.security.EndpointInterceptor">
-				<property name="accessDecisionManager" ref="_accessManager"/>
-				<property name="authenticationManager" ref="_authenticationManager"/>
-				<property name="objectDefinitionSource">
-					<bean class="org.springframework.flex.messaging.security.EndpointDefinitionSource">
-						<constructor-arg>
-							<bean class="org.springframework.security.util.AntUrlPathMatcher"/>
-						</constructor-arg>
-						<constructor-arg>
-							<map>
-								<entry> 
-									<key>
-										<bean class="org.springframework.security.intercept.web.RequestKey">
-											<constructor-arg value="**/protected/messagebroker/**"/>
-										</bean>
-									</key>
-									<value type="org.springframework.security.ConfigAttributeDefinition">ROLE_USER</value>					
-								</entry>
-							</map>
-						</constructor-arg>
-						<constructor-arg>
-							<map>
-								<entry> 
-									<key>
-										<value>my-protected-by-id-amf</value>
-									</key>
-									<value type="org.springframework.security.ConfigAttributeDefinition">ROLE_USER</value>					
-								</entry>
-							</map>
-						</constructor-arg>
-					</bean>
-				</property>
-			</bean>
-		</constructor-arg>
-	</bean>
-	
-	<bean id="editorConfig" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-	  <property name="customEditors">
-	    <map>
-	      <entry key="org.springframework.security.ConfigAttributeDefinition">
-	        <bean class="org.springframework.security.ConfigAttributeEditor"/>
-	      </entry>
-	    </map>
-	  </property>
-	</bean>
-	
-	<bean id="exceptionTranslator" class="org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor">
-		<constructor-arg>
-			<bean class="org.springframework.flex.messaging.security.SecurityExceptionTranslationAdvice"/>
-		</constructor-arg>
-	</bean>
-	
-	<bean id="pingService" class="org.springframework.flex.integration.service.PingService" />
-	
-	<bean id="pingRemote" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
-		<property name="messageBroker" ref="mySpringManagedMessageBroker"/>
-		<property name="service" ref="pingService"/>
-		<property name="channelIds" value="my-amf, my-protected-amf, my-protected-by-id-amf"/>
-		<property name="excludeMethods" value="foo"/>
+	<bean id="pingService" class="org.springframework.flex.integration.service.PingService">
+		<flex:remote-service channels="my-amf, my-protected-amf, my-protected-by-id-amf" exclude-methods="foo"/>
 	</bean>
     
 </beans>

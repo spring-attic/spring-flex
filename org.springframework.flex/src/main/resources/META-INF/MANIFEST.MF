@@ -1,25 +1,7 @@
 Manifest-Version: 1.0
-Export-Package: org.springframework.flex.messaging;version="1.0.0.BUIL
- D-20090223151531";uses:="flex.messaging,flex.messaging.config,javax.s
- ervlet,org.springframework.core.io",org.springframework.flex.messagin
- g.config;version="1.0.0.BUILD-20090223151531";uses:="flex.messaging.c
- onfig,javax.servlet,org.apache.commons.logging,org.springframework.co
- re.io",org.springframework.flex.messaging.remoting;version="1.0.0.BUI
- LD-20090223151531";uses:="flex.messaging,flex.messaging.config",org.s
- pringframework.flex.messaging.security;version="1.0.0.BUILD-200902231
- 51531";uses:="flex.messaging,org.aopalliance.aop,org.aopalliance.inte
- rcept,org.springframework.security,org.springframework.security.inter
- cept,org.springframework.security.util",org.springframework.flex.mess
- aging.servlet;version="1.0.0.BUILD-20090223151531";uses:="javax.servl
- et,javax.servlet.http,org.springframework.web.servlet"
-Bundle-Vendor: SpringSource
-Ant-Version: Apache Ant 1.7.0
-Implementation-Title: org.springframework.flex
-Implementation-Version: 1.0.0.BUILD-20090223151531
-Bundle-Version: 1.0.0.M2
 Bundle-Name: Spring BlazeDS Integration
-Bundle-ManifestVersion: 2
 Created-By: 1.6.0_07-b06-57 (Apple Inc.)
+Ant-Version: Apache Ant 1.7.0
 Import-Package: edu.emory.mathcs.backport.java.util.concurrent;version
  ="[2.2.0, 3.0.0)",flex.management;version="[3.2.0, 4.0.0)",flex.messa
  ging;version="[3.2.0, 4.0.0)",flex.messaging.client;version="[3.2.0, 
@@ -35,18 +17,43 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent;version
  commons.logging;version="[1.1.1, 2.0.0)",org.springframework.aop;vers
  ion="[2.5.6.A, 3.0.0)",org.springframework.aop.framework;version="[2.
  5.6.A, 3.0.0)",org.springframework.aop.support;version="[2.5.6.A, 3.0
- .0)",org.springframework.beans.factory;version="[2.5.6.A, 3.0.0)",org
- .springframework.beans.factory.xml;version="[2.5.6.A, 3.0.0)",org.spr
- ingframework.context;version="[2.5.6.A, 3.0.0)",org.springframework.c
- ore;version="[2.5.6.A, 3.0.0)",org.springframework.core.io;version="[
- 2.5.6.A, 3.0.0)",org.springframework.security;version="[2.0.4.A,3.0.0
- )",org.springframework.security.context;version="[2.0.4.A,3.0.0)",org
- .springframework.security.intercept;version="[2.0.4.A,3.0.0)",org.spr
- ingframework.security.intercept.web;version="[2.0.4.A,3.0.0)",org.spr
- ingframework.security.providers;version="[2.0.4.A,3.0.0)",org.springf
- ramework.security.util;version="[2.0.4.A,3.0.0)",org.springframework.
- util;version="[2.5.6.A, 3.0.0)",org.springframework.web.context;versi
- on="[2.5.6.A, 3.0.0)",org.springframework.web.servlet;version="[2.5.6
- .A, 3.0.0)"
+ .0)",org.springframework.beans;version="[2.5.6.A, 3.0.0)",org.springf
+ ramework.beans.factory;version="[2.5.6.A, 3.0.0)",org.springframework
+ .beans.factory.config;version="[2.5.6.A, 3.0.0)",org.springframework.
+ beans.factory.parsing;version="[2.5.6.A, 3.0.0)",org.springframework.
+ beans.factory.support;version="[2.5.6.A, 3.0.0)",org.springframework.
+ beans.factory.xml;version="[2.5.6.A, 3.0.0)",org.springframework.cont
+ ext;version="[2.5.6.A, 3.0.0)",org.springframework.core;version="[2.5
+ .6.A, 3.0.0)",org.springframework.core.io;version="[2.5.6.A, 3.0.0)",
+ org.springframework.security;version="[2.0.4.A,3.0.0)",org.springfram
+ ework.security.context;version="[2.0.4.A,3.0.0)",org.springframework.
+ security.intercept;version="[2.0.4.A,3.0.0)",org.springframework.secu
+ rity.intercept.web;version="[2.0.4.A,3.0.0)",org.springframework.secu
+ rity.providers;version="[2.0.4.A,3.0.0)",org.springframework.security
+ .util;version="[2.0.4.A,3.0.0)",org.springframework.util;version="[2.
+ 5.6.A, 3.0.0)",org.springframework.util.xml;version="[2.5.6.A, 3.0.0)
+ ",org.springframework.web.context;version="[2.5.6.A, 3.0.0)",org.spri
+ ngframework.web.servlet;version="[2.5.6.A, 3.0.0)",org.w3c.dom
+Bundle-ManifestVersion: 2
+Bundle-Vendor: SpringSource
 Bundle-SymbolicName: org.springframework.flex
+Implementation-Title: org.springframework.flex
+Export-Package: org.springframework.flex.messaging;version="1.0.0.BUIL
+ D-20090301203726";uses:="flex.messaging.config,javax.servlet,org.spri
+ ngframework.core.io",org.springframework.flex.messaging.config;versio
+ n="1.0.0.BUILD-20090301203726";uses:="flex.messaging,flex.messaging.c
+ onfig,javax.servlet,org.apache.commons.logging,org.springframework.be
+ ans.factory.config,org.springframework.beans.factory.support,org.spri
+ ngframework.beans.factory.xml,org.springframework.core.io,org.w3c.dom
+ ",org.springframework.flex.messaging.remoting;version="1.0.0.BUILD-20
+ 090301203726";uses:="flex.messaging,flex.messaging.config,org.springf
+ ramework.beans,org.springframework.beans.factory",org.springframework
+ .flex.messaging.security;version="1.0.0.BUILD-20090301203726";uses:="
+ flex.messaging,javax.servlet,org.aopalliance.aop,org.aopalliance.inte
+ rcept,org.springframework.security,org.springframework.security.inter
+ cept,org.springframework.security.util",org.springframework.flex.mess
+ aging.servlet;version="1.0.0.BUILD-20090301203726";uses:="javax.servl
+ et,javax.servlet.http,org.springframework.web.servlet"
+Bundle-Version: 1.0.0.M2
+Implementation-Version: 1.0.0.M2
 

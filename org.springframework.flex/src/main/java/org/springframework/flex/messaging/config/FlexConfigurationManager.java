@@ -108,7 +108,7 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 
 	private static class ResourceResolverAdapter implements ConfigurationFileResolver {
 
-		private Stack<String> configurationPathStack = new Stack<String>();
+		private Stack<Resource> configurationPathStack = new Stack<Resource>();
 
 		private final ResourceLoader resourceLoader;
 
@@ -120,11 +120,11 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 			try {
 				Resource resource = resourceLoader.getResource(path);
 				if (resource.exists()) {
-					pushConfigurationFile(resource.getURL().toString());
+					pushConfigurationFile(resource);
 					if (log.isInfoEnabled()) {
 						log.info("Loading Flex services configuration from: "+resource.toString());
 					}
-					return resourceLoader.getResource(path).getInputStream();
+					return resource.getInputStream();
 				} else {
 					throw new IllegalStateException("Flex configuration file does not exist at path: "+path);
 				}
@@ -135,21 +135,21 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 		}
 
 		public InputStream getIncludedFile(String relativePath) {
-			String path = configurationPathStack.peek() + "/" + relativePath;
+			Resource parent = configurationPathStack.peek();
 			try {
-				Resource resource = resourceLoader.getResource(path);
+				Resource resource = parent.createRelative(relativePath);
 				if (resource.exists()) {
-					pushConfigurationFile(path);
+					pushConfigurationFile(resource);
 					if (log.isInfoEnabled()) {
 						log.info("Including Flex services configuration from: "+resource.toString());
 					}
-					return resourceLoader.getResource(path).getInputStream();
+					return resource.getInputStream();
 				} else {
-					throw new IllegalStateException("Included Flex configuration file does not exist at path: "+path);
+					throw new IllegalStateException("Included Flex configuration file does not exist at relative path: "+relativePath);
 				}
 				
 			} catch (IOException e) {
-				throw new IllegalStateException("Included Flex configuration file could not be loaded from path: "+path);
+				throw new IllegalStateException("Included Flex configuration file could not be loaded from path: "+relativePath);
 			}
 		}
 
@@ -157,9 +157,8 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 			configurationPathStack.pop();
 		}
 
-		private void pushConfigurationFile(String path) {
-			String topLevelPath = path.substring(0, path.lastIndexOf("/"));
-			configurationPathStack.push(topLevelPath);
+		private void pushConfigurationFile(Resource configFile) {
+			configurationPathStack.push(configFile);
 		}
 	}
 }

@@ -31,7 +31,7 @@ package {
   	
   		public function testPingService():void {
  
-  			pingService.destination = "pingRemote";
+  			pingService.destination = "pingService";
   			
   			pingService.ping.addEventListener("result", function(event:ResultEvent):void {	
   				responseChecker.expected=true;
@@ -53,7 +53,7 @@ package {
   		
   		public function testPingService_UnknownDestination():void {
   			
-  			pingService.destination = "pingService";
+  			pingService.destination = "pingFoo";
   			
   			
   			pingService.ping.addEventListener("result", function(event:ResultEvent):void {	

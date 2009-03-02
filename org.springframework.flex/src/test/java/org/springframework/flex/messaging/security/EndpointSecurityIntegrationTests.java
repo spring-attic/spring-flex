@@ -93,10 +93,6 @@ public class EndpointSecurityIntegrationTests extends
 						.isAopProxy(endpoint));
 			assertTrue("Endpoint should be started", ((Endpoint) endpoint)
 					.isStarted());
-			if (endpoint instanceof AMFEndpoint) {
-				AMFEndpoint amfEndpoint = (AMFEndpoint) endpoint;
-				System.out.println(amfEndpoint);
-			}
 		}
 	}
 
