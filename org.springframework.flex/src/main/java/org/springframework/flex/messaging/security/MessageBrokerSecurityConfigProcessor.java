@@ -14,6 +14,14 @@ import org.springframework.util.ReflectionUtils;
 import flex.messaging.MessageBroker;
 import flex.messaging.endpoints.amf.AMFFilter;
 
+/**
+ * Processor that applies security advice to configured BlazeDS endpoints by wrapping them in Spring AOP proxies.
+ *  
+ * <p>
+ * This processor will be automatically configured through the <code>secured</code> xml configuration namespace tag.
+ * 
+ * @author Jeremy Grelle
+ */
 public class MessageBrokerSecurityConfigProcessor implements
 		MessageBrokerConfigProcessor, BeanClassLoaderAware {
 

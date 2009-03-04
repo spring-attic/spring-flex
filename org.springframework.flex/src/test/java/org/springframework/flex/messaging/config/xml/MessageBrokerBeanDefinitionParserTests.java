@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.config;
+package org.springframework.flex.messaging.config.xml;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +12,9 @@ import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.flex.messaging.config.FlexConfigurationManager;
+import org.springframework.flex.messaging.config.MessageBrokerConfigProcessor;
+import org.springframework.flex.messaging.config.xml.BeanIds;
 import org.springframework.flex.messaging.security.EndpointInterceptor;
 import org.springframework.flex.messaging.security.SecurityExceptionTranslationAdvice;
 import org.springframework.flex.messaging.security.SpringSecurityLoginCommand;
@@ -56,7 +59,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexNamespac
 	
 	public void testMessageBroker_InvalidConfig() {
 		try {
-			new ClassPathXmlApplicationContext("org/springframework/flex/messaging/config/invalid-message-broker.xml");
+			new ClassPathXmlApplicationContext("org/springframework/flex/messaging/config/xml/invalid-message-broker.xml");
 			fail("Invalid message-broker config was not caught");
 		} catch (BeanDefinitionParsingException ex) {
 			//Expected
@@ -140,7 +143,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexNamespac
 		String defaultAdapterId = remotingService.getDefaultAdapter();
 		assertEquals("Default adapter id not set on RemotingService", "my-default-adapter", defaultAdapterId);
 		assertEquals("Default adapter class not found", 
-				"org.springframework.flex.messaging.config.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter", 
+				"org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter", 
 				remotingService.getRegisteredAdapters().get(defaultAdapterId));
 		List expectedChannels = new ArrayList();
 		expectedChannels.add("my-amf");

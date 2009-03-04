@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.config;
+package org.springframework.flex.messaging.config.xml;
 
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSimpleBeanDefinitionParser;
@@ -13,9 +13,7 @@ import org.w3c.dom.Element;
  * <p>
  * The convention used is to transform hyphenated attributes of the form foo-bar-baz to camel-case properties.
  *  
- * 
  * @author Jeremy Grelle
- *
  */
 abstract class ParsingUtils {
 	

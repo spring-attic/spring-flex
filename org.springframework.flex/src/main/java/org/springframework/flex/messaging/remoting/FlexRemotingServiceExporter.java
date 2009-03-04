@@ -30,8 +30,9 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  * The exported service will be exposed to the Flex client as a BlazeDS remoting
  * service destination. By default, the service id of the destination will be
  * the same as the bean name of this exporter. This may be overridden using the
- * serviceId property.
- * </p>
+ * serviceId property.  <i>Note that this convention is slightly different from
+ * that employed by the <code>remote-service</code> xml config tag.  See the xsd
+ * docs for details.</i>
  * 
  * <p>
  * The methods on the exported service that are exposed to the Flex client can

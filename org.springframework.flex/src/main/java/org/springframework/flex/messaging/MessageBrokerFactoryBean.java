@@ -47,7 +47,21 @@ import flex.messaging.config.MessagingConfiguration;
  * servicesConfigPath property. Spring's {@link ResourceLoader} abstraction is
  * used to load the config resources, so the location may be specified using
  * ant-style paths.
- * </p>
+ * 
+ * <p>
+ * The initialization of the MessageBroker logically consists of two phases:
+ * <ol>
+ *   <li>	
+ *   	Parsing the BlazeDS XML configuration files and applying their settings to a newly
+ *   	created MessageBroker
+ *   </li>
+ *   <li>
+ *   	Starting the MessageBroker and its services
+ *   </li>
+ * </ol>
+ * Further custom configuration of the MessageBroker can be achieved through registering
+ * custom {@link MessageBrokerConfigProcessor} instances with this FactoryBean via the 
+ * <code>configProcessors</code> property.
  * 
  * <p>
  * Http-based messages should be routed to the MessageBroker using the
@@ -56,6 +70,7 @@ import flex.messaging.config.MessagingConfiguration;
  * </p>
  * 
  * @see MessageBrokerHandlerAdapter
+ * @see MessageBrokerConfigProcessor
  * 
  * @author Jeremy Grelle
  */

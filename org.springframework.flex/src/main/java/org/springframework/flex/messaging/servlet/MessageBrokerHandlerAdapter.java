@@ -21,7 +21,12 @@ import flex.messaging.endpoints.Endpoint;
  * {@link HandlerAdapter} for routing HTTP messages to a Spring-managed
  * {@link MessageBroker}.
  * 
- * @see MessageBroker, {@link HandlerMapping}
+ * <p>
+ * This class is automatically registered with the application context when using the <code>message-broker</code> tag
+ * in the xml configuration namespace.
+ * 
+ * @see MessageBroker
+ * @see HandlerMapping
  * 
  * @author Jeremy Grelle
  */

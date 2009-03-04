@@ -1,10 +1,11 @@
-package org.springframework.flex.messaging.config;
+package org.springframework.flex.messaging.config.xml;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
 import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.flex.messaging.config.xml.BeanIds;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -56,7 +57,7 @@ public class RemoteServiceBeanDefinitionParserTests extends AbstractFlexNamespac
 	
 	public void testInvalidConfig() {
 		try {
-			new ClassPathXmlApplicationContext("org/springframework/flex/messaging/config/invalid-remote-service.xml");
+			new ClassPathXmlApplicationContext("org/springframework/flex/messaging/config/xml/invalid-remote-service.xml");
 			fail("Invalid message-broker config was not caught");
 		} catch (BeanDefinitionParsingException ex) {
 			//Expected

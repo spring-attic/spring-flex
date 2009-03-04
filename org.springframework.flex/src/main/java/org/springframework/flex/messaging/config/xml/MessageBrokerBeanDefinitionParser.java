@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.config;
+package org.springframework.flex.messaging.config.xml;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +16,7 @@ import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.flex.messaging.config.FlexConfigurationManager;
 import org.springframework.security.ConfigAttributeDefinition;
 import org.springframework.security.intercept.web.RequestKey;
 import org.springframework.security.util.AntUrlPathMatcher;
@@ -24,6 +25,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+/**
+ * Configures a Spring-managed MessageBroker
+ * 
+ * @author Jeremy Grelle
+ *
+ */
 public class MessageBrokerBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
 
@@ -68,12 +75,6 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String SECURED_CHANNEL_ELEMENT = "secured-channel";
 	private static final String SECURED_ENDPOINT_PATH_ELEMENT = "secured-endpoint-path";
 	private static final String REMOTING_SERVICE_ELEMENT = "remoting-service";
-	
-	// --------------------------- Infrastructure Bean IDs -------------------//
-	private static final String HANDLER_MAPPING_SUFFIX = "DefaultHandlerMapping";
-	private static final String LOGIN_COMMAND_SUFFIX = "LoginCommand";
-	private static final String SECURITY_PROCESSOR_SUFFIX = "SecurityProcessor";
-	private static final String REMOTING_PROCESSOR_SUFFIX = "RemotingProcessor";
 	
 	// --------------------------- Default Values ----------------------------//
 	private static final Object DEFAULT_MAPPING_PATH = "/*";
@@ -138,8 +139,8 @@ public class MessageBrokerBeanDefinitionParser extends
 		
 		String brokerId = parent.getAttribute(ID_ATTRIBUTE);
 		
-		registerInfrastructureComponent(source, parserContext, remotingProcessorBuilder, brokerId+REMOTING_PROCESSOR_SUFFIX);
-		configProcessors.add(new RuntimeBeanReference(brokerId+REMOTING_PROCESSOR_SUFFIX));
+		registerInfrastructureComponent(source, parserContext, remotingProcessorBuilder, brokerId+BeanIds.REMOTING_PROCESSOR_SUFFIX);
+		configProcessors.add(new RuntimeBeanReference(brokerId+BeanIds.REMOTING_PROCESSOR_SUFFIX));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -171,8 +172,8 @@ public class MessageBrokerBeanDefinitionParser extends
 		registerEndpointInterceptorIfNecessary(securedElement, parserContext, advisors, authManager, accessManager);
 		
 		securityProcessorBuilder.addConstructorArgValue(advisors);
-		registerInfrastructureComponent(securedElement, parserContext, securityProcessorBuilder, brokerId+SECURITY_PROCESSOR_SUFFIX);
-		configProcessors.add(new RuntimeBeanReference(brokerId+SECURITY_PROCESSOR_SUFFIX));
+		registerInfrastructureComponent(securedElement, parserContext, securityProcessorBuilder, brokerId+BeanIds.SECURITY_PROCESSOR_SUFFIX);
+		configProcessors.add(new RuntimeBeanReference(brokerId+BeanIds.SECURITY_PROCESSOR_SUFFIX));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -286,7 +287,7 @@ public class MessageBrokerBeanDefinitionParser extends
 		}
 			
 		handlerMappingBuilder.addPropertyValue(URL_MAP_PROPERTY, mappings);
-		registerInfrastructureComponent(parent, parserContext, handlerMappingBuilder, parent.getAttribute(ID_ATTRIBUTE)+HANDLER_MAPPING_SUFFIX);
+		registerInfrastructureComponent(parent, parserContext, handlerMappingBuilder, parent.getAttribute(ID_ATTRIBUTE)+BeanIds.HANDLER_MAPPING_SUFFIX);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -294,7 +295,7 @@ public class MessageBrokerBeanDefinitionParser extends
 			ParserContext parserContext, ManagedSet configProcessors,
 			Element securedElement, String authManager, boolean perClientAuthentication) {
 		
-		String loginCommandId = brokerId+LOGIN_COMMAND_SUFFIX;
+		String loginCommandId = brokerId+BeanIds.LOGIN_COMMAND_SUFFIX;
 		boolean invalidateFlexSession = Boolean.parseBoolean(securedElement.getAttribute(INVALIDATE_FLEX_SESSION_ATTR));
 		
 		BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder

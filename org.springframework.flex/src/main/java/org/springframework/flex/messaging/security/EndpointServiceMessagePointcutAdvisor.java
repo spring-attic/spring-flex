@@ -8,7 +8,18 @@ import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.Message;
+import flex.messaging.services.Service;
 
+/**
+ * Static method-matching pointcut advisor that applies security advice to invocations of {@link AbstractEndpoint#serviceMessage(Message)}.
+ * 
+ * <p>
+ * This is the critical point where incoming AMF messages have been deserialized and are ready to be routed to a BlazeDS {@link Service}.
+ * Iterception at this point in the deserialization/serialization process is needed to be able to easily send proper AMF error messages back to
+ * the client.
+ * 
+ * @author Jeremy Grelle
+ */
 @SuppressWarnings({ "unchecked", "serial" })
 public class EndpointServiceMessagePointcutAdvisor extends
 		StaticMethodMatcherPointcutAdvisor implements EndpointSecurityAdvisor {

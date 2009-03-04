@@ -23,9 +23,11 @@ import flex.messaging.security.LoginManager;
  * Custom BlazeDS {@link LoginCommand} that uses Spring Security for Authentication and Authorization.
  * 
  * <p>
- * This LoginCommand should be configured as a Spring bean and given a reference to the current {@link AuthenticationManager}.
+ * Should be configured as a Spring bean and given a reference to the current {@link AuthenticationManager}.
  * It must be added to the {@link MessageBrokerFactoryBean}'s list of {@link MessageBrokerConfigProcessor}s.
- * </p>
+ * 
+ * <p>
+ * Will be configured automatically when using the <code>secured</code> tag in the xml config namespace.
  * 
  * @author Jeremy Grelle
  *

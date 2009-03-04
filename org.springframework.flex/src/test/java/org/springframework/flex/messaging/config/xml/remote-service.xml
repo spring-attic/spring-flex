@@ -13,6 +13,6 @@
         <flex:remote-service message-broker="remoteServiceBroker" ref="remoteBean1" service-id="exportedRemoteBean1" 
         	channels="my-amf, my-secure-amf" include-methods="foo, bar" exclude-methods="baz, zoo"/>
         
-        <bean id="remoteBean1" class="org.springframework.flex.messaging.config.RemoteServiceBeanDefinitionParserTests$Bean1"/>
+        <bean id="remoteBean1" class="org.springframework.flex.messaging.config.xml.RemoteServiceBeanDefinitionParserTests$Bean1"/>
                   
 </beans> 

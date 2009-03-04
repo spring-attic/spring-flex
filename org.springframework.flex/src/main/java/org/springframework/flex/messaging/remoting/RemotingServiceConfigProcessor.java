@@ -18,6 +18,20 @@ import flex.messaging.endpoints.Endpoint;
 import flex.messaging.services.RemotingService;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 
+/**
+ * {@link MessageBrokerConfigProcessor} implementation that installs a default RemotingService if one has not already
+ * been configured through the BlazeDS XML configuration.
+ * 
+ * <p>
+ * Using this processor makes the traditional <code>remoting-config.xml</code> file in BlazeDS XML configuration unnecessary
+ * when exclusively using Spring to configure Flex remoting destinations.
+ * 
+ * <p>
+ * This processor is installed automatically when using the <code>message-broker</code> tag in the xml namespace configuration.  Its
+ * settings can be customized using the <code>remoting-service</code> child tag.  See the XSD docs for more detail.
+ * 
+ * @author Jeremy Grelle
+ */
 public class RemotingServiceConfigProcessor implements
 		MessageBrokerConfigProcessor {
 
@@ -26,22 +40,41 @@ public class RemotingServiceConfigProcessor implements
 
 	private static final String DEFAULT_REMOTING_SERVICE_ID = "remoting-service";
 
-	private String defaultAdapterId = "java-adapter";
+	private String defaultAdapterId = "java-object";
 	private String defaultAdapterClass = JavaAdapter.class.getName();
 	private String[] defaultChannels;
 	
+	/**
+	 * Set the id for the default adapter to be installed in the RemotingService.  Defaults to "java-object".
+	 * @param defaultAdapterId the id to set for the adapter
+	 */
 	public void setDefaultAdapterId(String defaultAdapterId) {
 		this.defaultAdapterId = defaultAdapterId;
 	}
 
+	/**
+	 * Set the fully qualified class name for the default adapter class to be installed in the RemotingService.  Defaults
+	 * to "flex.messaging.services.remoting.adapters.JavaAdapter".
+	 * @param defaultAdapterClass the class of the default adapter
+	 */
 	public void setDefaultAdapterClass(String defaultAdapterClass) {
 		this.defaultAdapterClass = defaultAdapterClass;
 	}
 
+	/**
+	 * Set the ids of the default channels to be set on the RemotingService.  If not set, the application-wide defaults will
+	 * be used.  If no application-wide defaults can be found, a best guess will be made using the first available channel
+	 * with an AMFEndpoint.
+	 * @param defaultChannels the ids of the default channels for the RemotingService 
+	 */
 	public void setDefaultChannels(String[] defaultChannels) {
 		this.defaultChannels = StringUtils.trimArrayElements(defaultChannels);
 	}
 
+	/**
+	 * Error checking is done on the started MessageBroker to ensure configuration was successful.
+	 * @see MessageBrokerConfigProcessor#processAfterStartup(MessageBroker)
+	 */
 	public MessageBroker processAfterStartup(MessageBroker broker) {
 		// Eagerly detect possible problems with the RemotingService
 		RemotingService remotingService = (RemotingService) broker
@@ -55,6 +88,11 @@ public class RemotingServiceConfigProcessor implements
 		return broker;
 	}
 
+	/**
+	 * The MessageBroker is checked to see if the RemotingService has already been configured via the BlazeDS XML config.  If no existing
+	 * RemotingService is found, one will be installed using the defined configuration properties of this class.
+	 * @see MessageBrokerConfigProcessor#processBeforeStartup(MessageBroker)
+	 */
 	public MessageBroker processBeforeStartup(MessageBroker broker) {
 		RemotingService remotingService = (RemotingService) broker
 				.getServiceByType(RemotingService.class.getName());
@@ -73,6 +111,12 @@ public class RemotingServiceConfigProcessor implements
 		return broker;
 	}
 	
+	/**
+	 * Adds the default channels to the MessageBroker's RemotingService.  The <code>defaultChannels</code>
+	 * to will be validated to ensure they exist in the MessageBroker before they are set.
+	 * @param broker the newly configured MessageBroker
+	 * @param remotingService the newly created RemotingService
+	 */
 	private void addDefaultChannels(MessageBroker broker, RemotingService remotingService) {
 		List<String> defaultChannelList = new ArrayList<String>();
 		for (String channelId : defaultChannels) {

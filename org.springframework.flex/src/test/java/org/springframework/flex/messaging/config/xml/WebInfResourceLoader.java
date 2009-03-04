@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.config;
+package org.springframework.flex.messaging.config.xml;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -19,7 +19,7 @@ class WebInfResourceLoader implements ResourceLoader {
 	public Resource getResource(String location) {
 		if (location.startsWith("/WEB-INF/flex/"))
 		{
-			location = location.replace("/WEB-INF/flex/", "classpath:org/springframework/flex/messaging/config/");
+			location = location.replace("/WEB-INF/flex/", "classpath:org/springframework/flex/messaging/config/xml/");
 		}
 		return context.getResource(location);
 	}

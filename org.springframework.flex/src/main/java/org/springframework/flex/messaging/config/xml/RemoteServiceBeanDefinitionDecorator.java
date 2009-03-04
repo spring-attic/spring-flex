@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.config;
+package org.springframework.flex.messaging.config.xml;
 
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
@@ -7,6 +7,11 @@ import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+/**
+ * Configures a {@link FlexRemotingServiceExporter} from a nested <code>remote-service</code> tag.     
+ * 
+ * @author Jeremy Grelle
+ */
 public class RemoteServiceBeanDefinitionDecorator extends RemoteServiceExporterBeanDefinitionFactory implements
 		BeanDefinitionDecorator {
 

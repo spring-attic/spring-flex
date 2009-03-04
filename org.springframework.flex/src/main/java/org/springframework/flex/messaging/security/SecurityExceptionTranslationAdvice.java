@@ -7,6 +7,12 @@ import org.springframework.security.SpringSecurityException;
 
 import flex.messaging.security.SecurityException;
 
+/**
+ * Catches SpringSecurityExceptions and translates them to appropriate BlazeDS SecurityExceptions to be
+ * rethrown so that a proper AMF error will be sent back to the client.
+ * 
+ * @author Jeremy Grelle
+ */
 public class SecurityExceptionTranslationAdvice implements ThrowsAdvice {
 	
 	public void afterThrowing(SpringSecurityException ex) {

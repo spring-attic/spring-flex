@@ -10,6 +10,12 @@ import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
 
+/**
+ * Security interceptor that secures messages being passed to BlazeDS endpoints based on the security attributes
+ * configured for the endpoint being invoked.
+ *  
+ * @author Jeremy Grelle
+ */
 @SuppressWarnings("unchecked")
 public class EndpointInterceptor extends AbstractSecurityInterceptor implements MethodInterceptor{
 

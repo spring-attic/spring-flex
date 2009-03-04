@@ -33,7 +33,7 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
 		RemotingService remotingService = (RemotingService) getMessageBroker().getServiceByType(RemotingService.class.getName());
 	
 		assertTrue("The broker's default channel was not assigned to the RemotingService",remotingService.getDefaultChannels().contains("my-default-amf"));
-		assertEquals("The default adapter was not set", "java-adapter", remotingService.getDefaultAdapter());
+		assertEquals("The default adapter was not set", "java-object", remotingService.getDefaultAdapter());
 	}
 	
 	public void testRemotingServiceAddedWithInferredDefaultChannels() throws Exception {
@@ -43,7 +43,7 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
 		
 		RemotingService remotingService = (RemotingService) getMessageBroker().getServiceByType(RemotingService.class.getName());
 		assertTrue("The default channel was not determined",remotingService.getDefaultChannels().contains("my-inferred-default-amf"));
-		assertEquals("The default adapter was not set", "java-adapter", remotingService.getDefaultAdapter());
+		assertEquals("The default adapter was not set", "java-object", remotingService.getDefaultAdapter());
 	}
 	
 	public void testRemotingServiceAddedWithCustomDefaults() throws Exception {

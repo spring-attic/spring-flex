@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.config;
+package org.springframework.flex.messaging.config.xml;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.mock.web.MockServletContext;
@@ -22,8 +22,8 @@ public abstract class AbstractFlexNamespaceTests extends
 
 	@Override
 	protected String[] getConfigLocations() {
-		return new String[] {"classpath:org/springframework/flex/messaging/config/message-broker.xml",
-				"classpath:org/springframework/flex/messaging/config/remote-service.xml",
-				"classpath:org/springframework/flex/messaging/config/remote-service-decorator.xml"};
+		return new String[] {"classpath:org/springframework/flex/messaging/config/xml/message-broker.xml",
+				"classpath:org/springframework/flex/messaging/config/xml/remote-service.xml",
+				"classpath:org/springframework/flex/messaging/config/xml/remote-service-decorator.xml"};
 	}
 }

@@ -18,7 +18,10 @@ import flex.messaging.endpoints.Endpoint;
 
 /**
  * 
- * Implementation of {@link ObjectDefinitionSource} for BlazeDS {@link Endpoint}s.  
+ * Implementation of {@link ObjectDefinitionSource} for BlazeDS {@link Endpoint}s.
+ * 
+ * <p>
+ * This implementation is capable of securing Endpoints both by their channel id, and by their URL pattern.
  * 
  * @author Jeremy Grelle
  */
@@ -27,11 +30,19 @@ public class EndpointDefinitionSource extends DefaultFilterInvocationDefinitionS
 
 	private Map<String, ConfigAttributeDefinition> endpointMap = new HashMap<String, ConfigAttributeDefinition>();
 
+	/**
+	 * @see DefaultFilterInvocationDefinitionSource#DefaultFilterInvocationDefinitionSource(UrlMatcher, LinkedHashMap)
+	 */
 	public EndpointDefinitionSource(UrlMatcher urlMatcher,
 			LinkedHashMap<RequestKey, ConfigAttributeDefinition> requestMap) {
 		super(urlMatcher, requestMap);
 	}
 	
+	/**
+	 * Builds the internal request map from the supplied map, and stores the endpoint map for matching by channel id.  
+	 * @param endpointMap map of <String, ConfigAttributeDefinition>
+	 * @see DefaultFilterInvocationDefinitionSource#DefaultFilterInvocationDefinitionSource(UrlMatcher, LinkedHashMap)
+	 */
 	public EndpointDefinitionSource(UrlMatcher urlMatcher,
 			LinkedHashMap<RequestKey, ConfigAttributeDefinition> requestMap, HashMap<String, ConfigAttributeDefinition> endpointMap) {
 		super(urlMatcher, requestMap);

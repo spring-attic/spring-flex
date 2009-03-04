@@ -1,7 +1,12 @@
-package org.springframework.flex.messaging.config;
+package org.springframework.flex.messaging.config.xml;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
+/**
+ * Registers the bean definition parsers for the "flex" namespace (http://www.springframework.org/schema/flex).
+ *
+ * @author Jeremy Grelle
+ */
 public class FlexNamespaceHandler extends NamespaceHandlerSupport {
 
 	public void init() {

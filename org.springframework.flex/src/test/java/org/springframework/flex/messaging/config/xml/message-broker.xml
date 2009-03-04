@@ -41,7 +41,7 @@
 	</flex:message-broker>
 	
 	<flex:message-broker id="customRemotingService">
-		<flex:remoting-service default-adapter-class="org.springframework.flex.messaging.config.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter" 
+		<flex:remoting-service default-adapter-class="org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter" 
 			default-adapter-id="my-default-adapter" default-channels="my-amf, my-secure-amf"/>
 	</flex:message-broker>
 	
@@ -61,10 +61,10 @@
 		</security:user-service>
 	</security:authentication-provider>
 	
-	<bean id="configManager" class="org.springframework.flex.messaging.config.MessageBrokerBeanDefinitionParserTests$TestConfigurationManager"/>
+	<bean id="configManager" class="org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestConfigurationManager"/>
 	
-	<bean id="processor1" class="org.springframework.flex.messaging.config.MessageBrokerBeanDefinitionParserTests$TestConfigProcessor"/>
+	<bean id="processor1" class="org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestConfigProcessor"/>
 	
-	<bean id="processor2" class="org.springframework.flex.messaging.config.MessageBrokerBeanDefinitionParserTests$TestConfigProcessor"/>
+	<bean id="processor2" class="org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestConfigProcessor"/>
 	
 </beans>
