@@ -64,6 +64,7 @@
     <property name="excludeMethods" value="create, delete"/>
     <property name="channels" value="my-amf, my-secure-amf"/>
 </bean>]]>
+		</programlisting>
     </sect1>
     <sect1 id="remoting-service-config">
     	<title>Configuring the Remoting Service</title>

@@ -169,7 +169,7 @@
 		</para>
 		<programlisting language="xml"><![CDATA[
 <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
-    <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+    <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
     <properties>
         <polling-enabled>false</polling-enabled>
     </properties>

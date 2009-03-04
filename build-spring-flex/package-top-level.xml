@@ -38,6 +38,9 @@
 		<copy todir="${package.output.dir}/projects">
 			<fileset dir="${basedir}/..">
 				<exclude name="**/target/**"/>
+				<exclude name="flex_sdk_3/**"/>
+				<exclude name="publish.properties"/>
+				<exclude name="s3.properties"/>
 				<exclude name="integration-repo/**"/>
 				<exclude name="ivy-cache/repository/org.apache.velocity/org.apache.velocity.docbookframework.dist/**"/>
 				<exclude name="spring-build/lib/docbook/**" />
