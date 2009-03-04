@@ -15,3 +15,25 @@ New Features
 * Use Spring's ResourceLoader abstraction to load BlazeDS xml configuration files
 * Support for exporting Spring beans for Flex remoting
 * Specify included and excluded methods when exporting Spring beans for Flex remoting
+
+Changes in version 1.0.0.M2 (03.04.2009)
+-------------------------------------
+General
+* Updated reference manual to cover the new xml config namespace and security integration
+* Added an xml config schema with complete documentation of all elements and attributes 
+* Added an integration test module (only distributed in source form with the release) that uses FlexUnit
+
+New Features
+* FLEX-8 - Configure RemotingService on demand if none exists (i.e., there is no remoting-config.xml) 
+* FLEX-10 - Add a <flex:> spring configuration namespace to further simplify configuration
+* FLEX-11 - Integration with Spring Security
+* FLEX-23 - Create a Spring Security based BlazeDS LoginCommand
+* FLEX-24 - Provide an automatic SpringSecurityException to BlazeDS SecurityException translation mechanism 
+* FLEX-25 - Add a mechanism for securing BlazeDS Endpoints similar to Spring Security's URL-based security
+
+Enhancements
+* FLEX-15 - Add a channel property to FlexRemotingServiceExporter
+
+Bug Fixes
+* FLEX-19 - FlexConfigurationManager should be configurable as a Spring bean
+* FLEX-21 - FlexConfigurationManager.configurationPath shouldn't require slash (/)
