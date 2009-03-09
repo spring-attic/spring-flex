@@ -12,12 +12,7 @@ package {
   	import flexunit.framework.Assert;
   	import flexunit.framework.TestCase;
   	import mx.controls.Alert;
-  	
-  	import flash.net.URLLoader;
-  	import flash.net.URLRequest;
 
-  	import mx.rpc.http.HTTPService;
-  	
   	public class SecureDestinationTests extends TestCase {
   	
   		private var protectedPingService:RemoteObject = new RemoteObject();
@@ -27,10 +22,6 @@ package {
   		private var protectedByChannelIdPingService:RemoteObject = new RemoteObject();
   	
 		private var protectedByChannelIdCs:ChannelSet = new ChannelSet();
-  	
-  		private var blazeService:RemoteObject = new RemoteObject();
-  	
-		private var blazeProtectedCs:ChannelSet = new ChannelSet();
   	
   		private var responseChecker:ResponseChecker;
   		
@@ -46,17 +37,12 @@ package {
 			
 			protectedByChannelIdPingService.channelSet = protectedByChannelIdCs;
 			
-			blazeProtectedCs.addChannel(new AMFChannel("myAmf", 
-			"http://{server.name}:{server.port}/flex-integration/spring/messagebroker/amf"));
-			
-			blazeService.channelSet = blazeProtectedCs;
-			
 			responseChecker = new ResponseChecker();
   		}
   		
   		public function testSpringManagedSecureChannelUrl_NotAuthenticated():void {
   			
-  			protectedPingService.destination = "pingRemote";
+  			protectedPingService.destination = "pingService";
   			
   			protectedPingService.ping.addEventListener("result", function(event:ResultEvent):void {	
   				responseChecker.result(event);
@@ -79,7 +65,7 @@ package {
   		
   		public function testSpringManagedSecureChannelId_NotAuthenticated():void {
   			
-  			protectedByChannelIdPingService.destination = "pingRemote";
+  			protectedByChannelIdPingService.destination = "pingService";
   			
   			protectedByChannelIdPingService.ping.addEventListener("result", function(event:ResultEvent):void {	
   				responseChecker.result(event);

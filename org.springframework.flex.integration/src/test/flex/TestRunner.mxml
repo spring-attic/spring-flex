@@ -20,6 +20,7 @@
 
   				testSuite.addTestSuite( RemoteServiceTests );
   				testSuite.addTestSuite( SecureDestinationTests );
+  				testSuite.addTestSuite( SecureRemoteObjectTests );
   				return testSuite;
   			}	
 		]]>

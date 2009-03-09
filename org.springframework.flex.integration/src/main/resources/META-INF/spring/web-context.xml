@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:flex="http://www.springframework.org/schema/flex"
+	   xmlns:security="http://www.springframework.org/schema/security"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/flex 
-           http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+           http://www.springframework.org/schema/flex/spring-flex-1.0.xsd
+           http://www.springframework.org/schema/security 
+           http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
 
 	<flex:message-broker>
 		<flex:secured>
@@ -17,6 +20,13 @@
 	
 	<bean id="pingService" class="org.springframework.flex.integration.service.PingService">
 		<flex:remote-service channels="my-amf, my-protected-amf, my-protected-by-id-amf" exclude-methods="foo"/>
+	</bean>
+	
+	<bean id="pingSecureService" class="org.springframework.flex.integration.service.PingService">
+		<flex:remote-service channels="my-amf"/>
+		<security:intercept-methods>
+			<security:protect access="ROLE_ADMIN" method="*"/>
+		</security:intercept-methods>
 	</bean>
     
 </beans>

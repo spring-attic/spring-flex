@@ -16,7 +16,7 @@ import org.springframework.flex.messaging.config.FlexConfigurationManager;
 import org.springframework.flex.messaging.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.messaging.config.xml.BeanIds;
 import org.springframework.flex.messaging.security.EndpointInterceptor;
-import org.springframework.flex.messaging.security.SecurityExceptionTranslationAdvice;
+import org.springframework.flex.messaging.security.ExceptionTranslationAdvice;
 import org.springframework.flex.messaging.security.SpringSecurityLoginCommand;
 import org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
@@ -105,7 +105,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexNamespac
 			assertTrue("Endpoint should be proxied",AopUtils.isAopProxy(endpoint));
 			Advised advisedEndpoint = (Advised) endpoint;
 			Advisor a = advisedEndpoint.getAdvisors()[0];
-			assertTrue("Exception translation advice was not applied",a.getAdvice() instanceof SecurityExceptionTranslationAdvice);
+			assertTrue("Exception translation advice was not applied",a.getAdvice() instanceof ExceptionTranslationAdvice);
 		}
 	}
 	

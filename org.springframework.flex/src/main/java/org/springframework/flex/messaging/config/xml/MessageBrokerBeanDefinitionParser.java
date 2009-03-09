@@ -13,11 +13,14 @@ import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.flex.messaging.config.FlexConfigurationManager;
+import org.springframework.flex.messaging.security.SecurityExceptionTranslator;
 import org.springframework.security.ConfigAttributeDefinition;
+import org.springframework.security.SpringSecurityException;
 import org.springframework.security.intercept.web.RequestKey;
 import org.springframework.security.util.AntUrlPathMatcher;
 import org.springframework.util.CollectionUtils;
@@ -40,7 +43,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String DEFAULT_HANDLER_MAPPING_CLASS_NAME = "org.springframework.web.servlet.handler.SimpleUrlHandlerMapping";
 	private static final String LOGIN_COMMAND_CLASS_NAME = "org.springframework.flex.messaging.security.SpringSecurityLoginCommand";
 	private static final String SECURITY_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.security.MessageBrokerSecurityConfigProcessor";
-	private static final String EXCEPTION_TRANSLATION_CLASS_NAME = "org.springframework.flex.messaging.security.SecurityExceptionTranslationAdvice";
+	private static final String EXCEPTION_TRANSLATION_CLASS_NAME = "org.springframework.flex.messaging.security.ExceptionTranslationAdvice";
 	private static final String ENDPOINT_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointInterceptor";
 	private static final String SERVICE_MESSAGE_ADVISOR_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor";
 	private static final String ENDPOINT_DEFINITION_SOURCE_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointDefinitionSource";
@@ -67,6 +70,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String AUTH_MANAGER_PROPERTY = "authenticationManager";
 	private static final String ACCESS_MANAGER_PROPERTY = "accessDecisionManager";
 	private static final String OBJECT_DEF_SOURCE_PROPERTY = "objectDefinitionSource";
+	private static final String EXCEPTION_TRANSLATORS_PROPERTY = "exceptionTranslators";
 
 	// --------------------------- XML Child Elements ------------------------//
 	private static final String MAPPING_PATTERN_ELEMENT = "mapping";
@@ -252,6 +256,9 @@ public class MessageBrokerBeanDefinitionParser extends
 			ManagedList advisors) {
 		BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(SERVICE_MESSAGE_ADVISOR_CLASS_NAME);
 		BeanDefinitionBuilder exceptionTranslationBuilder = BeanDefinitionBuilder.genericBeanDefinition(EXCEPTION_TRANSLATION_CLASS_NAME);
+		ManagedMap translators = new ManagedMap();
+		translators.put(SpringSecurityException.class, new SecurityExceptionTranslator());
+		exceptionTranslationBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);
 		String exceptionTranslationId = registerInfrastructureComponent(securedElement, parserContext, exceptionTranslationBuilder);
 		advisorBuilder.addConstructorArgReference(exceptionTranslationId);
 		String advisorId = registerInfrastructureComponent(securedElement, parserContext, advisorBuilder);

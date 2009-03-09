@@ -65,7 +65,7 @@ public class EndpointSecurityIntegrationTests extends
 	private void initializeInterceptors() throws Exception {
 		setDirty();
 	
-		SecurityExceptionTranslationAdvice translator = new SecurityExceptionTranslationAdvice();
+		ExceptionTranslationAdvice translator = new ExceptionTranslationAdvice();
 
 		EndpointInterceptor interceptor = new EndpointInterceptor();
 		interceptor.setAuthenticationManager(mgr);
