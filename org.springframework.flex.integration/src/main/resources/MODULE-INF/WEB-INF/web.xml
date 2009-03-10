@@ -5,7 +5,7 @@
 <web-app>
     <display-name>Spring BlazeDS Integration Test Web Module</display-name>
     <description>Spring BlazeDS Integration Test Web Module For Integration Testing</description>
-	
+    
     <!-- Http Flex Session attribute and binding listener support -->
     <listener>
         <listener-class>flex.messaging.HttpFlexSession</listener-class>

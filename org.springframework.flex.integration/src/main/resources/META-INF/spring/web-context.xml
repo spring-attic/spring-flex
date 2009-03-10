@@ -28,5 +28,7 @@
 			<security:protect access="ROLE_ADMIN" method="*"/>
 		</security:intercept-methods>
 	</bean>
+	
+	<bean id="flexSessionCleanupListener" class="org.springframework.flex.messaging.security.FlexSessionInvalidatingAuthenticationListener" />
     
 </beans>
