@@ -1,5 +1,7 @@
 package {
   
+	import net.digitalprimates.fluint.tests.TestCase;
+	
     import flash.events.Event;
     import flash.events.EventDispatcher;
   	import mx.messaging.ChannelSet;
@@ -7,20 +9,19 @@ package {
   	import mx.rpc.events.ResultEvent;
     import mx.rpc.events.FaultEvent;  	
   	import mx.rpc.remoting.RemoteObject;
-  	import flexunit.framework.Assert;
-  	import flexunit.framework.TestCase;
   	import mx.controls.Alert;
   	
   	
   	public class RemoteServiceTests extends TestCase {
   		
-  		private var pingService:RemoteObject = new RemoteObject();
+  		private var pingService:RemoteObject;
 		
 		private var cs:ChannelSet = new ChannelSet();
   	
   		private var responseChecker:ResponseChecker;
   		
-  		override public function setUp():void {
+  		override protected function setUp():void {
+  			pingService = new RemoteObject();
   			
   			cs.addChannel(new AMFChannel("myAmf", 
     		"http://{server.name}:{server.port}/flex-integration/spring/messagebroker/amf"));
@@ -42,7 +43,7 @@ package {
            		responseChecker.result(event);
         	});            
         	
-        	responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        	responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
         		assertEquals("Unexpected response from service call", "pong", ResultEvent(responseChecker.resultEvent).result);
@@ -65,7 +66,7 @@ package {
            		responseChecker.result(event);
         	});            
         	
-        	responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        	responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
         	},5000));
@@ -87,7 +88,7 @@ package {
            		responseChecker.result(event);
         	});            
         	
-        	responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+        	responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
         	},5000));

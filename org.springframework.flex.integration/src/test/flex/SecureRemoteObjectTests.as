@@ -1,5 +1,7 @@
 package {
   
+	import net.digitalprimates.fluint.tests.TestCase;
+	
     import flash.events.Event;
     import flash.events.EventDispatcher;
   	import mx.messaging.ChannelSet;
@@ -9,8 +11,6 @@ package {
   	import mx.rpc.events.ResultEvent;
     import mx.rpc.events.FaultEvent;  	
   	import mx.rpc.remoting.RemoteObject;
-  	import flexunit.framework.Assert;
-  	import flexunit.framework.TestCase;
   	import mx.controls.Alert;
   	
   	import flash.net.URLLoader;
@@ -20,14 +20,17 @@ package {
   	
   	public class SecureRemoteObjectTests extends TestCase {
 
-  		private var securedPingService:RemoteObject = new RemoteObject();
+  		private var securedPingService:RemoteObject;
   	
-  		private var cs:ChannelSet = new ChannelSet();
+  		private var cs:ChannelSet;
   	
   		private var responseChecker:ResponseChecker;
   	
-	  	override public function setUp():void  {
+	  	override protected function setUp():void  {
+	  		securedPingService = new RemoteObject();
 			
+	  		cs = new ChannelSet();
+	  		
 			cs.addChannel(new AMFChannel("myAmf", 
 			"http://{server.name}:{server.port}/flex-integration/spring/messagebroker/amf"));
 			
@@ -37,7 +40,8 @@ package {
 		}
 	  	
 	  	public function testSecureMethod_NotAuthenticated():void {
-  			
+  			logout(cs);
+	  		
   			securedPingService.destination = "pingSecureService";
   			
   			securedPingService.ping.addEventListener("result", function(event:ResultEvent):void {	
@@ -49,7 +53,7 @@ package {
            		responseChecker.result(event);
         	});
   			
-  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+  			responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
         		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
@@ -75,16 +79,16 @@ package {
            		responseChecker.result(event);
         	});
   			
-  			responseChecker.addEventListener("resultReceived2",addAsync(function(event:Event):void{ 
+  			responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
-        		Alert.show(FaultEvent(responseChecker.resultEvent).toString());
+        		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
         		assertEquals("The fault code was incorrect", "Client.Authorization",FaultEvent(responseChecker.resultEvent).fault.faultCode);
+        		
+        		logout(cs);
         	},5000));
   			
   			securedPingService.ping();
-  			
-  			logout(cs, 3);
   		
 	  	}
 	  	
@@ -103,15 +107,16 @@ package {
            		responseChecker.result(event);
         	});            
         	
-        	responseChecker.addEventListener("resultReceived2",addAsync(function(event:Event):void{ 
+        	responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
         		assertEquals("Unexpected response from service call", "pong", ResultEvent(responseChecker.resultEvent).result);
+        		
+        		logout(cs);
         	},5000));
   			
   			securedPingService.ping();
   			
-  			logout(cs, 3)
 	  	}
 	  	
 	  	
@@ -123,15 +128,15 @@ package {
   				new AsyncResponder(
   					function(result:ResultEvent, token:Object = null):void{
   						responseChecker.expected = true;
-  						responseChecker.result(result);
+  						responseChecker.result(result, "loginProcessed");
   					},
   					function(result:FaultEvent, token:Object = null):void{
-  						responseChecker.result(result);
+  						responseChecker.result(result, "loginProcessed");
   					}
   				)
   			);
   			
-  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+  			responseChecker.addEventListener("loginProcessed",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
         		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
@@ -140,7 +145,7 @@ package {
         	},5000)); 			
 	  	}
 	  	
-	  	private function logout(protectedCs:ChannelSet, count:int):void {
+	  	private function logout(protectedCs:ChannelSet):void {
 	  		if (!protectedCs.authenticated) {
 	  			return;
 	  		}
@@ -149,15 +154,15 @@ package {
 	  		token.addResponder(
           		new AsyncResponder(
           			function(result:ResultEvent, token:Object = null):void{
-          				responseChecker.result(result);
+          				responseChecker.result(result, "logoutProcessed");
           			},
           			function(result:FaultEvent, token:Object = null):void{
-          				responseChecker.result(result);
+          				responseChecker.result(result, "logoutProcessed");
           			}
           		)
           	);
 	  		
-	  		responseChecker.addEventListener("resultReceived"+count,addAsync(function(event:Event):void{ 
+	  		responseChecker.addEventListener("logoutProcessed",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
         		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
         		assertEquals("ResultEvent does not indicate success", "success", ResultEvent(responseChecker.resultEvent).result);
@@ -177,13 +182,17 @@ class ResponseChecker extends EventDispatcher {
 	public var resultEvent:Event = null;
 	public var count:int = 0;
 	
-	public function result(event:Event):void {
-		count++;
+	public function result(event:Event, eventType:String = null):void {
 		resultEvent = event;
-		if(count == 1) {
-			dispatchEvent(new Event("resultReceived"));
+		if (eventType != null) {
+			dispatchEvent(new Event(eventType));
 		} else {
-			dispatchEvent(new Event("resultReceived"+count));
+			count++;
+			if(count == 1) {
+				dispatchEvent(new Event("resultReceived"));
+			} else {
+				dispatchEvent(new Event("resultReceived"+count));
+			}
 		}
 	}
 }

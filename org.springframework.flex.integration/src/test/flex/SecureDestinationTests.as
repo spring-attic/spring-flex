@@ -1,5 +1,7 @@
 package {
   
+	import net.digitalprimates.fluint.tests.TestCase;
+	
     import flash.events.Event;
     import flash.events.EventDispatcher;
   	import mx.messaging.ChannelSet;
@@ -9,23 +11,26 @@ package {
   	import mx.rpc.events.ResultEvent;
     import mx.rpc.events.FaultEvent;  	
   	import mx.rpc.remoting.RemoteObject;
-  	import flexunit.framework.Assert;
-  	import flexunit.framework.TestCase;
   	import mx.controls.Alert;
 
   	public class SecureDestinationTests extends TestCase {
   	
-  		private var protectedPingService:RemoteObject = new RemoteObject();
+  		private var protectedPingService:RemoteObject;
   	
-  		private var protectedCs:ChannelSet = new ChannelSet();
+  		private var protectedCs:ChannelSet;
   	
-  		private var protectedByChannelIdPingService:RemoteObject = new RemoteObject();
+  		private var protectedByChannelIdPingService:RemoteObject;
   	
-		private var protectedByChannelIdCs:ChannelSet = new ChannelSet();
+		private var protectedByChannelIdCs:ChannelSet;
   	
   		private var responseChecker:ResponseChecker;
   		
-  		override public function setUp():void  {
+  		override protected function setUp():void  {
+  			
+  			protectedPingService = new RemoteObject();
+  			protectedCs = new ChannelSet();
+  			protectedByChannelIdPingService = new RemoteObject();
+  			protectedByChannelIdCs = new ChannelSet();
 			
 			protectedCs.addChannel(new AMFChannel("myAmf", 
     		"http://{server.name}:{server.port}/flex-integration/spring/protected/messagebroker/amf"));
@@ -53,7 +58,7 @@ package {
            		responseChecker.result(event);
         	});
   			
-  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+  			responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
         		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
@@ -76,7 +81,7 @@ package {
            		responseChecker.result(event);
         	});
   			
-  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+  			responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
         		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
@@ -101,7 +106,7 @@ package {
   				)
   			);
   			
-  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+  			responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
         		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
@@ -126,7 +131,7 @@ package {
   				)
   			);
   			
-  			responseChecker.addEventListener("resultReceived",addAsync(function(event:Event):void{ 
+  			responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
         		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
@@ -145,7 +150,7 @@ package {
           		);
         	},5000)); 			
   			
-			responseChecker.addEventListener("resultReceived2",addAsync(function(event:Event):void{ 
+			responseChecker.addEventListener("resultReceived2",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
         		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
         		assertEquals("ResultEvent does not indicate success", "success", ResultEvent(responseChecker.resultEvent).result);
