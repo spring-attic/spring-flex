@@ -15,6 +15,8 @@ package {
   	public class RemoteServiceTests extends TestCase {
   		
   		private var pingService:RemoteObject;
+  	
+  		private var fooService:RemoteObject;
 		
 		private var cs:ChannelSet = new ChannelSet();
   	
@@ -22,15 +24,17 @@ package {
   		
   		override protected function setUp():void {
   			pingService = new RemoteObject();
+  			fooService = new RemoteObject();
   			
   			cs.addChannel(new AMFChannel("myAmf", 
     		"http://{server.name}:{server.port}/flex-integration/spring/messagebroker/amf"));
 			pingService.channelSet = cs;
+			fooService.channelSet = cs;
 			
 			responseChecker = new ResponseChecker();
   		}
   	
-  		public function testPingService():void {
+  		public function testCallService():void {
  
   			pingService.destination = "pingService";
   			
@@ -52,7 +56,29 @@ package {
   			pingService.ping();
   		}
   		
-  		public function testPingService_UnknownDestination():void {
+  		public function testCallAnnotatedService():void {
+  			 
+  			fooService.destination = "fooService";
+  			
+  			fooService.bar.addEventListener("result", function(event:ResultEvent):void {	
+  				responseChecker.expected=true;
+  				responseChecker.result(event);
+  			});
+  			
+  			fooService.addEventListener("fault", function faultHandler (event:FaultEvent):void {
+           		responseChecker.result(event);
+        	});            
+        	
+        	responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
+        		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
+        		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
+        		assertEquals("Unexpected response from service call", "bar", ResultEvent(responseChecker.resultEvent).result);
+        	},5000));
+  			
+  			fooService.bar();
+  		}
+  		
+  		public function testCallService_UnknownDestination():void {
   			
   			pingService.destination = "pingFoo";
   			
@@ -74,7 +100,7 @@ package {
   			pingService.ping();
   		}
   		
-  		public function testPingService_ExcludedMethod():void {
+  		public function testCallService_ExcludedMethod():void {
   			
   			pingService.destination = "pingService";
   			

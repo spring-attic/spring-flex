@@ -2,9 +2,9 @@ package org.springframework.flex.messaging.config.xml;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.flex.messaging.config.BeanIds;
 import org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
@@ -54,20 +54,10 @@ abstract class RemoteServiceExporterBeanDefinitionFactory {
 
 		ParsingUtils.mapOptionalAttributes(element, builder, CHANNELS_ATTR, INCLUDE_METHODS_ATTR, EXCLUDE_METHODS_ATTR);
 		
-		String beanName = registerInfrastructureComponent(element, parserContext, builder);
+		String beanName = ParsingUtils.registerInfrastructureComponent(element, parserContext, builder);
 		
 		return new BeanDefinitionHolder(builder.getBeanDefinition(), beanName);
 	}
 	
 	protected abstract void validateRemoteService(Element element, ParserContext parserContext);
-	
-	private String registerInfrastructureComponent(Element element, ParserContext parserContext,
-			BeanDefinitionBuilder componentBuilder) {
-		String beanName = parserContext.getReaderContext().generateBeanName(componentBuilder.getRawBeanDefinition());
-		componentBuilder.getRawBeanDefinition().setSource(parserContext.extractSource(element));
-		componentBuilder.getRawBeanDefinition().setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-		parserContext.registerBeanComponent(new BeanComponentDefinition(componentBuilder.getBeanDefinition(),
-				beanName));
-		return beanName;
-	}
 }

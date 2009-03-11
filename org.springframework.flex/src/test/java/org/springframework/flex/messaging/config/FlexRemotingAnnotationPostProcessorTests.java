@@ -1,12 +1,11 @@
-package org.springframework.flex.messaging.config.xml;
+package org.springframework.flex.messaging.config;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.flex.messaging.config.AbstractFlexConfigurationTests;
-import org.springframework.flex.messaging.config.BeanIds;
+import org.springframework.flex.messaging.remoting.FlexExclude;
+import org.springframework.flex.messaging.remoting.FlexInclude;
+import org.springframework.flex.messaging.remoting.FlexService;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -14,16 +13,18 @@ import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
 
-public class RemoteServiceBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
-	
+
+public class FlexRemotingAnnotationPostProcessorTests extends
+		AbstractFlexConfigurationTests {
+
 	private MessageBroker broker;
 	
-	public void testExportBeanWithDefaults() {
+	public void testExportAnnotatedXmlConfiguredBeanWithDefaults() {
 		broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
 		assertNotNull("MessageBroker bean not found for default ID", broker);
 		RemotingService rs = (RemotingService) broker.getService("remoting-service");
 		assertNotNull("Could not find the remoting service", rs);
-		RemotingDestination rd = (RemotingDestination) rs.getDestination("remoteBean1");
+		RemotingDestination rd = (RemotingDestination) rs.getDestination("annotatedRemoteBean1");
 		assertNotNull("Destination not found", rd);
 	}
 	
@@ -33,7 +34,7 @@ public class RemoteServiceBeanDefinitionParserTests extends AbstractFlexConfigur
 		assertNotNull("MessageBroker bean not found for custom id", broker);
 		RemotingService rs = (RemotingService) broker.getService("remoting-service");
 		assertNotNull("Could not find the remoting service", rs);
-		RemotingDestination rd = (RemotingDestination) rs.getDestination("exportedRemoteBean1");
+		RemotingDestination rd = (RemotingDestination) rs.getDestination("exportedAnnotatedRemoteBean2");
 		assertNotNull("Destination not found", rd);
 		String[] channels = new String[] {"my-amf", "my-secure-amf"};
 		assertEquals("Channels not set",Arrays.asList(channels), rd.getChannels());
@@ -58,19 +59,31 @@ public class RemoteServiceBeanDefinitionParserTests extends AbstractFlexConfigur
 		}
 	}
 	
-	public void testInvalidConfig() {
-		try {
-			new ClassPathXmlApplicationContext("org/springframework/flex/messaging/config/invalid-remote-service.xml");
-			fail("Invalid message-broker config was not caught");
-		} catch (BeanDefinitionParsingException ex) {
-			//Expected
-		}
+	public void testExportAnnotatedBeanWithDefaults() {
+		broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+		assertNotNull("MessageBroker bean not found for default ID", broker);
+		RemotingService rs = (RemotingService) broker.getService("remoting-service");
+		assertNotNull("Could not find the remoting service", rs);
+		RemotingDestination rd = (RemotingDestination) rs.getDestination("annotatedRemoteBean");
+		assertNotNull("Destination not found", rd);
 	}
 	
-	public static final class Bean1 { 
-		public String foo() { return "foo"; }
-		public String bar() { return "bar"; }
-		public String zoo() { return "zoo"; }
-		public String baz() { return "baz"; }
+	@FlexService
+	public static class MyService1 {}
+	
+	@FlexService(value="exportedAnnotatedRemoteBean2", messageBroker="remoteServiceBroker", channels={"my-amf", "my-secure-amf"})
+	public static class MyService2 {
+		
+		@FlexInclude
+		public void foo(){}
+		
+		@FlexInclude
+		public void bar(){}
+		
+		@FlexExclude
+		public void zoo(){}
+		
+		@FlexExclude
+		public void baz(){}
 	}
 }

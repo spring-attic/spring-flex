@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.security;
+package org.springframework.flex.messaging.config;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,7 +10,8 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.Ordered;
-import org.springframework.flex.messaging.config.xml.BeanIds;
+import org.springframework.flex.messaging.security.FlexSessionInvalidatingAuthenticationListener;
+import org.springframework.flex.messaging.security.SpringSecurityLoginCommand;
 import org.springframework.security.ui.FilterChainOrder;
 import org.springframework.web.filter.RequestContextFilter;
 

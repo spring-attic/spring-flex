@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:flex="http://www.springframework.org/schema/flex"
 	   xmlns:security="http://www.springframework.org/schema/security"
+	   xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
@@ -9,8 +10,12 @@
            http://www.springframework.org/schema/flex 
            http://www.springframework.org/schema/flex/spring-flex-1.0.xsd
            http://www.springframework.org/schema/security 
-           http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+           http://www.springframework.org/schema/security/spring-security-2.0.4.xsd
+		   http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
+	<context:component-scan base-package="org.springframework.flex.integration.service" />
+	
 	<flex:message-broker>
 		<flex:secured>
 			<flex:secured-channel access="ROLE_USER" channel="my-protected-by-id-amf"/>	
@@ -19,7 +24,7 @@
 	</flex:message-broker>	
 	
 	<bean id="pingService" class="org.springframework.flex.integration.service.PingService">
-		<flex:remote-service channels="my-amf, my-protected-amf, my-protected-by-id-amf" exclude-methods="foo"/>
+		<flex:remote-service  channels="my-amf, my-protected-amf, my-protected-by-id-amf" exclude-methods="foo"/>
 	</bean>
 	
 	<bean id="pingSecureService" class="org.springframework.flex.integration.service.PingService">

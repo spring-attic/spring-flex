@@ -5,7 +5,8 @@ import java.util.Iterator;
 
 import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.flex.messaging.config.xml.BeanIds;
+import org.springframework.flex.messaging.config.AbstractFlexConfigurationTests;
+import org.springframework.flex.messaging.config.BeanIds;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -13,7 +14,7 @@ import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
 
-public class RemoteServiceBeanDefinitionDecoratorTests extends AbstractFlexNamespaceTests {
+public class RemoteServiceBeanDefinitionDecoratorTests extends AbstractFlexConfigurationTests {
 	
 	private MessageBroker broker;
 	
@@ -57,7 +58,7 @@ public class RemoteServiceBeanDefinitionDecoratorTests extends AbstractFlexNames
 	
 	public void testInvalidConfig() {
 		try {
-			new ClassPathXmlApplicationContext("org/springframework/flex/messaging/config/xml/invalid-remote-service-decorator.xml");
+			new ClassPathXmlApplicationContext("org/springframework/flex/messaging/config/invalid-remote-service-decorator.xml");
 			fail("Invalid message-broker config was not caught");
 		} catch (BeanDefinitionParsingException ex) {
 			//Expected

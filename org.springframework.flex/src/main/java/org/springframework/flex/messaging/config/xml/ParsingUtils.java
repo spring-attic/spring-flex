@@ -1,7 +1,10 @@
 package org.springframework.flex.messaging.config.xml;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSimpleBeanDefinitionParser;
+import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.core.Conventions;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -67,6 +70,24 @@ abstract class ParsingUtils {
 			builder.addPropertyReference(propertyName, value);
 		
 		}
+	}
+	
+	public static String registerInfrastructureComponent(Element element,
+			ParserContext parserContext, BeanDefinitionBuilder componentBuilder) {
+		String beanName = parserContext.getReaderContext().generateBeanName(
+				componentBuilder.getRawBeanDefinition());
+		ParsingUtils.registerInfrastructureComponent(element, parserContext, componentBuilder, beanName);
+		return beanName;
+	}
+
+	public static void registerInfrastructureComponent(Element element,
+			ParserContext parserContext, BeanDefinitionBuilder componentBuilder, String beanName) {
+		componentBuilder.getRawBeanDefinition().setSource(
+				parserContext.extractSource(element));
+		componentBuilder.getRawBeanDefinition().setRole(
+				BeanDefinition.ROLE_INFRASTRUCTURE);
+		parserContext.registerBeanComponent(new BeanComponentDefinition(
+				componentBuilder.getBeanDefinition(), beanName));
 	}
 	
 	private static class SimpleBeanDefinitionParser extends AbstractSimpleBeanDefinitionParser {
