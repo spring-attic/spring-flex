@@ -48,7 +48,8 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String SERVICE_MESSAGE_ADVISOR_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor";
 	private static final String ENDPOINT_DEFINITION_SOURCE_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointDefinitionSource";
 	private static final String REMOTING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.remoting.RemotingServiceConfigProcessor";
-		
+	private static final String SESSION_FIXATION_CONFIGURER_CLASS_NAME = "org.springframework.flex.messaging.security.SessionFixationProtectionConfigurer";	
+	
 	// --------------------------- XML Config Attributes ---------------------//
 	private static final String CONFIGURATION_MANAGER_ATTR = "configuration-manager";
 	private static final String SERVICES_CONFIG_PATH_ATTR = "services-config-path";
@@ -81,7 +82,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String REMOTING_SERVICE_ELEMENT = "remoting-service";
 	
 	// --------------------------- Default Values ----------------------------//
-	private static final Object DEFAULT_MAPPING_PATH = "/*";
+	private static final String DEFAULT_MAPPING_PATH = "/*";
 	
 	@Override
 	protected String getBeanClassName(Element element) {
@@ -166,6 +167,8 @@ public class MessageBrokerBeanDefinitionParser extends
 			accessManager = org.springframework.security.config.BeanIds.ACCESS_MANAGER;
 		}
 		
+		registerAuthenticationListenerIfNecessary(securedElement, parserContext);
+		
 		String brokerId = parent.getAttribute(ID_ATTRIBUTE);
 		registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, perClientAuthentication);
 		
@@ -178,6 +181,15 @@ public class MessageBrokerBeanDefinitionParser extends
 		securityProcessorBuilder.addConstructorArgValue(advisors);
 		registerInfrastructureComponent(securedElement, parserContext, securityProcessorBuilder, brokerId+BeanIds.SECURITY_PROCESSOR_SUFFIX);
 		configProcessors.add(new RuntimeBeanReference(brokerId+BeanIds.SECURITY_PROCESSOR_SUFFIX));
+	}
+
+	private void registerAuthenticationListenerIfNecessary(
+			Element securedElement, ParserContext parserContext) {
+		
+		if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.SESSION_FIXATION_PROTECTION_CONFIGURER)) {
+			BeanDefinitionBuilder configurerBuilder = BeanDefinitionBuilder.genericBeanDefinition(SESSION_FIXATION_CONFIGURER_CLASS_NAME);
+			registerInfrastructureComponent(securedElement, parserContext, configurerBuilder, BeanIds.SESSION_FIXATION_PROTECTION_CONFIGURER);			
+		}
 	}
 
 	@SuppressWarnings("unchecked")

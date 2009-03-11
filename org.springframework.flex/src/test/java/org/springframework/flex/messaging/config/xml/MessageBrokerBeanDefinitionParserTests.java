@@ -17,8 +17,10 @@ import org.springframework.flex.messaging.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.messaging.config.xml.BeanIds;
 import org.springframework.flex.messaging.security.EndpointInterceptor;
 import org.springframework.flex.messaging.security.ExceptionTranslationAdvice;
+import org.springframework.flex.messaging.security.FlexSessionInvalidatingAuthenticationListener;
 import org.springframework.flex.messaging.security.SpringSecurityLoginCommand;
 import org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter;
+import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 import flex.messaging.MessageBroker;
@@ -107,6 +109,8 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexNamespac
 			Advisor a = advisedEndpoint.getAdvisors()[0];
 			assertTrue("Exception translation advice was not applied",a.getAdvice() instanceof ExceptionTranslationAdvice);
 		}
+		getApplicationContext().getBean(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, FlexSessionInvalidatingAuthenticationListener.class);
+		getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER, RequestContextFilter.class);
 	}
 	
 	public void testMessageBroker_LoginCommandConfigured() {
