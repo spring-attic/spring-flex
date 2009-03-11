@@ -9,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.flex.messaging.AbstractMessageBrokerTests;
+import org.springframework.flex.messaging.EndpointServiceMessagePointcutAdvisor;
+import org.springframework.flex.messaging.ExceptionTranslationAdvice;
+import org.springframework.flex.messaging.config.MessageBrokerEndpointConfigProcessor;
 import org.springframework.security.AccessDecisionManager;
 import org.springframework.security.AccessDeniedException;
 import org.springframework.security.Authentication;
@@ -78,7 +81,7 @@ public class EndpointSecurityIntegrationTests extends
 		advisors.add(new EndpointServiceMessagePointcutAdvisor(translator));
 		advisors.add(new EndpointServiceMessagePointcutAdvisor(interceptor));
 		
-		MessageBrokerSecurityConfigProcessor processor = new MessageBrokerSecurityConfigProcessor(advisors);
+		MessageBrokerEndpointConfigProcessor processor = new MessageBrokerEndpointConfigProcessor(advisors);
 		
 		addStartupProcessor(processor);
 	}

@@ -41,10 +41,10 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String MESSAGE_BROKER_HANDLER_ADAPTER_CLASS_NAME = "org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter";
 	private static final String DEFAULT_HANDLER_MAPPING_CLASS_NAME = "org.springframework.web.servlet.handler.SimpleUrlHandlerMapping";
 	private static final String LOGIN_COMMAND_CLASS_NAME = "org.springframework.flex.messaging.security.SpringSecurityLoginCommand";
-	private static final String SECURITY_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.security.MessageBrokerSecurityConfigProcessor";
-	private static final String EXCEPTION_TRANSLATION_CLASS_NAME = "org.springframework.flex.messaging.security.ExceptionTranslationAdvice";
+	private static final String ENDPOINT_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.config.MessageBrokerEndpointConfigProcessor";
+	private static final String EXCEPTION_TRANSLATION_CLASS_NAME = "org.springframework.flex.messaging.ExceptionTranslationAdvice";
 	private static final String ENDPOINT_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointInterceptor";
-	private static final String SERVICE_MESSAGE_ADVISOR_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointServiceMessagePointcutAdvisor";
+	private static final String SERVICE_MESSAGE_ADVISOR_CLASS_NAME = "org.springframework.flex.messaging.EndpointServiceMessagePointcutAdvisor";
 	private static final String ENDPOINT_DEFINITION_SOURCE_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointDefinitionSource";
 	private static final String REMOTING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.remoting.RemotingServiceConfigProcessor";
 	private static final String SESSION_FIXATION_CONFIGURER_CLASS_NAME = "org.springframework.flex.messaging.config.SessionFixationProtectionConfigurer";	
@@ -97,9 +97,19 @@ public class MessageBrokerBeanDefinitionParser extends
 				element.getLocalName(), parserContext.extractSource(element));
 		parserContext.pushContainingComponent(componentDefinition);
 		
-		//Initialize the configProcessors set
+		Object source = parserContext.extractSource(element);
+		
+		//Initialize the config processors set
 		ManagedSet configProcessors = new ManagedSet();
-		configProcessors.setSource(element);
+		configProcessors.setSource(source);
+		
+		//Initialize the AOP advisors list
+		ManagedList advisors = new ManagedList();
+		advisors.setSource(source);
+		
+		//Initialize the exception translators map
+		ManagedMap translators = new ManagedMap();
+		translators.setSource(source);
 		
 		// Set the default ID if necessary
 		if (!StringUtils.hasText(element.getAttribute(ID_ATTRIBUTE))) {
@@ -122,7 +132,11 @@ public class MessageBrokerBeanDefinitionParser extends
 		
 		configureRemotingService(element, parserContext, configProcessors, DomUtils.getChildElementByTagName(element, REMOTING_SERVICE_ELEMENT));
 		
-		configureSecurity(element, parserContext, configProcessors, DomUtils.getChildElementByTagName(element, SECURED_ELEMENT));
+		registerExceptionTranslation(element, parserContext, advisors, translators);
+		
+		configureSecurity(element, parserContext, configProcessors, advisors, translators, DomUtils.getChildElementByTagName(element, SECURED_ELEMENT));
+		
+		registerEndpointProcessor(parserContext, configProcessors, advisors, element, element.getAttribute(ID_ATTRIBUTE));
 		
 		if (!configProcessors.isEmpty()) {
 			builder.addPropertyValue(CONFIG_PROCESSORS_PROPERTY, configProcessors);
@@ -152,7 +166,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	}
 
 	@SuppressWarnings("unchecked")
-	private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet configProcessors, Element securedElement) {
+	private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet configProcessors, ManagedList advisors, ManagedMap translators, Element securedElement) {
 		
 		if (securedElement == null) {
 			return;
@@ -175,15 +189,10 @@ public class MessageBrokerBeanDefinitionParser extends
 		String brokerId = parent.getAttribute(ID_ATTRIBUTE);
 		registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, perClientAuthentication);
 		
-		BeanDefinitionBuilder securityProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(SECURITY_PROCESSOR_CLASS_NAME);
-		ManagedList advisors = new ManagedList();
+		translators.put(SpringSecurityException.class, new SecurityExceptionTranslator());
 		
-		registerExceptionTranslation(securedElement, parserContext, advisors);
 		registerEndpointInterceptorIfNecessary(securedElement, parserContext, advisors, authManager, accessManager);
 		
-		securityProcessorBuilder.addConstructorArgValue(advisors);
-		ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, securityProcessorBuilder, brokerId+BeanIds.SECURITY_PROCESSOR_SUFFIX);
-		configProcessors.add(new RuntimeBeanReference(brokerId+BeanIds.SECURITY_PROCESSOR_SUFFIX));
 	}
 
 	private void registerAuthenticationListenerIfNecessary(
@@ -266,17 +275,25 @@ public class MessageBrokerBeanDefinitionParser extends
 	}
 
 	@SuppressWarnings("unchecked")
-	private void registerExceptionTranslation(Element securedElement,
+	private void registerEndpointProcessor(ParserContext parserContext,
+			ManagedSet configProcessors, ManagedList advisors,
+			Element securedElement, String brokerId) {
+		BeanDefinitionBuilder securityProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(ENDPOINT_PROCESSOR_CLASS_NAME);
+		securityProcessorBuilder.addConstructorArgValue(advisors);
+		ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, securityProcessorBuilder, brokerId+BeanIds.SECURITY_PROCESSOR_SUFFIX);
+		configProcessors.add(new RuntimeBeanReference(brokerId+BeanIds.SECURITY_PROCESSOR_SUFFIX));
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void registerExceptionTranslation(Element element,
 			ParserContext parserContext,
-			ManagedList advisors) {
+			ManagedList advisors, ManagedMap translators) {
 		BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(SERVICE_MESSAGE_ADVISOR_CLASS_NAME);
 		BeanDefinitionBuilder exceptionTranslationBuilder = BeanDefinitionBuilder.genericBeanDefinition(EXCEPTION_TRANSLATION_CLASS_NAME);
-		ManagedMap translators = new ManagedMap();
-		translators.put(SpringSecurityException.class, new SecurityExceptionTranslator());
 		exceptionTranslationBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);
-		String exceptionTranslationId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, exceptionTranslationBuilder);
+		String exceptionTranslationId = ParsingUtils.registerInfrastructureComponent(element, parserContext, exceptionTranslationBuilder);
 		advisorBuilder.addConstructorArgReference(exceptionTranslationId);
-		String advisorId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, advisorBuilder);
+		String advisorId = ParsingUtils.registerInfrastructureComponent(element, parserContext, advisorBuilder);
 		advisors.add(new RuntimeBeanReference(advisorId));
 	}
 	

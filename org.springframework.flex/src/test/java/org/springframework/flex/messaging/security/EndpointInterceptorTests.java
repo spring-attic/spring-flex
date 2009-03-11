@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.flex.messaging.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.security.AccessDecisionManager;
 import org.springframework.security.AccessDeniedException;
 import org.springframework.security.Authentication;

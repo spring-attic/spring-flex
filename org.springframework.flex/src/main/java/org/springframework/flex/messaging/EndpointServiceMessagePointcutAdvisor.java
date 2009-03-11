@@ -1,9 +1,10 @@
-package org.springframework.flex.messaging.security;
+package org.springframework.flex.messaging;
 
 import java.lang.reflect.Method;
 
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
+import org.springframework.flex.messaging.security.EndpointSecurityAdvisor;
 import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.endpoints.AbstractEndpoint;

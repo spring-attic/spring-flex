@@ -7,6 +7,7 @@
     <!-- expanded version -->
     <message-broker id="customId" configuration-manager="" services-config-path="/WEB-INF/flex/services-config.xml">
     	<config-processor ref="myCustomConfigProcessorBean"/>
+    	<exception-translator ref="myCustomExceptionTranslatorBean"/>
     	<mapping pattern="/*"/>
     	<secured  authentication-manager="_authenticationManager" access-decision-manager="_accessManager" 
     		per-client-authentication="false">

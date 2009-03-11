@@ -16,6 +16,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.Advised;
+import org.springframework.flex.messaging.EndpointServiceMessagePointcutAdvisor;
+import org.springframework.flex.messaging.config.MessageBrokerEndpointConfigProcessor;
 import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.MessageBroker;
@@ -37,7 +39,7 @@ public class MessageBrokerSecurityConfigProcessorTests extends TestCase {
 	MethodInterceptor advice2;
 	EndpointServiceMessagePointcutAdvisor advisor1;
 	EndpointServiceMessagePointcutAdvisor advisor2;
-	MessageBrokerSecurityConfigProcessor processor;
+	MessageBrokerEndpointConfigProcessor processor;
 
 	@SuppressWarnings("unchecked")
 	public void setUp() {
@@ -65,7 +67,7 @@ public class MessageBrokerSecurityConfigProcessorTests extends TestCase {
 		List<EndpointSecurityAdvisor> advisors = new ArrayList<EndpointSecurityAdvisor>();
 		advisors.add(advisor1);
 		advisors.add(advisor2);
-		processor = new MessageBrokerSecurityConfigProcessor(advisors);
+		processor = new MessageBrokerEndpointConfigProcessor(advisors);
 
 		MessageBroker processedBroker = (MessageBroker) processor
 				.processAfterStartup(broker);

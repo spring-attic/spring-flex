@@ -1,9 +1,8 @@
-package org.springframework.flex.messaging.security;
+package org.springframework.flex.messaging;
 
 import java.util.LinkedHashMap;
 
 import org.springframework.aop.ThrowsAdvice;
-import org.springframework.flex.messaging.ExceptionTranslator;
 import org.springframework.util.ClassUtils;
 
 import flex.messaging.MessageException;

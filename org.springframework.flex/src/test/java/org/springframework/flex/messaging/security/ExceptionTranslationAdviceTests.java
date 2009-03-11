@@ -6,6 +6,8 @@ import junit.framework.TestCase;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.flex.messaging.EndpointServiceMessagePointcutAdvisor;
+import org.springframework.flex.messaging.ExceptionTranslationAdvice;
 import org.springframework.flex.messaging.ExceptionTranslator;
 
 import flex.messaging.MessageException;

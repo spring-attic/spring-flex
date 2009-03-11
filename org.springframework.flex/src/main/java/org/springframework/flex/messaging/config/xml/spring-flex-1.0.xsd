@@ -58,6 +58,16 @@ programmatically modifying the configuration of the MessageBroker.
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
+							<xsd:element name="exception-translator" type="exceptionTranslatorType">
+								<xsd:annotation>
+									<xsd:documentation>
+										<![CDATA[
+Installs a bean instance of org.springframework.flex.messaging.ExceptionTranslator for 
+applying custom translation from known exception types to a BlazeDS MessageException.
+]]>
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
 						</xsd:choice>
 						<xsd:element name="remoting-service" minOccurs="0" maxOccurs="1" type="remotingServiceType">
 							<xsd:annotation>
@@ -209,6 +219,18 @@ Ant-style pattern for request paths that should be routed to the MessageBroker.
 				<xsd:documentation>
 					<![CDATA[
 A reference to a custom bean instance of org.springframework.flex.messaging.config.MessageBrokerConfigProcessor.								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:complexType name="exceptionTranslatorType">
+		<xsd:attribute name="ref" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+A reference to a custom bean instance of org.springframework.flex.messaging.ExceptionTranslator.								
 ]]>
 				</xsd:documentation>
 			</xsd:annotation>

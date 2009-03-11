@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.security;
+package org.springframework.flex.messaging.config;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.flex.messaging.config.MessageBrokerConfigProcessor;
+import org.springframework.flex.messaging.security.EndpointSecurityAdvisor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
@@ -15,20 +15,20 @@ import flex.messaging.MessageBroker;
 import flex.messaging.endpoints.amf.AMFFilter;
 
 /**
- * Processor that applies security advice to configured BlazeDS endpoints by wrapping them in Spring AOP proxies.
+ * Processor that applies advice to configured BlazeDS endpoints by wrapping them in Spring AOP proxies.
  *  
  * <p>
- * This processor will be automatically configured through the <code>secured</code> xml configuration namespace tag.
+ * This processor will be automatically configured through the <code>message-broker</code> xml configuration namespace tag.
  * 
  * @author Jeremy Grelle
  */
-public class MessageBrokerSecurityConfigProcessor implements
+public class MessageBrokerEndpointConfigProcessor implements
 		MessageBrokerConfigProcessor, BeanClassLoaderAware {
 
 	private EndpointSecurityAdvisor[] advisors;
 	private ClassLoader proxyClassLoader = ClassUtils.getDefaultClassLoader();
 
-	public MessageBrokerSecurityConfigProcessor(
+	public MessageBrokerEndpointConfigProcessor(
 			List<EndpointSecurityAdvisor> advisors) {
 		Assert
 				.notEmpty(advisors,
