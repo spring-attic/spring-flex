@@ -11,7 +11,6 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
-import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
@@ -19,7 +18,6 @@ import org.springframework.flex.messaging.config.BeanIds;
 import org.springframework.flex.messaging.config.FlexConfigurationManager;
 import org.springframework.flex.messaging.security.SecurityExceptionTranslator;
 import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.SpringSecurityException;
 import org.springframework.security.intercept.web.RequestKey;
 import org.springframework.security.util.AntUrlPathMatcher;
 import org.springframework.util.CollectionUtils;
@@ -76,6 +74,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	// --------------------------- XML Child Elements ------------------------//
 	private static final String MAPPING_PATTERN_ELEMENT = "mapping";
 	private static final String CONFIG_PROCESSOR_ELEMENT = "config-processor";
+	private static final String EXCEPTION_TRANSLATOR_ELEMENT = "exception-translator";
 	private static final String SECURED_ELEMENT = "secured";
 	private static final String SECURED_CHANNEL_ELEMENT = "secured-channel";
 	private static final String SECURED_ENDPOINT_PATH_ELEMENT = "secured-endpoint-path";
@@ -83,7 +82,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	
 	// --------------------------- Default Values ----------------------------//
 	private static final String DEFAULT_MAPPING_PATH = "/*";
-	
+		
 	@Override
 	protected String getBeanClassName(Element element) {
 		return MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME;
@@ -108,7 +107,7 @@ public class MessageBrokerBeanDefinitionParser extends
 		advisors.setSource(source);
 		
 		//Initialize the exception translators map
-		ManagedMap translators = new ManagedMap();
+		ManagedSet translators = new ManagedSet();
 		translators.setSource(source);
 		
 		// Set the default ID if necessary
@@ -132,7 +131,7 @@ public class MessageBrokerBeanDefinitionParser extends
 		
 		configureRemotingService(element, parserContext, configProcessors, DomUtils.getChildElementByTagName(element, REMOTING_SERVICE_ELEMENT));
 		
-		registerExceptionTranslation(element, parserContext, advisors, translators);
+		registerExceptionTranslation(element, parserContext, advisors, translators, DomUtils.getChildElementsByTagName(element, EXCEPTION_TRANSLATOR_ELEMENT));
 		
 		configureSecurity(element, parserContext, configProcessors, advisors, translators, DomUtils.getChildElementByTagName(element, SECURED_ELEMENT));
 		
@@ -166,7 +165,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	}
 
 	@SuppressWarnings("unchecked")
-	private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet configProcessors, ManagedList advisors, ManagedMap translators, Element securedElement) {
+	private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet configProcessors, ManagedList advisors, ManagedSet translators, Element securedElement) {
 		
 		if (securedElement == null) {
 			return;
@@ -189,7 +188,7 @@ public class MessageBrokerBeanDefinitionParser extends
 		String brokerId = parent.getAttribute(ID_ATTRIBUTE);
 		registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, perClientAuthentication);
 		
-		translators.put(SpringSecurityException.class, new SecurityExceptionTranslator());
+		translators.add(new SecurityExceptionTranslator());
 		
 		registerEndpointInterceptorIfNecessary(securedElement, parserContext, advisors, authManager, accessManager);
 		
@@ -287,7 +286,16 @@ public class MessageBrokerBeanDefinitionParser extends
 	@SuppressWarnings("unchecked")
 	private void registerExceptionTranslation(Element element,
 			ParserContext parserContext,
-			ManagedList advisors, ManagedMap translators) {
+			ManagedList advisors, ManagedSet translators, List exceptionTranslatorElements) {
+		
+		if (!CollectionUtils.isEmpty(exceptionTranslatorElements)) {
+			Iterator i = exceptionTranslatorElements.iterator();
+			while(i.hasNext()) {
+				Element exceptionTranslatorElement = (Element) i.next();
+				translators.add(new RuntimeBeanReference(exceptionTranslatorElement.getAttribute(REF_ATTR)));
+			}	
+		}
+		
 		BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(SERVICE_MESSAGE_ADVISOR_CLASS_NAME);
 		BeanDefinitionBuilder exceptionTranslationBuilder = BeanDefinitionBuilder.genericBeanDefinition(EXCEPTION_TRANSLATION_CLASS_NAME);
 		exceptionTranslationBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);

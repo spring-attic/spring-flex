@@ -3,6 +3,7 @@ package org.springframework.flex.messaging.security;
 import org.springframework.flex.messaging.ExceptionTranslator;
 import org.springframework.security.AccessDeniedException;
 import org.springframework.security.AuthenticationException;
+import org.springframework.util.ClassUtils;
 
 import flex.messaging.MessageException;
 import flex.messaging.security.SecurityException;
@@ -29,6 +30,11 @@ public class SecurityExceptionTranslator implements ExceptionTranslator{
 			return se;
 		}
 		return null;
+	}
+
+	public boolean handles(Class<?> clazz) {
+		return ClassUtils.isAssignable(AuthenticationException.class, clazz) ||
+			ClassUtils.isAssignable(AccessDeniedException.class, clazz);
 	}
 
 }

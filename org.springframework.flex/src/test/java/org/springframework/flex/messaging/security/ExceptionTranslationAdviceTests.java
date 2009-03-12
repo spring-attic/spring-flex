@@ -9,6 +9,7 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.flex.messaging.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.flex.messaging.ExceptionTranslationAdvice;
 import org.springframework.flex.messaging.ExceptionTranslator;
+import org.springframework.util.ClassUtils;
 
 import flex.messaging.MessageException;
 import flex.messaging.endpoints.AbstractEndpoint;
@@ -27,7 +28,7 @@ public class ExceptionTranslationAdviceTests extends TestCase{
 		ProxyFactory factory = new ProxyFactory();
 		factory.setProxyTargetClass(true);
 		ExceptionTranslationAdvice advice = new ExceptionTranslationAdvice();
-		advice.getExceptionTranslators().put(TestException.class, new TestExceptionTranslator());
+		advice.getExceptionTranslators().add(new TestExceptionTranslator());
 		factory.addAdvisor(new EndpointServiceMessagePointcutAdvisor(advice));
 		factory.setTarget(endpoint);
 		advisedEndpoint = (AbstractEndpoint) factory.getProxy();
@@ -102,7 +103,10 @@ public class ExceptionTranslationAdviceTests extends TestCase{
 			}
 			return null;
 		}
-		
+
+		public boolean handles(Class<?> clazz) {
+			return ClassUtils.isAssignable(TestException.class, clazz);
+		}
 	}
 
 }

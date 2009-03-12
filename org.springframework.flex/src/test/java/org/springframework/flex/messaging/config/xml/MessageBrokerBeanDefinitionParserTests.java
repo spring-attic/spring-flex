@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 
@@ -13,6 +14,7 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.flex.messaging.ExceptionTranslationAdvice;
+import org.springframework.flex.messaging.ExceptionTranslator;
 import org.springframework.flex.messaging.config.AbstractFlexConfigurationTests;
 import org.springframework.flex.messaging.config.BeanIds;
 import org.springframework.flex.messaging.config.FlexConfigurationManager;
@@ -25,6 +27,7 @@ import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 import flex.messaging.MessageBroker;
+import flex.messaging.MessageException;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.security.LoginCommand;
 import flex.messaging.services.RemotingService;
@@ -92,6 +95,23 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 		TestConfigProcessor processor2 = (TestConfigProcessor) getApplicationContext().getBean("processor2", TestConfigProcessor.class);
 		assertTrue("Processor1 not invoked", processor1.beforeProcessed && processor1.afterProcessed);
 		assertTrue("Processor2 not invoked", processor2.beforeProcessed && processor2.afterProcessed);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void testMessageBroker_CustomExceptionTranslator() {
+		broker = (MessageBroker) getApplicationContext().getBean("customExceptionTranslators", MessageBroker.class);
+		assertNotNull("MessageBroker bean not found for custom id", broker);
+		Iterator i = broker.getEndpoints().values().iterator();
+		while (i.hasNext()) {
+			Object endpoint = i.next();
+			assertTrue("Endpoint should be proxied",AopUtils.isAopProxy(endpoint));
+			Advised advisedEndpoint = (Advised) endpoint;
+			Advisor a = advisedEndpoint.getAdvisors()[0];
+			assertTrue("Exception translation advice was not applied",a.getAdvice() instanceof ExceptionTranslationAdvice);
+			Set translators = ((ExceptionTranslationAdvice)a.getAdvice()).getExceptionTranslators();
+			assertTrue("Custom translator not found", translators.contains(getApplicationContext().getBean("translator1", TestExceptionTranslator.class)));
+			assertTrue("Custom translator not found", translators.contains(getApplicationContext().getBean("translator2", TestExceptionTranslator.class)));
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -183,6 +203,16 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 			return broker;
 		}
 		
+	}
+	
+	public static final class TestExceptionTranslator implements ExceptionTranslator {
+		public boolean handles(Class<?> clazz) {
+			return false;
+		}
+
+		public MessageException translate(Throwable t) {
+			return null;
+		}
 	}
 	
 	public static final class TestJavaAdapter extends JavaAdapter {

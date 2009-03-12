@@ -32,6 +32,11 @@
 		<flex:config-processor ref="processor2"/>
 	</flex:message-broker>
 	
+	<flex:message-broker id="customExceptionTranslators">
+		<flex:exception-translator ref="translator1"/>
+		<flex:exception-translator ref="translator2"/>
+	</flex:message-broker>
+	
 	<flex:message-broker id="defaultSecured">
 		<flex:secured/>
 	</flex:message-broker>
@@ -66,5 +71,9 @@
 	<bean id="processor1" class="org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestConfigProcessor"/>
 	
 	<bean id="processor2" class="org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestConfigProcessor"/>
+	
+	<bean id="translator1" class="org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestExceptionTranslator"/>
+	
+	<bean id="translator2" class="org.springframework.flex.messaging.config.xml.MessageBrokerBeanDefinitionParserTests$TestExceptionTranslator"/>
 	
 </beans>

@@ -1,6 +1,7 @@
 package org.springframework.flex.messaging;
 
-import java.util.LinkedHashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.aop.ThrowsAdvice;
 import org.springframework.util.ClassUtils;
@@ -21,23 +22,23 @@ public class ExceptionTranslationAdvice implements ThrowsAdvice {
 	
 	private static final String SERVER_PROCESSING_CODE = "Server.Processing";
 	
-	private LinkedHashMap<Class<?>, ExceptionTranslator> exceptionTranslators = new LinkedHashMap<Class<?>, ExceptionTranslator>();
+	private Set<ExceptionTranslator> exceptionTranslators = new HashSet<ExceptionTranslator>();
 
 	public void afterThrowing(Throwable t) throws Throwable {
 		
-		Class<?> key = t.getClass();
+		Class<?> candidate = t.getClass();
 		
-		if (ClassUtils.isAssignable(MessageException.class, key)) {
+		if (ClassUtils.isAssignable(MessageException.class, candidate)) {
 			MessageException me = (MessageException) t;
 			if (SERVER_PROCESSING_CODE.equals(me.getCode()) && me.getRootCause() != null) {
-				key = me.getRootCause().getClass();
+				candidate = me.getRootCause().getClass();
 				t = me.getRootCause();
 			}
 		}
 		
-		for (Class<?> candidate : exceptionTranslators.keySet()) {
-			if (ClassUtils.isAssignable(candidate, key)) {
-				MessageException result = exceptionTranslators.get(candidate).translate(t);
+		for (ExceptionTranslator translator : exceptionTranslators) {
+			if (translator.handles(candidate)) {
+				MessageException result = translator.translate(t);
 				if (result != null) {
 					throw result;
 				}
@@ -46,11 +47,11 @@ public class ExceptionTranslationAdvice implements ThrowsAdvice {
 		throw t;
 	}
 	
-	public LinkedHashMap<Class<?>, ExceptionTranslator> getExceptionTranslators() {
+	public Set<ExceptionTranslator> getExceptionTranslators() {
 		return exceptionTranslators;
 	}
 
-	public void setExceptionTranslators(LinkedHashMap<Class<?>, ExceptionTranslator> translators) {
+	public void setExceptionTranslators(Set<ExceptionTranslator> translators) {
 		this.exceptionTranslators = translators;
 	}
 	

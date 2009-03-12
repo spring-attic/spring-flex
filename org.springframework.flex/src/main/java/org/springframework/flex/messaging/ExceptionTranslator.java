@@ -16,4 +16,6 @@ import flex.messaging.MessageException;
 public interface ExceptionTranslator {
 
 	MessageException translate(Throwable t);
+	
+	boolean handles(Class<?> clazz);
 }

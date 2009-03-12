@@ -20,7 +20,6 @@ import org.springframework.security.ConfigAttributeDefinition;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.MockAuthenticationManager;
-import org.springframework.security.SpringSecurityException;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.intercept.web.RequestKey;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
@@ -70,7 +69,7 @@ public class EndpointSecurityIntegrationTests extends
 		setDirty();
 	
 		ExceptionTranslationAdvice translator = new ExceptionTranslationAdvice();
-		translator.getExceptionTranslators().put(SpringSecurityException.class, new SecurityExceptionTranslator());
+		translator.getExceptionTranslators().add(new SecurityExceptionTranslator());
 
 		EndpointInterceptor interceptor = new EndpointInterceptor();
 		interceptor.setAuthenticationManager(mgr);
