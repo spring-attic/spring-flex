@@ -30,7 +30,7 @@ abstract class RemoteServiceExporterBeanDefinitionFactory {
 	// --------------------------- Bean Configuration Properties -------------//
 	protected static final String MESSAGE_BROKER_PROPERTY = "messageBroker";
 	protected static final String SERVICE_PROPERTY = "service";
-	protected static final String SERVICE_ID_PROPERTY = "serviceId";
+	protected static final String SERVICE_ID_PROPERTY = "destinationId";
 	protected static final String CHANNELS_PROPERTY = "channels";
 	protected static final String INCLUDE_METHODS_PROPERTY = "includeMethods";
 	protected static final String EXCLUDE_METHODS_PROPERTY = "excludeMethods";

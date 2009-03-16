@@ -44,15 +44,15 @@ public class FlexRemotingServiceExporterTests extends AbstractMessageBrokerTests
 		assertTrue("No channels set on destination", remotingDestination.getChannels().size() > 0);
 	}
 
-	public void testDestinationRegisteredWithServiceId() throws Exception {
+	public void testDestinationRegisteredWithDestinationId() throws Exception {
 
 		RemotingService remotingService = getRemotingService();
 
-		String serviceId = "myService";
-		exporter.setServiceId(serviceId);
+		String destinationId = "myService";
+		exporter.setDestinationId(destinationId);
 		exporter.afterPropertiesSet();
 
-		assertNotNull("RemotingDestination not registered", remotingService.getDestination(serviceId));
+		assertNotNull("RemotingDestination not registered", remotingService.getDestination(destinationId));
 	}
 
 	public void testDestinationConfiguredWithNullService() throws Exception {

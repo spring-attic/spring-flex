@@ -3,16 +3,13 @@ package org.springframework.flex.messaging.remoting;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.flex.messaging.AbstractDestinationExporter;
 import org.springframework.flex.messaging.MessageBrokerFactoryBean;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import flex.messaging.Destination;
 import flex.messaging.FactoryInstance;
 import flex.messaging.FlexFactory;
 import flex.messaging.MessageBroker;
@@ -28,11 +25,10 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  * 
  * <p>
  * The exported service will be exposed to the Flex client as a BlazeDS remoting
- * service destination. By default, the service id of the destination will be
- * the same as the bean name of this exporter. This may be overridden using the
- * serviceId property.  <i>Note that this convention is slightly different from
- * that employed by the <code>remote-service</code> xml config tag.  See the xsd
- * docs for details.</i>
+ * service destination. By default, the destination id will be the same as the
+ * bean name of this exporter. This may be overridden using the serviceId property.
+ * <i>Note that this convention is slightly different from that employed by the
+ * <code>remote-service</code> xml config tag. See the xsd docs for details.</i>
  * 
  * <p>
  * The methods on the exported service that are exposed to the Flex client can
@@ -42,44 +38,20 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  * @see MessageBrokerFactoryBean
  * 
  * @author Jeremy Grelle
+ * @author Mark Fisher
  */
-public class FlexRemotingServiceExporter implements FlexFactory,
-		InitializingBean, DisposableBean, BeanNameAware {
-
-	private String beanName;
+public class FlexRemotingServiceExporter extends AbstractDestinationExporter implements FlexFactory {
 
 	private Object service;
-
-	private String serviceId;
-
-	private String[] channels;
-
-	private MessageBroker broker;
 
 	private String[] includeMethods;
 
 	private String[] excludeMethods;
 
-	public void setBeanName(String name) {
-		this.beanName = name;
-	}
-
-	public void setMessageBroker(MessageBroker broker) {
-		this.broker = broker;
-	}
-
 	public void setService(Object service) {
 		this.service = service;
 	}
 
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
-
-	public void setChannels(String[] channels) {
-		this.channels = StringUtils.trimArrayElements(channels);
-	}
-	
 	public void setIncludeMethods(String[] includeMethods) {
 		this.includeMethods = StringUtils.trimArrayElements(includeMethods);
 	}
@@ -108,54 +80,48 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 		// No-op
 	}
 
-	public void afterPropertiesSet() throws Exception {
+	@Override
+	protected Destination createDestination(String destinationId, MessageBroker broker) {
 		Assert.notNull(service, "The 'service' property is required.");
-		Assert.notNull(broker, "The 'messageBroker' property is required.");
 
 		// Look up the remoting service
 		RemotingService remotingService = (RemotingService) broker
 				.getServiceByType(RemotingService.class.getName());
-		Assert
-				.notNull(remotingService,
+		Assert.notNull(remotingService,
 						"Could not find a proper RemotingService in the Flex MessageBroker.");
 
 		// Register and start the destination
 		RemotingDestination destination = (RemotingDestination) remotingService
-				.createDestination(getServiceId());
-
-		configureChannels(destination);
+				.createDestination(destinationId);
 
 		destination.setFactory(this);
+		return destination;
+	}
+
+	@Override
+	protected void initializeDestination(Destination destination) {
 		destination.start();
 
-		Assert
-				.isInstanceOf(JavaAdapter.class, destination.getAdapter(),
-						"Spring beans exported as a RemotingDestination require a JavaAdapter.");
+		Assert.isInstanceOf(JavaAdapter.class, destination.getAdapter(),
+				"Spring beans exported as a RemotingDestination require a JavaAdapter.");
 
 		configureIncludes(destination);
 		configureExcludes(destination);
 	}
 
-	private void configureChannels(RemotingDestination destination) {
-		if (ObjectUtils.isEmpty(channels)) {
+	@Override
+	protected void destroyDestination(String destinationId, MessageBroker broker) {
+		RemotingService remotingService = (RemotingService) broker
+				.getServiceByType(RemotingService.class.getName());
+
+		if (remotingService == null) {
 			return;
 		}
-		
-		for (String channelId : channels) {
-			Assert
-					.isTrue(
-							broker.getChannelIds().contains(channelId),
-							"The channel "
-									+ channelId
-									+ " is not known to the MessageBroker "
-									+ broker.getId()
-									+ " and cannot be set on the destination "
-									+ getServiceId());
-		}
-		destination.setChannels(CollectionUtils.arrayToList(channels));
+
+		remotingService.removeDestination(destinationId);
 	}
 
-	private void configureExcludes(RemotingDestination destination) {
+	private void configureExcludes(Destination destination) {
 
 		if (excludeMethods == null) {
 			return;
@@ -167,7 +133,7 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 		}
 	}
 
-	private void configureIncludes(RemotingDestination destination) {
+	private void configureIncludes(Destination destination) {
 
 		if (includeMethods == null) {
 			return;
@@ -191,25 +157,6 @@ public class FlexRemotingServiceExporter implements FlexFactory,
 			remotingMethods.add(method);
 		}
 		return remotingMethods;
-	}
-
-	public void destroy() throws Exception {
-		if (broker == null || !broker.isStarted()) {
-			return;
-		}
-
-		RemotingService remotingService = (RemotingService) broker
-				.getServiceByType(RemotingService.class.getName());
-
-		if (remotingService == null) {
-			return;
-		}
-
-		remotingService.removeDestination(getServiceId());
-	}
-
-	private String getServiceId() {
-		return StringUtils.hasText(serviceId) ? serviceId : beanName;
 	}
 
 	private final class ServiceFactoryInstance extends FactoryInstance {

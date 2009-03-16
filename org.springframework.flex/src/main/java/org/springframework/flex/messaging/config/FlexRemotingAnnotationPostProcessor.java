@@ -40,7 +40,7 @@ public class FlexRemotingAnnotationPostProcessor implements
 	// --------------------------- Bean Configuration Properties -------------//
 	private static final String MESSAGE_BROKER_PROPERTY = "messageBroker";
 	private static final String SERVICE_PROPERTY = "service";
-	private static final String SERVICE_ID_PROPERTY = "serviceId";
+	private static final String SERVICE_ID_PROPERTY = "destinationId";
 	private static final String CHANNELS_PROPERTY = "channels";
 	private static final String INCLUDE_METHODS_PROPERTY = "includeMethods";
 	private static final String EXCLUDE_METHODS_PROPERTY = "excludeMethods";
