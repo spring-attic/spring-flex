@@ -46,7 +46,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String ENDPOINT_DEFINITION_SOURCE_CLASS_NAME = "org.springframework.flex.messaging.security.EndpointDefinitionSource";
 	private static final String REMOTING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.remoting.RemotingServiceConfigProcessor";
 	private static final String SESSION_FIXATION_CONFIGURER_CLASS_NAME = "org.springframework.flex.messaging.config.SessionFixationProtectionConfigurer";	
-	private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.config.FlexRemotingAnnotationPostProcessor";
+	private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.config.RemotingAnnotationPostProcessor";
 	
 	// --------------------------- XML Config Attributes ---------------------//
 	private static final String CONFIGURATION_MANAGER_ATTR = "configuration-manager";

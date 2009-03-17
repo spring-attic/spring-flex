@@ -14,7 +14,7 @@ import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
 
-public class RemoteServiceBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
+public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
 	
 	private MessageBroker broker;
 	

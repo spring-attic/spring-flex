@@ -7,20 +7,20 @@ import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 /**
- * Configures a {@link FlexRemotingServiceExporter} from a top-level <code>remote-service</code> tag.     
+ * Configures a {@link RemotingDestinationExporter} from a top-level <code>remote-service</code> tag.     
  * 
  * @author Jeremy Grelle
  */
-public class RemoteServiceBeanDefinitionParser extends RemoteServiceExporterBeanDefinitionFactory implements BeanDefinitionParser{
+public class RemotingDestinationBeanDefinitionParser extends RemotingDestinationExporterBeanDefinitionFactory implements BeanDefinitionParser{
 
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		return parseInternal(element, parserContext, element.getAttribute(REF_ATTR)).getBeanDefinition();
 	}
 	
-	protected void validateRemoteService(Element element,
+	protected void validateRemotingDestination(Element element,
 			ParserContext parserContext) {
 		if (!StringUtils.hasText(element.getAttribute(REF_ATTR))) {
-			parserContext.getReaderContext().error("A bean reference is required when using remote-service as a top-level tag.", element);
+			parserContext.getReaderContext().error("A bean reference is required when using remoting-destination as a top-level tag.", element);
 		}
 	}
 }

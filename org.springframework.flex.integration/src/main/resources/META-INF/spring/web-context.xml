@@ -24,11 +24,11 @@
 	</flex:message-broker>	
 	
 	<bean id="pingService" class="org.springframework.flex.integration.service.PingService">
-		<flex:remote-service  channels="my-amf, my-protected-amf, my-protected-by-id-amf" exclude-methods="foo"/>
+		<flex:remoting-destination  channels="my-amf, my-protected-amf, my-protected-by-id-amf" exclude-methods="foo"/>
 	</bean>
 	
 	<bean id="pingSecureService" class="org.springframework.flex.integration.service.PingService">
-		<flex:remote-service channels="my-amf"/>
+		<flex:remoting-destination channels="my-amf"/>
 		<security:intercept-methods>
 			<security:protect access="ROLE_ADMIN" method="*"/>
 		</security:intercept-methods>

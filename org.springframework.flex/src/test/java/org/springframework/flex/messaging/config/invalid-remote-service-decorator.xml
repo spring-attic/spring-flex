@@ -7,7 +7,7 @@
               http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
 	
 	<bean id="foo" class="java.lang.Object">
-		<flex:remote-service ref="foo"/>
+		<flex:remoting-destination ref="foo"/>
 	</bean>
 	 
 </beans>

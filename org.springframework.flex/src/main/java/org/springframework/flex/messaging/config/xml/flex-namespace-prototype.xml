@@ -17,18 +17,18 @@
 		<!--  <remoting-adapter class="foo.bar.CustomAdapter"/> -->
     </message-broker>
 
-    <remote-service message-broker="customId" ref="ping" service-id="pingRemote" exclude-methods="foo, bar" include-methods="baz"/>
-	<remote-service message-broker="customId" ref="productService" channels="my-amf, my-secure-amf"/>
+    <remoting-destination message-broker="customId" ref="ping" destination-id="pingRemote" exclude-methods="foo, bar" include-methods="baz"/>
+	<remoting-destination message-broker="customId" ref="productService" channels="my-amf, my-secure-amf"/>
 
     <!-- minimal version -->
     <message-broker>
     	<secured/>
     </message-broker>
 
-	<remote-service ref="ping"/>
-	<remote-service ref="productService"/>
+	<remoting-destination ref="ping"/>
+	<remoting-destination ref="productService"/>
 
 	<beans:bean id="foo" class="com.bar.MyClass">
-    	<remote-service/>
+    	<remoting-destination/>
 	</beans:bean>
 </beans:beans>

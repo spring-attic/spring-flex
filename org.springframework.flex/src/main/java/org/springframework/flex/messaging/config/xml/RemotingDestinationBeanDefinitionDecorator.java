@@ -8,11 +8,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Configures a {@link FlexRemotingServiceExporter} from a nested <code>remote-service</code> tag.     
+ * Configures a {@link RemotingDestinationExporter} from a nested <code>remote-service</code> tag.     
  * 
  * @author Jeremy Grelle
  */
-public class RemoteServiceBeanDefinitionDecorator extends RemoteServiceExporterBeanDefinitionFactory implements
+public class RemotingDestinationBeanDefinitionDecorator extends RemotingDestinationExporterBeanDefinitionFactory implements
 		BeanDefinitionDecorator {
 
 	public BeanDefinitionHolder decorate(Node node,
@@ -22,10 +22,10 @@ public class RemoteServiceBeanDefinitionDecorator extends RemoteServiceExporterB
 		return definition;
 	}
 	
-	protected void validateRemoteService(Element element,
+	protected void validateRemotingDestination(Element element,
 			ParserContext parserContext) {
 		if (StringUtils.hasText(element.getAttribute(REF_ATTR))) {
-			parserContext.getReaderContext().error("ref attribute not allowed when using remote-service as a nested tag.", element);
+			parserContext.getReaderContext().error("ref attribute not allowed when using remoting-destination as a nested tag.", element);
 		}
 	}
 }

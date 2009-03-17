@@ -6,6 +6,6 @@
               http://www.springframework.org/schema/flex 
               http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
       
-      <flex:remote-service/>
+      <flex:remoting-destination/>
               
 </beans>

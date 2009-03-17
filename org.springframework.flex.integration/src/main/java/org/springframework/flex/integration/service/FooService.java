@@ -1,20 +1,20 @@
 package org.springframework.flex.integration.service;
 
-import org.springframework.flex.messaging.remoting.FlexExclude;
-import org.springframework.flex.messaging.remoting.FlexInclude;
-import org.springframework.flex.messaging.remoting.FlexService;
+import org.springframework.flex.messaging.remoting.RemotingExclude;
+import org.springframework.flex.messaging.remoting.RemotingInclude;
+import org.springframework.flex.messaging.remoting.RemotingDestination;
 import org.springframework.stereotype.Component;
 
 @Component
-@FlexService
+@RemotingDestination
 public class FooService {
 
-	@FlexInclude
+	@RemotingInclude
 	public String bar() {
 		return "bar";
 	}
 	
-	@FlexExclude
+	@RemotingExclude
 	public String baz() {
 		return "baz";
 	}

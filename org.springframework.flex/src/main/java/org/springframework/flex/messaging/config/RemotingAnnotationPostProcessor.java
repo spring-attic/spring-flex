@@ -14,10 +14,10 @@ import org.springframework.beans.factory.generic.GenericBeanFactoryAccessor;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.flex.messaging.remoting.FlexExclude;
-import org.springframework.flex.messaging.remoting.FlexInclude;
-import org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter;
-import org.springframework.flex.messaging.remoting.FlexService;
+import org.springframework.flex.messaging.remoting.RemotingExclude;
+import org.springframework.flex.messaging.remoting.RemotingInclude;
+import org.springframework.flex.messaging.remoting.RemotingDestinationExporter;
+import org.springframework.flex.messaging.remoting.RemotingDestination;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -25,22 +25,22 @@ import org.springframework.util.ReflectionUtils.MethodCallback;
 
 /**
  * {@link BeanFactoryPostProcessor} implementation that searches the {@link BeanFactory} for
- * beans annotated with {@link FlexService} and adds a corresponding {@link FlexRemotingServiceExporter}
- * bean definition according to the attributes of the FlexService annotation and any methods found to
- * be marked with either the {@link FlexInclude} or {@link FlexExclude} annotation.
+ * beans annotated with {@link RemotingDestination} and adds a corresponding {@link RemotingDestinationExporter}
+ * bean definition according to the attributes of the RemotingDestination annotation and any methods found to
+ * be marked with either the {@link RemotingInclude} or {@link RemotingExclude} annotation.
  * 
  * <p>
  * This processor will be enabled automatically when using the message-broker tag of the xml config namespace.
  *
  * @author Jeremy Grelle
  */
-public class FlexRemotingAnnotationPostProcessor implements
+public class RemotingAnnotationPostProcessor implements
 		BeanFactoryPostProcessor {
 
 	// --------------------------- Bean Configuration Properties -------------//
 	private static final String MESSAGE_BROKER_PROPERTY = "messageBroker";
 	private static final String SERVICE_PROPERTY = "service";
-	private static final String SERVICE_ID_PROPERTY = "destinationId";
+	private static final String DESTINATION_ID_PROPERTY = "destinationId";
 	private static final String CHANNELS_PROPERTY = "channels";
 	private static final String INCLUDE_METHODS_PROPERTY = "includeMethods";
 	private static final String EXCLUDE_METHODS_PROPERTY = "excludeMethods";
@@ -50,29 +50,29 @@ public class FlexRemotingAnnotationPostProcessor implements
 		
 		GenericBeanFactoryAccessor accessor = new GenericBeanFactoryAccessor(beanFactory);
 		
-		Map<String, Object> remoteBeans = accessor.getBeansWithAnnotation(FlexService.class);
+		Map<String, Object> remoteBeans = accessor.getBeansWithAnnotation(RemotingDestination.class);
 		
 		if (remoteBeans.size() > 0) {
 			Assert.isInstanceOf(BeanDefinitionRegistry.class, beanFactory, 
-					"In order for services to be exported via the @FlexService annotation, the current BeanFactory must be a BeanDefinitionRegistry.");
+					"In order for services to be exported via the @RemotingDestination annotation, the current BeanFactory must be a BeanDefinitionRegistry.");
 		}
 		
 		BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 		
 		for (Entry<String, Object> beanEntry : remoteBeans.entrySet()) {
 			
-			BeanDefinitionBuilder exporterBuilder = BeanDefinitionBuilder.rootBeanDefinition(FlexRemotingServiceExporter.class);
+			BeanDefinitionBuilder exporterBuilder = BeanDefinitionBuilder.rootBeanDefinition(RemotingDestinationExporter.class);
 			exporterBuilder.getRawBeanDefinition().setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			
-			FlexService flexService = beanEntry.getValue().getClass().getAnnotation(FlexService.class);
+			RemotingDestination flexService = beanEntry.getValue().getClass().getAnnotation(RemotingDestination.class);
 			
 			
 			String messageBrokerId = StringUtils.hasText(flexService.messageBroker()) ? flexService.messageBroker() : BeanIds.MESSAGE_BROKER;
-			String serviceId = StringUtils.hasText(flexService.value()) ? flexService.value() : beanEntry.getKey();
+			String destinationId = StringUtils.hasText(flexService.value()) ? flexService.value() : beanEntry.getKey();
 			
 			exporterBuilder.addPropertyReference(MESSAGE_BROKER_PROPERTY, messageBrokerId);
 			exporterBuilder.addPropertyReference(SERVICE_PROPERTY, beanEntry.getKey());
-			exporterBuilder.addPropertyValue(SERVICE_ID_PROPERTY, serviceId);
+			exporterBuilder.addPropertyValue(DESTINATION_ID_PROPERTY, destinationId);
 			exporterBuilder.addPropertyValue(CHANNELS_PROPERTY, flexService.channels());
 			exporterBuilder.addPropertyValue(INCLUDE_METHODS_PROPERTY, extractIncludeMethods(beanEntry.getValue().getClass()));
 			exporterBuilder.addPropertyValue(EXCLUDE_METHODS_PROPERTY, extractExcludeMethods(beanEntry.getValue().getClass()));
@@ -106,13 +106,13 @@ public class FlexRemotingAnnotationPostProcessor implements
 	
 	private static class FlexExcludeFilter implements ReflectionUtils.MethodFilter {
 		public boolean matches(Method method) {
-			return method.getAnnotation(FlexExclude.class) != null;
+			return method.getAnnotation(RemotingExclude.class) != null;
 		}
 	}
 	
 	private static class FlexIncludeFilter implements ReflectionUtils.MethodFilter {
 		public boolean matches(Method method) {
-			return method.getAnnotation(FlexInclude.class) != null;
+			return method.getAnnotation(RemotingInclude.class) != null;
 		}
 	}
 }

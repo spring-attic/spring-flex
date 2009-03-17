@@ -131,7 +131,7 @@ will be to use child <mapping> elements to provide custom paths to the default S
 		</xsd:complexType>
 	</xsd:element>
 	
-	<xsd:element name="remote-service">
+	<xsd:element name="remoting-destination">
 		<xsd:annotation>
 			<xsd:documentation>
 				<![CDATA[
@@ -160,7 +160,7 @@ explicit id has been specified for the MessageBroker.
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="service-id" type="xsd:string">
+			<xsd:attribute name="destination-id" type="xsd:string">
 				<xsd:annotation>
 					<xsd:documentation>
 						<![CDATA[

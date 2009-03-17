@@ -40,7 +40,7 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  * @author Jeremy Grelle
  * @author Mark Fisher
  */
-public class FlexRemotingServiceExporter extends AbstractDestinationExporter implements FlexFactory {
+public class RemotingDestinationExporter extends AbstractDestinationExporter implements FlexFactory {
 
 	private Object service;
 

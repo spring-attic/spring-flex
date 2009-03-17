@@ -11,11 +11,11 @@ import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
 
-public class FlexRemotingServiceExporterTests extends AbstractMessageBrokerTests {
+public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests {
 
 	private static final String DEFAULT_SERVICE_ID = "myServiceExporter";
 
-	FlexRemotingServiceExporter exporter;
+	RemotingDestinationExporter exporter;
 
 	Object testService = new StubService();
 
@@ -170,7 +170,7 @@ public class FlexRemotingServiceExporterTests extends AbstractMessageBrokerTests
 
 	private void configureExporter() throws Exception {
 
-		exporter = new FlexRemotingServiceExporter();
+		exporter = new RemotingDestinationExporter();
 		exporter.setBeanName(DEFAULT_SERVICE_ID);
 		exporter.setMessageBroker(getMessageBroker());
 		exporter.setService(testService);

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * Method-level annotation to mark a method as excluded when exposing the object for AMF-based remoting 
- * using the @{@link FlexService} annotation. 
+ * using the @{@link RemotingDestination} annotation. 
  * 
  * @author Jeremy Grelle
  */
@@ -17,6 +17,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface FlexExclude {
+public @interface RemotingExclude {
 
 }

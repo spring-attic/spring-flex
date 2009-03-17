@@ -11,17 +11,17 @@
         
         <context:component-scan base-package="org.springframework.flex.messaging.config"/>
         
-        <flex:remote-service ref="remoteBean1"/>
+        <flex:remoting-destination ref="remoteBean1"/>
         
         <flex:message-broker id="remoteServiceBroker"/>
         
-        <flex:remote-service message-broker="remoteServiceBroker" ref="remoteBean1" service-id="exportedRemoteBean1" 
+        <flex:remoting-destination message-broker="remoteServiceBroker" ref="remoteBean1" destination-id="exportedRemoteBean1" 
         	channels="my-amf, my-secure-amf" include-methods="foo, bar" exclude-methods="baz, zoo"/>
         
-        <bean id="remoteBean1" class="org.springframework.flex.messaging.config.xml.RemoteServiceBeanDefinitionParserTests$Bean1"/>
+        <bean id="remoteBean1" class="org.springframework.flex.messaging.config.xml.RemotingDestinationBeanDefinitionParserTests$Bean1"/>
         
-        <bean id="annotatedRemoteBean1" class="org.springframework.flex.messaging.config.FlexRemotingAnnotationPostProcessorTests$MyService1"/>
+        <bean id="annotatedRemoteBean1" class="org.springframework.flex.messaging.config.RemotingAnnotationPostProcessorTests$MyService1"/>
         
-        <bean id="annotatedRemoteBean2" class="org.springframework.flex.messaging.config.FlexRemotingAnnotationPostProcessorTests$MyService2"/>
+        <bean id="annotatedRemoteBean2" class="org.springframework.flex.messaging.config.RemotingAnnotationPostProcessorTests$MyService2"/>
                   
 </beans> 

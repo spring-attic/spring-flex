@@ -20,7 +20,7 @@ import org.springframework.flex.messaging.config.BeanIds;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface FlexService {
+public @interface RemotingDestination {
 
 	/**
 	 * The id of the remoting destination.  This corresponds to the "destination" property that will be set on the 
