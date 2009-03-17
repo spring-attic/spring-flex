@@ -8,15 +8,14 @@ public class ManageableComponentFactoryBeanTests extends TestCase {
 
 	private ManageableComponentFactoryBean factoryBean;
 	
-	public void setUp() throws Exception {
-		super.setUp();
-	}
-	
-	public void testComponentCreationAndInitialization() {
+	public void testComponentCreationAndInitialization() throws Exception {
 		factoryBean = new ManageableComponentFactoryBean(CustomManageableComponent.class);
+		ManageableComponent component = (ManageableComponent) factoryBean.getObject();
+		assertNotNull(component);
+		assertTrue(((CustomManageableComponent)component).initialized);
 	}
 	
-	private class CustomManageableComponent extends ManageableComponent {
+	private static class CustomManageableComponent extends ManageableComponent {
 
 		boolean initialized = false;
 		

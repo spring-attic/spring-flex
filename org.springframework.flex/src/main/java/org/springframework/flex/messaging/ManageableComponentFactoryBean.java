@@ -3,7 +3,6 @@ package org.springframework.flex.messaging;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
 
 import flex.management.ManageableComponent;
 import flex.messaging.config.ConfigMap;
@@ -18,13 +17,11 @@ import flex.messaging.config.ConfigMap;
  * 
  * @author Jeremy Grelle
  */
-public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAware, InitializingBean{
+public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAware{
 
 	private ConfigMap properties = new ConfigMap();
 	
 	private String beanName;
-	
-	private ManageableComponent component;
 	
 	private Class<? extends ManageableComponent> componentClass;
 	
@@ -33,12 +30,9 @@ public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAwar
 	}
 	
 	public Object getObject() throws Exception {
-		return component;
-	}
-	
-	public void afterPropertiesSet() throws Exception {
-		component = (ManageableComponent) BeanUtils.instantiateClass(componentClass);
+		ManageableComponent component = (ManageableComponent) BeanUtils.instantiateClass(componentClass);
 		component.initialize(beanName, properties);
+		return component;
 	}
 
 	public Class<?> getObjectType() {
@@ -46,11 +40,11 @@ public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAwar
 	}
 
 	/**
-	 * It is expected that objects created by this factory are thread-safe and can be
-	 * configured as singletons.
+	 * It is expected that objects created by this factory will always
+	 * be prototype instances.
 	 */
 	public final boolean isSingleton() {
-		return true;
+		return false;
 	}
 
 	public void setBeanName(String name) {
