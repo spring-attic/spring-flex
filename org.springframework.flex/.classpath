@@ -78,5 +78,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/com.springsource.server.ide.server.core.runtime.classpath/SpringSource dm Server (Runtime) v1.0.1"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.transaction/2.5.6.A/org.springframework.transaction-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.transaction/2.5.6.A/org.springframework.transaction-sources-2.5.6.A.jar"/>
+	<classpathentry kind="var" path="FLEX_LOCAL_IVY_CACHE/org.codehaus.jackson/org.codehaus.jackson/0.9.9/org.codehaus.jackson-0.9.9.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

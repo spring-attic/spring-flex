@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivysettings>
+
+	<typedef name="s3" classname="org.springframework.aws.ivy.S3Resolver"/>
+
+	<settings defaultResolver="external-lookup" defaultLatestStrategy="latest-lexico"/>
+
+	<caches resolutionCacheDir="${ivy.cache.dir}/resolution" repositoryCacheDir="${ivy.cache.dir}/repository"
+			ivyPattern="[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"
+			artifactPattern="[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"
+			useOrigin="true" checkUpToDate="false"/>
+
+	<macrodef name="s3repo">
+		<attribute name="bucket"/>
+		<attribute name="artifact.type"/>
+		<attribute name="release.type"/>
+		<s3 allownomd="false" accessKey="${accessKey}" secretKey="${secretKey}">
+			<ivy pattern="s3://@{bucket}/ivy/@{artifact.type}/@{release.type}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+			<artifact pattern="s3://@{bucket}/ivy/@{artifact.type}/@{release.type}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+		</s3>
+	</macrodef>
+
+	<resolvers>
+<!-- Integration repositories -->
+		<filesystem name="integration">
+			<ivy pattern="${integration.repo.dir}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+			<artifact pattern="${integration.repo.dir}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+		</filesystem>
+		
+		<filesystem name="local">
+			<artifact pattern="${ivy.local.repo.dir}/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+		</filesystem>
+
+<!-- Lookup repositories -->
+		<chain name="external-lookup" returnFirst="true">
+			<resolver ref="integration"/>
+			<resolver ref="local"/>
+			<s3repo name="bundle-external-repository"	bucket="repository.springsource.com" artifact.type="bundles" release.type="external"/>
+			<s3repo name="library-external-repository"	bucket="repository.springsource.com" artifact.type="libraries" release.type="external"/>
+		</chain>
+
+		<chain name="spring-portfolio-lookup" returnFirst="true">
+			<resolver ref="integration"/>
+			<resolver ref="local"/>
+			<s3repo name="bundle-release-repository"	bucket="repository.springsource.com" artifact.type="bundles" release.type="release"/>
+			<s3repo name="bundle-milestone-repository"	bucket="repository.springsource.com" artifact.type="bundles" release.type="milestone"/>
+			<s3repo name="bundle-snapshot-repository"	bucket="repository.springsource.com" artifact.type="bundles" release.type="snapshot"/>
+			<s3repo name="library-release-repository"	bucket="repository.springsource.com" artifact.type="libraries" release.type="release"/>
+			<s3repo name="library-milestone-repository"	bucket="repository.springsource.com" artifact.type="libraries" release.type="milestone"/>
+			<s3repo name="library-snapshot-repository"	bucket="repository.springsource.com" artifact.type="libraries" release.type="snapshot"/>
+		</chain>
+
+<!-- Publishing repositories -->
+		<s3repo name="spring-portfolio-publish"	bucket="${publish.bucket}" artifact.type="bundles" release.type="${adjusted.release.type}"/>
+	</resolvers>
+
+	<modules>
+		<module organisation="org.springframework.*"	name="*"			resolver="spring-portfolio-lookup"/>
+		<module organisation="com.springsource.*"		name="*"			resolver="spring-portfolio-lookup"/>
+	</modules>
+
+</ivysettings>

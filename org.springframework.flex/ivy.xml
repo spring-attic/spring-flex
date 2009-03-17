@@ -35,6 +35,9 @@
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.common" rev="3.2.0.3978" conf="compile->runtime"/>
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.http" rev="3.2.0.3978" conf="compile->runtime"/>
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.remoting" rev="3.2.0.3978" conf="compile->runtime"/>
+        
+        <!-- Dependencies missing from www.springsource.com/repository -->
+		<dependency org="org.codehaus.jackson" name="org.codehaus.jackson" rev="0.9.9" />
 
 		<!-- Optional runtime dependencies -->
 		<dependency org="org.springframework" name="org.springframework.transaction" rev="2.5.6.A" conf="optional->runtime" />
