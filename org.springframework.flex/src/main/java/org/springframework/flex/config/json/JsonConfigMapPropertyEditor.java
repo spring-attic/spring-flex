@@ -1,4 +1,4 @@
-package org.springframework.flex.messaging.config.json;
+package org.springframework.flex.config.json;
 
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
