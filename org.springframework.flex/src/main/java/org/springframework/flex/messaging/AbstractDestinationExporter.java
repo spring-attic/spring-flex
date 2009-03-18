@@ -44,7 +44,7 @@ public abstract class AbstractDestinationExporter implements InitializingBean, D
 		this.channels = StringUtils.trimArrayElements(channels);
 	}
 
-	private String getDestinationId() {
+	protected String getDestinationId() {
 		return StringUtils.hasText(destinationId) ? destinationId : beanName;
 	}
 
