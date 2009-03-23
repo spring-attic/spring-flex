@@ -1,8 +1,8 @@
 package org.springframework.flex.integration.service;
 
-import org.springframework.flex.messaging.remoting.RemotingExclude;
-import org.springframework.flex.messaging.remoting.RemotingInclude;
-import org.springframework.flex.messaging.remoting.RemotingDestination;
+import org.springframework.flex.remoting.RemotingDestination;
+import org.springframework.flex.remoting.RemotingExclude;
+import org.springframework.flex.remoting.RemotingInclude;
 import org.springframework.stereotype.Component;
 
 @Component
