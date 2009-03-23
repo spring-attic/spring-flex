@@ -50,4 +50,9 @@ public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAwar
 	public void setBeanName(String name) {
 		this.beanName = name;		
 	}
+	
+	public void setProperties(ConfigMap properties) {
+		this.properties = properties;
+	}
+
 }

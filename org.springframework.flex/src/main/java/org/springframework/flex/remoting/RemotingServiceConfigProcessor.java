@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -16,6 +19,7 @@ import flex.messaging.MessageBroker;
 import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.Endpoint;
 import flex.messaging.services.RemotingService;
+import flex.messaging.services.ServiceAdapter;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 
 /**
@@ -33,16 +37,26 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
  * @author Jeremy Grelle
  */
 public class RemotingServiceConfigProcessor implements
-		MessageBrokerConfigProcessor {
+		MessageBrokerConfigProcessor, BeanFactoryAware {
 
 	private static final Log log = LogFactory
 			.getLog(RemotingServiceConfigProcessor.class);
 
 	private static final String DEFAULT_REMOTING_SERVICE_ID = "remoting-service";
+	
+	private static final String DEFAULT_ADAPTER_CLASS = JavaAdapter.class.getName();
+	
+	private static final String DEFAULT_DEFAULT_ADAPTER_ID = "java-object"; 
 
-	private String defaultAdapterId = "java-object";
-	private String defaultAdapterClass = JavaAdapter.class.getName();
+	private String defaultAdapterId = DEFAULT_DEFAULT_ADAPTER_ID;
+	
 	private String[] defaultChannels;
+	
+	private BeanFactory beanFactory;
+	
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;		
+	}
 	
 	/**
 	 * Set the id for the default adapter to be installed in the RemotingService.  Defaults to "java-object".
@@ -50,15 +64,6 @@ public class RemotingServiceConfigProcessor implements
 	 */
 	public void setDefaultAdapterId(String defaultAdapterId) {
 		this.defaultAdapterId = defaultAdapterId;
-	}
-
-	/**
-	 * Set the fully qualified class name for the default adapter class to be installed in the RemotingService.  Defaults
-	 * to "flex.messaging.services.remoting.adapters.JavaAdapter".
-	 * @param defaultAdapterClass the class of the default adapter
-	 */
-	public void setDefaultAdapterClass(String defaultAdapterClass) {
-		this.defaultAdapterClass = defaultAdapterClass;
 	}
 
 	/**
@@ -100,7 +105,13 @@ public class RemotingServiceConfigProcessor implements
 			remotingService = (RemotingService) broker.createService(
 					DEFAULT_REMOTING_SERVICE_ID, RemotingService.class
 							.getName());
-			remotingService.registerAdapter(defaultAdapterId,defaultAdapterClass);
+			if (DEFAULT_DEFAULT_ADAPTER_ID.equals(defaultAdapterId)) {
+				remotingService.registerAdapter(defaultAdapterId, DEFAULT_ADAPTER_CLASS);
+			} else {
+				Assert.isAssignable(ServiceAdapter.class, beanFactory.getType(defaultAdapterId), "A custom default adapter id must refer to a valid Spring bean that " +
+						"is a subclass of "+ServiceAdapter.class.getName()+".  ");
+				remotingService.registerAdapter(defaultAdapterId,CustomSpringAdapter.class.getName());
+			}
 			remotingService.setDefaultAdapter(defaultAdapterId);
 			if (!ObjectUtils.isEmpty(defaultChannels)) {
 				addDefaultChannels(broker, remotingService);
@@ -163,6 +174,18 @@ public class RemotingServiceConfigProcessor implements
 		log
 				.warn("No appropriate default channels were detected for the RemotingService.  "
 						+ "The channels must be explicitly set on any exported service.");
+	}
+	
+	/**
+	 * This is simply a marker to denote that a Spring-managed adapter will be injected at the
+	 * proper initialization point.
+	 */
+	private static final class CustomSpringAdapter {
+		public CustomSpringAdapter() {
+			throw new UnsupportedOperationException("This adapter class should never be instantiated directly by BlazeDS.  " +
+					"It is only a placeholder to denote that a Spring-managed adapter should be injected when a RemotingDestination is" +
+					"initialized.");
+		}
 	}
 
 }

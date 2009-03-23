@@ -1,5 +1,10 @@
 package org.springframework.flex.remoting;
 
+import static org.mockito.Mockito.*;
+
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
 import org.springframework.flex.remoting.RemotingServiceConfigProcessor;
@@ -11,6 +16,13 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
 public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTests {
 
 	private String servicesConfigPath;
+	
+	private @Mock BeanFactory beanFactory;
+	
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+	}
+	
 	
 	public void testRemotingServiceExists() throws Exception {
 		setDirty();
@@ -50,15 +62,34 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
 	public void testRemotingServiceAddedWithCustomDefaults() throws Exception {
 		setDirty();
 		RemotingServiceConfigProcessor processor = new RemotingServiceConfigProcessor();
-		processor.setDefaultAdapterClass(TestAdapter.class.getName());
+		processor.setBeanFactory(beanFactory);
 		processor.setDefaultAdapterId("my-adapter");
 		processor.setDefaultChannels(new String[] { "my-custom-default-amf" });
 		addStartupProcessor(processor);
 		servicesConfigPath = "classpath:org/springframework/flex/remoting/default-channels-config.xml";
+		
+		when(beanFactory.getType("my-adapter")).thenReturn(TestAdapter.class);
 
 		RemotingService remotingService = (RemotingService) getMessageBroker().getServiceByType(RemotingService.class.getName());
 		assertTrue("The default channel was not set",remotingService.getDefaultChannels().contains("my-custom-default-amf"));
 		assertEquals("The default adapter was not set", "my-adapter", remotingService.getDefaultAdapter());
+	}
+	
+	public void testRemotingServiceAddedWithInvalidDefaultId() throws Exception {
+		setDirty();
+		RemotingServiceConfigProcessor processor = new RemotingServiceConfigProcessor();
+		processor.setBeanFactory(beanFactory);
+		processor.setDefaultAdapterId("my-adapter");
+		processor.setDefaultChannels(new String[] { "my-custom-default-amf" });
+		addStartupProcessor(processor);
+		servicesConfigPath = "classpath:org/springframework/flex/remoting/default-channels-config.xml";
+		
+		try {
+			getMessageBroker().getServiceByType(RemotingService.class.getName());
+			fail("An error should be thrown.");
+		} catch(IllegalArgumentException ex) {
+			//expected
+		}
 	}
 	
 	public void testRemotingServiceAddedWithInvalidCustomChannels() throws Exception {

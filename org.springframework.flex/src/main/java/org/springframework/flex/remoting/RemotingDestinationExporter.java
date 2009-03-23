@@ -95,6 +95,8 @@ public class RemotingDestinationExporter extends AbstractDestinationExporter imp
 				.createDestination(destinationId);
 
 		destination.setFactory(this);
+		
+		
 		return destination;
 	}
 

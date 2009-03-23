@@ -28,6 +28,7 @@ import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageException;
+import flex.messaging.config.ConfigMap;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.security.LoginCommand;
 import flex.messaging.services.RemotingService;
@@ -167,13 +168,13 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 		assertNotNull("RemotingService not found", remotingService);
 		String defaultAdapterId = remotingService.getDefaultAdapter();
 		assertEquals("Default adapter id not set on RemotingService", "my-default-adapter", defaultAdapterId);
-		assertEquals("Default adapter class not found", 
-				"org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter", 
-				remotingService.getRegisteredAdapters().get(defaultAdapterId));
 		List expectedChannels = new ArrayList();
 		expectedChannels.add("my-amf");
 		expectedChannels.add("my-secure-amf");
 		assertEquals("Default channels not set", expectedChannels, remotingService.getDefaultChannels());
+		
+		TestJavaAdapter adapter = (TestJavaAdapter) getApplicationContext().getBean(defaultAdapterId, TestJavaAdapter.class);
+		assertTrue(adapter.initialized);
 	}
 	
 	public static final class TestConfigurationManager extends FlexConfigurationManager{
@@ -216,6 +217,16 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 	}
 	
 	public static final class TestJavaAdapter extends JavaAdapter {
+
+		protected boolean initialized = false;
 		
+		@Override
+		public void initialize(String id, ConfigMap properties) {
+			ConfigMap foo = properties.getPropertyAsMap("foo", null);
+			assertNotNull(foo);
+			assertTrue(foo.getPropertyAsBoolean("bar", false));
+			assertEquals("moo", foo.getProperty("baz"));
+			initialized = true;
+		}
 	}
 }

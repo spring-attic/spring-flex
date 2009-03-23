@@ -348,16 +348,8 @@ The access configuration attributes that apply for any matching channel endpoint
 			<xsd:annotation>
 				<xsd:documentation>
 					<![CDATA[
-Sets a custom id for the default adapter of the RemotingService. 								
-]]>
-				</xsd:documentation>
-			</xsd:annotation>
-		</xsd:attribute>
-		<xsd:attribute name="default-adapter-class" type="xsd:string">
-			<xsd:annotation>
-				<xsd:documentation>
-					<![CDATA[
-Sets a custom class for the default adapter of the RemotingService.								
+Sets a reference to a custom Spring-managed ServiceAdapter (usually configured via a ManageableComponentFactoryBean) to be 
+used as the default adapter for exported remoting destinations.								
 ]]>
 				</xsd:documentation>
 			</xsd:annotation>
