@@ -1,13 +1,18 @@
 package org.springframework.flex.remoting;
 
+import static org.mockito.Mockito.*;
+
 import java.util.Iterator;
 
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
-import org.springframework.flex.remoting.RemotingDestinationExporter;
 import org.springframework.util.CollectionUtils;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
+import flex.messaging.services.ServiceAdapter;
 import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
@@ -19,12 +24,16 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 	RemotingDestinationExporter exporter;
 
 	Object testService = new StubService();
+	
+	private @Mock BeanFactory beanFactory;
 
 	public void setUp() throws Exception {
 		if (getCurrentConfigPath() != getServicesConfigPath()){
 			setDirty();
 		}		
 		configureExporter();
+		MockitoAnnotations.initMocks(this);
+		exporter.setBeanFactory(beanFactory);
 	}
 
 	public void tearDown() throws Exception {
@@ -54,6 +63,43 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 		exporter.afterPropertiesSet();
 
 		assertNotNull("RemotingDestination not registered", remotingService.getDestination(destinationId));
+	}
+	
+	public void testDestinationConfiguredWithSpringManagedDefaultAdapter() throws Exception {
+		
+		String adapterId = "java-object";
+		ServiceAdapter springAdapter = new TestAdapter();
+		springAdapter.setId(adapterId);
+		when(beanFactory.containsBean(adapterId)).thenReturn(true);
+		when(beanFactory.getBean(adapterId, ServiceAdapter.class)).thenReturn(springAdapter);
+		
+		RemotingService remotingService = getRemotingService();
+
+		exporter.afterPropertiesSet();
+
+		RemotingDestination remotingDestination = (RemotingDestination) remotingService
+				.getDestination(DEFAULT_SERVICE_ID);
+		
+		assertSame(springAdapter, remotingDestination.getAdapter());
+	}
+	
+	public void testDestinationConfiguredWithSpringManagedCustomAdapter() throws Exception {
+		
+		String adapterId = "my-adapter";
+		ServiceAdapter springAdapter = new TestAdapter();
+		springAdapter.setId(adapterId);
+		when(beanFactory.containsBean(adapterId)).thenReturn(true);
+		when(beanFactory.getBean(adapterId, ServiceAdapter.class)).thenReturn(springAdapter);
+		
+		RemotingService remotingService = getRemotingService();
+
+		exporter.setServiceAdapter(adapterId);
+		exporter.afterPropertiesSet();
+
+		RemotingDestination remotingDestination = (RemotingDestination) remotingService
+				.getDestination(DEFAULT_SERVICE_ID);
+		
+		assertSame(springAdapter, remotingDestination.getAdapter());
 	}
 
 	public void testDestinationConfiguredWithNullService() throws Exception {
@@ -177,10 +223,12 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 		exporter.setService(testService);
 	}
 
-	private class StubService {
+	private static final class StubService {
 
 		public String retreiveStringValue() {
 			return "foo";
 		}
 	}
+	
+	private static final class TestAdapter extends JavaAdapter { }
 }

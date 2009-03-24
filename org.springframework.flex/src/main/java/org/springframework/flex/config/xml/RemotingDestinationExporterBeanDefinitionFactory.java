@@ -20,20 +20,19 @@ abstract class RemotingDestinationExporterBeanDefinitionFactory {
 	protected static final String REMOTING_DESTINATION_EXPORTER_CLASS_NAME = "org.springframework.flex.remoting.RemotingDestinationExporter";
 		
 	// --------------------------- XML Config Attributes ---------------------//
-	protected static final String MESSAGE_BROKER_ATTR = "message-broker";
-	protected static final String REF_ATTR = "ref";
-	protected static final String DESTINATION_ID_ATTR = "destination-id";
-	protected static final String CHANNELS_ATTR = "channels";
-	protected static final String INCLUDE_METHODS_ATTR = "include-methods";
-	protected static final String EXCLUDE_METHODS_ATTR = "exclude-methods";
+	private static final String MESSAGE_BROKER_ATTR = "message-broker";
+	private static final String DESTINATION_ID_ATTR = "destination-id";
+	private static final String CHANNELS_ATTR = "channels";
+	private static final String INCLUDE_METHODS_ATTR = "include-methods";
+	private static final String EXCLUDE_METHODS_ATTR = "exclude-methods";
+	private static final String SERVICE_ADAPTER_ATTR = "service-adapter";
 
+	protected static final String REF_ATTR = "ref";
+	
 	// --------------------------- Bean Configuration Properties -------------//
-	protected static final String MESSAGE_BROKER_PROPERTY = "messageBroker";
-	protected static final String SERVICE_PROPERTY = "service";
-	protected static final String DESTINATION_ID_PROPERTY = "destinationId";
-	protected static final String CHANNELS_PROPERTY = "channels";
-	protected static final String INCLUDE_METHODS_PROPERTY = "includeMethods";
-	protected static final String EXCLUDE_METHODS_PROPERTY = "excludeMethods";
+	private static final String MESSAGE_BROKER_PROPERTY = "messageBroker";
+	private static final String SERVICE_PROPERTY = "service";
+	private static final String DESTINATION_ID_PROPERTY = "destinationId";
 	
 	protected BeanDefinitionHolder parseInternal(Element element, ParserContext parserContext, String exportedBeanReference) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(REMOTING_DESTINATION_EXPORTER_CLASS_NAME);
@@ -52,7 +51,7 @@ abstract class RemotingDestinationExporterBeanDefinitionFactory {
 		brokerId = StringUtils.hasText(brokerId) ? brokerId : BeanIds.MESSAGE_BROKER; 
 		builder.addPropertyReference(MESSAGE_BROKER_PROPERTY, brokerId);
 
-		ParsingUtils.mapOptionalAttributes(element, builder, CHANNELS_ATTR, INCLUDE_METHODS_ATTR, EXCLUDE_METHODS_ATTR);
+		ParsingUtils.mapOptionalAttributes(element, builder, CHANNELS_ATTR, INCLUDE_METHODS_ATTR, EXCLUDE_METHODS_ATTR, SERVICE_ADAPTER_ATTR);
 		
 		String beanName = ParsingUtils.registerInfrastructureComponent(element, parserContext, builder);
 		

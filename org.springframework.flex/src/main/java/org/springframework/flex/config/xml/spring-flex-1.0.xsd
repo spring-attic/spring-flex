@@ -198,6 +198,16 @@ A comma-separated list of names of the methods that will be excluded from remote
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
+			<xsd:attribute name="service-adapter" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+A reference to a custom Spring-managed ServiceAdapter (usually created via a ManageableComponentFactoryBean) to be used when 
+invoking methods on this destination.  Optional.								
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 	

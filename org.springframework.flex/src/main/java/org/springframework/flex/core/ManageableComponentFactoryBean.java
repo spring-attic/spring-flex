@@ -31,6 +31,7 @@ public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAwar
 	
 	public Object getObject() throws Exception {
 		ManageableComponent component = (ManageableComponent) BeanUtils.instantiateClass(componentClass);
+		component.setId(beanName);
 		component.initialize(beanName, properties);
 		return component;
 	}

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
@@ -33,7 +34,7 @@ import org.w3c.dom.Element;
  */
 public class MessageBrokerBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
-
+	
 	// --------------------------- Full qualified class names ----------------//
 	private static final String MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME = "org.springframework.flex.core.MessageBrokerFactoryBean";
 	private static final String MESSAGE_BROKER_HANDLER_ADAPTER_CLASS_NAME = "org.springframework.flex.servlet.MessageBrokerHandlerAdapter";
@@ -47,6 +48,9 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String REMOTING_PROCESSOR_CLASS_NAME = "org.springframework.flex.remoting.RemotingServiceConfigProcessor";
 	private static final String SESSION_FIXATION_CONFIGURER_CLASS_NAME = "org.springframework.flex.config.SessionFixationProtectionConfigurer";	
 	private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
+	private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
+	private static final String JSON_CONFIG_MAP_EDITOR_CLASS_NAME = "org.springframework.flex.config.json.JsonConfigMapPropertyEditor";
+	private static final String CONFIG_MAP_CLASS_NAME = "flex.messaging.config.ConfigMap";
 	
 	// --------------------------- XML Config Attributes ---------------------//
 	private static final String CONFIGURATION_MANAGER_ATTR = "configuration-manager";
@@ -70,6 +74,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String ACCESS_MANAGER_PROPERTY = "accessDecisionManager";
 	private static final String OBJECT_DEF_SOURCE_PROPERTY = "objectDefinitionSource";
 	private static final String EXCEPTION_TRANSLATORS_PROPERTY = "exceptionTranslators";
+	private static final String CUSTOM_EDITORS_PROPERTY = "customEditors";
 
 	// --------------------------- XML Child Elements ------------------------//
 	private static final String MAPPING_PATTERN_ELEMENT = "mapping";
@@ -162,6 +167,8 @@ public class MessageBrokerBeanDefinitionParser extends
 		configProcessors.add(new RuntimeBeanReference(brokerId+BeanIds.REMOTING_PROCESSOR_SUFFIX));
 		
 		registerFlexRemotingAnnotationPostProcessorIfNecessary(source, parserContext);
+		
+		registerConfigMapEditorIfNecessary(source, parserContext);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -201,6 +208,19 @@ public class MessageBrokerBeanDefinitionParser extends
 			BeanDefinitionBuilder configurerBuilder = BeanDefinitionBuilder.genericBeanDefinition(SESSION_FIXATION_CONFIGURER_CLASS_NAME);
 			ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, configurerBuilder, BeanIds.SESSION_FIXATION_PROTECTION_CONFIGURER);			
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void registerConfigMapEditorIfNecessary(Element source,
+			ParserContext parserContext) {
+		if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.JSON_CONFIG_MAP_EDITOR_CONFIGURER)) {
+			BeanDefinitionBuilder configurerBuilder = BeanDefinitionBuilder.genericBeanDefinition(CUSTOM_EDITOR_CONFIGURER_CLASS_NAME);
+			ManagedMap editors = new ManagedMap();
+			editors.put(CONFIG_MAP_CLASS_NAME, JSON_CONFIG_MAP_EDITOR_CLASS_NAME);
+			configurerBuilder.addPropertyValue(CUSTOM_EDITORS_PROPERTY, editors);
+			ParsingUtils.registerInfrastructureComponent(source, parserContext, configurerBuilder, BeanIds.JSON_CONFIG_MAP_EDITOR_CONFIGURER);
+		}
+		
 	}
 
 	@SuppressWarnings("unchecked")

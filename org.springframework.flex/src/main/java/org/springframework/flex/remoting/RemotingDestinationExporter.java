@@ -3,6 +3,9 @@ package org.springframework.flex.remoting;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.flex.core.AbstractDestinationExporter;
 import org.springframework.flex.core.MessageBrokerFactoryBean;
 import org.springframework.util.Assert;
@@ -15,6 +18,7 @@ import flex.messaging.FlexFactory;
 import flex.messaging.MessageBroker;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.services.RemotingService;
+import flex.messaging.services.ServiceAdapter;
 import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
@@ -40,16 +44,24 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  * @author Jeremy Grelle
  * @author Mark Fisher
  */
-public class RemotingDestinationExporter extends AbstractDestinationExporter implements FlexFactory {
+public class RemotingDestinationExporter extends AbstractDestinationExporter implements FlexFactory, BeanFactoryAware {
 
 	private Object service;
 
 	private String[] includeMethods;
 
 	private String[] excludeMethods;
+	
+	private BeanFactory beanFactory;
+	
+	private String serviceAdapter;
 
 	public void setService(Object service) {
 		this.service = service;
+	}
+	
+	public void setServiceAdapter(String serviceAdapter) {
+		this.serviceAdapter = serviceAdapter;
 	}
 
 	public void setIncludeMethods(String[] includeMethods) {
@@ -79,6 +91,10 @@ public class RemotingDestinationExporter extends AbstractDestinationExporter imp
 	public void initialize(String id, ConfigMap configMap) {
 		// No-op
 	}
+	
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+	}
 
 	@Override
 	protected Destination createDestination(String destinationId, MessageBroker broker) {
@@ -96,6 +112,11 @@ public class RemotingDestinationExporter extends AbstractDestinationExporter imp
 
 		destination.setFactory(this);
 		
+		String adapterId = StringUtils.hasText(serviceAdapter) ? serviceAdapter : remotingService.getDefaultAdapter();
+		if (beanFactory.containsBean(adapterId)) {
+			ServiceAdapter adapter = (ServiceAdapter) beanFactory.getBean(adapterId, ServiceAdapter.class);
+			destination.setAdapter(adapter);
+		}
 		
 		return destination;
 	}
@@ -104,8 +125,8 @@ public class RemotingDestinationExporter extends AbstractDestinationExporter imp
 	protected void initializeDestination(Destination destination) {
 		destination.start();
 
-		Assert.isInstanceOf(JavaAdapter.class, destination.getAdapter(),
-				"Spring beans exported as a RemotingDestination require a JavaAdapter.");
+		Assert.isInstanceOf(ServiceAdapter.class, destination.getAdapter(),
+				"Spring beans exported as a RemotingDestination requires a ServiceAdapter.");
 
 		configureIncludes(destination);
 		configureExcludes(destination);

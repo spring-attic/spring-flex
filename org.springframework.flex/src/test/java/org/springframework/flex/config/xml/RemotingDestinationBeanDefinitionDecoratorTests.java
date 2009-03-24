@@ -7,6 +7,7 @@ import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.flex.config.AbstractFlexConfigurationTests;
 import org.springframework.flex.config.BeanIds;
+import org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests.TestAdapter;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -37,6 +38,8 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
 		assertNotNull("Destination not found", rd);
 		String[] channels = new String[] {"my-amf", "my-secure-amf"};
 		assertEquals("Channels not set",Arrays.asList(channels), rd.getChannels());
+		
+		assertTrue("Custom adapter not set", rd.getAdapter() instanceof TestAdapter);
 		
 		String[] includeNames = new String[]{ "foo", "bar" };
 		String[] excludeNames = new String[]{ "zoo", "baz" };

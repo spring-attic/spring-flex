@@ -38,6 +38,8 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
 		String[] channels = new String[] {"my-amf", "my-secure-amf"};
 		assertEquals("Channels not set",Arrays.asList(channels), rd.getChannels());
 		
+		assertTrue("Custom adapter not set", rd.getAdapter() instanceof TestAdapter);
+		
 		String[] includeNames = new String[]{ "foo", "bar" };
 		String[] excludeNames = new String[]{ "zoo", "baz" };
 		
@@ -73,4 +75,6 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
 		public String zoo() { return "zoo"; }
 		public String baz() { return "baz"; }
 	}
+	
+	public static final class TestAdapter extends JavaAdapter {}
 }

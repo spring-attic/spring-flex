@@ -27,4 +27,6 @@ public abstract class BeanIds {
 	public static final String SECURITY_PROCESSOR_SUFFIX = "SecurityProcessor";
 
 	public static final String REMOTING_PROCESSOR_SUFFIX = "RemotingProcessor";
+
+	public static final String JSON_CONFIG_MAP_EDITOR_CONFIGURER = "_jsonConfigMapEditorConfigurer";
 }

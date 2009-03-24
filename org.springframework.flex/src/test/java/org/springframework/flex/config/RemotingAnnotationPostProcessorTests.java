@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.springframework.flex.config.BeanIds;
+import org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests.TestAdapter;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.flex.remoting.RemotingExclude;
 import org.springframework.flex.remoting.RemotingInclude;
@@ -39,6 +40,8 @@ public class RemotingAnnotationPostProcessorTests extends
 		String[] channels = new String[] {"my-amf", "my-secure-amf"};
 		assertEquals("Channels not set",Arrays.asList(channels), rd.getChannels());
 		
+		assertTrue("Custom adapter not set", rd.getAdapter() instanceof TestAdapter);
+		
 		String[] includeNames = new String[]{ "foo", "bar" };
 		String[] excludeNames = new String[]{ "zoo", "baz" };
 		
@@ -71,7 +74,7 @@ public class RemotingAnnotationPostProcessorTests extends
 	@RemotingDestination
 	public static class MyService1 {}
 	
-	@RemotingDestination(value="exportedAnnotatedRemoteBean2", messageBroker="remoteServiceBroker", channels={"my-amf", "my-secure-amf"})
+	@RemotingDestination(value="exportedAnnotatedRemoteBean2", messageBroker="remoteServiceBroker", channels={"my-amf", "my-secure-amf"}, serviceAdapter="customAdapter1")
 	public static class MyService2 {
 		
 		@RemotingInclude

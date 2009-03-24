@@ -12,7 +12,7 @@
         
         <bean id="remoteBean3" class="org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionDecoratorTests$Bean1">
         	<flex:remoting-destination message-broker="remoteServiceBroker" destination-id="exportedRemoteBean3" 
-        		channels="my-amf, my-secure-amf" include-methods="foo, bar" exclude-methods="baz, zoo"/>
+        		channels="my-amf, my-secure-amf" include-methods="foo, bar" exclude-methods="baz, zoo" service-adapter="customAdapter1"/>
         </bean>
                   
 </beans>

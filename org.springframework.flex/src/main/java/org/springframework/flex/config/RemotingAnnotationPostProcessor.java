@@ -44,6 +44,8 @@ public class RemotingAnnotationPostProcessor implements
 	private static final String CHANNELS_PROPERTY = "channels";
 	private static final String INCLUDE_METHODS_PROPERTY = "includeMethods";
 	private static final String EXCLUDE_METHODS_PROPERTY = "excludeMethods";
+	private static final String SERVICE_ADAPTER_PROPERTY = "serviceAdapter";
+	
 	
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -64,18 +66,19 @@ public class RemotingAnnotationPostProcessor implements
 			BeanDefinitionBuilder exporterBuilder = BeanDefinitionBuilder.rootBeanDefinition(RemotingDestinationExporter.class);
 			exporterBuilder.getRawBeanDefinition().setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			
-			RemotingDestination flexService = beanEntry.getValue().getClass().getAnnotation(RemotingDestination.class);
+			RemotingDestination remotingDestination = beanEntry.getValue().getClass().getAnnotation(RemotingDestination.class);
 			
 			
-			String messageBrokerId = StringUtils.hasText(flexService.messageBroker()) ? flexService.messageBroker() : BeanIds.MESSAGE_BROKER;
-			String destinationId = StringUtils.hasText(flexService.value()) ? flexService.value() : beanEntry.getKey();
+			String messageBrokerId = StringUtils.hasText(remotingDestination.messageBroker()) ? remotingDestination.messageBroker() : BeanIds.MESSAGE_BROKER;
+			String destinationId = StringUtils.hasText(remotingDestination.value()) ? remotingDestination.value() : beanEntry.getKey();
 			
 			exporterBuilder.addPropertyReference(MESSAGE_BROKER_PROPERTY, messageBrokerId);
 			exporterBuilder.addPropertyReference(SERVICE_PROPERTY, beanEntry.getKey());
 			exporterBuilder.addPropertyValue(DESTINATION_ID_PROPERTY, destinationId);
-			exporterBuilder.addPropertyValue(CHANNELS_PROPERTY, flexService.channels());
+			exporterBuilder.addPropertyValue(CHANNELS_PROPERTY, remotingDestination.channels());
 			exporterBuilder.addPropertyValue(INCLUDE_METHODS_PROPERTY, extractIncludeMethods(beanEntry.getValue().getClass()));
 			exporterBuilder.addPropertyValue(EXCLUDE_METHODS_PROPERTY, extractExcludeMethods(beanEntry.getValue().getClass()));
+			exporterBuilder.addPropertyValue(SERVICE_ADAPTER_PROPERTY, remotingDestination.serviceAdapter());
 			
 			BeanDefinitionReaderUtils.registerWithGeneratedName(exporterBuilder.getBeanDefinition(), registry);
 		}

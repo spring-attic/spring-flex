@@ -46,4 +46,10 @@ public @interface RemotingDestination {
 	 * Only needed when overriding the default channels for the RemotingService.
 	 */
 	String[] channels() default {};
+	
+	/**
+	 * A reference to a custom Spring-managed ServiceAdapter (usually created via a ManageableComponentFactoryBean) 
+	 * to be used when invoking methods on this destination.
+	 */
+	String serviceAdapter() default "";
 }
