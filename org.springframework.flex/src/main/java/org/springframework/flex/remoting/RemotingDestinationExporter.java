@@ -3,6 +3,8 @@ package org.springframework.flex.remoting;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -46,6 +48,8 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  */
 public class RemotingDestinationExporter extends AbstractDestinationExporter implements FlexFactory, BeanFactoryAware {
 
+	private static final Log log = LogFactory.getLog(RemotingDestinationExporter.class);
+	
 	private Object service;
 
 	private String[] includeMethods;
@@ -118,6 +122,10 @@ public class RemotingDestinationExporter extends AbstractDestinationExporter imp
 			destination.setAdapter(adapter);
 		}
 		
+		if (log.isInfoEnabled()) {
+			log.info("Created remoting destination with id '"+destinationId+"'");
+		}
+		
 		return destination;
 	}
 
@@ -126,10 +134,14 @@ public class RemotingDestinationExporter extends AbstractDestinationExporter imp
 		destination.start();
 
 		Assert.isInstanceOf(ServiceAdapter.class, destination.getAdapter(),
-				"Spring beans exported as a RemotingDestination requires a ServiceAdapter.");
+				"Spring beans exported as a RemotingDestination require a ServiceAdapter.");
 
 		configureIncludes(destination);
 		configureExcludes(destination);
+		
+		if (log.isInfoEnabled()) {
+			log.info("Remoting destination '"+destination.getId()+"' has been started started successfully.");
+		}
 	}
 
 	@Override
@@ -139,6 +151,10 @@ public class RemotingDestinationExporter extends AbstractDestinationExporter imp
 
 		if (remotingService == null) {
 			return;
+		}
+		
+		if (log.isInfoEnabled()) {
+			log.info("Removing remoting destination '"+destinationId+"'");
 		}
 
 		remotingService.removeDestination(destinationId);
