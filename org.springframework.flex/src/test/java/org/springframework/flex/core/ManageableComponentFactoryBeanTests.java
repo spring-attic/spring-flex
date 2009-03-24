@@ -12,9 +12,11 @@ public class ManageableComponentFactoryBeanTests extends TestCase {
 	
 	public void testComponentCreationAndInitialization() throws Exception {
 		factoryBean = new ManageableComponentFactoryBean(CustomManageableComponent.class);
+		factoryBean.setBeanName("my-adapter");
 		ManageableComponent component = (ManageableComponent) factoryBean.getObject();
 		assertNotNull(component);
 		assertTrue(((CustomManageableComponent)component).initialized);
+		assertEquals("my-adapter", component.getId());
 	}
 	
 	private static class CustomManageableComponent extends ManageableComponent {
