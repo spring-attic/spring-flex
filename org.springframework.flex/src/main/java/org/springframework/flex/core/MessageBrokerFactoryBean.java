@@ -2,6 +2,7 @@ package org.springframework.flex.core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import org.springframework.flex.config.FlexConfigurationManager;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -177,6 +179,8 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 				null, servletConfig);
 
 		setupInternalPathResolver();
+		
+		setInitServletContext(); 
 
 		if (logger.isInfoEnabled()) {
 			logger.info(VersionInfo.buildMessage());
@@ -261,6 +265,15 @@ public class MessageBrokerFactoryBean implements FactoryBean,
 
 					}
 				});
+	}
+	
+	private void setInitServletContext() {
+		
+		//This is undesirable but necessary at the moment for LCDS to be able to load its license configuration.
+		//Hopefully we can get the BlazeDS/LCDS team to give us a better option in the future.
+		Method initMethod = ReflectionUtils.findMethod(MessageBroker.class, "setInitServletContext", new Class[] { ServletContext.class });
+		ReflectionUtils.makeAccessible(initMethod);
+		ReflectionUtils.invokeMethod(initMethod, messageBroker, new Object[] { servletContext });
 	}
 	
 	/**
