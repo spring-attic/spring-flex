@@ -6,6 +6,14 @@
         <service-include file-path="proxy-config.xml" />
         <service-include file-path="messaging-config.xml" />      
     </services> 
+    
+    <security>
+	    <security-constraint id="spring-security-users">
+	        <roles>
+	            <role>ROLE_USER</role>
+	        </roles>
+	    </security-constraint>
+	</security>
 
     <channels>
 
