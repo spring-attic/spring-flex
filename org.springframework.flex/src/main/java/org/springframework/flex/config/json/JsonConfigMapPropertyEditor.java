@@ -14,10 +14,10 @@ import flex.messaging.config.ConfigMap;
 
 /**
  * {@link PropertyEditor} implementation for parsing a JSON structure and converting
- * it to a new instance of {@link ConfigMap}.
+ * it to a new instance of {@link ConfigMap}.  This is a nice concise alternative to
+ * the arbitrary XML structure used in native BlazeDS XML configuration.  
  *   
  * @author Jeremy Grelle
- *
  */
 public class JsonConfigMapPropertyEditor extends PropertyEditorSupport {
 
