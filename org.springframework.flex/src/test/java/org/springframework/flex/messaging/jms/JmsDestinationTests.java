@@ -22,7 +22,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 
 import org.springframework.flex.core.AbstractMessageBrokerTests;
-import org.springframework.flex.messaging.MessagingDestinationExporter;
+import org.springframework.flex.messaging.MessageDestinationFactory;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
@@ -31,25 +31,25 @@ import flex.messaging.services.MessageService;
 /**
  * @author Mark Fisher
  */
-public class JmsDestinationExporterTests extends AbstractMessageBrokerTests {
+public class JmsDestinationTests extends AbstractMessageBrokerTests {
 
 	private static final String DEFAULT_ID = "testJmsDestinationExporter";
 
-	MessagingDestinationExporter exporter;
+	MessageDestinationFactory factory;
 
 
 	public void setUp() throws Exception {
-		configureExporter();
+		configureFactory();
 	}
 
 	public void tearDown() throws Exception {
-		exporter.destroy();
+		factory.destroy();
 	}
 
 
 	public void testDestinationRegisteredWithDefaultConfig() throws Exception {
 		MessageService messageService = getMessageService();
-		exporter.afterPropertiesSet();
+		factory.afterPropertiesSet();
 		MessageDestination messageDestination = (MessageDestination) messageService.getDestination(DEFAULT_ID);
 		assertNotNull("MessageDestination not registered", messageDestination);
 		assertTrue("MessageDestination not started", messageDestination.isStarted());
@@ -60,8 +60,8 @@ public class JmsDestinationExporterTests extends AbstractMessageBrokerTests {
 	public void testDestinationRegisteredWithDestinationId() throws Exception {
 		MessageService messageService = getMessageService();
 		String destinationId = "myDestination";
-		exporter.setDestinationId(destinationId);
-		exporter.afterPropertiesSet();
+		factory.setDestinationId(destinationId);
+		factory.afterPropertiesSet();
 		assertNotNull("MessageDestination not registered", messageService.getDestination(destinationId));
 	}
 
@@ -71,15 +71,15 @@ public class JmsDestinationExporterTests extends AbstractMessageBrokerTests {
 		return (MessageService) broker.getServiceByType(MessageService.class.getName());
 	}
 
-	private void configureExporter() throws Exception {
+	private void configureFactory() throws Exception {
 		JmsAdapter adapter = new JmsAdapter();
 		adapter.setBeanName("test-jms-adapter");
 		adapter.setConnectionFactory(new StubConnectionFactory());
 		adapter.setJmsDestination(new Destination() {});
 		adapter.afterPropertiesSet();
-		exporter = new MessagingDestinationExporter(adapter);
-		exporter.setBeanName(DEFAULT_ID);
-		exporter.setMessageBroker(getMessageBroker());
+		factory = new MessageDestinationFactory(adapter);
+		factory.setBeanName(DEFAULT_ID);
+		factory.setMessageBroker(getMessageBroker());
 	}
 
 
