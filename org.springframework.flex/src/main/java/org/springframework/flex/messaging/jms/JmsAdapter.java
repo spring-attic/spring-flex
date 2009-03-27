@@ -21,12 +21,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.adapter.MessageListenerAdapter;
+import org.springframework.jms.support.converter.MessageConverter;
+import org.springframework.jms.support.destination.DestinationResolver;
+import org.springframework.util.Assert;
 
 import flex.messaging.MessageClient;
 import flex.messaging.MessageClientListener;
@@ -36,38 +44,91 @@ import flex.messaging.services.MessageService;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
 /**
+ * A {@link MessagingAdapter} implementation that enables sending and receiving
+ * messages via JMS.
+ * 
  * @author Mark Fisher
  */
-class JmsAdapter extends MessagingAdapter implements MessageClientListener {
+public class JmsAdapter extends MessagingAdapter implements MessageClientListener, InitializingBean, BeanNameAware {
 
 	private final Log logger = LogFactory.getLog(getClass());
 
-	private final JmsTemplate jmsTemplate;
+	private volatile ConnectionFactory connectionFactory;
 
-	private final DefaultMessageListenerContainer messageListenerContainer;
+	private volatile Object destination;
+
+	private volatile boolean pubSubDomain;
+
+	private volatile MessageConverter messageConverter;
+
+	private final JmsTemplate jmsTemplate = new JmsTemplate();
+
+	private final DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
 
 	private final Set<Object> subscriberIds = new HashSet<Object>();
 
 	private final Map<Object, MessageClient> clientMap = new HashMap<Object, MessageClient>(); 
 
 
-	JmsAdapter(String id, JmsTemplate jmsTemplate) {
-		this.setId(id);
-		FlexMessageConverter flexMessageConverter =
-				new FlexMessageConverter(jmsTemplate.getMessageConverter());
-		jmsTemplate.setMessageConverter(flexMessageConverter);
-		this.jmsTemplate = jmsTemplate;
-		MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter();
-		messageListenerAdapter.setMessageConverter(flexMessageConverter);
-		messageListenerAdapter.setDelegate(this);
-		DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
-		messageListenerContainer.setConnectionFactory(jmsTemplate.getConnectionFactory());
-		messageListenerContainer.setDestination(jmsTemplate.getDefaultDestination());
-		messageListenerContainer.setMessageListener(messageListenerAdapter);
-		messageListenerContainer.setAutoStartup(false);
-		this.messageListenerContainer = messageListenerContainer;
+	public void setBeanName(String beanName) {
+		this.setId(beanName);
 	}
 
+	public void setConnectionFactory(ConnectionFactory connectionFactory) {
+		this.connectionFactory = connectionFactory;
+	}
+
+	public void setDestinationResolver(DestinationResolver destinationResolver) {
+		Assert.notNull(destinationResolver, "destinationResolver must not be null");
+		this.jmsTemplate.setDestinationResolver(destinationResolver);
+		this.messageListenerContainer.setDestinationResolver(destinationResolver);
+	}
+
+	public void setJmsDestination(Destination destination) {
+		this.destination = destination;
+	}
+
+	public void setQueueName(String queueName) {
+		this.destination = queueName;
+	}
+
+	public void setTopicName(String topicName) {
+		this.pubSubDomain = true;
+		this.destination = topicName;
+	}
+
+	public void setMessageConverter(MessageConverter messageConverter) {
+		this.messageConverter = messageConverter;
+	}
+
+	public void afterPropertiesSet() {
+		Assert.notNull(this.connectionFactory, "connectionFactory is required");
+		Assert.notNull(this.destination, "destination or destination name is required");
+		this.jmsTemplate.setConnectionFactory(this.connectionFactory);
+		MessageConverter converterToSet = this.messageConverter;
+		if (converterToSet == null || !(converterToSet instanceof FlexMessageConverter)) {
+			converterToSet = new FlexMessageConverter(converterToSet);
+		}
+		this.jmsTemplate.setMessageConverter(converterToSet);
+		MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter();
+		messageListenerAdapter.setMessageConverter(converterToSet);
+		messageListenerAdapter.setDelegate(this);
+		this.messageListenerContainer.setConnectionFactory(this.connectionFactory);
+		this.messageListenerContainer.setMessageListener(messageListenerAdapter);
+		this.messageListenerContainer.setAutoStartup(false);
+		if (this.destination instanceof Destination) {
+			this.jmsTemplate.setDefaultDestination((Destination) this.destination);
+			this.messageListenerContainer.setDestination((Destination) this.destination);
+		}
+		else {
+			this.jmsTemplate.setPubSubDomain(this.pubSubDomain);
+			this.jmsTemplate.setDefaultDestinationName((String) this.destination);
+			this.messageListenerContainer.setPubSubDomain(this.pubSubDomain);
+			this.messageListenerContainer.setDestinationName((String) this.destination);
+		}
+		this.jmsTemplate.afterPropertiesSet();
+		this.messageListenerContainer.afterPropertiesSet();
+	}
 
 	@Override
 	public void start() {

@@ -8,14 +8,15 @@ import flex.messaging.Destination;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.services.MessageService;
+import flex.messaging.services.messaging.adapters.ActionScriptAdapter;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
 /**
- * A base class for Messaging Destination exporters that expose a Spring-managed
- * bean to a Flex client for publish/subcribe messaging calls.
+ * A factory for Flex MessageDestinations that can be configured with a
+ * Spring-managed MessagingAdapter instance.
  * 
  * <p>
- * The exported destination will be exposed to the Flex client as a BlazeDS
+ * The destination will be exposed to the Flex client as a BlazeDS
  * {@link MessageDestination}. By default, the id of the destination will be
  * the same as the bean name of this exporter. This may be overridden using the
  * {@link #setDestinationId(String) 'destinationId'} property.
@@ -25,16 +26,28 @@ import flex.messaging.services.messaging.adapters.MessagingAdapter;
  * 
  * @author Mark Fisher
  */
-public abstract class AbstractMessagingDestinationExporter extends AbstractDestinationExporter {
+public class MessagingDestinationExporter extends AbstractDestinationExporter {
+
+	private final MessagingAdapter adapter;
+
+
+	public MessagingDestinationExporter() {
+		this(new ActionScriptAdapter());
+	}
+
+	public MessagingDestinationExporter(MessagingAdapter adapter) {
+		this.adapter = adapter;
+	}
+
 
 	@Override
 	protected Destination createDestination(String destinationId, MessageBroker broker) throws Exception {
 		MessageService messageService = (MessageService) broker.getServiceByType(MessageService.class.getName());
 		Assert.notNull(messageService, "Could not find a proper MessageService in the Flex MessageBroker.");
 		MessageDestination destination = (MessageDestination) messageService.createDestination(destinationId);
-		MessagingAdapter adapter = this.createAdapter();
-		Assert.notNull(adapter, "failed to create MessagingAdapter");
-		destination.setAdapter(adapter);
+		if (this.adapter != null) {
+			destination.setAdapter(this.adapter);
+		}
 		return destination;
 	}
 
@@ -52,10 +65,5 @@ public abstract class AbstractMessagingDestinationExporter extends AbstractDesti
 		}
 		messageService.removeDestination(destinationId);
 	}
-
-	/**
-	 * Subclasses must implement this method to create the actual MessagingAdapter.
-	 */
-	protected abstract MessagingAdapter createAdapter() throws Exception;
 
 }

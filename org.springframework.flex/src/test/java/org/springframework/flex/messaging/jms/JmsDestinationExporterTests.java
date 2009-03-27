@@ -22,8 +22,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 
 import org.springframework.flex.core.AbstractMessageBrokerTests;
-import org.springframework.flex.messaging.jms.JmsDestinationExporter;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.flex.messaging.MessagingDestinationExporter;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
@@ -36,7 +35,7 @@ public class JmsDestinationExporterTests extends AbstractMessageBrokerTests {
 
 	private static final String DEFAULT_ID = "testJmsDestinationExporter";
 
-	JmsDestinationExporter exporter;
+	MessagingDestinationExporter exporter;
 
 
 	public void setUp() throws Exception {
@@ -54,7 +53,7 @@ public class JmsDestinationExporterTests extends AbstractMessageBrokerTests {
 		MessageDestination messageDestination = (MessageDestination) messageService.getDestination(DEFAULT_ID);
 		assertNotNull("MessageDestination not registered", messageDestination);
 		assertTrue("MessageDestination not started", messageDestination.isStarted());
-		assertEquals("Default adapter not set", DEFAULT_ID + "-adapter", messageDestination.getAdapter().getId());
+		assertEquals("MessagingAdapter not set", "test-jms-adapter", messageDestination.getAdapter().getId());
 		assertTrue("No channels set on destination", messageDestination.getChannels().size() > 0);
 	}
 
@@ -73,21 +72,27 @@ public class JmsDestinationExporterTests extends AbstractMessageBrokerTests {
 	}
 
 	private void configureExporter() throws Exception {
-		exporter = new JmsDestinationExporter();
-		JmsTemplate jmsTemplate = new JmsTemplate();
-		jmsTemplate.setConnectionFactory(new ConnectionFactory() {
-			public Connection createConnection() throws JMSException {
-				return null;
-			}
-			public Connection createConnection(String userName, String password) throws JMSException {
-				return null;
-			}
-			
-		});
-		jmsTemplate.setDefaultDestination(new Destination() {});
-		exporter.setJmsTemplate(jmsTemplate);
+		JmsAdapter adapter = new JmsAdapter();
+		adapter.setBeanName("test-jms-adapter");
+		adapter.setConnectionFactory(new StubConnectionFactory());
+		adapter.setJmsDestination(new Destination() {});
+		adapter.afterPropertiesSet();
+		exporter = new MessagingDestinationExporter(adapter);
 		exporter.setBeanName(DEFAULT_ID);
 		exporter.setMessageBroker(getMessageBroker());
+	}
+
+
+	private static class StubConnectionFactory implements ConnectionFactory {
+
+		public Connection createConnection() throws JMSException {
+			return null;
+		}
+
+		public Connection createConnection(String userName, String password) throws JMSException {
+			return null;
+		}
+
 	}
 
 }
