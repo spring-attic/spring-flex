@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.flex.core.AbstractDestinationExporter;
+import org.springframework.flex.core.AbstractDestinationFactory;
 import org.springframework.flex.core.MessageBrokerFactoryBean;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -46,7 +46,7 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  * @author Jeremy Grelle
  * @author Mark Fisher
  */
-public class RemotingDestinationExporter extends AbstractDestinationExporter implements FlexFactory, BeanFactoryAware {
+public class RemotingDestinationExporter extends AbstractDestinationFactory implements FlexFactory, BeanFactoryAware {
 
 	private static final Log log = LogFactory.getLog(RemotingDestinationExporter.class);
 	

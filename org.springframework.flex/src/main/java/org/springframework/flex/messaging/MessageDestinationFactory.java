@@ -16,7 +16,7 @@
 
 package org.springframework.flex.messaging;
 
-import org.springframework.flex.core.AbstractDestinationExporter;
+import org.springframework.flex.core.AbstractDestinationFactory;
 import org.springframework.flex.core.MessageBrokerFactoryBean;
 import org.springframework.util.Assert;
 
@@ -42,7 +42,7 @@ import flex.messaging.services.messaging.adapters.MessagingAdapter;
  * 
  * @author Mark Fisher
  */
-public class MessageDestinationFactory extends AbstractDestinationExporter {
+public class MessageDestinationFactory extends AbstractDestinationFactory {
 
 	private final MessagingAdapter adapter;
 

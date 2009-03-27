@@ -12,12 +12,12 @@ import flex.messaging.Destination;
 import flex.messaging.MessageBroker;
 
 /**
- * Base class for Flex Destination exporters.
+ * Base class for Flex Destination factories.
  * 
  * @author Jeremy Grelle
  * @author Mark Fisher
  */
-public abstract class AbstractDestinationExporter implements InitializingBean, DisposableBean, BeanNameAware {
+public abstract class AbstractDestinationFactory implements InitializingBean, DisposableBean, BeanNameAware {
 
 	private volatile String destinationId;
 
