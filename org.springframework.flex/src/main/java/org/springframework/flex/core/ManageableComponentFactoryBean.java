@@ -8,12 +8,9 @@ import flex.management.ManageableComponent;
 import flex.messaging.config.ConfigMap;
 
 /**
- * {@link FactoryBean} that allows for the creation of BlazeDS {@link ManageableComponent} instances
- * with the appropriate {@link ManageableComponent#initialize(String, ConfigMap)} callback after creation.
- * 
- * <p>
- * The properties {@link ConfigMap} is expected to be populated from a JSON string as a concise alternative to
- * the arbitrary XML structure used in native BlazeDS XML configuration.
+ * {@link FactoryBean} that allows for the creation of BlazeDS {@link ManageableComponent} prototype instances
+ * with the appropriate {@link ManageableComponent#initialize(String, ConfigMap)} callback after creation.  Useful
+ * for configuring non-singleton helper objects such as a custom {@link JavaAdapter}.
  * 
  * @author Jeremy Grelle
  */
