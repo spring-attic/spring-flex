@@ -25,7 +25,7 @@ import flex.messaging.services.MessageService;
 import flex.messaging.services.messaging.adapters.ActionScriptAdapter;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
-public class SimpleMessageDestinationExporterTests extends AbstractMessageBrokerTests {
+public class SimpleMessageDestinationFactoryTests extends AbstractMessageBrokerTests {
 
 	SimpleMessageDestinationFactory exporter;
 	MessageService service;
@@ -35,6 +35,10 @@ public class SimpleMessageDestinationExporterTests extends AbstractMessageBroker
 	LoginManager originalLoginManager;
 	
 	public void setUp() throws Exception {
+		
+		if (!getServicesConfigPath().equals(getCurrentConfigPath())) {
+			setDirty();
+		}
 		
 		MockitoAnnotations.initMocks(this);
 		service = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
