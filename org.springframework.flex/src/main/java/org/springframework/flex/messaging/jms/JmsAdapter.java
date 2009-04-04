@@ -157,8 +157,8 @@ public class JmsAdapter extends MessagingAdapter implements MessageClientListene
 	void handleMessage(Message flexMessage) {
 		flexMessage.setDestination(this.getDestination().getId());
 		MessageService messageService = ((MessageService) getDestination().getService());
-		// NOTE: for now the message is sent to all subscribers and no selectors are evaluated
-		messageService.serviceMessageFromAdapter(flexMessage, true);
+        messageService.pushMessageToClients(flexMessage, true);
+        messageService.sendPushMessageFromPeer(flexMessage, true);
 	}
 
 	@Override
