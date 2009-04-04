@@ -2,7 +2,6 @@
 <services-config>
 
     <services>
-        <service-include file-path="remoting-config.xml" />
         <service-include file-path="proxy-config.xml" />
         <service-include file-path="messaging-config.xml" />        
 
@@ -34,7 +33,7 @@
         </channel-definition>
 
         <channel-definition id="my-polling-amf" class="mx.messaging.channels.AMFChannel">
-            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amfpolling" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/messagebroker/amfpolling" class="flex.messaging.endpoints.AMFEndpoint"/>
             <properties>
                 <polling-enabled>true</polling-enabled>
                 <polling-interval-seconds>4</polling-interval-seconds>

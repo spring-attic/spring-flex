@@ -4,6 +4,7 @@ import org.springframework.util.StringUtils;
 
 import flex.messaging.Destination;
 import flex.messaging.config.ConfigMap;
+import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
 public class SimpleMessageDestinationFactory extends
 		MessageDestinationFactory {
@@ -14,7 +15,17 @@ public class SimpleMessageDestinationFactory extends
 		this.properties = new ConfigMap();
 	}
 	
+	public SimpleMessageDestinationFactory(MessagingAdapter adapter) {
+		super(adapter);
+		this.properties = new ConfigMap();
+	}
+	
 	public SimpleMessageDestinationFactory(ConfigMap properties) {
+		this.properties = properties;
+	}
+	
+	public SimpleMessageDestinationFactory(MessagingAdapter adapter, ConfigMap properties) {
+		super(adapter);
 		this.properties = properties;
 	}
 	
