@@ -11,7 +11,7 @@
 		<xsd:documentation>
 			<![CDATA[
 Spring BlazeDS Integration Configuration Schema
-Authors: Jeremy Grelle
+Authors: Jeremy Grelle, Mark Fisher
 <br>
 A XML-based DSL for configuring Spring BlazeDS Integration.
 ]]>
@@ -210,7 +210,88 @@ invoking methods on this destination.  Optional.
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
-	
+
+	<xsd:element name="jms-message-destination">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[
+Creates a Flex MessageDestination backed by a Spring-managed JMS MessagingAdapter.
+Exactly one of the 'jms-destination-ref', 'queue-name', or 'topic-name' attributes is required.
+]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID" use="required">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+The id of the messaging destination. This corresponds to the "destination" property that will be set on 
+Producers and Consumers in the Flex client.
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="connection-factory" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+The bean name of the JMS ConnectionFactory to be used by this destination. If not provided, the default
+reference will be "connectionFactory".
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>			
+			<xsd:attribute name="message-broker" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+The id of the Spring-managed MessageBroker that will route messages to this destination.
+Not required unless an explicit id has been specified for the MessageBroker.
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="channels" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+A comma-separated list of ids for the BlazeDS channels over which this messaging destination should be exposed.
+Only needed when overriding the default channels for the MessageService.
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="jms-destination-ref" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+A reference to a JMS Destination instance.
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="queue-name" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+The name of a JMS Queue.
+]]>
+					</xsd:documentation>
+				</xsd:annotation>			
+			</xsd:attribute>
+			<xsd:attribute name="topic-name" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+The name of a JMS Topic.
+]]>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<!-- TODO: add destination-resolver, message-converter, transaction-manager, etc -->
+		</xsd:complexType>
+	</xsd:element>
+
 	<xsd:complexType name="mappingType">
 		<xsd:attribute name="pattern" type="xsd:string" use="required">
 			<xsd:annotation>
