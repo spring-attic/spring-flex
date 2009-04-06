@@ -43,7 +43,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3">
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.junit/com.springsource.org.junit/4.4.0/com.springsource.org.junit-4.4.0.jar" sourcepath="/FLEX_IVY_CACHE/org.junit/com.springsource.org.junit/4.4.0/com.springsource.org.junit-sources-4.4.0.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
