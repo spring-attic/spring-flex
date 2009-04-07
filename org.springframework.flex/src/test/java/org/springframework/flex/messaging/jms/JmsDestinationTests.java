@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2009 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
 import org.springframework.flex.messaging.MessageDestinationFactory;
 
@@ -72,13 +74,17 @@ public class JmsDestinationTests extends AbstractMessageBrokerTests {
 	}
 
 	private void configureFactory() throws Exception {
-		JmsAdapter adapter = new JmsAdapter();
-		adapter.setBeanName("test-jms-adapter");
-		adapter.setConnectionFactory(new StubConnectionFactory());
-		adapter.setJmsDestination(new Destination() {});
-		adapter.afterPropertiesSet();
-		factory = new MessageDestinationFactory(adapter);
+		String adapterBeanName = "test-jms-adapter";
+		MutablePropertyValues properties = new MutablePropertyValues();
+		properties.addPropertyValue("connectionFactory", new StubConnectionFactory());
+		properties.addPropertyValue("jmsDestination", new Destination() {});
+		StaticApplicationContext context = new StaticApplicationContext();
+		context.registerPrototype(adapterBeanName, JmsAdapter.class, properties);
+
+		factory = new MessageDestinationFactory();
 		factory.setBeanName(DEFAULT_ID);
+		factory.setAdapterBeanName(adapterBeanName);
+		factory.setBeanFactory(context);
 		factory.setMessageBroker(getMessageBroker());
 	}
 

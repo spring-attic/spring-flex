@@ -69,7 +69,7 @@ public class JmsMessageDestinationBeanDefinitionParser extends AbstractBeanDefin
 		adapterBuilder.addPropertyReference("connectionFactory", connectionFactoryRef);
 		String adapterBeanName = BeanDefinitionReaderUtils.registerWithGeneratedName(
 				adapterBuilder.getBeanDefinition(), parserContext.getRegistry());
-		destinationBuilder.addConstructorArgReference(adapterBeanName);
+		destinationBuilder.addPropertyValue("adapterBeanName", adapterBeanName);
 		String brokerId = element.getAttribute("message-broker");
 		brokerId = StringUtils.hasText(brokerId) ? brokerId : BeanIds.MESSAGE_BROKER; 
 		destinationBuilder.addPropertyReference("messageBroker", brokerId);

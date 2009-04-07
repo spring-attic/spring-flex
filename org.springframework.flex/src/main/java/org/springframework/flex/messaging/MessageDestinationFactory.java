@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2009 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,17 @@
 
 package org.springframework.flex.messaging;
 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.flex.core.AbstractDestinationFactory;
 import org.springframework.flex.core.MessageBrokerFactoryBean;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import flex.messaging.Destination;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.services.MessageService;
-import flex.messaging.services.messaging.adapters.ActionScriptAdapter;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
 /**
@@ -42,27 +44,34 @@ import flex.messaging.services.messaging.adapters.MessagingAdapter;
  * 
  * @author Mark Fisher
  */
-public class MessageDestinationFactory extends AbstractDestinationFactory {
+public class MessageDestinationFactory extends AbstractDestinationFactory implements BeanFactoryAware {
 
-	private final MessagingAdapter adapter;
+	private volatile String adapterBeanName;
+
+	private volatile BeanFactory beanFactory;
 
 
-	public MessageDestinationFactory() {
-		this(new ActionScriptAdapter());
+	public void setAdapterBeanName(String adapterBeanName) {
+		this.adapterBeanName = adapterBeanName;
 	}
 
-	public MessageDestinationFactory(MessagingAdapter adapter) {
-		Assert.notNull(adapter, "adapter must not be null");
-		this.adapter = adapter;
+	public void setBeanFactory(BeanFactory beanFactory) {
+		this.beanFactory = beanFactory;
 	}
-
 
 	@Override
 	protected Destination createDestination(String destinationId, MessageBroker broker) throws Exception {
 		MessageService messageService = (MessageService) broker.getServiceByType(MessageService.class.getName());
 		Assert.notNull(messageService, "Could not find a proper MessageService in the Flex MessageBroker.");
 		MessageDestination destination = (MessageDestination) messageService.createDestination(destinationId);
-		destination.setAdapter(this.adapter);
+		if (StringUtils.hasText(adapterBeanName)) {
+			Assert.notNull(beanFactory, "BeanFactory is required for MessagingAdapter lookup.");
+			MessagingAdapter adapter = (MessagingAdapter) beanFactory.getBean(adapterBeanName, MessagingAdapter.class);
+			destination.setAdapter(adapter);
+		}
+		else if (destination.getAdapter() == null) {
+			destination.createAdapter(messageService.getDefaultAdapter());
+		}
 		return destination;
 	}
 

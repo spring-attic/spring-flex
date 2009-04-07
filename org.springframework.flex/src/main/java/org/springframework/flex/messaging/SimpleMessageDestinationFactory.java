@@ -1,34 +1,43 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.flex.messaging;
 
 import org.springframework.util.StringUtils;
 
 import flex.messaging.Destination;
 import flex.messaging.config.ConfigMap;
-import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
-public class SimpleMessageDestinationFactory extends
-		MessageDestinationFactory {
+/**
+ * @author Jeremy Grelle
+ */
+public class SimpleMessageDestinationFactory extends MessageDestinationFactory {
 
 	private final ConfigMap properties;
-	
+
+
 	public SimpleMessageDestinationFactory() {
-		this.properties = new ConfigMap();
-	}
-	
-	public SimpleMessageDestinationFactory(MessagingAdapter adapter) {
-		super(adapter);
 		this.properties = new ConfigMap();
 	}
 	
 	public SimpleMessageDestinationFactory(ConfigMap properties) {
 		this.properties = properties;
 	}
-	
-	public SimpleMessageDestinationFactory(MessagingAdapter adapter, ConfigMap properties) {
-		super(adapter);
-		this.properties = properties;
-	}
-	
+
+
 	public void setSubscriptionTimeoutMinutes(String timeout) {
 		getNetworkMap().addProperty("subscription-timeout-minutes", timeout);
 	}
