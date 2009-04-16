@@ -77,6 +77,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 		broker = (MessageBroker) getApplicationContext().getBean("customMappings", MessageBroker.class);
 		assertNotNull("MessageBroker bean not found for custom id", broker);
 		SimpleUrlHandlerMapping defaultMapping = (SimpleUrlHandlerMapping) getApplicationContext().getBean("customMappingsDefaultHandlerMapping", SimpleUrlHandlerMapping.class);
+		assertEquals(0,defaultMapping.getOrder());
 		assertTrue("Path mapping not correct", defaultMapping.getUrlMap().containsKey("/foo"));
 		assertEquals("Target mapping not correct", "customMappings", defaultMapping.getUrlMap().get("/foo"));
 		assertTrue("Path mapping not correct", defaultMapping.getUrlMap().containsKey("/bar"));

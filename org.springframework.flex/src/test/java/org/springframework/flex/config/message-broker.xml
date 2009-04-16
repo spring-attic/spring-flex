@@ -20,7 +20,7 @@
 	<flex:message-broker id="customConfigManager" configuration-manager="configManager"/>
 	
 	<!-- Custom mappings -->
-	<flex:message-broker id="customMappings"> 
+	<flex:message-broker id="customMappings" mapping-order="0"> 
 		<flex:mapping pattern="/foo"/>
 		<flex:mapping pattern="/bar"/>
 	</flex:message-broker>

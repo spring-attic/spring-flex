@@ -55,6 +55,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	// --------------------------- XML Config Attributes ---------------------//
 	private static final String CONFIGURATION_MANAGER_ATTR = "configuration-manager";
 	private static final String SERVICES_CONFIG_PATH_ATTR = "services-config-path";
+	private static final String MAPPING_ORDER_ATTR = "mapping-order";
 	private static final String DISABLE_DEFAULT_MAPPING_ATTR = "disable-default-mapping";
 	private static final String PATTERN_ATTR = "pattern";
 	private static final String REF_ATTR = "ref";
@@ -67,6 +68,7 @@ public class MessageBrokerBeanDefinitionParser extends
 
 	// --------------------------- Bean Configuration Properties -------------//
 	private static final String URL_MAP_PROPERTY = "urlMap";
+	private static final String ORDER_PROPERTY = "order";
 	private static final String CONFIG_PROCESSORS_PROPERTY = "configProcessors";
 	private static final String PER_CLIENT_AUTHENTICATION_PROPERTY = "perClientAuthentication";
 	private static final String INVALIDATE_FLEX_SESSION_PROPERTY = "invalidateFlexSession";
@@ -349,6 +351,10 @@ public class MessageBrokerBeanDefinitionParser extends
 	private void registerHandlerMappings(Element parent, ParserContext parserContext, List mappingPatternElements) {
 		BeanDefinitionBuilder handlerMappingBuilder = BeanDefinitionBuilder
 				.genericBeanDefinition(DEFAULT_HANDLER_MAPPING_CLASS_NAME);
+		
+		if (StringUtils.hasText(parent.getAttribute(MAPPING_ORDER_ATTR))){
+			handlerMappingBuilder.addPropertyValue(ORDER_PROPERTY, Integer.parseInt(parent.getAttribute(MAPPING_ORDER_ATTR)));
+		}
 		
 		Map mappings = new HashMap();
 		if (CollectionUtils.isEmpty(mappingPatternElements)){

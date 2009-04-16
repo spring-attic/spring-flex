@@ -115,6 +115,15 @@ implementation.
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
+					<xsd:attribute name="mapping-order" type="xsd:int">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+Sets the order of the SimpleUrlHandlerMapping that maps requests to this MessageBroker.    								
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 					<xsd:attribute name="disable-default-mapping" type="xsd:boolean" default="false">
 						<xsd:annotation>
 							<xsd:documentation>
