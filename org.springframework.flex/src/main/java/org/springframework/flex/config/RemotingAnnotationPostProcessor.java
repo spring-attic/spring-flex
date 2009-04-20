@@ -1,27 +1,24 @@
 package org.springframework.flex.config;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.generic.GenericBeanFactoryAccessor;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.flex.remoting.RemotingDestinationExporter;
 import org.springframework.flex.remoting.RemotingExclude;
 import org.springframework.flex.remoting.RemotingInclude;
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.util.ReflectionUtils.MethodCallback;
 
 /**
  * {@link BeanFactoryPostProcessor} implementation that searches the {@link BeanFactory} for
@@ -50,9 +47,7 @@ public class RemotingAnnotationPostProcessor implements
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		
-		GenericBeanFactoryAccessor accessor = new GenericBeanFactoryAccessor(beanFactory);
-		
-		Map<String, Object> remoteBeans = accessor.getBeansWithAnnotation(RemotingDestination.class);
+		Set<RemotingDestinationMetadata> remoteBeans = findRemotingDestinations(beanFactory);
 		
 		if (remoteBeans.size() > 0) {
 			Assert.isInstanceOf(BeanDefinitionRegistry.class, beanFactory, 
@@ -61,23 +56,22 @@ public class RemotingAnnotationPostProcessor implements
 		
 		BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 		
-		for (Entry<String, Object> beanEntry : remoteBeans.entrySet()) {
+		for (RemotingDestinationMetadata remotingDestinationConfig : remoteBeans) {
 			
 			BeanDefinitionBuilder exporterBuilder = BeanDefinitionBuilder.rootBeanDefinition(RemotingDestinationExporter.class);
 			exporterBuilder.getRawBeanDefinition().setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 			
-			RemotingDestination remotingDestination = beanEntry.getValue().getClass().getAnnotation(RemotingDestination.class);
-			
+			RemotingDestination remotingDestination = remotingDestinationConfig.getRemotingDestination();
 			
 			String messageBrokerId = StringUtils.hasText(remotingDestination.messageBroker()) ? remotingDestination.messageBroker() : BeanIds.MESSAGE_BROKER;
-			String destinationId = StringUtils.hasText(remotingDestination.value()) ? remotingDestination.value() : beanEntry.getKey();
+			String destinationId = StringUtils.hasText(remotingDestination.value()) ? remotingDestination.value() : remotingDestinationConfig.getBeanName();
 			
 			exporterBuilder.addPropertyReference(MESSAGE_BROKER_PROPERTY, messageBrokerId);
-			exporterBuilder.addPropertyReference(SERVICE_PROPERTY, beanEntry.getKey());
+			exporterBuilder.addPropertyReference(SERVICE_PROPERTY, remotingDestinationConfig.getBeanName());
 			exporterBuilder.addPropertyValue(DESTINATION_ID_PROPERTY, destinationId);
 			exporterBuilder.addPropertyValue(CHANNELS_PROPERTY, remotingDestination.channels());
-			exporterBuilder.addPropertyValue(INCLUDE_METHODS_PROPERTY, extractIncludeMethods(beanEntry.getValue().getClass()));
-			exporterBuilder.addPropertyValue(EXCLUDE_METHODS_PROPERTY, extractExcludeMethods(beanEntry.getValue().getClass()));
+			exporterBuilder.addPropertyValue(INCLUDE_METHODS_PROPERTY, remotingDestinationConfig.getIncludeMethods());
+			exporterBuilder.addPropertyValue(EXCLUDE_METHODS_PROPERTY, remotingDestinationConfig.getExcludeMethods());
 			exporterBuilder.addPropertyValue(SERVICE_ADAPTER_PROPERTY, remotingDestination.serviceAdapter());
 			
 			BeanDefinitionReaderUtils.registerWithGeneratedName(exporterBuilder.getBeanDefinition(), registry);
@@ -85,37 +79,36 @@ public class RemotingAnnotationPostProcessor implements
 
 	}
 
-	private String[] extractExcludeMethods(Class<?> serviceClass) {
-		final Set<String> excludes = new HashSet<String>();
-		ReflectionUtils.doWithMethods(serviceClass, new MethodCallback() {
-			public void doWith(Method method) throws IllegalArgumentException,
-					IllegalAccessException {
-				excludes.add(method.getName());
-			}
-		}, new FlexExcludeFilter());
-		return excludes.toArray(new String[excludes.size()]);
-	}
 
-	private String[] extractIncludeMethods(Class<?> serviceClass) {
-		final Set<String> includes = new HashSet<String>();
-		ReflectionUtils.doWithMethods(serviceClass, new MethodCallback() {
-			public void doWith(Method method) throws IllegalArgumentException,
-					IllegalAccessException {
-				includes.add(method.getName());
+	/**
+	 * Helper that searches the BeanFactory for beans annotated with @RemotingDestination, being careful
+	 * not to force eager creation of the beans.
+	 * @param beanFactory - the BeanFactory to search
+	 * @return - a set of collected RemotingDestinationMetadata
+	 */
+	private Set<RemotingDestinationMetadata> findRemotingDestinations(
+			ConfigurableListableBeanFactory beanFactory) {
+		Set<RemotingDestinationMetadata> remotingDestinations = new HashSet<RemotingDestinationMetadata>();
+		for (String beanName : beanFactory.getBeanDefinitionNames()) {
+			Class<?> handlerType = beanFactory.getType(beanName);
+			RemotingDestination remotingDestination = AnnotationUtils.findAnnotation(handlerType, RemotingDestination.class);
+			if (remotingDestination != null) {
+				remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, handlerType));
+			} else {
+				BeanDefinition bd = beanFactory.getMergedBeanDefinition(beanName);
+				if (bd instanceof AbstractBeanDefinition) {
+					AbstractBeanDefinition abd = (AbstractBeanDefinition) bd;
+					if (abd.hasBeanClass()) {
+						Class<?> beanClass = abd.getBeanClass();
+						remotingDestination = AnnotationUtils.findAnnotation(beanClass, RemotingDestination.class);
+						if (remotingDestination != null) {
+							remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, beanClass));
+						}
+					}
+				}
 			}
-		}, new FlexIncludeFilter());
-		return includes.toArray(new String[includes.size()]);
+		}
+		return remotingDestinations;
 	}
 	
-	private static class FlexExcludeFilter implements ReflectionUtils.MethodFilter {
-		public boolean matches(Method method) {
-			return method.getAnnotation(RemotingExclude.class) != null;
-		}
-	}
-	
-	private static class FlexIncludeFilter implements ReflectionUtils.MethodFilter {
-		public boolean matches(Method method) {
-			return method.getAnnotation(RemotingInclude.class) != null;
-		}
-	}
 }

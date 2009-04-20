@@ -71,6 +71,15 @@ public class RemotingAnnotationPostProcessorTests extends
 		assertNotNull("Destination not found", rd);
 	}
 	
+	public void testExportAnnotatedBeanWithAutowiredConstructor() {
+		broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+		assertNotNull("MessageBroker bean not found for default ID", broker);
+		RemotingService rs = (RemotingService) broker.getService("remoting-service");
+		assertNotNull("Could not find the remoting service", rs);
+		flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedAutowiredRemoteBean");
+		assertNotNull("Destination not found", rd);
+	}
+	
 	@RemotingDestination
 	public static class MyService1 {}
 	
@@ -89,4 +98,6 @@ public class RemotingAnnotationPostProcessorTests extends
 		@RemotingExclude
 		public void baz(){}
 	}
+	
+	public static class MyDependency {}
 }

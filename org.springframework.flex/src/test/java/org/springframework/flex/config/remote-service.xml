@@ -24,6 +24,8 @@
         
         <bean id="annotatedRemoteBean2" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService2"/>
         
+        <bean id="autowiredDependency" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyDependency"/>
+        
         <bean id="customAdapter1" class="org.springframework.flex.core.ManageableComponentFactoryBean">
         	<constructor-arg value="org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests$TestAdapter"/>
         </bean>
