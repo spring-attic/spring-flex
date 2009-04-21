@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.flex.security.EndpointSecurityAdvisor;
+import org.springframework.flex.core.EndpointAdvisor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
@@ -25,15 +25,15 @@ import flex.messaging.endpoints.amf.AMFFilter;
 public class MessageBrokerEndpointConfigProcessor implements
 		MessageBrokerConfigProcessor, BeanClassLoaderAware {
 
-	private EndpointSecurityAdvisor[] advisors;
+	private EndpointAdvisor[] advisors;
 	private ClassLoader proxyClassLoader = ClassUtils.getDefaultClassLoader();
 
 	public MessageBrokerEndpointConfigProcessor(
-			List<EndpointSecurityAdvisor> advisors) {
+			List<EndpointAdvisor> advisors) {
 		Assert
 				.notEmpty(advisors,
 						"A non-empty list of EndpointServiceMessagePointcutAdvisors is required");
-		this.advisors = advisors.toArray(new EndpointSecurityAdvisor[advisors
+		this.advisors = advisors.toArray(new EndpointAdvisor[advisors
 				.size()]);
 	}
 

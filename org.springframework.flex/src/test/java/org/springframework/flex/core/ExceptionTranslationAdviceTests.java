@@ -1,4 +1,4 @@
-package org.springframework.flex.security;
+package org.springframework.flex.core;
 
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;

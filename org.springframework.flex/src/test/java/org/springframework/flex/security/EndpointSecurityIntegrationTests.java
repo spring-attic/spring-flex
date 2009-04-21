@@ -10,11 +10,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.flex.config.MessageBrokerEndpointConfigProcessor;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
+import org.springframework.flex.core.EndpointAdvisor;
 import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.security.EndpointDefinitionSource;
 import org.springframework.flex.security.EndpointInterceptor;
-import org.springframework.flex.security.EndpointSecurityAdvisor;
 import org.springframework.flex.security.SecurityExceptionTranslator;
 import org.springframework.security.AccessDecisionManager;
 import org.springframework.security.AccessDeniedException;
@@ -80,7 +80,7 @@ public class EndpointSecurityIntegrationTests extends
 		interceptor.setAccessDecisionManager(adm);
 		interceptor.setObjectDefinitionSource(source);
 
-		List<EndpointSecurityAdvisor> advisors = new ArrayList<EndpointSecurityAdvisor>();
+		List<EndpointAdvisor> advisors = new ArrayList<EndpointAdvisor>();
 		advisors.add(new EndpointServiceMessagePointcutAdvisor(translator));
 		advisors.add(new EndpointServiceMessagePointcutAdvisor(interceptor));
 		

@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
-import org.springframework.flex.security.EndpointSecurityAdvisor;
 import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.endpoints.AbstractEndpoint;
@@ -23,7 +22,7 @@ import flex.messaging.services.Service;
  */
 @SuppressWarnings({ "unchecked", "serial" })
 public class EndpointServiceMessagePointcutAdvisor extends
-		StaticMethodMatcherPointcutAdvisor implements EndpointSecurityAdvisor {
+		StaticMethodMatcherPointcutAdvisor implements EndpointAdvisor {
 
 	private static final String SERVICE_MESSAGE_METHOD_NAME = "serviceMessage";
 	

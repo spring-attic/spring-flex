@@ -24,7 +24,7 @@ public abstract class BeanIds {
 
 	public static final String LOGIN_COMMAND_SUFFIX = "LoginCommand";
 
-	public static final String SECURITY_PROCESSOR_SUFFIX = "SecurityProcessor";
+	public static final String ENDPOINT_PROCESSOR_SUFFIX = "EndpointProcessor";
 
 	public static final String REMOTING_PROCESSOR_SUFFIX = "RemotingProcessor";
 

@@ -140,7 +140,7 @@ package {
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
         		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
-        		assertEquals("ResultEvent does not indicate success", "success", ResultEvent(responseChecker.resultEvent).result);
+        		assertEquals("ResultEvent does not successful login", name, ResultEvent(responseChecker.resultEvent).result.name);
         		assertTrue("Login was not successful", protectedCs.authenticated);
         	},5000)); 			
 	  	}

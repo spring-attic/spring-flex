@@ -8,7 +8,7 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import flex.messaging.messages.Message;
 
-public class MessageProcessingAdvice implements MethodInterceptor {
+public class MessageInterceptionAdvice implements MethodInterceptor {
 	
 	private Set<MessageInterceptor> messageInterceptors = new HashSet<MessageInterceptor>();
 	
@@ -36,4 +36,8 @@ public class MessageProcessingAdvice implements MethodInterceptor {
 		return messageInterceptors;
 	}
 
+	public void setMessageInterceptors(Set<MessageInterceptor> messageInterceptors) {
+		this.messageInterceptors = messageInterceptors;
+	}
+	
 }

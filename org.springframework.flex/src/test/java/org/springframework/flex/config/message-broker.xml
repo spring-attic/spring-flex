@@ -37,6 +37,11 @@
 		<flex:exception-translator ref="translator2"/>
 	</flex:message-broker>
 	
+	<flex:message-broker id="customMessageInterceptors">
+		<flex:message-interceptor ref="interceptor1"/>
+		<flex:message-interceptor ref="interceptor2"/>
+	</flex:message-broker>
+	
 	<flex:message-broker id="defaultSecured">
 		<flex:secured/>
 	</flex:message-broker>
@@ -74,6 +79,10 @@
 	<bean id="translator1" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestExceptionTranslator"/>
 	
 	<bean id="translator2" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestExceptionTranslator"/>
+	
+	<bean id="interceptor1" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestMessageInterceptor"/>
+	
+	<bean id="interceptor2" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestMessageInterceptor"/>
 	
 	<bean id="my-default-adapter" class="org.springframework.flex.core.ManageableComponentFactoryBean" >
 		<constructor-arg value="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter"/>

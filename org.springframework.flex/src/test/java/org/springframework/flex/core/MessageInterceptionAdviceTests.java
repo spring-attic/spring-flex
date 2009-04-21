@@ -11,7 +11,7 @@ import flex.messaging.MessageException;
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.Message;
 
-public class MessageInterceptorTests extends TestCase {
+public class MessageInterceptionAdviceTests extends TestCase {
 
 	@Mock private AbstractEndpoint endpoint; 
 	@Mock private Message inMessage;
@@ -71,7 +71,7 @@ public class MessageInterceptorTests extends TestCase {
 	private void setupInterceptor(MessageInterceptor interceptor) {
 		ProxyFactory factory = new ProxyFactory();
 		factory.setProxyTargetClass(true);
-		MessageProcessingAdvice advice = new MessageProcessingAdvice();
+		MessageInterceptionAdvice advice = new MessageInterceptionAdvice();
 		advice.getMessageInterceptors().add(interceptor);
 		factory.addAdvisor(new EndpointServiceMessagePointcutAdvisor(advice));
 		factory.setTarget(endpoint);

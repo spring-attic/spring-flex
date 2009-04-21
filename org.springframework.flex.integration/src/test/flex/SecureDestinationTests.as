@@ -134,8 +134,10 @@ package {
   			responseChecker.addEventListener("resultReceived",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("The expected response was not received.  Result event was: "+responseChecker.resultEvent,responseChecker.expected);
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
-        		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
-        		assertEquals("ResultEvent does not indicate success", "success", ResultEvent(responseChecker.resultEvent).result);
+        		//Alert.show(ResultEvent(responseChecker.resultEvent).result[0].toString());
+        		//Alert.show(ResultEvent(responseChecker.resultEvent).result[1].toString());
+        		assertEquals("ResultEvent does not contain expected roles", "ROLE_ADMIN", ResultEvent(responseChecker.resultEvent).result.authorities[0]);
+        		assertEquals("ResultEvent does not contain expected roles", "ROLE_USER", ResultEvent(responseChecker.resultEvent).result.authorities[1]);
         		assertTrue("Login was not successful", protectedCs.authenticated);
         		token = protectedCs.logout();
         		token.addResponder(

@@ -19,6 +19,8 @@ import org.springframework.flex.config.FlexConfigurationManager;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.core.ExceptionTranslator;
+import org.springframework.flex.core.MessageInterceptionAdvice;
+import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.security.EndpointInterceptor;
 import org.springframework.flex.security.FlexSessionInvalidatingAuthenticationListener;
 import org.springframework.flex.security.SpringSecurityLoginCommand;
@@ -30,6 +32,7 @@ import flex.messaging.MessageBroker;
 import flex.messaging.MessageException;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.MessagingConfiguration;
+import flex.messaging.messages.Message;
 import flex.messaging.security.LoginCommand;
 import flex.messaging.services.RemotingService;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
@@ -117,6 +120,23 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 	}
 	
 	@SuppressWarnings("unchecked")
+	public void testMessageBroker_CustomMessageInterceptors() {
+		broker = (MessageBroker) getApplicationContext().getBean("customMessageInterceptors", MessageBroker.class);
+		assertNotNull("MessageBroker bean not found for custom id", broker);
+		Iterator i = broker.getEndpoints().values().iterator();
+		while (i.hasNext()) {
+			Object endpoint = i.next();
+			assertTrue("Endpoint should be proxied",AopUtils.isAopProxy(endpoint));
+			Advised advisedEndpoint = (Advised) endpoint;
+			Advisor a = advisedEndpoint.getAdvisors()[1];
+			assertTrue("Message interception advice was not applied",a.getAdvice() instanceof MessageInterceptionAdvice);
+			Set interceptors = ((MessageInterceptionAdvice)a.getAdvice()).getMessageInterceptors();
+			assertTrue("Custom interceptor not found", interceptors.contains(getApplicationContext().getBean("interceptor1", TestMessageInterceptor.class)));
+			assertTrue("Custom interceptor not found", interceptors.contains(getApplicationContext().getBean("interceptor2", TestMessageInterceptor.class)));
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
 	public void testMessageBroker_DefaultSecured() {
 		broker = (MessageBroker) getApplicationContext().getBean("defaultSecured", MessageBroker.class);
 		assertNotNull("MessageBroker bean not found for custom id", broker);
@@ -154,7 +174,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 			Object endpoint = i.next();
 			assertTrue("Endpoint should be proxied",AopUtils.isAopProxy(endpoint));
 			Advised advisedEndpoint = (Advised) endpoint;
-			Advisor a = advisedEndpoint.getAdvisors()[1];
+			Advisor a = advisedEndpoint.getAdvisors()[2];
 			assertTrue("Endpoint interception advice was not applied",a.getAdvice() instanceof EndpointInterceptor);
 			Collection definitions = ((EndpointInterceptor) a.getAdvice()).getObjectDefinitionSource().getConfigAttributeDefinitions();
 			assertEquals("Incorrect number of EnpointDefinitionSource instances", 3, definitions.size());
@@ -213,6 +233,16 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 		}
 
 		public MessageException translate(Throwable t) {
+			return null;
+		}
+	}
+	
+	public static final class TestMessageInterceptor implements MessageInterceptor {
+		public Message postProcess(Message inputMessage, Message outputMessage) {
+			return null;
+		}
+
+		public Message preProcess(Message inputMessage) {
 			return null;
 		}
 	}

@@ -16,7 +16,5 @@
 	      	<user name="keith" password="melbourne" authorities="ROLE_USER" />
 		</user-service>
 	</authentication-provider>
-	
-	
     
 </beans:beans>

@@ -68,6 +68,16 @@ applying custom translation from known exception types to a BlazeDS MessageExcep
 									</xsd:documentation>
 								</xsd:annotation>
 							</xsd:element>
+							<xsd:element name="message-interceptor" type="messageInterceptorType">
+								<xsd:annotation>
+									<xsd:documentation>
+										<![CDATA[
+Installs a bean instance of org.springframework.flex.messaging.MessageInterceptor for 
+applying custom processing to incoming and outgoing BlazeDS Messages.
+]]>
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
 						</xsd:choice>
 						<xsd:element name="remoting-service" minOccurs="0" maxOccurs="1" type="remotingServiceType">
 							<xsd:annotation>
@@ -331,6 +341,18 @@ A reference to a custom bean instance of org.springframework.flex.config.Message
 				<xsd:documentation>
 					<![CDATA[
 A reference to a custom bean instance of org.springframework.flex.messaging.ExceptionTranslator.								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:complexType name="messageInterceptorType">
+		<xsd:attribute name="ref" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+A reference to a custom bean instance of org.springframework.flex.messaging.MessageInterceptor.								
 ]]>
 				</xsd:documentation>
 			</xsd:annotation>
