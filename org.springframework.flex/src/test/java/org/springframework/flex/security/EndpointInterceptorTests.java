@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
+import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.security.EndpointDefinitionSource;
 import org.springframework.flex.security.EndpointInterceptor;
 import org.springframework.security.AccessDecisionManager;
@@ -62,10 +63,12 @@ public class EndpointInterceptorTests extends TestCase {
 		interceptor.setAuthenticationManager(mgr);
 		interceptor.setAccessDecisionManager(adm);
 		interceptor.setObjectDefinitionSource(source);
+		MessageInterceptionAdvice advice = new MessageInterceptionAdvice();
+		advice.getMessageInterceptors().add(interceptor);
 		
 		ProxyFactory factory = new ProxyFactory();
 		factory.setProxyTargetClass(true);
-		factory.addAdvisor(new EndpointServiceMessagePointcutAdvisor(interceptor));
+		factory.addAdvisor(new EndpointServiceMessagePointcutAdvisor(advice));
 		factory.setTarget(endpoint);
 		advisedEndpoint = (AbstractEndpoint) factory.getProxy();
 	}

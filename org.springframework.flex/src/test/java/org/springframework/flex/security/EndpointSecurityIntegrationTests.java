@@ -13,6 +13,7 @@ import org.springframework.flex.core.AbstractMessageBrokerTests;
 import org.springframework.flex.core.EndpointAdvisor;
 import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
+import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.security.EndpointDefinitionSource;
 import org.springframework.flex.security.EndpointInterceptor;
 import org.springframework.flex.security.SecurityExceptionTranslator;
@@ -75,10 +76,12 @@ public class EndpointSecurityIntegrationTests extends
 		ExceptionTranslationAdvice translator = new ExceptionTranslationAdvice();
 		translator.getExceptionTranslators().add(new SecurityExceptionTranslator());
 
-		EndpointInterceptor interceptor = new EndpointInterceptor();
-		interceptor.setAuthenticationManager(mgr);
-		interceptor.setAccessDecisionManager(adm);
-		interceptor.setObjectDefinitionSource(source);
+		EndpointInterceptor endpointInterceptor = new EndpointInterceptor();
+		endpointInterceptor.setAuthenticationManager(mgr);
+		endpointInterceptor.setAccessDecisionManager(adm);
+		endpointInterceptor.setObjectDefinitionSource(source);
+		MessageInterceptionAdvice interceptor = new MessageInterceptionAdvice();
+		interceptor.getMessageInterceptors().add(endpointInterceptor);
 
 		List<EndpointAdvisor> advisors = new ArrayList<EndpointAdvisor>();
 		advisors.add(new EndpointServiceMessagePointcutAdvisor(translator));

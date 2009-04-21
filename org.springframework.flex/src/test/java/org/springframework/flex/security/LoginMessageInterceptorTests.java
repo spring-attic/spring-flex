@@ -31,14 +31,14 @@ public class LoginMessageInterceptorTests extends TestCase {
 		
 		inputMessage = new CommandMessage(CommandMessage.LOGIN_OPERATION);
 		
-		assertSame(inputMessage, interceptor.preProcess(inputMessage));
+		assertSame(inputMessage, interceptor.preProcess(null, inputMessage));
 	}
 	
 	public final void testPostProcessPassThrough() {
 		
 		inputMessage = new CommandMessage(CommandMessage.CLIENT_PING_OPERATION);
 		outputMessage = new AcknowledgeMessage();
-		assertSame(outputMessage, interceptor.postProcess(inputMessage, outputMessage));
+		assertSame(outputMessage, interceptor.postProcess(null, inputMessage, outputMessage));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -52,7 +52,7 @@ public class LoginMessageInterceptorTests extends TestCase {
 		outputMessage = new AcknowledgeMessage();
 		outputMessage.setBody("success");
 		
-		Message result = interceptor.postProcess(inputMessage, outputMessage);
+		Message result = interceptor.postProcess(null, inputMessage, outputMessage);
 		
 		assertTrue(result.getBody() instanceof Map);	
 		Map authResult = (Map) result.getBody();

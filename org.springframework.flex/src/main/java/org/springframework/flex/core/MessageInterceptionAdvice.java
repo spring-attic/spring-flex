@@ -13,10 +13,10 @@ public class MessageInterceptionAdvice implements MethodInterceptor {
 	private Set<MessageInterceptor> messageInterceptors = new HashSet<MessageInterceptor>();
 	
 	public Object invoke(MethodInvocation mi) throws Throwable {
-		
+		MessageInterceptionContext context = new MessageInterceptionContext(mi.getThis());
 		Message inputMessage = (Message) mi.getArguments()[0];
 		for (MessageInterceptor interceptor : messageInterceptors) {
-			inputMessage = interceptor.preProcess(inputMessage);
+			inputMessage = interceptor.preProcess(context, inputMessage);
 		}
 		mi.getArguments()[0] = inputMessage;
 		Message outputMessage = null;
@@ -25,7 +25,7 @@ public class MessageInterceptionAdvice implements MethodInterceptor {
 		} finally {
 			if (outputMessage != null) {
 				for (MessageInterceptor interceptor : messageInterceptors) {
-					outputMessage = interceptor.postProcess(inputMessage, outputMessage);
+					outputMessage = interceptor.postProcess(context, inputMessage, outputMessage);
 				} 
 			}
 		}

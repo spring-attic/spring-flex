@@ -20,6 +20,7 @@ import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.flex.core.MessageInterceptionAdvice;
+import org.springframework.flex.core.MessageInterceptionContext;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.security.EndpointInterceptor;
 import org.springframework.flex.security.FlexSessionInvalidatingAuthenticationListener;
@@ -151,11 +152,14 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 			Advised advisedEndpoint = (Advised) endpoint;
 			Advisor a = advisedEndpoint.getAdvisors()[0];
 			assertTrue("Exception translation advice was not applied",a.getAdvice() instanceof ExceptionTranslationAdvice);
+			a = advisedEndpoint.getAdvisors()[1];
+			assertTrue("Message interception advice was not applied",a.getAdvice() instanceof MessageInterceptionAdvice);
 		}
 		getApplicationContext().getBean(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, FlexSessionInvalidatingAuthenticationListener.class);
 		getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER, RequestContextFilter.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void testMessageBroker_LoginCommandConfigured() {
 		broker = (MessageBroker) getApplicationContext().getBean("loginCommandConfigured", MessageBroker.class);
 		assertNotNull("MessageBroker bean not found for custom id", broker);
@@ -163,6 +167,15 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 		assertNotNull("LoginCommand not found", loginCommand);
 		assertTrue("perClientAuthentication not configured",loginCommand.isPerClientAuthentication());
 		assertFalse("invalidateFlexSession not configured",loginCommand.isInvalidateFlexSession());
+		
+		Iterator i = broker.getEndpoints().values().iterator();
+		while (i.hasNext()) {
+			Object endpoint = i.next();
+			assertTrue("Endpoint should be proxied",AopUtils.isAopProxy(endpoint));
+			Advised advisedEndpoint = (Advised) endpoint;
+			Advisor a = advisedEndpoint.getAdvisors()[1];
+			assertTrue("Message interception advice was not applied",a.getAdvice() instanceof MessageInterceptionAdvice);			
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -174,10 +187,16 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 			Object endpoint = i.next();
 			assertTrue("Endpoint should be proxied",AopUtils.isAopProxy(endpoint));
 			Advised advisedEndpoint = (Advised) endpoint;
-			Advisor a = advisedEndpoint.getAdvisors()[2];
-			assertTrue("Endpoint interception advice was not applied",a.getAdvice() instanceof EndpointInterceptor);
-			Collection definitions = ((EndpointInterceptor) a.getAdvice()).getObjectDefinitionSource().getConfigAttributeDefinitions();
-			assertEquals("Incorrect number of EnpointDefinitionSource instances", 3, definitions.size());
+			Advisor a = advisedEndpoint.getAdvisors()[1];
+			assertTrue("MessageInterception advice was not applied",a.getAdvice() instanceof MessageInterceptionAdvice);
+			Iterator<MessageInterceptor> m = ((MessageInterceptionAdvice)a.getAdvice()).getMessageInterceptors().iterator();
+			while(m.hasNext()){
+				MessageInterceptor interceptor = m.next();
+				if (interceptor instanceof EndpointInterceptor) {
+					Collection definitions = ((EndpointInterceptor) interceptor).getObjectDefinitionSource().getConfigAttributeDefinitions();
+					assertEquals("Incorrect number of EnpointDefinitionSource instances", 3, definitions.size());
+				}
+			}
 		}
 	}
 	
@@ -238,11 +257,11 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 	}
 	
 	public static final class TestMessageInterceptor implements MessageInterceptor {
-		public Message postProcess(Message inputMessage, Message outputMessage) {
+		public Message postProcess(MessageInterceptionContext context, Message inputMessage, Message outputMessage) {
 			return null;
 		}
 
-		public Message preProcess(Message inputMessage) {
+		public Message preProcess(MessageInterceptionContext context, Message inputMessage) {
 			return null;
 		}
 	}

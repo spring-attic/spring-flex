@@ -18,6 +18,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.config.FlexConfigurationManager;
 import org.springframework.flex.security.LoginMessageInterceptor;
+import org.springframework.flex.security.PerClientAuthenticationInterceptor;
 import org.springframework.flex.security.SecurityExceptionTranslator;
 import org.springframework.security.ConfigAttributeDefinition;
 import org.springframework.security.intercept.web.RequestKey;
@@ -208,10 +209,12 @@ public class MessageBrokerBeanDefinitionParser extends
 		registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, perClientAuthentication);
 		
 		translators.add(new SecurityExceptionTranslator());
+		if (perClientAuthentication) {
+			interceptors.add(new PerClientAuthenticationInterceptor());
+		}
 		interceptors.add(new LoginMessageInterceptor());
 		
-		registerEndpointInterceptorIfNecessary(securedElement, parserContext, advisors, authManager, accessManager);
-		
+		registerEndpointInterceptorIfNecessary(securedElement, parserContext, interceptors, authManager, accessManager);
 	}
 
 	private void registerAuthenticationListenerIfNecessary(
@@ -249,10 +252,8 @@ public class MessageBrokerBeanDefinitionParser extends
 	
 	@SuppressWarnings("unchecked")
 	private void registerEndpointInterceptorIfNecessary(Element securedElement,
-			ParserContext parserContext, ManagedList advisors, String authManager, String accessManager) {
+			ParserContext parserContext, ManagedSet interceptors, String authManager, String accessManager) {
 		if (securedElement.hasChildNodes()) {
-			BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(SERVICE_MESSAGE_ADVISOR_CLASS_NAME);
-			
 			BeanDefinitionBuilder interceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(ENDPOINT_INTERCEPTOR_CLASS_NAME);
 			interceptorBuilder.addPropertyReference(AUTH_MANAGER_PROPERTY, authManager);
 			interceptorBuilder.addPropertyReference(ACCESS_MANAGER_PROPERTY, accessManager);
@@ -292,9 +293,7 @@ public class MessageBrokerBeanDefinitionParser extends
 			String endpointDefSourceId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, endpointDefSourceBuilder);
 			interceptorBuilder.addPropertyReference(OBJECT_DEF_SOURCE_PROPERTY, endpointDefSourceId);
 			String interceptorId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, interceptorBuilder);
-			advisorBuilder.addConstructorArgReference(interceptorId);
-			String advisorId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, advisorBuilder);
-			advisors.add(new RuntimeBeanReference(advisorId));
+			interceptors.add(new RuntimeBeanReference(interceptorId));
 		}
 	}
 

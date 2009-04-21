@@ -1,7 +1,7 @@
 package org.springframework.flex.security;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.flex.core.MessageInterceptionContext;
+import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.security.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.intercept.InterceptorStatusToken;
 import org.springframework.security.intercept.ObjectDefinitionSource;
@@ -17,8 +17,10 @@ import flex.messaging.messages.Message;
  * @author Jeremy Grelle
  */
 @SuppressWarnings("unchecked")
-public class EndpointInterceptor extends AbstractSecurityInterceptor implements MethodInterceptor{
+public class EndpointInterceptor extends AbstractSecurityInterceptor implements MessageInterceptor{
 
+	private static final String STATUS_TOKEN = "_enpointInterceptorStatusToken";
+	
 	private EndpointDefinitionSource objectDefinitionSource;
 
 	public Class getSecureObjectClass() {
@@ -36,23 +38,22 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
 	public void setObjectDefinitionSource(EndpointDefinitionSource newSource) {
 		objectDefinitionSource = newSource;
 	}
-
-	public Object invoke(MethodInvocation mi) throws Throwable {
-		Message message = (Message) mi.getArguments()[0];
-		if (isPassThroughCommand(message)) {
-			return mi.proceed();
+	
+	public Message postProcess(MessageInterceptionContext context, Message inputMessage, Message outputMessage) {
+		if (context.getAttributes().containsKey(STATUS_TOKEN)) {
+			InterceptorStatusToken token = (InterceptorStatusToken) context.getAttributes().get(STATUS_TOKEN);
+			return (Message) afterInvocation(token, outputMessage);
 		} else {
-			Object result = null;
-			InterceptorStatusToken token = beforeInvocation(mi.getThis());
-	
-			try {
-				result = mi.proceed();
-			} finally {
-				result = afterInvocation(token, result);
-			}
-	
-			return result;
+			return outputMessage;
 		}
+	}
+
+	public Message preProcess(MessageInterceptionContext context, Message inputMessage) {
+		if (!isPassThroughCommand(inputMessage)) {
+			InterceptorStatusToken token = beforeInvocation(context.getMessageTarget());
+			context.getAttributes().put(STATUS_TOKEN, token);
+		}
+		return inputMessage;
 	}
 
 	private boolean isPassThroughCommand(Message message) {
