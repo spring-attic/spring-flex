@@ -2,8 +2,7 @@
 <services-config>
 
     <services>
-        <service-include file-path="proxy-config.xml" />
-        <service-include file-path="messaging-config.xml" />      
+        <service-include file-path="proxy-config.xml" />  
     </services> 
 
     <channels>

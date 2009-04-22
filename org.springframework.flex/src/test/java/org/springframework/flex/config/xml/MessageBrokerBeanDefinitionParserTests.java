@@ -35,6 +35,7 @@ import flex.messaging.config.ConfigMap;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.messages.Message;
 import flex.messaging.security.LoginCommand;
+import flex.messaging.services.MessageService;
 import flex.messaging.services.RemotingService;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 
@@ -214,6 +215,20 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 		
 		TestJavaAdapter adapter = (TestJavaAdapter) getApplicationContext().getBean(defaultAdapterId, TestJavaAdapter.class);
 		assertTrue(adapter.initialized);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void testMessageBroker_CustomMessageService() {
+		broker = (MessageBroker) getApplicationContext().getBean("customMessageService", MessageBroker.class);
+		assertNotNull("MessageBroker bean not found for custom id", broker);
+		MessageService messageService = (MessageService) broker.getServiceByType(MessageService.class.getName());
+		assertNotNull("MessageService not found", messageService);
+		String defaultAdapterId = messageService.getDefaultAdapter();
+		assertEquals("Default adapter id not set on MessageService", "my-default-adapter", defaultAdapterId);
+		List expectedChannels = new ArrayList();
+		expectedChannels.add("my-polling-amf");
+		expectedChannels.add("my-secure-amf");
+		assertEquals("Default channels not set", expectedChannels, messageService.getDefaultChannels());
 	}
 	
 	public static final class TestConfigurationManager extends FlexConfigurationManager{

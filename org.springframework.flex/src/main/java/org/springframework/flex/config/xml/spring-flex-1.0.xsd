@@ -89,6 +89,16 @@ RemotingService configuration has been specified in the BlazeDS XML configuratio
 								</xsd:documentation>
 							</xsd:annotation>
 						</xsd:element>
+						<xsd:element name="message-service" minOccurs="0" maxOccurs="1" type="messageServiceType">
+							<xsd:annotation>
+								<xsd:documentation>
+									<![CDATA[
+Supports custom configuration of the default MessageService.  Note that this will only take effect if no 
+MessageService configuration has been specified in the BlazeDS XML configuration files.
+]]>
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
 						<xsd:element name="secured" minOccurs="0" maxOccurs="1" type="securedType">
 							<xsd:annotation>
 								<xsd:documentation>
@@ -472,6 +482,29 @@ used as the default adapter for exported remoting destinations.
 					<![CDATA[
 A comma-separated list of the default channels for the RemotingService.  If not specified, and if no 
 application-wide default channels are found, the first available AMF channel will be used.								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:complexType name="messageServiceType">
+		<xsd:attribute name="default-adapter-id" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Sets a reference to a custom Spring-managed ServiceAdapter (usually configured via a ManageableComponentFactoryBean) to be 
+used as the default adapter for exported message destinations.								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="default-channels" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+A comma-separated list of the default channels for the MessagingService.  If not specified, and if no 
+application-wide default channels are found, the first available AMF channel with polling enabled will be used.								
 ]]>
 				</xsd:documentation>
 			</xsd:annotation>

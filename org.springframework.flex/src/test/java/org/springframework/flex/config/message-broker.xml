@@ -54,6 +54,10 @@
 		<flex:remoting-service default-adapter-id="my-default-adapter" default-channels="my-amf, my-secure-amf"/>
 	</flex:message-broker>
 	
+	<flex:message-broker id="customMessageService">
+		<flex:message-service default-adapter-id="my-default-adapter" default-channels="my-polling-amf, my-secure-amf"/>
+	</flex:message-broker>
+	
 	<flex:message-broker id="endpointSecured">
 		<flex:secured>
 			<flex:secured-channel access="ROLE_USER" channel="my-amf"/>

@@ -1,4 +1,4 @@
-package org.springframework.flex.remoting;
+package org.springframework.flex.messaging;
 
 import java.util.Iterator;
 
@@ -9,63 +9,43 @@ import org.springframework.flex.core.AbstractServiceConfigProcessor;
 import org.springframework.util.CollectionUtils;
 
 import flex.messaging.MessageBroker;
+import flex.messaging.config.ConfigMap;
 import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.Endpoint;
-import flex.messaging.services.RemotingService;
+import flex.messaging.services.MessageService;
 import flex.messaging.services.Service;
-import flex.messaging.services.remoting.adapters.JavaAdapter;
+import flex.messaging.services.messaging.adapters.ActionScriptAdapter;
 
 /**
  * {@link MessageBrokerConfigProcessor} implementation that installs a default
- * RemotingService if one has not already been configured through the BlazeDS
+ * MessageService if one has not already been configured through the BlazeDS
  * XML configuration.
  * 
  * <p>
- * Using this processor makes the traditional <code>remoting-config.xml</code>
+ * Using this processor makes the traditional <code>messaging-config.xml</code>
  * file in BlazeDS XML configuration unnecessary when exclusively using Spring
- * to configure Flex remoting destinations.
+ * to configure Flex messaging destinations.
  * 
  * <p>
  * This processor is installed automatically when using the
  * <code>message-broker</code> tag in the xml namespace configuration. Its
- * settings can be customized using the <code>remoting-service</code> child tag.
+ * settings can be customized using the <code>message-service</code> child tag.
  * See the XSD docs for more detail.
  * 
  * @author Jeremy Grelle
  */
-public class RemotingServiceConfigProcessor extends
+public class MessageServiceConfigProcessor extends
 		AbstractServiceConfigProcessor {
 
-	private static final Log log = LogFactory
-			.getLog(RemotingServiceConfigProcessor.class);
-
-	@Override
-	protected String getServiceClassName() {
-		return RemotingService.class.getName();
-	}
-
-	@Override
-	protected String getServiceId() {
-		return "remoting-service";
-	}
-
-	@Override
-	protected String getServiceAdapterId() {
-		return "java-object";
-	}
-
-	@Override
-	protected String getServiceAdapterClassName() {
-		return JavaAdapter.class.getName();
-	}
-
+	private static final Log log = LogFactory.getLog(MessageServiceConfigProcessor.class);
+	
 	/**
-	 * Try to find a sensible default AMF channel for the default
-	 * RemotingService
+	 * Tries to find a sensible default AMF channel for the default
+	 * MessageService
 	 * 
 	 * If a application-level default is set on the MessageBroker, that will be
 	 * used. Otherwise will use the first AMFEndpoint from services-config.xml
-	 * that it finds.
+	 * that it finds with polling enabled.
 	 * 
 	 * @param broker
 	 * @param service
@@ -80,7 +60,7 @@ public class RemotingServiceConfigProcessor extends
 		Iterator channels = broker.getChannelIds().iterator();
 		while (channels.hasNext()) {
 			Endpoint endpoint = broker.getEndpoint((String) channels.next());
-			if (endpoint instanceof AMFEndpoint) {
+			if (endpoint instanceof AMFEndpoint && isPollingEnabled(endpoint)) {
 				service.addDefaultChannel(endpoint.getId());
 				return;
 			}
@@ -88,6 +68,34 @@ public class RemotingServiceConfigProcessor extends
 		log
 				.warn("No appropriate default channels were detected for the RemotingService.  "
 						+ "The channels must be explicitly set on any exported service.");
+	}
+
+	private boolean isPollingEnabled(Endpoint endpoint) {
+		ConfigMap endpointConfig = endpoint.describeEndpoint().getPropertyAsMap("properties", null);
+		if (endpointConfig != null && endpointConfig.getPropertyAsMap("polling-enabled", null) != null) {
+			return endpointConfig.getPropertyAsMap("polling-enabled", null).getPropertyAsBoolean("", false);
+		}
+		return false;
+	}
+
+	@Override
+	protected String getServiceAdapterClassName() {
+		return ActionScriptAdapter.class.getName();
+	}
+
+	@Override
+	protected String getServiceAdapterId() {
+		return "actionscript";
+	}
+
+	@Override
+	protected String getServiceClassName() {
+		return MessageService.class.getName();
+	}
+
+	@Override
+	protected String getServiceId() {
+		return "message-service";
 	}
 
 }

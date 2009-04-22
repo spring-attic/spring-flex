@@ -42,13 +42,14 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String MESSAGE_BROKER_HANDLER_ADAPTER_CLASS_NAME = "org.springframework.flex.servlet.MessageBrokerHandlerAdapter";
 	private static final String DEFAULT_HANDLER_MAPPING_CLASS_NAME = "org.springframework.web.servlet.handler.SimpleUrlHandlerMapping";
 	private static final String LOGIN_COMMAND_CLASS_NAME = "org.springframework.flex.security.SpringSecurityLoginCommand";
-	private static final String ENDPOINT_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.MessageBrokerEndpointConfigProcessor";
+	private static final String ENDPOINT_PROCESSOR_CLASS_NAME = "org.springframework.flex.core.EndpointConfigProcessor";
 	private static final String EXCEPTION_TRANSLATION_CLASS_NAME = "org.springframework.flex.core.ExceptionTranslationAdvice";
 	private static final String MESSAGE_INTERCEPTION_CLASS_NAME = "org.springframework.flex.core.MessageInterceptionAdvice";
 	private static final String ENDPOINT_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.security.EndpointInterceptor";
 	private static final String SERVICE_MESSAGE_ADVISOR_CLASS_NAME = "org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor";
 	private static final String ENDPOINT_DEFINITION_SOURCE_CLASS_NAME = "org.springframework.flex.security.EndpointDefinitionSource";
 	private static final String REMOTING_PROCESSOR_CLASS_NAME = "org.springframework.flex.remoting.RemotingServiceConfigProcessor";
+	private static final String MESSAGING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.MessageServiceConfigProcessor";
 	private static final String SESSION_FIXATION_CONFIGURER_CLASS_NAME = "org.springframework.flex.config.SessionFixationProtectionConfigurer";	
 	private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
 	private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
@@ -89,6 +90,7 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String SECURED_CHANNEL_ELEMENT = "secured-channel";
 	private static final String SECURED_ENDPOINT_PATH_ELEMENT = "secured-endpoint-path";
 	private static final String REMOTING_SERVICE_ELEMENT = "remoting-service";
+	private static final String MESSAGE_SERVICE_ELEMENT = "message-service";
 	
 	// --------------------------- Default Values ----------------------------//
 	private static final String DEFAULT_MAPPING_PATH = "/*";
@@ -143,6 +145,10 @@ public class MessageBrokerBeanDefinitionParser extends
 		
 		registerCustomConfigProcessors(parserContext, configProcessors, DomUtils.getChildElementsByTagName(element, CONFIG_PROCESSOR_ELEMENT));
 		
+		registerConfigMapEditorIfNecessary(element, parserContext);
+		
+		configureMessageService(element, parserContext, configProcessors, DomUtils.getChildElementByTagName(element, MESSAGE_SERVICE_ELEMENT));
+		
 		configureRemotingService(element, parserContext, configProcessors, DomUtils.getChildElementByTagName(element, REMOTING_SERVICE_ELEMENT));
 		
 		registerExceptionTranslation(element, parserContext, advisors, translators, DomUtils.getChildElementsByTagName(element, EXCEPTION_TRANSLATOR_ELEMENT));
@@ -158,6 +164,26 @@ public class MessageBrokerBeanDefinitionParser extends
 		}
 		
 		parserContext.popAndRegisterContainingComponent();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void configureMessageService(Element parent,
+			ParserContext parserContext, ManagedSet configProcessors,
+			Element messageServiceElement) {
+		Element source = messageServiceElement != null ? messageServiceElement : parent;
+		
+		BeanDefinitionBuilder messagingProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(MESSAGING_PROCESSOR_CLASS_NAME);
+		
+		if (messageServiceElement != null) {
+			ParsingUtils.mapAllAttributes(messageServiceElement, messagingProcessorBuilder);
+		}
+		
+		String brokerId = parent.getAttribute(ID_ATTRIBUTE);
+		
+		ParsingUtils.registerInfrastructureComponent(source, parserContext, messagingProcessorBuilder, brokerId+BeanIds.MESSAGING_PROCESSOR_SUFFIX);
+		configProcessors.add(new RuntimeBeanReference(brokerId+BeanIds.MESSAGING_PROCESSOR_SUFFIX));
+		
+		registerFlexRemotingAnnotationPostProcessorIfNecessary(source, parserContext);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -178,8 +204,6 @@ public class MessageBrokerBeanDefinitionParser extends
 		configProcessors.add(new RuntimeBeanReference(brokerId+BeanIds.REMOTING_PROCESSOR_SUFFIX));
 		
 		registerFlexRemotingAnnotationPostProcessorIfNecessary(source, parserContext);
-		
-		registerConfigMapEditorIfNecessary(source, parserContext);
 	}
 
 	@SuppressWarnings("unchecked")

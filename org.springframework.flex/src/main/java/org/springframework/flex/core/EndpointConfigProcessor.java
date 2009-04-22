@@ -1,4 +1,4 @@
-package org.springframework.flex.config;
+package org.springframework.flex.core;
 
 import java.lang.reflect.Field;
 import java.util.Iterator;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.flex.core.EndpointAdvisor;
+import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
@@ -22,13 +22,13 @@ import flex.messaging.endpoints.amf.AMFFilter;
  * 
  * @author Jeremy Grelle
  */
-public class MessageBrokerEndpointConfigProcessor implements
+public class EndpointConfigProcessor implements
 		MessageBrokerConfigProcessor, BeanClassLoaderAware {
 
 	private EndpointAdvisor[] advisors;
 	private ClassLoader proxyClassLoader = ClassUtils.getDefaultClassLoader();
 
-	public MessageBrokerEndpointConfigProcessor(
+	public EndpointConfigProcessor(
 			List<EndpointAdvisor> advisors) {
 		Assert
 				.notEmpty(advisors,

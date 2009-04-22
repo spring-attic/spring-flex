@@ -8,11 +8,11 @@ import java.util.List;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.flex.config.MessageBrokerEndpointConfigProcessor;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
 import org.springframework.flex.core.EndpointAdvisor;
 import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
+import org.springframework.flex.core.EndpointConfigProcessor;
 import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.security.EndpointDefinitionSource;
 import org.springframework.flex.security.EndpointInterceptor;
@@ -87,7 +87,7 @@ public class EndpointSecurityIntegrationTests extends
 		advisors.add(new EndpointServiceMessagePointcutAdvisor(translator));
 		advisors.add(new EndpointServiceMessagePointcutAdvisor(interceptor));
 		
-		MessageBrokerEndpointConfigProcessor processor = new MessageBrokerEndpointConfigProcessor(advisors);
+		EndpointConfigProcessor processor = new EndpointConfigProcessor(advisors);
 		
 		addStartupProcessor(processor);
 	}

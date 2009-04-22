@@ -1,4 +1,4 @@
-package org.springframework.flex.config;
+package org.springframework.flex.core;
 
 import static org.mockito.Mockito.*;
 
@@ -16,9 +16,9 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.Advised;
-import org.springframework.flex.config.MessageBrokerEndpointConfigProcessor;
 import org.springframework.flex.core.EndpointAdvisor;
 import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
+import org.springframework.flex.core.EndpointConfigProcessor;
 import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.MessageBroker;
@@ -27,7 +27,7 @@ import flex.messaging.endpoints.BaseHTTPEndpoint;
 import flex.messaging.endpoints.Endpoint;
 import flex.messaging.endpoints.amf.AMFFilter;
 
-public class MessageBrokerEndpointConfigProcessorTests extends TestCase {
+public class EndpointConfigProcessorTests extends TestCase {
 
 	MessageBroker broker;
 	@Mock
@@ -40,7 +40,7 @@ public class MessageBrokerEndpointConfigProcessorTests extends TestCase {
 	MethodInterceptor advice2;
 	EndpointServiceMessagePointcutAdvisor advisor1;
 	EndpointServiceMessagePointcutAdvisor advisor2;
-	MessageBrokerEndpointConfigProcessor processor;
+	EndpointConfigProcessor processor;
 
 	@SuppressWarnings("unchecked")
 	public void setUp() {
@@ -68,7 +68,7 @@ public class MessageBrokerEndpointConfigProcessorTests extends TestCase {
 		List<EndpointAdvisor> advisors = new ArrayList<EndpointAdvisor>();
 		advisors.add(advisor1);
 		advisors.add(advisor2);
-		processor = new MessageBrokerEndpointConfigProcessor(advisors);
+		processor = new EndpointConfigProcessor(advisors);
 
 		MessageBroker processedBroker = (MessageBroker) processor
 				.processAfterStartup(broker);
