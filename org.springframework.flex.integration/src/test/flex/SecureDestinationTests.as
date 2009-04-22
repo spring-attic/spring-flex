@@ -24,6 +24,8 @@ package {
 		private var protectedByChannelIdCs:ChannelSet;
   	
   		private var responseChecker:ResponseChecker;
+  	
+  		private var asyncTimeout:int = 60000;
   		
   		override protected function setUp():void  {
   			
@@ -41,6 +43,7 @@ package {
     		"http://{server.name}:{server.port}/flex-integration/spring/protected2/messagebroker/amf"));
 			
 			protectedByChannelIdPingService.channelSet = protectedByChannelIdCs;
+			
 			
 			responseChecker = new ResponseChecker();
   		}
@@ -63,7 +66,7 @@ package {
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
         		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
         		assertEquals("The fault code was incorrect", "Client.Authentication",FaultEvent(responseChecker.resultEvent).fault.faultCode);
-        	},5000));
+        	},asyncTimeout));
   			
   			protectedPingService.ping();
   		}
@@ -86,7 +89,7 @@ package {
         		assertTrue("Event was not a FaultEvent",responseChecker.resultEvent is FaultEvent);
         		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
         		assertEquals("The fault code was incorrect", "Client.Authentication",FaultEvent(responseChecker.resultEvent).fault.faultCode);
-        	},5000));
+        	},asyncTimeout));
   			
   			protectedByChannelIdPingService.ping();
   		}
@@ -112,7 +115,7 @@ package {
         		//Alert.show(FaultEvent(responseChecker.resultEvent).toString());
         		assertEquals("The fault code was incorrect", "Client.Authentication",FaultEvent(responseChecker.resultEvent).fault.faultCode);
         		assertEquals("The fault detail was incorrect", "Bad credentials", FaultEvent(responseChecker.resultEvent).fault.faultString);
-        	},5000));
+        	},asyncTimeout));
   		}
   		
   		public function testSpringManagedSecureChannel_LoginLogoutValidCredentials():void {
@@ -150,14 +153,14 @@ package {
           				}
           			)
           		);
-        	},5000)); 			
+        	},asyncTimeout)); 			
   			
 			responseChecker.addEventListener("resultReceived2",asyncHandler(function(event:Event, data:Object):void{ 
         		assertTrue("Event was not a ResultEvent",responseChecker.resultEvent is ResultEvent);
         		//Alert.show(ResultEvent(responseChecker.resultEvent).result.toString());
         		assertEquals("ResultEvent does not indicate success", "success", ResultEvent(responseChecker.resultEvent).result);
         		assertFalse("Not logged out",protectedCs.authenticated);
-			},5000));
+			},asyncTimeout));
   			
   		}
   	

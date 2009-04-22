@@ -65,7 +65,6 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String AUTH_MANAGER_ATTR = "authentication-manager";
 	private static final String ACCESS_MANAGER_ATTR = "access-decision-manager";
 	private static final String PER_CLIENT_AUTHENTICATION_ATTR = "per-client-authentication";
-	private static final String INVALIDATE_FLEX_SESSION_ATTR = "invalidate-flex-session";
 	private static final String ACCESS_ATTR = "access";
 	private static final String CHANNEL_ATTR = "channel";
 
@@ -74,7 +73,6 @@ public class MessageBrokerBeanDefinitionParser extends
 	private static final String ORDER_PROPERTY = "order";
 	private static final String CONFIG_PROCESSORS_PROPERTY = "configProcessors";
 	private static final String PER_CLIENT_AUTHENTICATION_PROPERTY = "perClientAuthentication";
-	private static final String INVALIDATE_FLEX_SESSION_PROPERTY = "invalidateFlexSession";
 	private static final String AUTH_MANAGER_PROPERTY = "authenticationManager";
 	private static final String ACCESS_MANAGER_PROPERTY = "accessDecisionManager";
 	private static final String OBJECT_DEF_SOURCE_PROPERTY = "objectDefinitionSource";
@@ -409,13 +407,11 @@ public class MessageBrokerBeanDefinitionParser extends
 			Element securedElement, String authManager, boolean perClientAuthentication) {
 		
 		String loginCommandId = brokerId+BeanIds.LOGIN_COMMAND_SUFFIX;
-		boolean invalidateFlexSession = Boolean.parseBoolean(securedElement.getAttribute(INVALIDATE_FLEX_SESSION_ATTR));
 		
 		BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder
 			.genericBeanDefinition(LOGIN_COMMAND_CLASS_NAME);
 		loginCommandBuilder.addConstructorArgReference(authManager);
 		loginCommandBuilder.addPropertyValue(PER_CLIENT_AUTHENTICATION_PROPERTY, perClientAuthentication);
-		loginCommandBuilder.addPropertyValue(INVALIDATE_FLEX_SESSION_PROPERTY, invalidateFlexSession);
 		
 		ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginCommandBuilder, loginCommandId);
 		configProcessors.add(new RuntimeBeanReference(loginCommandId));

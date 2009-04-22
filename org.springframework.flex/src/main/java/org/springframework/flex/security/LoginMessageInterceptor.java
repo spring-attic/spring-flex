@@ -3,7 +3,7 @@ package org.springframework.flex.security;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.flex.core.MessageInterceptionContext;
+import org.springframework.flex.core.MessageProcessingContext;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
@@ -15,7 +15,7 @@ public class LoginMessageInterceptor implements MessageInterceptor {
 
 	private static final String SUCCESS_MSG = "success";
 	
-	public Message postProcess(MessageInterceptionContext context, Message inputMessage, Message outputMessage) {
+	public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
 		if (inputMessage instanceof CommandMessage && ((CommandMessage)inputMessage).getOperation() == CommandMessage.LOGIN_OPERATION) {
 			if (SUCCESS_MSG.equals(outputMessage.getBody())) {
 				outputMessage.setBody(getAuthenticationResult());
@@ -36,7 +36,7 @@ public class LoginMessageInterceptor implements MessageInterceptor {
 		return authenticationResult;
 	}
 
-	public Message preProcess(MessageInterceptionContext context, Message inputMessage) {
+	public Message preProcess(MessageProcessingContext context, Message inputMessage) {
 		return inputMessage;
 	}
 

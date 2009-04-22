@@ -411,16 +411,6 @@ in the future.
 				</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
-		<xsd:attribute name="invalidate-flex-session" type="xsd:boolean" default="true">
-			<xsd:annotation>
-				<xsd:documentation>
-					<![CDATA[
-Used to specify whether the current flex session should be invalidated when logging out using ChannelSet.logout from
-the Flex client.  Defaults to 'true'.								
-]]>
-				</xsd:documentation>
-			</xsd:annotation>
-		</xsd:attribute>
 	</xsd:complexType>
 	
 	<xsd:complexType name="securedChannelType">

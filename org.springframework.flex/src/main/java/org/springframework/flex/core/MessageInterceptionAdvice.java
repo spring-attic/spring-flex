@@ -2,6 +2,7 @@ package org.springframework.flex.core;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -13,7 +14,7 @@ public class MessageInterceptionAdvice implements MethodInterceptor {
 	private Set<MessageInterceptor> messageInterceptors = new HashSet<MessageInterceptor>();
 	
 	public Object invoke(MethodInvocation mi) throws Throwable {
-		MessageInterceptionContext context = new MessageInterceptionContext(mi.getThis());
+		MessageProcessingContext context = new MessageProcessingContext(mi.getThis());
 		Message inputMessage = (Message) mi.getArguments()[0];
 		for (MessageInterceptor interceptor : messageInterceptors) {
 			inputMessage = interceptor.preProcess(context, inputMessage);
@@ -24,7 +25,10 @@ public class MessageInterceptionAdvice implements MethodInterceptor {
 			outputMessage = (Message) mi.proceed();
 		} finally {
 			if (outputMessage != null) {
-				for (MessageInterceptor interceptor : messageInterceptors) {
+				Stack<MessageInterceptor> postProcessStack = new Stack<MessageInterceptor>();
+				postProcessStack.addAll(messageInterceptors);
+				while (!postProcessStack.empty()) {
+					MessageInterceptor interceptor = postProcessStack.pop();
 					outputMessage = interceptor.postProcess(context, inputMessage, outputMessage);
 				} 
 			}

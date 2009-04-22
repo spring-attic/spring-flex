@@ -1,6 +1,6 @@
 package org.springframework.flex.security;
 
-import org.springframework.flex.core.MessageInterceptionContext;
+import org.springframework.flex.core.MessageProcessingContext;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.security.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.intercept.InterceptorStatusToken;
@@ -39,7 +39,7 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
 		objectDefinitionSource = newSource;
 	}
 	
-	public Message postProcess(MessageInterceptionContext context, Message inputMessage, Message outputMessage) {
+	public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
 		if (context.getAttributes().containsKey(STATUS_TOKEN)) {
 			InterceptorStatusToken token = (InterceptorStatusToken) context.getAttributes().get(STATUS_TOKEN);
 			return (Message) afterInvocation(token, outputMessage);
@@ -48,7 +48,7 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
 		}
 	}
 
-	public Message preProcess(MessageInterceptionContext context, Message inputMessage) {
+	public Message preProcess(MessageProcessingContext context, Message inputMessage) {
 		if (!isPassThroughCommand(inputMessage)) {
 			InterceptorStatusToken token = beforeInvocation(context.getMessageTarget());
 			context.getAttributes().put(STATUS_TOKEN, token);

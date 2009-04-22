@@ -4,7 +4,7 @@ import flex.messaging.messages.Message;
 
 public interface MessageInterceptor {
 
-	public Message preProcess(MessageInterceptionContext context, Message inputMessage);
+	public Message preProcess(MessageProcessingContext context, Message inputMessage);
 	
-	public Message postProcess(MessageInterceptionContext context, Message inputMessage, Message outputMessage);
+	public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage);
 }

@@ -13,6 +13,14 @@
 		    <load-config filename="${flex.sdk.dir}/frameworks/flex-config.xml"/>
 		    <source-path path-element="${flex.sdk.dir}/frameworks"/>
 		</mxmlc>
+		<mxmlc file="${test.flex.dir}/ClientAuthTestRunner1.mxml" output="${flex.output.dir}/ClientAuthTestRunner1.swf" incremental="true">
+			<load-config filename="${flex.sdk.dir}/frameworks/flex-config.xml"/>
+			<source-path path-element="${flex.sdk.dir}/frameworks"/>
+		</mxmlc>
+		<mxmlc file="${test.flex.dir}/ClientAuthTestRunner2.mxml" output="${flex.output.dir}/ClientAuthTestRunner2.swf" incremental="true">
+			<load-config filename="${flex.sdk.dir}/frameworks/flex-config.xml"/>
+			<source-path path-element="${flex.sdk.dir}/frameworks"/>
+		</mxmlc>
 	</target>
 
 </project>

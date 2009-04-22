@@ -119,27 +119,6 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
 		cmd.logout(principal);
 		
 		assertTrue("SecurityContext was not cleared",original != SecurityContextHolder.getContext());
-		assertFalse("FlexSession was not invalidated",session.isValid());
-	}
-	
-	public void testLogoutWithInvalidateSessionFalse() throws Exception {
-		String username = "foo";
-		String password = "bar";
-
-		FlexSession session = new MockFlexSession();
-		FlexContext.setThreadLocalSession(session);
-		
-		cmd = new SpringSecurityLoginCommand(new MockAuthenticationManager(true));
-		cmd.setInvalidateFlexSession(false);
-		
-		Principal principal = cmd.doAuthentication(username, password);
-		
-		SecurityContext original = SecurityContextHolder.getContext();
-		
-		cmd.logout(principal);
-		
-		assertTrue("SecurityContext was not cleared",original != SecurityContextHolder.getContext());
-		assertTrue("FlexSession was invalidated",session.isValid());
 	}
 	
 	private static class MockFlexSession extends FlexSession {

@@ -83,12 +83,12 @@ public class MessageInterceptionAdviceTests extends TestCase {
 		protected boolean preInvoked = false;
 		protected boolean postInvoked = false;
 		
-		public Message postProcess(MessageInterceptionContext context, Message inputMessage, Message outputMessage) {
+		public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
 			postInvoked = true;
 			return outputMessage;
 		}
 
-		public Message preProcess(MessageInterceptionContext context, Message inputMessage) {
+		public Message preProcess(MessageProcessingContext context, Message inputMessage) {
 			preInvoked = true;
 			return inputMessage;
 		}
@@ -99,12 +99,12 @@ public class MessageInterceptionAdviceTests extends TestCase {
 		protected boolean preInvoked = false;
 		protected boolean postInvoked = false;
 		
-		public Message postProcess(MessageInterceptionContext context, Message inputMessage, Message outputMessage) {
+		public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
 			postInvoked = true;
 			return mutatedOutMessage;
 		}
 
-		public Message preProcess(MessageInterceptionContext context, Message inputMessage) {
+		public Message preProcess(MessageProcessingContext context, Message inputMessage) {
 			preInvoked = true;
 			return mutatedInMessage;
 		}

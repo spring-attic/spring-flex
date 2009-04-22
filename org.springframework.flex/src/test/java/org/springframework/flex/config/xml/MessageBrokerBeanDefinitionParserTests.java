@@ -20,7 +20,7 @@ import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.flex.core.MessageInterceptionAdvice;
-import org.springframework.flex.core.MessageInterceptionContext;
+import org.springframework.flex.core.MessageProcessingContext;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.security.EndpointInterceptor;
 import org.springframework.flex.security.FlexSessionInvalidatingAuthenticationListener;
@@ -166,7 +166,6 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 		SpringSecurityLoginCommand loginCommand = (SpringSecurityLoginCommand) broker.getLoginManager().getLoginCommand();
 		assertNotNull("LoginCommand not found", loginCommand);
 		assertTrue("perClientAuthentication not configured",loginCommand.isPerClientAuthentication());
-		assertFalse("invalidateFlexSession not configured",loginCommand.isInvalidateFlexSession());
 		
 		Iterator i = broker.getEndpoints().values().iterator();
 		while (i.hasNext()) {
@@ -257,11 +256,11 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 	}
 	
 	public static final class TestMessageInterceptor implements MessageInterceptor {
-		public Message postProcess(MessageInterceptionContext context, Message inputMessage, Message outputMessage) {
+		public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
 			return null;
 		}
 
-		public Message preProcess(MessageInterceptionContext context, Message inputMessage) {
+		public Message preProcess(MessageProcessingContext context, Message inputMessage) {
 			return null;
 		}
 	}
