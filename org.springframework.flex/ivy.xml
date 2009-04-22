@@ -25,6 +25,7 @@
 		<dependency org="javax.servlet" name="com.springsource.javax.servlet" rev="2.4.0" conf="provided->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.logging" rev="1.1.1" conf="compile->runtime"/>
 		<dependency org="org.apache.commons" name="com.springsource.org.apache.commons.httpclient" rev="3.1.0" conf="compile->runtime"/>
+		<dependency org="org.codehaus.jackson" name="com.springsource.org.codehaus.jackson" rev="0.9.9.4" />
         <dependency org="org.springframework" name="org.springframework.beans" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.context" rev="${org.springframework}" conf="compile->runtime"/>  
 		<dependency org="org.springframework" name="org.springframework.context.support" rev="${org.springframework}" conf="compile->runtime"/>      
@@ -35,9 +36,6 @@
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.common" rev="3.2.0.3978" conf="compile->runtime"/>
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.http" rev="3.2.0.3978" conf="compile->runtime"/>
         <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.remoting" rev="3.2.0.3978" conf="compile->runtime"/>
-        
-        <!-- Dependencies missing from www.springsource.com/repository -->
-		<dependency org="org.codehaus.jackson" name="org.codehaus.jackson" rev="0.9.9" />
 
 		<!-- Optional runtime dependencies -->
 		<dependency org="javax.jms" name="com.springsource.javax.jms" rev="1.1.0" conf="provided->runtime"/>
