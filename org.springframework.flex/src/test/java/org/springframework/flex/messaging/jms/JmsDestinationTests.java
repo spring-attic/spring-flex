@@ -83,7 +83,7 @@ public class JmsDestinationTests extends AbstractMessageBrokerTests {
 
 		factory = new MessageDestinationFactory();
 		factory.setBeanName(DEFAULT_ID);
-		factory.setAdapterBeanName(adapterBeanName);
+		factory.setServiceAdapter(adapterBeanName);
 		factory.setBeanFactory(context);
 		factory.setMessageBroker(getMessageBroker());
 	}

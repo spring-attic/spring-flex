@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.flex.core.AbstractDestinationFactory;
 import org.springframework.flex.core.MessageBrokerFactoryBean;
 import org.springframework.util.Assert;
@@ -20,19 +17,20 @@ import flex.messaging.FlexFactory;
 import flex.messaging.MessageBroker;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.services.RemotingService;
+import flex.messaging.services.Service;
 import flex.messaging.services.ServiceAdapter;
 import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
 
 /**
- * An exporter for exposing a Spring-managed bean to a Flex client for direct
+ * An factory for exposing a Spring-managed bean to a Flex client for direct
  * remoting calls.
  * 
  * <p>
  * The exported service will be exposed to the Flex client as a BlazeDS remoting
  * service destination. By default, the destination id will be the same as the
- * bean name of this exporter. This may be overridden using the serviceId property.
+ * bean name of this factory. This may be overridden using the serviceId property.
  * <i>Note that this convention is slightly different from that employed by the
  * <code>remote-service</code> xml config tag. See the xsd docs for details.</i>
  * 
@@ -46,7 +44,7 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
  * @author Jeremy Grelle
  * @author Mark Fisher
  */
-public class RemotingDestinationExporter extends AbstractDestinationFactory implements FlexFactory, BeanFactoryAware {
+public class RemotingDestinationExporter extends AbstractDestinationFactory implements FlexFactory {
 
 	private static final Log log = LogFactory.getLog(RemotingDestinationExporter.class);
 	
@@ -55,17 +53,9 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
 	private String[] includeMethods;
 
 	private String[] excludeMethods;
-	
-	private BeanFactory beanFactory;
-	
-	private String serviceAdapter;
 
 	public void setService(Object service) {
 		this.service = service;
-	}
-	
-	public void setServiceAdapter(String serviceAdapter) {
-		this.serviceAdapter = serviceAdapter;
 	}
 
 	public void setIncludeMethods(String[] includeMethods) {
@@ -95,10 +85,6 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
 	public void initialize(String id, ConfigMap configMap) {
 		// No-op
 	}
-	
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
 
 	@Override
 	protected Destination createDestination(String destinationId, MessageBroker broker) {
@@ -115,12 +101,6 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
 				.createDestination(destinationId);
 
 		destination.setFactory(this);
-		
-		String adapterId = StringUtils.hasText(serviceAdapter) ? serviceAdapter : remotingService.getDefaultAdapter();
-		if (beanFactory.containsBean(adapterId)) {
-			ServiceAdapter adapter = (ServiceAdapter) beanFactory.getBean(adapterId, ServiceAdapter.class);
-			destination.setAdapter(adapter);
-		}
 		
 		if (log.isInfoEnabled()) {
 			log.info("Created remoting destination with id '"+destinationId+"'");
@@ -158,6 +138,11 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
 		}
 
 		remotingService.removeDestination(destinationId);
+	}
+	
+	@Override
+	protected Service getTargetService(MessageBroker broker) {
+		return broker.getServiceByType(RemotingService.class.getName());
 	}
 
 	private void configureExcludes(Destination destination) {

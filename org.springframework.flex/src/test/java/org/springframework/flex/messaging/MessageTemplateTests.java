@@ -35,7 +35,7 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
 
 	private MessageTemplate template;
 
-	private SimpleMessageDestinationFactory factory;
+	private MessageDestinationFactory factory;
 
 	private final AtomicReference<Message> messageHolder = new AtomicReference<Message>();
 
@@ -48,8 +48,8 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
 		mpvs.addPropertyValue("messageHolder", this.messageHolder);
 		context.registerPrototype("test-adapter", TestMessagingAdapter.class, mpvs);
 
-		factory = new SimpleMessageDestinationFactory();
-		factory.setAdapterBeanName("test-adapter");
+		factory = new MessageDestinationFactory();
+		factory.setServiceAdapter("test-adapter");
 		factory.setBeanFactory(context);
 		factory.setMessageBroker(getMessageBroker());
 		factory.setBeanName("test-destination");

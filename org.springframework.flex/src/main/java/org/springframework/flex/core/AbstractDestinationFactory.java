@@ -1,5 +1,8 @@
 package org.springframework.flex.core;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -10,6 +13,8 @@ import org.springframework.util.StringUtils;
 
 import flex.messaging.Destination;
 import flex.messaging.MessageBroker;
+import flex.messaging.services.Service;
+import flex.messaging.services.ServiceAdapter;
 
 /**
  * Base class for Flex Destination factories.
@@ -17,7 +22,7 @@ import flex.messaging.MessageBroker;
  * @author Jeremy Grelle
  * @author Mark Fisher
  */
-public abstract class AbstractDestinationFactory implements InitializingBean, DisposableBean, BeanNameAware {
+public abstract class AbstractDestinationFactory implements InitializingBean, DisposableBean, BeanNameAware, BeanFactoryAware {
 
 	private volatile String destinationId;
 
@@ -26,6 +31,10 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
 	private String[] channels;
 
 	private MessageBroker broker;
+	
+	private BeanFactory beanFactory;
+	
+	private String serviceAdapter;
 
 
 	public void setDestinationId(String destinationId) {
@@ -52,6 +61,7 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
 	public final void afterPropertiesSet() throws Exception {
 		Assert.notNull(broker, "The 'messageBroker' property is required.");
 		Destination destination = this.createDestination(getDestinationId(), broker);
+		this.configureAdapter(destination);
 		this.configureChannels(destination);
 		this.initializeDestination(destination);
 	}
@@ -61,6 +71,24 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
 			return;
 		}
 		this.destroyDestination(getDestinationId(), this.broker);
+	}
+	
+	public void setServiceAdapter(String serviceAdapter) {
+		this.serviceAdapter = serviceAdapter;
+	}
+	
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+	}
+	
+	protected void configureAdapter(Destination destination) {
+		String adapterId = StringUtils.hasText(serviceAdapter) ? serviceAdapter : getTargetService(broker).getDefaultAdapter();
+		if (beanFactory.containsBean(adapterId)) {
+			ServiceAdapter adapter = (ServiceAdapter) beanFactory.getBean(adapterId, ServiceAdapter.class);
+			destination.setAdapter(adapter);
+		} else if (destination.getAdapter() == null){
+			destination.createAdapter(adapterId);
+		}
 	}
 
 	private void configureChannels(Destination destination) {
@@ -74,6 +102,8 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
 		}
 		destination.setChannels(CollectionUtils.arrayToList(channels));
 	}
+	
+	protected abstract Service getTargetService(MessageBroker broker);
 
 	protected abstract Destination createDestination(String destinationId, MessageBroker broker) throws Exception;
 

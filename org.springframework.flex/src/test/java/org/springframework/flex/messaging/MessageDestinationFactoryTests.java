@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.flex.config.json.JsonConfigMapPropertyEditor;
@@ -25,10 +26,12 @@ import flex.messaging.services.MessageService;
 import flex.messaging.services.messaging.adapters.ActionScriptAdapter;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
-public class SimpleMessageDestinationFactoryTests extends AbstractMessageBrokerTests {
+public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
 
-	SimpleMessageDestinationFactory exporter;
+	MessageDestinationFactory factory;
 	MessageService service;
+	
+	@Mock private BeanFactory beanFactory;
 	
 	@Mock LoginManager loginManager;
 	
@@ -53,11 +56,12 @@ public class SimpleMessageDestinationFactoryTests extends AbstractMessageBrokerT
 	
 	public void testDefaultDestinationCreated() throws Exception {
 		
-		exporter = new SimpleMessageDestinationFactory();
-		exporter.setBeanName("foo1");
-		exporter.setMessageBroker(getMessageBroker());
+		factory = new MessageDestinationFactory();
+		factory.setBeanName("foo1");
+		factory.setMessageBroker(getMessageBroker());
+		factory.setBeanFactory(beanFactory);
 		
-		exporter.afterPropertiesSet();
+		factory.afterPropertiesSet();
 		
 		MessageDestination destination = (MessageDestination) service.getDestination("foo1");
 		assertNotNull(destination);
@@ -71,24 +75,25 @@ public class SimpleMessageDestinationFactoryTests extends AbstractMessageBrokerT
 	@SuppressWarnings("unchecked")
 	public void testDestinationWithExplicitProperties() throws Exception {
 		
-		exporter = new SimpleMessageDestinationFactory();
-		exporter.setBeanName("foo-exporter");
-		exporter.setDestinationId("foo2");
+		factory = new MessageDestinationFactory();
+		factory.setBeanName("foo-factory");
+		factory.setDestinationId("foo2");
 		String[] channels = new String[] {"my-amf", "my-polling-amf"};
-		exporter.setChannels(channels);
-		exporter.setAllowSubtopics("true");
-		exporter.setClusterMessageRouting("broadcast");
-		exporter.setMessageTimeToLive("1");
-		exporter.setSubscriptionTimeoutMinutes("1");
-		exporter.setSubtopicSeparator("/");
-		exporter.setThrottleInboundMaxFrequency("500");
-		exporter.setThrottleInboundPolicy("ERROR");
-		exporter.setThrottleOutboundMaxFrequency("500");
-		exporter.setThrottleOutboundPolicy("IGNORE");
+		factory.setChannels(channels);
+		factory.setAllowSubtopics("true");
+		factory.setClusterMessageRouting("broadcast");
+		factory.setMessageTimeToLive("1");
+		factory.setSubscriptionTimeoutMinutes("1");
+		factory.setSubtopicSeparator("/");
+		factory.setThrottleInboundMaxFrequency("500");
+		factory.setThrottleInboundPolicy("ERROR");
+		factory.setThrottleOutboundMaxFrequency("500");
+		factory.setThrottleOutboundPolicy("IGNORE");
 		
-		exporter.setMessageBroker(getMessageBroker());
+		factory.setMessageBroker(getMessageBroker());
+		factory.setBeanFactory(beanFactory);
 		
-		exporter.afterPropertiesSet();
+		factory.afterPropertiesSet();
 		
 		MessageDestination destination = (MessageDestination) service.getDestination("foo2");
 		assertNotNull(destination);
@@ -108,14 +113,15 @@ public class SimpleMessageDestinationFactoryTests extends AbstractMessageBrokerT
 	
 	public void testDestinationWithSecurityConstraints() throws Exception {
 		
-		exporter = new SimpleMessageDestinationFactory();
-		exporter.setBeanName("foo3");
-		exporter.setSendSecurityConstraint("spring-security-users");
-		exporter.setSubscribeSecurityConstraint("spring-security-users");
+		factory = new MessageDestinationFactory();
+		factory.setBeanName("foo3");
+		factory.setSendSecurityConstraint("spring-security-users");
+		factory.setSubscribeSecurityConstraint("spring-security-users");
 		
-		exporter.setMessageBroker(getMessageBroker());
+		factory.setMessageBroker(getMessageBroker());
+		factory.setBeanFactory(beanFactory);
 		
-		exporter.afterPropertiesSet();
+		factory.afterPropertiesSet();
 		
 		MessageDestination destination = (MessageDestination) service.getDestination("foo3");
 		assertNotNull(destination);
@@ -133,15 +139,16 @@ public class SimpleMessageDestinationFactoryTests extends AbstractMessageBrokerT
 		
 		PropertyEditor editor = new JsonConfigMapPropertyEditor();
 		editor.setAsText(readJsonFile());
-		exporter = new SimpleMessageDestinationFactory((ConfigMap) editor.getValue());
-		exporter.setBeanName("foo-exporter");
-		exporter.setDestinationId("foo4");
+		factory = new MessageDestinationFactory((ConfigMap) editor.getValue());
+		factory.setBeanName("foo-factory");
+		factory.setDestinationId("foo4");
 		String[] channels = new String[] {"my-amf", "my-polling-amf"};
-		exporter.setChannels(channels);
+		factory.setChannels(channels);
 		
-		exporter.setMessageBroker(getMessageBroker());
+		factory.setMessageBroker(getMessageBroker());
+		factory.setBeanFactory(beanFactory);
 		
-		exporter.afterPropertiesSet();
+		factory.afterPropertiesSet();
 		
 		MessageDestination destination = (MessageDestination) service.getDestination("foo4");
 		assertNotNull(destination);
