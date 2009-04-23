@@ -320,6 +320,61 @@ The name of a JMS Topic.
 			<!-- TODO: add destination-resolver, message-converter, transaction-manager, etc -->
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:complexType name="messageDestinationType">
+		<xsd:attribute name="subscription-timeout-minutes" type="xsd:integer">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Subscriptions to this destination that receive no pushed messages in this time interval, in minutes, are automatically unsubscribed. 
+When the value is set to 0 (zero), subscribers are not forced to unsubscribe automatically. The default value is 0.						
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="throttle-inbound-max-frequency" type="xsd:integer">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Controls how many messages per second the message destination accepts.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="throttle-inbound-policy" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+The policy indicates what to do when the message limit set by throttle-inbound-max-frequency is reached:
+* A policy value of NONE specifies no throttling policy (same as frequency of zero).
+* A policy value of ERROR specifies that when the frequency is exceeded, throttle the message and send an error to the client.
+* A policy value of IGNORE specifies that when the frequency is exceeded, throttle the message but don't send an error to the client.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="throttle-outbound-max-frequency" type="xsd:integer">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Controls how many messages per second the server can route to subscribed consumers.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="throttle-outbound-policy" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+The policy indicates what to do when the message limit set by throttle-outbound-max-frequency is reached:
+* A policy value of NONE specifies no throttling policy (same as frequency of zero).
+* A policy value of ERROR specifies that when the frequency is exceeded, throttle the message and send an error to the client.
+* A policy value of IGNORE specifies that when the frequency is exceeded, throttle the message but don't send an error to the client.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
 
 	<xsd:complexType name="mappingType">
 		<xsd:attribute name="pattern" type="xsd:string" use="required">
