@@ -20,6 +20,16 @@ import org.w3c.dom.Element;
  */
 abstract class ParsingUtils {
 	
+	public static int countProvidedAttributeValues(Element element, String... values) {
+		int count = 0;
+		for (String s : values) {
+			if (StringUtils.hasText(element.getAttribute(s))) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
 	public static void mapAllAttributes(Element element, BeanDefinitionBuilder builder) {
 		new SimpleBeanDefinitionParser().mapToBuilder(element, builder);
 	}

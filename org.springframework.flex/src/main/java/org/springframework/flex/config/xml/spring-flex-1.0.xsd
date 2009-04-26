@@ -239,6 +239,37 @@ invoking methods on this destination.  Optional.
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:element name="message-destination">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[
+Creates a Flex MessageDestination backed by an ActionScriptAdapter for handling "native" BlazeDS messages. Such destinations
+are typically used for communication between multiple Flex clients, but they can also be used for sending simple messages to
+Flex clients from POJOs by using the provided MessageTemplate class.  For asynchronous reception of messages sent by Flex
+clients by POJOs, see the jms-message-destination and integration-message-destination.  
+]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="messageDestinationType">
+					<xsd:attribute name="service-adapter" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+A reference to a custom Spring-managed ServiceAdapter (usually created via a ManageableComponentFactoryBean) to be used when 
+routing messages through this destination.  This can be used to integrate new messaging technologies by providing a custom
+MessagingAdapter.  Note that any of the standard MessagingAdapter attributes set on this tag will be passed through to the
+custom adapter's initialize method.  Optional.	
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>	
 
 	<xsd:element name="jms-message-destination">
 		<xsd:annotation>
@@ -250,7 +281,78 @@ Exactly one of the 'jms-destination-ref', 'queue-name', or 'topic-name' attribut
 			</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:attribute name="id" type="xsd:ID" use="required">
+			<xsd:complexContent>
+				<xsd:extension base="messageDestinationType">	
+					<xsd:attribute name="connection-factory" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+The bean name of the JMS ConnectionFactory to be used by this destination. If not provided, the default
+reference will be "connectionFactory".
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>			
+					<xsd:attribute name="jms-destination" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+A reference to a JMS Destination instance.
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="queue-name" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+						<![CDATA[
+The name of a JMS Queue.
+]]>
+							</xsd:documentation>
+						</xsd:annotation>			
+					</xsd:attribute>
+					<xsd:attribute name="topic-name" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+The name of a JMS Topic.
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<!-- TODO: add destination-resolver, message-converter, transaction-manager, etc -->
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="integration-message-destination">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[
+Creates a Flex MessageDestination backed by a Spring Integration MessageChannel.
+]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="messageDestinationType">
+					<xsd:attribute name="message-channel" type="xsd:string" use="required">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+A bean reference to a Spring Integration MessageChannel.
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:complexType name="messageDestinationType">
+		<xsd:attribute name="id" type="xsd:ID" use="required">
 				<xsd:annotation>
 					<xsd:documentation>
 						<![CDATA[
@@ -259,69 +361,27 @@ Producers and Consumers in the Flex client.
 ]]>
 					</xsd:documentation>
 				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="connection-factory" type="xsd:string">
-				<xsd:annotation>
-					<xsd:documentation>
-						<![CDATA[
-The bean name of the JMS ConnectionFactory to be used by this destination. If not provided, the default
-reference will be "connectionFactory".
-]]>
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>			
-			<xsd:attribute name="message-broker" type="xsd:string">
-				<xsd:annotation>
-					<xsd:documentation>
-						<![CDATA[
+		</xsd:attribute>
+		<xsd:attribute name="message-broker" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
 The id of the Spring-managed MessageBroker that will route messages to this destination.
 Not required unless an explicit id has been specified for the MessageBroker.
 ]]>
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="channels" type="xsd:string">
-				<xsd:annotation>
-					<xsd:documentation>
-						<![CDATA[
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="channels" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
 A comma-separated list of ids for the BlazeDS channels over which this messaging destination should be exposed.
 Only needed when overriding the default channels for the MessageService.
 ]]>
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="jms-destination-ref" type="xsd:string">
-				<xsd:annotation>
-					<xsd:documentation>
-						<![CDATA[
-A reference to a JMS Destination instance.
-]]>
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<xsd:attribute name="queue-name" type="xsd:string">
-				<xsd:annotation>
-					<xsd:documentation>
-						<![CDATA[
-The name of a JMS Queue.
-]]>
-					</xsd:documentation>
-				</xsd:annotation>			
-			</xsd:attribute>
-			<xsd:attribute name="topic-name" type="xsd:string">
-				<xsd:annotation>
-					<xsd:documentation>
-						<![CDATA[
-The name of a JMS Topic.
-]]>
-					</xsd:documentation>
-				</xsd:annotation>
-			</xsd:attribute>
-			<!-- TODO: add destination-resolver, message-converter, transaction-manager, etc -->
-		</xsd:complexType>
-	</xsd:element>
-	
-	<xsd:complexType name="messageDestinationType">
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
 		<xsd:attribute name="subscription-timeout-minutes" type="xsd:integer">
 			<xsd:annotation>
 				<xsd:documentation>
@@ -370,6 +430,79 @@ The policy indicates what to do when the message limit set by throttle-outbound-
 * A policy value of NONE specifies no throttling policy (same as frequency of zero).
 * A policy value of ERROR specifies that when the frequency is exceeded, throttle the message and send an error to the client.
 * A policy value of IGNORE specifies that when the frequency is exceeded, throttle the message but don't send an error to the client.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="allow-subtopics" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+The subtopic feature lets you divide the messages that a Producer component sends to a 
+destination into specific categories in the destination. You can configure a Consumer component 
+that subscribes to the destination to receive only messages sent to a specific subtopic or set of 
+subtopics. You use wildcard characters (*) to subscribe for messages from more than one subtopic.  
+
+Note: This setting is currently only used by the ActionScriptAdapter.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="cluster-message-routing" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Determines whether a destination in an environment that uses software clustering uses 
+server-to-server (default) or broadcast messaging. With server-to-server mode, data 
+messages are routed only to servers with active subscriptions, but subscribe and unsubscribe 
+messages are broadcast across the cluster. With broadcast messaging, all messages are broadcast 
+across the cluster. For more information, see the “Clustering” section of the BlazeDS Development Guide.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="message-time-to-live" type="xsd:int">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+The number of milliseconds that a message is kept on the server pending delivery before being 
+discarded as undeliverable. 
+
+A value of 0 means the message is not expired.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="send-security-constraint" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Security constraints apply to the operations performed by the messaging adapter. The 
+send-security-constraint property applies to send operations. Note that these constraints
+must be defined in the BlazeDS XML config, but that they may reference Spring Security roles
+if the security integration is enabled. 
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="subscribe-security-constraint" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Security constraints apply to the operations performed by the messaging adapter. The 
+subscribe-security-constraint property applies to subscribe, multi-subscribe, and unsub- 
+scribe operations. Note that these constraints must be defined in the BlazeDS XML config, 
+but that they may reference Spring Security roles if the security integration is enabled.  
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="subtopic-separator" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Token that separates a hierarchical subtopic value. For example, for the subtopic 'foo.bar' 
+the dot (.) is the subtopic separator. The default value is the dot (.) character.
 ]]>
 				</xsd:documentation>
 			</xsd:annotation>

@@ -26,7 +26,9 @@
     </message-broker>
 
 	<remoting-destination ref="ping"/>
-	<remoting-destination ref="productService"/>
+	<remoting-destination ref="productService"/> 
+	
+	<jms-message-destination id="foo2"  />
 
 	<beans:bean id="foo" class="com.bar.MyClass">
     	<remoting-destination/>

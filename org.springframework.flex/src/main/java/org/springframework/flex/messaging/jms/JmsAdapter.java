@@ -70,6 +70,10 @@ public class JmsAdapter extends MessagingAdapter implements MessageClientListene
 	private final Map<Object, MessageClient> clientMap = new HashMap<Object, MessageClient>(); 
 
 
+	public JmsTemplate getJmsTemplate() {
+		return jmsTemplate;
+	}
+
 	public void setBeanName(String beanName) {
 		this.setId(beanName);
 	}

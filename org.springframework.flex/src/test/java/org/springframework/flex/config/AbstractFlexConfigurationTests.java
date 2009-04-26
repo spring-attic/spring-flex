@@ -24,6 +24,7 @@ public abstract class AbstractFlexConfigurationTests extends
 	protected String[] getConfigLocations() {
 		return new String[] {"classpath:org/springframework/flex/config/message-broker.xml",
 				"classpath:org/springframework/flex/config/remote-service.xml",
-				"classpath:org/springframework/flex/config/remote-service-decorator.xml"};
+				"classpath:org/springframework/flex/config/remote-service-decorator.xml",
+				"classpath:org/springframework/flex/config/message-destination.xml"};
 	}
 }

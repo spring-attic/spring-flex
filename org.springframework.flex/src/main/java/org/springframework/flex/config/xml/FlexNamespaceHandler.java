@@ -13,7 +13,9 @@ public class FlexNamespaceHandler extends NamespaceHandlerSupport {
 	public void init() {
 		registerBeanDefinitionParser("message-broker", new MessageBrokerBeanDefinitionParser());
 		registerBeanDefinitionParser("remoting-destination", new RemotingDestinationBeanDefinitionParser());
+		registerBeanDefinitionParser("message-destination", new MessageDestinationBeanDefinitionParser());
 		registerBeanDefinitionParser("jms-message-destination", new JmsMessageDestinationBeanDefinitionParser());
+		registerBeanDefinitionParser("integration-message-destination", new IntegrationMessageDestinationBeanDefinitionParser());
 		registerBeanDefinitionDecorator("remoting-destination", new RemotingDestinationBeanDefinitionDecorator());
 	}
 
