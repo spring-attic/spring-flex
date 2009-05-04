@@ -13,8 +13,8 @@
 	<bookinfo>
 		<title>Spring BlazeDS Integration Reference Guide</title>
 		<productname>Spring BlazeDS Integration</productname>
-		<releaseinfo>Version 1.0.0.M2</releaseinfo>
-		<pubdate>March 2008</pubdate>
+		<releaseinfo>Version 1.0.0.RC1</releaseinfo>
+		<pubdate>April 2008</pubdate>
 		<authorgroup>
 			<author>
 				<firstname>Jeremy</firstname>
@@ -39,6 +39,5 @@
 	&remoting;
 	&security;
 	&messaging;
-	&rest;
 	
 </book>
