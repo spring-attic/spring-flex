@@ -10,62 +10,6 @@
         	the Flex AMF data format and Java. 
         </para>
     </sect1>
-    <sect1 id="remote-service">
-    	<title>Using the <code>remote-service</code> Tag</title>
-    	<para>
-    		The <code>remote-service</code> configuration tag can be used to export existing Spring-managed services for direct remoting from a Flex client.
-    		Given the following Spring bean definition for a <code>productService</code> bean:
-    	</para>
-    	<programlisting language="xml"><![CDATA[    
-<bean id="productService" class="flex.samples.product.ProductServiceImpl" />]]>
-    	</programlisting>
-    	<para>
-    		and assuming the existance of a Spring-managed <code>MessageBroker</code> configured via the <code>message-broker</code> tag, the following 
-    		top-level <code>remote-service</code> tag will expose the service for remoting to the Flex client as a remote service destination named <code>productService</code>: 
-    	</para>
-    	<programlisting language="xml"><![CDATA[
-<!-- Expose the productService bean for BlazeDS remoting -->
-<flex:remote-service ref="productService" />]]>
-    	</programlisting>
-    	<para>
-    		By default, the remote service destination exposed to the Flex client will use bean name of the bean being exported as the service id of the 
-    		destination, but this may be overridden using the <code>service-id</code> attribute on the <code>remote-service</code> tag.
-    	</para>
-    	<para>
-    		An alternate way of using the <code>remote-service</code> tag is as a child element of an top-level bean definition.  This is even more concise 
-    		and works well if you don't have a need to keep your domain-layer bean definitions separate from infrastructure concerns such as Flex remoting.  
-    		(Keep in mind that keeping them separate can lead to easier testability of the core domain layer.)  The following achieves the an equivalent result
-    		to the previous example:  
-    	</para>
-    	<programlisting language="xml"><![CDATA[    
-<bean id="productService" class="flex.samples.product.ProductServiceImpl" >
-	<flex:remote-service />
-</bean>]]>
-    	</programlisting>
-    	<para>
-    		The methods that are exposed to be called by the Flex client can be more tightly controlled through use of the <code>include-methods</code> and <code>exclude-methods</code>
-    		attributes of the <code>remote-service</code> tag.  The BlazeDS channels over which the destination is exposed can also be controlled using the <code>channels</code> 
-    		attribute.  (These attributes are available whether using the top-level or the nested version.)  A more extensively customized example would look something like:
-    	</para>
-    	<programlisting language="xml"><![CDATA[
-<flex:remote-service ref="productService" include-methods="read, update" exclude-methods="create, delete" channels="my-amf, my-secure-amf" />]]>
-    	</programlisting>
-    	<para>
-    		The <code>remote-service</code> tag is transparently configuring a <code>FlexRemotingServiceExporter</code> bean instance for each bean being exported.  
-    		The equivalent full bean syntax without the namespace support would be:
-    	</para>
-    	<programlisting language="xml"><![CDATA[
-<!-- Expose the productService bean for BlazeDS remoting -->
-<bean id="product" class="org.springframework.flex.messaging.remoting.FlexRemotingServiceExporter">
-    <property name="messageBroker" ref="_messageBroker"/>
-    <property name="service" ref="productService"/>
-    <property name="serviceId" value="productService"/>
-    <property name="includeMethods" value="read, update"/>
-    <property name="excludeMethods" value="create, delete"/>
-    <property name="channels" value="my-amf, my-secure-amf"/>
-</bean>]]>
-		</programlisting>
-    </sect1>
     <sect1 id="remoting-service-config">
     	<title>Configuring the Remoting Service</title>
     	<para>
@@ -90,8 +34,10 @@
 </service>]]>    	
     	</programlisting>
     	<para>
-    		Note that this assumes that there is already an equivalent application-wide <code>default-channels</code> configuration.  If no application-wide
-    		defaults exist, a best guess will be made by configuring the first available channel with an <code>AMFEndpoint</code> as the default.
+    		Note that this assumes that there is already an equivalent application-wide <code>default-channels</code> configuration.  It is recommended that
+    		you set the desired service-specific channels (see example below) if not relying on an application-wide default setup.  If no application-wide
+    		defaults exist, a best guess will be made by configuring the first available channel from the <code>MessageBroker</code> that uses an 
+    		<code>AMFEndpoint</code> as the default for the <code>RemotingService</code>.  
     	</para>
     	<para>
     		If you wish to have more explicit control over the defaults that will be set on the <code>RemotingService</code>, you can customize them
@@ -99,46 +45,112 @@
     	</para>
     	<programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:remoting-service default-adapter-id="my-default-adapter" 
-		default-adapter-class="com.example.MyCustomJavaAdapter" default-channels="my-amf, my-secure-amf" />
+	<flex:remoting-service default-adapter-id="my-default-remoting-adapter" default-channels="my-amf, my-secure-amf" />
 </flex:message-broker>]]>
 		</programlisting>
     	<para>
-    		If you have an existing remoting-config.xml for a legacy BlazeDS application, the <code>FlexRemotingServiceExporter</code> will be able to work transparently with it,
+    		If you have an existing remoting-config.xml for a legacy BlazeDS application, the <code>RemotingDestinationExporter</code> will be able to work transparently with it,
     		allowing you to gradually migrate to all Spring-managed remoting destinations.
     	</para>
     </sect1>
-    <sect1 id="client-side-remoting">
-    	<title>Using Exported Destinations in the Flex Client</title>
+    <sect1 id="remoting-destination">
+    	<title>Using the <code>remoting-destination</code> Tag</title>
     	<para>
-    		Explicit channel definition is a requirement when using dynamic destinations (meaning any destination that is added programmatically and not defined in the BlazeDS 
-    		services-config.xml, i.e. the destinations created by the <code>remote-service</code> tag).  See Adobe's documentation here for more
-    		detail: http://livedocs.adobe.com/blazeds/1/blazeds_devguide/runtimeconfig_5.html#194376
+    		The <code>remoting-destination</code> configuration tag can be used to export existing Spring-managed services for direct remoting from a Flex client.
+    		Given the following Spring bean definition for a <code>productService</code> bean:
     	</para>
-		<para>
-			The only way you don't have to explicitly define the ChannelSet on the client is if
-		</para>
-		<orderedlist>
-			<listitem>
-				<para>you are using explicitly defined destinations in services-config.xml (i.e, not dynamic destinations) AND you compile your flex client against that file</para>
-			</listitem>
-			<listitem>
-				<para>your destination is using the application-wide default channel AND you compile your flex client against that file</para>
-			</listitem>
-		</orderedlist>
-		<para>
-			Even if you weren't using dynamically created destinations it is debatable whether it is a good idea to ever compile your client against services-config.xml, 
-			thus coupling your client to your server configuration. It is often desirable to keep your flex client and your server side code as two distinct modules, 
-			but compiling against services-config.xml blurs the lines between those modules.
-		</para>
-		<para>
-			Our recommendation is that it is generally cleaner to keep the client-side configuration of ChannelSets explicitly contained within the client module. 
-			An excellent way to do this without having to hard-code the URLs in your client code is to use an ActionScript DI framework such as Spring 
-			Actionscript (a Spring Extensions project, formerly known as Prana).
-		</para>
-		<para>
-			If you choose to go the route of compiling your client against services-config.xml, note that you can at least keep the URL information out of the 
-			client code by using ServerConfig.getChannel as described in the referenced BlazeDS documentation.
+    	<programlisting language="xml"><![CDATA[    
+<bean id="productService" class="flex.samples.product.ProductServiceImpl" />]]>
+    	</programlisting>
+    	<para>
+    		and assuming the existance of a Spring-managed <code>MessageBroker</code> configured via the <code>message-broker</code> tag, the following 
+    		top-level <code>remoting-destination</code> tag will expose the service for remoting to the Flex client as a remote service destination named <code>productService</code>: 
     	</para>
+    	<programlisting language="xml"><![CDATA[
+<!-- Expose the productService bean for BlazeDS remoting -->
+<flex:remoting-destination ref="productService" />]]>
+    	</programlisting>
+    	<para>
+    		By default, the remote service destination exposed to the Flex client will use bean name of the bean being exported as the service id of the 
+    		destination, but this may be overridden using the <code>service-id</code> attribute on the <code>remoting-destination</code> tag.
+    	</para>
+    	<para>
+    		An alternate way of using the <code>remoting-destination</code> tag is as a child element of an top-level bean definition.  This is even more concise 
+    		and works well if you don't have a need to keep your domain-layer bean definitions separate from infrastructure concerns such as Flex remoting.  
+    		(Keep in mind that keeping them separate can lead to easier testability of the core domain layer.)  The following achieves the equivalent result
+    		to the previous example:  
+    	</para>
+    	<programlisting language="xml"><![CDATA[    
+<bean id="productService" class="flex.samples.product.ProductServiceImpl" >
+	<flex:remoting-destination />
+</bean>]]>
+    	</programlisting>
+    	<para>
+    		The methods that are exposed to be called by the Flex client can be more tightly controlled through use of the <code>include-methods</code> and <code>exclude-methods</code>
+    		attributes of the <code>remoting-destination</code> tag.  The BlazeDS channels over which the destination is exposed can also be controlled using the <code>channels</code> 
+    		attribute.  (These attributes are available whether using the top-level or the nested version.)  A more extensively customized example would look something like:
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<flex:remoting-destination ref="productService" include-methods="read, update" exclude-methods="create, delete" channels="my-amf, my-secure-amf" />]]>
+    	</programlisting>
+    	<para>
+    		The <code>remoting-destination</code> tag is transparently configuring a <code>RemotingDestinationExporter</code> bean instance for each bean being exported.  
+    		The equivalent full bean syntax without the namespace support would be:
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<!-- Expose the productService bean for BlazeDS remoting -->
+<bean id="product" class="org.springframework.flex.remoting.RemotingDestinationExporter">
+    <property name="messageBroker" ref="_messageBroker"/>
+    <property name="service" ref="productService"/>
+    <property name="serviceId" value="productService"/>
+    <property name="includeMethods" value="read, update"/>
+    <property name="excludeMethods" value="create, delete"/>
+    <property name="channels" value="my-amf, my-secure-amf"/>
+</bean>]]>
+		</programlisting>
+    </sect1>
+    <sect1 id="remoting-destination-annotation">
+    	<title>Exporting Beans for Remoting with @RemotingDestination</title>
+    	<para>
+    		The @RemotingDestination annotation may be used as an alternative to the XML remoting-destination tag when using annotation-based 
+    		Spring configuration.  @RemotingDestination is used at the type level to indicate the class being exported.  @RemotingInclude and 
+    		@RemotingExclude are used at the method level to mark the methods that should be included and excluded for remoting.  
+    	</para>
+    	<para>
+    		The following example illustrates the productService bean configured exclusively through annotations:
+    	</para>
+    	<programlisting language="java"><![CDATA[
+package flex.samples.product;
+
+import org.springframework.flex.remoting.RemotingDestination;
+import org.springframework.flex.remoting.RemotingExclude;
+import org.springframework.flex.remoting.RemotingInclude;
+import org.springframework.stereotype.Service;
+
+@Service("productService")
+@RemotingDestination(channels={"my-amf","my-secure-amf"})
+public class ProductServiceImpl implements ProductService {
+
+	@RemotingInclude
+	public Product read(String id) {
+		...
+	}
+	
+	@RemotingExclude
+	public Product create(Product product){
+		...
+	}
+	
+	@RemotingInclude
+	public Product update(Product product){
+		...
+	}
+	
+	@RemotingExclude
+	public void delete(Product product) {
+		...
+	}
+}]]>
+    	</programlisting>
     </sect1>
 </chapter>

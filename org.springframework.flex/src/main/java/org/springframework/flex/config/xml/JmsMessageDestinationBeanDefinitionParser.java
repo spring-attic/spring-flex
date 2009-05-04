@@ -38,6 +38,10 @@ public class JmsMessageDestinationBeanDefinitionParser extends AbstractMessageDe
 	private static final String JMS_DESTINATION_ATTR = "jms-destination";
 	private static final String TOPIC_NAME_ATTR = "topic-name";
 	private static final String QUEUE_NAME_ATTR = "queue-name";
+	private static final String DESTINATION_RESOLVER_ATTR = "destination-resolver";
+	private static final String MESSAGE_CONVERTER_ATTR = "message-converter";
+	private static final String TRANSACTION_MANAGER_ATTR = "transaction-manager";
+	
 	
 	// --------------------------- Bean Configuration Properties -------------//
 	private static final String SERVICE_ADAPTER_PROPERTY = "serviceAdapter";
@@ -61,7 +65,8 @@ public class JmsMessageDestinationBeanDefinitionParser extends AbstractMessageDe
 		connectionFactoryId = StringUtils.hasText(connectionFactoryId) ? connectionFactoryId : DEFAULT_CONNECTION_FACTORY_REF;
 		adapterBuilder.addPropertyReference(CONNECTION_FACTORY_PROPERTY, connectionFactoryId);
 		
-		ParsingUtils.mapOptionalBeanRefAttributes(element, adapterBuilder, JMS_DESTINATION_ATTR);
+		ParsingUtils.mapOptionalBeanRefAttributes(element, adapterBuilder, JMS_DESTINATION_ATTR, DESTINATION_RESOLVER_ATTR, 
+				MESSAGE_CONVERTER_ATTR, TRANSACTION_MANAGER_ATTR);
 		ParsingUtils.mapOptionalAttributes(element, adapterBuilder, QUEUE_NAME_ATTR, TOPIC_NAME_ATTR);
 		
 		String serviceAdapterId = ParsingUtils.registerInfrastructureComponent(element, parserContext, adapterBuilder);

@@ -19,7 +19,7 @@ public class JmsMessageDestinationBeanDefinitionParserTests extends AbstractMess
 		assertNotNull("MessageBroker bean not found for default ID", broker);
 		MessageService ms = (MessageService) broker.getService("message-service");
 		assertNotNull("Could not find the message service", ms);
-		MessageDestination destination = (MessageDestination) ms.getDestination("jmsDestinationRef");
+		MessageDestination destination = (MessageDestination) ms.getDestination("jmsCustomReferences");
 		assertNotNull("destination not found", destination);
 		assertNotNull("adapter not set", destination.getAdapter());
 		JmsAdapter adapter = (JmsAdapter) destination.getAdapter();

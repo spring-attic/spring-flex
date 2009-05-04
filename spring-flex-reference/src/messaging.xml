@@ -4,7 +4,203 @@
     <sect1 id="messaging-introduction">
         <title>Introduction</title>
         <para>
-        	Coming in Future 1.0 Milestones
+        	The BlazeDS <code>MessageService</code> provides a common abstraction for asynchronous messaging style communication
+        	that is ultimately agnostic to the messaging protocol being used on the server side.  Messages can be passed 
+        	exclusively between Flex clients, from Java POJOs to subscribed Flex clients, from Flex clients to POJO message
+        	handlers, or between just about any combination thereof. Using the Spring-managed <code>MessageBroker</code> enables support for using 
+        	BlazeDS-native AMF messaging, JMS messaging based on Spring's proven and simple JMS abstractions, 
+        	or messaging using Spring Integration's <code>MessageChannel</code> abstraction, all from a common programming model.    
         </para>
+        <para>
+        	The same <code>Consumer</code> and <code>Producer</code> APIs are used to interact with message destinations from the Flex client, regardless 
+        	of which underlying messaging protocol is being used on the server.  As such, this chapter will focus mainly on setting up and using the various
+        	message destination types on the server side.  For more details on how to use the <code>Consumer</code> and <code>Producer</code> APIs in the client,
+        	see the BlazeDS documentation.    
+        </para>
+    </sect1>
+    <sect1 id="message-service-config">
+    	<title>Configuring the Message Service</title>
+    	<para>
+    		The BlazeDS <code>MessageService</code> has traditionally been configured by the inclusion of a messaging-config.xml file in the BlazeDS XML configuration.  
+    		When using only Spring-managed message destinations, this config file can be left out completely as the inclusion of the <code>message-broker</code> tag
+    		in your Spring configuration will cause the <code>MessageService</code> to be configured with sensible defaults if none already exists at startup
+    		time.  The end result is essentially equivalent to including the following minimal messaging-config.xml in your BlazeDS configuration:
+    	</para>  	
+    	<programlisting language="xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="remoting-service"
+    class="flex.messaging.services.MessageService">
+
+    <adapters>
+        <adapter-definition id="actionscript" class="flex.messaging.services.messaging.adapters.ActionScriptAdapter" default="true"/>
+    </adapters>
+
+    <default-channels>
+        <channel ref="my-polling-amf"/>
+    </default-channels>
+    
+</service>]]>    	
+    	</programlisting>
+    	<para>
+    		Note that this assumes that there is already an equivalent application-wide <code>default-channels</code> configuration.  It is recommended that
+    		you set the desired service-specific channels (see example below) if not relying on an application-wide default setup.  If no application-wide
+    		defaults exist, a best guess will be made by configuring the first available channel from the <code>MessageBroker</code> that uses an 
+    		<code>AMFEndpoint</code> with polling enabled as the default for the <code>MessageService</code>.  
+    	</para>
+    	<para>
+    		If you wish to have more explicit control over the defaults that will be set on the <code>MessageService</code>, you can customize them
+    		via the <code>message-service</code> child element of the <code>message-broker</code> tag.  For example:
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<flex:message-broker>
+	<flex:message-service default-adapter-id="my-default-messaging-adapter" default-channels="my-polling-amf" />
+</flex:message-broker>]]>
+		</programlisting>
+    	<para>
+    		If you have an existing messaging-config.xml for a legacy BlazeDS application, the <code>MessageDestinationFactory</code> will be able to work transparently 
+    		with it, allowing you to gradually migrate to all Spring-managed messaging destinations.
+    	</para>
+    </sect1>
+    <sect1 id="actionscript-messaging">
+    	<title>Using AMF Message Destinations</title>
+    	<para>
+    		For simple messaging needs where there are no requirements for message durability, transaction support, or advanced routing logic, the BlazeDS-native 
+    		AMF-based message destination is the ideal choice.  These destinations can be fully configured in a Spring application context using the 
+    		<code>message-destination</code> XML namespace tag.  For example, assuming a Spring-managed <code>MessageBroker</code> has been configured, all that is
+    		needed to set up a basic destination named "event-bus" with default settings is the following:  
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<flex:message-destination id="event-bus" />]]>    	
+    	</programlisting>
+    	<para>
+    		This sets up a destination to use the BlazeDS <code>ActionScriptAdapter</code> to handle incoming messages.  The settings of the destination can be
+    		further customized through the various attributes of the <code>message-destination</code> tag.  Here is an example of the "event-bus" destination configured 
+    		with most of the available attributes:    
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<flex:message-destination id="event-bus" 
+	message-broker="messageServiceBroker"
+	channels="my-polling-amf, my-secure-amf" 
+	allow-subtopics="true" 
+	cluster-message-routing="broadcast" 
+	message-time-to-live="1" 
+	send-security-constraint="fooConstraint" 
+	subscribe-security-constraint="barConstraint" 
+	subscription-timeout-minutes="1" 
+	subtopic-separator="/" 
+	throttle-inbound-max-frequency="500"
+	throttle-inbound-policy="ERROR" 
+	throttle-outbound-max-frequency="500" 
+	throttle-outbound-policy="IGNORE" />]]>    	
+    	</programlisting>
+    	<para>
+    		The <code>message-broker</code> attribute is a reference to the id of a Spring-managed <code>MessageBroker</code>.  The <code>channels</code> attribute allows
+    		you to specify a comma-delimited list of the BlazeDS channels to be used (in order of preference) for this destination.  The remaining attributes correspond
+    		to the options available via the <code>network</code> and <code>server</code> settings when configuring a message destination in the BlazeDS-specific XML.  
+    		Each of these additional attributes is documented in the XSD to provide live code-completion assistance.  For additional details on their usage, see
+    		the BlazeDS documentation.  The <code>message-destination</code> tag serves as a base for the <code>jms-message-destination</code> and 
+    		<code>integration-message-destination</code> tags so that the same configuration options are available no matter the type of the underlying 
+    		<code>MessagingAdapter</code>.
+    	</para>
+    	<para> 
+    		The only attribute available on the <code>message-destination</code> tag that is not available in the JMS and Spring Integration implementations is the 
+    		<code>service-adapter</code> attribute, which can be used to provide a custom <code>ServiceAdapter</code> via a reference to a 
+    		<code>ManageableComponentFactoryBean</code>.  This can be used to provide integration with additional messaging protocols not directly supported by
+    		Spring BlazeDS Integration.  See <link linkend="service-adapters">Providing Custom Service Adapters</link> for additional information on using the
+    		<code>ManageableComponentFactoryBean</code>.  
+    	</para>
+    </sect1>
+    <sect1 id="jms-messaging">
+    	<title>Using JMS Message Destinations</title>
+    	<para>
+    		For integration with JMS, a special <code>JmsAdapter</code> is provided that internally makes use of Spring's <code>JmsTemplate</code>, <code>DestinationResolver</code>, 
+    		<code>DefaultMessageListenerContainer</code> and other such JMS abstractions for simplified interaction with JMS resources.  The <code>jms-message-destination</code> XML namespace 
+    		tag is used to expose JMS destinations as BlazeDS message destinations.  The minimal attributes that must be specified are the destination <code>id</code> 
+    		and exactly one of <code>jms-destination</code>, <code>queue-name</code>, or <code>topic-name</code>.  A JMS <code>ConnectionFactory</code> reference is also
+    		required, but does not have to be explicitly specified if there is already one configured in the current application context with an id of "connectionFactory".  
+    		For example, to configure a BlazeDS message destination named "chatIn" that uses a Spring-managed ActiveMQ JMS queue with a local ActiveMQ installation:   
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+	<property name="brokerURL" value="tcp://localhost:61616"/>
+</bean>
+	
+<bean id="chatInQueue" class="org.apache.activemq.command.ActiveMQQueue">
+	<constructor-arg value="queue.flex.chat.in"/>
+</bean>
+
+<flex:jms-message-destination id="chatIn" jms-destination="chatInQueue" />]]>    	
+    	</programlisting>
+    	<para>
+    		Using <code>queue-name</code> or <code>topic-name</code> will cause the destination to be resolved using a Spring <code>DestinationResolver</code>.  
+    		The <code>destination-resolver</code>, <code>message-converter</code>, and <code>transaction-manager</code> attributes may be used to set custom references 
+    		to a Spring-managed <code>DestinationResolver</code>, <code>MessageConverter</code>, or <code>TransactionManager</code> respectively.    
+    	</para>
+    </sect1>
+    <sect1 id="integration-messaging">
+    	<title>Using Spring Integration Message Destinations</title>
+    	<para>
+    		For routing messages with Spring Integration, a special <code>IntegrationAdapter</code> is provided that is able to send/receive messages via a 
+    		<code>MessageChannel</code>.  This is especially useful when you have more complex routing needs for your messages, such as connecting to email or FTP 
+    		endpoints.  The <code>integration-message-destination</code> XML namespace tag is used to expose a Spring Integration <code>MessageChannel</code> as a 
+    		BlazeDS message destination. For example, to configure a BlazeDS message destination named "chatOut" that uses a Spring Integration 
+    		<code>PublishSubscribeChannel</code>:  
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<integration:publish-subscribe-channel id="chatOutPubSubChannel" />
+
+<flex:integration-message-destination id="chatOut" message-channel="chatOutPubSubChannel" />]]>
+		</programlisting>
+    </sect1>
+    <sect1 id="message-template">
+    	<title>Sending AMF Messages with the MessageTemplate</title>
+    	<para>
+	    	A convenient <code>MessageTemplate</code> helper class is provided that allows you to push messages to any BlazeDS <code>MessageDestination</code> from a simple
+	    	POJO.  This provides a nice abstraction over push style messaging that hides away the details of the underlying messaging protocol.  Whether using a simple 
+	    	AMF based destination or full-blown JMS, etc., the use of the <code>MessageTemplate</code> stays the same.  The only thing the <code>MessageTemplate</code> requires 
+	    	is a reference to a Spring-managed <code>MessageBroker</code>.  If the <code>MessageTemplate</code> is configured as a Spring bean, it will try and auto-detect 
+	    	the <code>MessageBroker</code> from its application context.  
+    	</para>
+    	<para>
+    		As an example of how the <code>MessageTemplate</code> could be used, suppose we have a RESTful travel application that has a Flex-based admin console but also 
+    		exposes an API over HTTP.  To give the admin console a "live" view of the data, we want to push updates to it anytime a new hotel booking is created.  Given the 
+    		following setup in our application context:
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<flex:message-broker />
+
+<bean id="defaultMessageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />
+
+<flex:message-destination id="chatOut" message-channel="bookingUpdates" />]]>
+    	</programlisting>
+    	<para>
+    		and assuming the Flex client is subscribed to the "bookingUpdates" destination, this could be achieved with the following controller code:
+    	</para>
+    	<programlisting language="java"><![CDATA[
+@Controller
+public class BookingController {
+	
+	private MessageTemplate template;
+	
+	private BookingService bookingService;
+	
+	@RequestMapping(value="/bookings", method=RequestMethod.POST)
+	public String createBooking(Booking booking){
+		booking = bookingService.saveBooking(booking);
+		template.send("bookingUpdates", booking);
+		return "redirect:/bookings/"+booking.getId();
+	}
+	
+	@Autowired
+	public void setTemplate(MessageTemplate template) {
+		this.template = template;
+	}
+	
+	@Autowired
+	public void setBookingService(BookingService bookingService) {
+		this.bookingService = bookingService;
+	}
+}]]>
+    	</programlisting>
     </sect1>
 </chapter>

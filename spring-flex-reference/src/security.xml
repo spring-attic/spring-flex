@@ -4,7 +4,7 @@
     <sect1 id="security-introduction">
         <title>Introduction</title>
         <para>
-        	Spring Security provides a an extremely flexible alternative to the container-based security support provided out-of-the-box with 
+        	Spring Security provides an extremely flexible alternative to the container-based security support provided out-of-the-box with 
         	BlazeDS.  Spring BlazeDS Integration provides explicit integration support for incorporating Spring Security smoothly into your 
         	Flex/BlazeDS application.  Spring Security provides a wealth of different configuration options, but rather than go into the many
         	different combinations here, we'll leave most of that to the Spring Security documentation.  
@@ -73,8 +73,34 @@
     		destination would cause the provided <code>LoginCommand</code> to be invoked to both verify that the user is logged in and to check
     		that they have the appropriate role.  Violation of either will result in an exception being thrown by Spring Security.    
     	</para>
+    	<sect2 id="accessing-user-details">
+    		<title>Accessing User Details</title>
+    		<para>
+    			When using the ChannelSet.login API call from the Flex client with Spring Security integration enabled, the resulting ResponseEvent 
+    			fired client-side upon successful completion will contain additional information that can be inspected about the current user.  The 
+    			name and authorities will be extracted from the Authentication object and added to the body of the response message.  This information, 
+    			for example, can then be used to conditionally display different portions of the UI based on the user's identity and granted roles:
+    		</para>
+    		<programlisting language="javascript"><![CDATA[
+var token:AsyncToken = myChannelSet.login("jeremy","atlanta");
+token.addResponder(
+	new AsyncResponder(
+  		function(event:ResultEvent, token:Object = null):void {
+  			if (event.result.authorities.indexOf("ROLE_ADMIN") >= 0) {
+  				displayAdminPanel(event.result.name);
+  			} else {
+  				displayUserPanel(event.result.name);
+  			}
+  		},
+  		function(event:FaultEvent, token:Object = null):void {
+  			displayErrorMessage("Login Failed: "+event.fault.faultString);
+  		}
+  	)
+);]]>    	
+    		</programlisting>
+    	</sect2>
     	<sect2  id="security-exception-translation">
-    	<title>Security Exception Translation</title>
+    		<title>Security Exception Translation</title>
 	    	<para>
 	    		Another feature that is automatically installed when the <code>secured</code> tag is used is automatic exception translation from
 	    		any thrown SpringSecurityException to the proper BlazeDS SecurityException.  The exceptions are caught and translated at the proper 
@@ -104,12 +130,10 @@
 	    		The configuration of the provided <code>LoginCommand</code> can be further controlled via the <code>secured</code> tag.  The <code>invalidate-flex-session</code>
 	    		attribute controls whether the current Flex session is invalidated when the <code>logout()</code> method is called on the <code>LoginCommand</code>, and 
 	    		defaults to "true" if not specified.  The <code>per-client-authentication</code> attribute turns BlazeDS's per-client authentication mode on when true, and
-	    		defaults to "false" if not specified.  (See the BlazeDS docs for further information on the difference between per-session and per-client authentication.)  	    		
-	    	</para>
-	    	<para>
-	    		NOTE - Though the configuration attribute is present, per-client authentication is not yet supported by Spring BlazeDS Integration in the M2 release.  Special
-	    		integration will be required to store and retrieve a unique <code>SecurityContext</code> per <code>FlexClient</code> instance.  This will be included in future
-	    		1.0 milestones.
+	    		defaults to "false" if not specified.  Enabling per-client authentication will cause the Security context to no longer be stored in the session between
+	    		requests and thus will prevent the use of any Spring Security filters that rely on the Security Context being available in the session, but the authentication 
+	    		and authorization integration will otherwise work as expected.  (See the BlazeDS docs for further information on the difference between per-session and per-client 
+	    		authentication.)  	    		
 	    	</para>
     	</sect2>
     </sect1>
@@ -162,7 +186,7 @@
     		<title>Securing Exported Spring Services</title>
     		<para>
     			Earlier in this chapter you saw an example of using the BlazeDS XML configuration to secure a BlazeDS-managed destination.  Since
-    			most of the time you will instead be defining destinations by exporting Spring beans using the <code>remote-service</code>tag, an
+    			most of the time you will instead be defining destinations by exporting Spring beans using the <code>remoting-destination</code>tag, an
     			alternate approach to securing destinations is needed.  This is where Spring Security comes in, as all of its existing authorization
     			mechanisms should "just work" when security integration is enabled using the <code>secured</code> tag.   
     		</para>
@@ -180,7 +204,7 @@
     		</para>
     		<programlisting language="xml"><![CDATA[
 <bean id="myService" class="com.mycompany.myapp.MyService">
-	<flex:remote-service/>
+	<flex:remoting-destination/>
     <security:intercept-methods>
         <security:protect method="set*" access="ROLE_ADMIN" />
         <security:protect method="get*" access="ROLE_ADMIN,ROLE_USER" />
@@ -194,7 +218,7 @@
     		<programlisting language="xml"><![CDATA[
 <security:global-method-security secured-annotations="enabled" jsr250-annotations="enabled"/>
 ...
-<flex:remote-service ref="myBankServiceImpl" />
+<flex:remoting-destination ref="myBankServiceImpl" />
   
 ]]>
     		</programlisting>

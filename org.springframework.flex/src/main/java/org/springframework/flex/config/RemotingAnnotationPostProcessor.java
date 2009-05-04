@@ -3,6 +3,8 @@ package org.springframework.flex.config;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -34,6 +36,8 @@ import org.springframework.util.StringUtils;
 public class RemotingAnnotationPostProcessor implements
 		BeanFactoryPostProcessor {
 
+	private static final Log log = LogFactory.getLog(RemotingAnnotationPostProcessor.class);
+	
 	// --------------------------- Bean Configuration Properties -------------//
 	private static final String MESSAGE_BROKER_PROPERTY = "messageBroker";
 	private static final String SERVICE_PROPERTY = "service";
@@ -91,7 +95,14 @@ public class RemotingAnnotationPostProcessor implements
 		Set<RemotingDestinationMetadata> remotingDestinations = new HashSet<RemotingDestinationMetadata>();
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
 			Class<?> handlerType = beanFactory.getType(beanName);
-			RemotingDestination remotingDestination = AnnotationUtils.findAnnotation(handlerType, RemotingDestination.class);
+			RemotingDestination remotingDestination = null;
+			if (handlerType != null) {
+				remotingDestination = AnnotationUtils.findAnnotation(handlerType, RemotingDestination.class);
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("Could not get type of bean '"+beanName+"' from bean factory.");
+				}
+			}
 			if (remotingDestination != null) {
 				remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, handlerType));
 			} else {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="configuration">
-    <title>Configuring the BlazeDS MessageBroker with Spring</title>
+    <title>Configuring and Using the BlazeDS MessageBroker with Spring</title>
     <sect1 id="configuration-introduction">
         <title>Introduction</title>
         <para>
@@ -116,7 +116,8 @@
     		incoming <code>DispatcherServlet</code> requests to the Spring-manager <code>MessageBroker</code> using a <code>/*</code>path pattern.  
     		The default mapping can be overridden by providing one or more <code>mapping</code> child elements.  If you want to provide your own
     		<code>HandlerMapping</code> bean configuration, you can disable the default using the <code>disable-default-mapping</code> attribute 
-    		of the <code>message-broker</code> tag.
+    		of the <code>message-broker</code> tag.  The order of the installed <code>SimpleUrlHandlerMapping</code> can be set (for complex 
+    		scenarios where multiple handler mapping types are installed in the same context) using the <code>mapping-order</code> attribute.
     	</para>
 		<para>
 			Then the <code>SimpleUrlHandlerMapping</code> in the Spring WebApplicationContext maps all requests to the Spring-managed <code>MessageBroker</code> via 
@@ -176,6 +177,39 @@
 </channel-definition>]]> 		
 		</programlisting>
     </sect1>
+    <sect1 id="client-side-remoting">
+    	<title>Using Spring-managed Destinations from the Flex Client</title>
+    	<para>
+    		Explicit channel definition is a requirement when using dynamic destinations (meaning any destination that is added programmatically and not defined in the BlazeDS 
+    		services-config.xml, i.e. the destinations created by the <code>remoting-destination</code> tag and the various <code>*-message-destination</code> tags).  See 
+    		Adobe's documentation here for more detail: http://livedocs.adobe.com/blazeds/1/blazeds_devguide/runtimeconfig_5.html#194376
+    	</para>
+		<para>
+			The only way you don't have to explicitly define the ChannelSet on the client is if
+		</para>
+		<orderedlist>
+			<listitem>
+				<para>you are using explicitly defined destinations in services-config.xml (i.e, not dynamic destinations) AND you compile your flex client against that file</para>
+			</listitem>
+			<listitem>
+				<para>your destination is using the application-wide default channel AND you compile your flex client against that file</para>
+			</listitem>
+		</orderedlist>
+		<para>
+			Even if you weren't using dynamically created destinations it is debatable whether it is a good idea to ever compile your client against services-config.xml, 
+			thus coupling your client to your server configuration. It is often desirable to keep your flex client and your server side code as two distinct modules, 
+			but compiling against services-config.xml blurs the lines between those modules.
+		</para>
+		<para>
+			Our recommendation is that it is generally cleaner to keep the client-side configuration of ChannelSets explicitly contained within the client module. 
+			An excellent way to do this without having to hard-code the URLs in your client code is to use an ActionScript DI framework such as Spring 
+			ActionScript (a Spring Extensions project, formerly known as Prana).
+		</para>
+		<para>
+			If you choose to go the route of compiling your client against services-config.xml, note that you can at least keep the URL information out of the 
+			client code by using ServerConfig.getChannel as described in the referenced BlazeDS documentation.
+    	</para>
+    </sect1>
     <sect1 id="config-processors">
     	<title>Advanced MessageBroker Customization</title>
     	<para>
@@ -233,5 +267,84 @@ public class MyDestinationCountingConfigProcessor implements MessageBrokerConfig
 <bean id="myConfigProcessor" class="com.example.MyDestinationCountingConfigProcessor" />]]>
 		</programlisting>
     </sect1>
+    <sect1 id="exception-translators">
+    	<title>Using Custom Exception Translators</title>
+    	<para>
+    		In order to propagate useful information back to the Flex client when an exception occurs on the server, 
+    		the original exception must be translated into an instance of <code>flex.messaging.MessageException</code>.
+    		If special translation logic is not applied, a generic "Server.Processing" error will propagate to the client that
+    		doesn't give the client the chance to reason on the real cause of the error to take appropriate action.  Special 
+    		exception translators are configured by default for transforming Spring Security exceptions into an appropriate 
+    		<code>MessageException</code>, but it could also be useful to provide custom translation for your own application-level exceptions.    
+    	</para>
+    	<para>
+    		Custom exception translation logic can be provided through implementations of the <code>org.springframework.flex.core.ExceptionTranslator</code>
+    		interface.  These implementations must be configured as Spring beans and then registered through the XML configuration namespace as follows:  
+    	</para>
+    	<programlisting language="xml"><![CDATA[
+<!-- Custom exception translator configured as a Spring bean -->
+<bean id="myExceptionTranslator" class="com.foo.app.MyBusinessExceptionTranslator"/>
 
+<flex:message-broker>
+	<flex:exception-translator ref="myExceptionTranslator"/>
+</flex:message-broker>]]>    		
+    	</programlisting>
+    </sect1>
+	<sect1 id="message-interceptors">
+		<title>Using Custom Message Interceptors</title>
+		<para>
+			Custom message interceptors may be used to apply special processing logic to incoming and outgoing AMF messages in 
+			their de-serialized Java form.  For example, an interceptor can be used to inspect the contents of the incoming message,
+			or to add extra information to the outgoing message.    
+		</para>
+		<para>
+			Custom message processing logic is provided through implementations of the <code>org.springframework.flex.core.MessageInterceptor</code> 
+			interface.  These implementations must be configured as Spring beans and then registered through the XML configuration namespace as follows:  
+		</para>
+		<programlisting language="xml"><![CDATA[
+<!-- Custom message interceptor configured as a Spring bean -->
+<bean id="myMessageInterceptor" class="com.foo.app.MyMessageInterceptor"/>
+
+<flex:message-broker>
+	<flex:message-interceptor ref="myMessageInterceptor"/>
+</flex:message-broker>]]>    		
+    	</programlisting>
+	</sect1>
+	<sect1 id="service-adapters">
+		<title>Providing Custom Service Adapters</title>
+		<para>
+			Using the XML config namespace automatically installs the needed implementations of <code>flex.messaging.services.ServiceAdapter</code>
+			for use with the Remoting and Message services.  Third-party adapters (such as those provided by the dpHibernate or Gilead projects) can
+			be configured using the <code>org.springframework.flex.core.ManageableComponentFactoryBean</code>.  This factory bean implementation is
+			able to process arbitrarily complex configuration metadata supplied in JSON format (instead of arbitrarily complex XML as in the native
+			BlazeDS configuration) and honors the lifecycle semantics (such as proper invocation of the <code>initialize</code> method) of the 
+			ManageableComponent.  These custom adapters may be used by Spring-managed Remoting and Message destinations by either setting its id as the 
+			default for the Remoting or Message service, or by setting the <code>service-adapter</code> attribute for a specific destination (see the 
+			Remoting and Messaging chapters for further detail).
+		</para>
+		<para>
+			For example, to use the special adapter provided by dpHibernate as the default adapter with the Remoting service, the configuration 
+			would be similar to the following:      
+		</para>
+		<programlisting language="xml"><![CDATA[
+<bean id="hibernate-object" class="org.springframework.flex.core.ManageableComponentFactoryBean">
+<constructor-arg value="net.digitalprimates.persistence.hibernate.HibernateAdapter"/>
+	<property name="properties">
+		<value>
+			{"hibernate" :
+				{"sessionFactory" :
+					{ "class" : "net.digitalprimates.persistence.hibernate.utils.HibernateUtil",
+					  "getCurrentSessionMethod" : "getCurrentSession"
+					}
+				}
+			}
+		</value>
+	</property>
+</bean> 
+
+<flex:message-broker>
+	<flex:remoting-service default-adapter-id="hibernate-object" />
+</flex:message-broker>]]>    		
+    	</programlisting>
+	</sect1>
 </chapter>

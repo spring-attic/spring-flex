@@ -34,6 +34,7 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.adapter.MessageListenerAdapter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.destination.DestinationResolver;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 
 import flex.messaging.MessageClient;
@@ -86,6 +87,11 @@ public class JmsAdapter extends MessagingAdapter implements MessageClientListene
 		Assert.notNull(destinationResolver, "destinationResolver must not be null");
 		this.jmsTemplate.setDestinationResolver(destinationResolver);
 		this.messageListenerContainer.setDestinationResolver(destinationResolver);
+	}
+	
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		Assert.notNull(transactionManager, "transactionManager must not be null");
+		this.messageListenerContainer.setTransactionManager(transactionManager);
 	}
 
 	public void setJmsDestination(Destination destination) {

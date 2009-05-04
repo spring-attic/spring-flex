@@ -25,7 +25,9 @@
 		throttle-inbound-policy="ERROR" throttle-outbound-max-frequency="500" throttle-outbound-policy="IGNORE" />
 	
 	
-	<flex:jms-message-destination id="jmsDestinationRef" jms-destination="testJmsDestination"/>
+	<flex:jms-message-destination id="jmsCustomReferences" jms-destination="testJmsDestination" />
+	<!--  message-converter="testMessageConverter" 
+		destination-resolver="testDestinationResolver" transaction-manager="testTransactionManager"/> -->
 	
 	<flex:jms-message-destination id="jmsCustomConnectionFactoryDestination" jms-destination="testJmsDestination" connection-factory="customConnectionFactory"/>
 	

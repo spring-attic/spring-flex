@@ -320,7 +320,33 @@ The name of a JMS Topic.
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
-					<!-- TODO: add destination-resolver, message-converter, transaction-manager, etc -->
+					<xsd:attribute name="message-converter" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+A reference to a MessageConverter bean.
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="destination-resolver" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+A reference to a DestinationResolver bean.
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="transaction-manager" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+A reference to a PlatformTransactionManager to be used by this adapter's MessageListenerContainer.
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>

@@ -36,9 +36,7 @@
 		</security:intercept-methods>
 	</bean>
 	
-	<bean id="event-bus" class="org.springframework.flex.messaging.SimpleMessageDestinationFactory">
-		<property name="messageBroker" ref="_messageBroker"/>
-	</bean>
+	<flex:message-destination id="event-bus"/>
 	
 	<bean id="messageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />
 	
