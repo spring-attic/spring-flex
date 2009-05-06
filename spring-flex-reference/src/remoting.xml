@@ -24,7 +24,9 @@
     class="flex.messaging.services.RemotingService">
 
     <adapters>
-        <adapter-definition id="java-object" class="flex.messaging.services.remoting.adapters.JavaAdapter" default="true"/>
+        <adapter-definition id="java-object" 
+            class="flex.messaging.services.remoting.adapters.JavaAdapter" 
+            default="true"/>
     </adapters>
 
     <default-channels>
@@ -45,7 +47,8 @@
     	</para>
     	<programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:remoting-service default-adapter-id="my-default-remoting-adapter" default-channels="my-amf, my-secure-amf" />
+	<flex:remoting-service default-adapter-id="my-default-remoting-adapter" 
+	    default-channels="my-amf, my-secure-amf" />
 </flex:message-broker>]]>
 		</programlisting>
     	<para>
@@ -91,7 +94,10 @@
     		attribute.  (These attributes are available whether using the top-level or the nested version.)  A more extensively customized example would look something like:
     	</para>
     	<programlisting language="xml"><![CDATA[
-<flex:remoting-destination ref="productService" include-methods="read, update" exclude-methods="create, delete" channels="my-amf, my-secure-amf" />]]>
+<flex:remoting-destination ref="productService" 
+    include-methods="read, update" 
+    exclude-methods="create, delete" 
+    channels="my-amf, my-secure-amf" />]]>
     	</programlisting>
     	<para>
     		The <code>remoting-destination</code> tag is transparently configuring a <code>RemotingDestinationExporter</code> bean instance for each bean being exported.  
@@ -112,9 +118,9 @@
     <sect1 id="remoting-destination-annotation">
     	<title>Exporting Beans for Remoting with @RemotingDestination</title>
     	<para>
-    		The @RemotingDestination annotation may be used as an alternative to the XML remoting-destination tag when using annotation-based 
-    		Spring configuration.  @RemotingDestination is used at the type level to indicate the class being exported.  @RemotingInclude and 
-    		@RemotingExclude are used at the method level to mark the methods that should be included and excluded for remoting.  
+    		The <code>@RemotingDestination</code> annotation may be used as an alternative to the XML remoting-destination tag when using annotation-based 
+    		Spring configuration.  <code>@RemotingDestination</code> is used at the type level to indicate the class being exported.  <code>@RemotingInclude</code> and 
+    		<code>@RemotingExclude</code> are used at the method level to mark the methods that should be included and excluded for remoting.  
     	</para>
     	<para>
     		The following example illustrates the productService bean configured exclusively through annotations:

@@ -32,7 +32,9 @@
     class="flex.messaging.services.MessageService">
 
     <adapters>
-        <adapter-definition id="actionscript" class="flex.messaging.services.messaging.adapters.ActionScriptAdapter" default="true"/>
+        <adapter-definition id="actionscript" 
+        	class="flex.messaging.services.messaging.adapters.ActionScriptAdapter" 
+        	default="true"/>
     </adapters>
 
     <default-channels>
@@ -53,7 +55,8 @@
     	</para>
     	<programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:message-service default-adapter-id="my-default-messaging-adapter" default-channels="my-polling-amf" />
+	<flex:message-service default-adapter-id="my-default-messaging-adapter" 
+		default-channels="my-polling-amf" />
 </flex:message-broker>]]>
 		</programlisting>
     	<para>
