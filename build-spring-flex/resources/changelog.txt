@@ -2,22 +2,42 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/projects/blaze-ds-integration
 
-Changes in version 1.0.0.M1 (12.15.2008)
--------------------------------------
+Changes in version 1.0.0.RC1 (04.24.2009)
+-----------------------------------------
 General
-* Performed an initial code drop at http://src.springframework.org/svn/spring-flex
-* Organized project structure to use spring-build and create OSGi-ready build artifacts
-* Added an initial draft of the reference manual
+* Refactored destination management code to provide a common foundation for Remoting and Message destinations
+* Complete messaging support for AMF, JMS, and Spring Integration messaging protocols.
+* Annotation-based configuration support for remoting destinations
+* Changed remote-service tag name to remoting-destination to be more consistent with BlazeDS nomenclature
+* Integration tests now use Fluint instead of FlexUnit (with an eye towards running these tests in CI in the near future)
+* Docs updated to cover all new features and reflect changes to existing features
 
 New Features
-* Configure and bootstrap the BlazeDS MessageBroker as a Spring-managed object
-* Allow Flex remoting messages to be routed to a Spring-managed MessageBroker through the DispatcherServlet
-* Use Spring's ResourceLoader abstraction to load BlazeDS xml configuration files
-* Support for exporting Spring beans for Flex remoting
-* Specify included and excluded methods when exporting Spring beans for Flex remoting
+* FLEX-12 - Allow MessageService destinations to be configured in a Spring WebApplicationContext
+* FLEX-13 - Provide a JMSTemplate-based MessagingAdapter
+* FLEX-17 - Exporting Beans as Flex Remoting Destination using annotations
+* FLEX-18 - BlazeDS commons-logging integration
+* FLEX-20 - Add messaging support based on Spring Integration
+* FLEX-27 - Add support for messaging features to the flex configuration namespace
+* FLEX-30 - Generic hook for catching exceptions and translating them into BlazeDS MessageExceptions
+* FLEX-35 - Add GrantedAuthority[] from UserDetails on successful login result message
+* FLEX-42 - Configure MessageService on demand if none exists
+
+Enhancements
+* FLEX-28 - Support for LiveCycle Data Services ES
+* FLEX-33 - Add log to the FlexRemotingServiceExporter in order to see the destinations created in the messageBroker
+* FLEX-37 - Allow order to be specified on the default handler mapping installed when using the namespace config
+* FLEX-40 - Programmatic Configuration of MessageDestinationFactory
+* FLEX-41 - Ensure proper integration with Spring Security when using Flex per-client authentication setting
+
+Bug Fixes
+* FLEX-22 - Session invalidation on login broken with BlazeDS in use
+* FLEX-26 - JavaAdapters initialize method is not called
+* FLEX-32 - SpringSecurityExceptions not always getting properly translated
+* FLEX-38 - Ensure that @RemotingDestination annotation works with a bean with an @Autowired constructor.
 
 Changes in version 1.0.0.M2 (03.04.2009)
--------------------------------------
+----------------------------------------
 General
 * Updated reference manual to cover the new xml config namespace and security integration
 * Added an xml config schema with complete documentation of all elements and attributes 
@@ -37,3 +57,17 @@ Enhancements
 Bug Fixes
 * FLEX-19 - FlexConfigurationManager should be configurable as a Spring bean
 * FLEX-21 - FlexConfigurationManager.configurationPath shouldn't require slash (/)
+
+Changes in version 1.0.0.M1 (12.15.2008)
+----------------------------------------
+General
+* Performed an initial code drop at http://src.springframework.org/svn/spring-flex
+* Organized project structure to use spring-build and create OSGi-ready build artifacts
+* Added an initial draft of the reference manual
+
+New Features
+* Configure and bootstrap the BlazeDS MessageBroker as a Spring-managed object
+* Allow Flex remoting messages to be routed to a Spring-managed MessageBroker through the DispatcherServlet
+* Use Spring's ResourceLoader abstraction to load BlazeDS xml configuration files
+* Support for exporting Spring beans for Flex remoting
+* Specify included and excluded methods when exporting Spring beans for Flex remoting
