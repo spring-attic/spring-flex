@@ -1,3 +1,19 @@
+/*
+ * Copyright 2002-2009 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.flex.core;
 
 import org.springframework.beans.BeanUtils;
@@ -6,51 +22,73 @@ import org.springframework.beans.factory.FactoryBean;
 
 import flex.management.ManageableComponent;
 import flex.messaging.config.ConfigMap;
+import flex.messaging.services.remoting.adapters.JavaAdapter;
 
 /**
- * {@link FactoryBean} that allows for the creation of BlazeDS {@link ManageableComponent} prototype instances
- * with the appropriate {@link ManageableComponent#initialize(String, ConfigMap)} callback after creation.  Useful
- * for configuring non-singleton helper objects such as a custom {@link JavaAdapter}.
+ * {@link FactoryBean} that allows for the creation of BlazeDS {@link ManageableComponent} prototype instances with the
+ * appropriate {@link ManageableComponent#initialize(String, ConfigMap)} callback after creation. Useful for configuring
+ * non-singleton helper objects such as a custom {@link JavaAdapter}.
  * 
  * @author Jeremy Grelle
  */
-public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAware{
+public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAware {
 
-	private ConfigMap properties = new ConfigMap();
-	
-	private String beanName;
-	
-	private Class<? extends ManageableComponent> componentClass;
-	
-	public ManageableComponentFactoryBean(Class<? extends ManageableComponent> componentClass) {
-		this.componentClass = componentClass;
-	}
-	
-	public Object getObject() throws Exception {
-		ManageableComponent component = (ManageableComponent) BeanUtils.instantiateClass(componentClass);
-		component.setId(beanName);
-		component.initialize(beanName, properties);
-		return component;
-	}
+    private ConfigMap properties = new ConfigMap();
 
-	public Class<?> getObjectType() {
-		return componentClass;
-	}
+    private String beanName;
 
-	/**
-	 * It is expected that objects created by this factory will always
-	 * be prototype instances.
-	 */
-	public final boolean isSingleton() {
-		return false;
-	}
+    private final Class<? extends ManageableComponent> componentClass;
 
-	public void setBeanName(String name) {
-		this.beanName = name;		
-	}
-	
-	public void setProperties(ConfigMap properties) {
-		this.properties = properties;
-	}
+    /**
+     * Creates a new ManageableComponentFactoryBean for the specified component class
+     * 
+     * @param componentClass the class of the component this {@link FactoryBean} will create
+     */
+    public ManageableComponentFactoryBean(Class<? extends ManageableComponent> componentClass) {
+        this.componentClass = componentClass;
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public Object getObject() throws Exception {
+        ManageableComponent component = (ManageableComponent) BeanUtils.instantiateClass(this.componentClass);
+        component.setId(this.beanName);
+        component.initialize(this.beanName, this.properties);
+        return component;
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public Class<?> getObjectType() {
+        return this.componentClass;
+    }
+
+    /**
+     * It is expected that objects created by this factory will always be prototype instances.
+     */
+    public final boolean isSingleton() {
+        return false;
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void setBeanName(String name) {
+        this.beanName = name;
+    }
+
+    /**
+     * Sets the properties {@link ConfigMap} to use in initializing the created component
+     * 
+     * @param properties the properties map
+     */
+    public void setProperties(ConfigMap properties) {
+        this.properties = properties;
+    }
 
 }

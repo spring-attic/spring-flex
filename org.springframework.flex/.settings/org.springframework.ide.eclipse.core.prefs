@@ -1,9 +1,9 @@
-#Mon Feb 23 10:27:25 EST 2009
+#Mon Mar 30 14:53:43 EDT 2009
 eclipse.preferences.version=1
 org.springframework.ide.eclipse.core.builders.enable.aopreferencemodelbuilder=true
 org.springframework.ide.eclipse.core.builders.enable.beanmetadatabuilder=false
 org.springframework.ide.eclipse.core.builders.enable.osgibundleupdater=true
-org.springframework.ide.eclipse.core.enable.project.preferences=false
+org.springframework.ide.eclipse.core.enable.project.preferences=true
 org.springframework.ide.eclipse.core.validator.enable.com.springsource.server.ide.manifest.core.manifestvalidator=true
 org.springframework.ide.eclipse.core.validator.enable.com.springsource.sts.bestpractices.beansvalidator=true
 org.springframework.ide.eclipse.core.validator.enable.com.springsource.sts.server.quickfix.manifestvalidator=true

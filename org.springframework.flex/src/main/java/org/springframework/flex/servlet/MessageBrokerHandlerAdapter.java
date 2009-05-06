@@ -1,3 +1,19 @@
+/*
+ * Copyright 2002-2009 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.flex.servlet;
 
 import javax.servlet.ServletConfig;
@@ -18,92 +34,101 @@ import flex.messaging.MessageException;
 import flex.messaging.endpoints.Endpoint;
 
 /**
- * {@link HandlerAdapter} for routing HTTP messages to a Spring-managed
- * {@link MessageBroker}.
+ * {@link HandlerAdapter} for routing HTTP messages to a Spring-managed {@link MessageBroker}.
  * 
  * <p>
- * This class is automatically registered with the application context when using the <code>message-broker</code> tag
- * in the xml configuration namespace.
+ * This class is automatically registered with the application context when using the <code>message-broker</code> tag in
+ * the xml configuration namespace.
  * 
  * @see MessageBroker
  * @see HandlerMapping
  * 
  * @author Jeremy Grelle
  */
-public class MessageBrokerHandlerAdapter implements HandlerAdapter,
-		ServletConfigAware {
+public class MessageBrokerHandlerAdapter implements HandlerAdapter, ServletConfigAware {
 
-	private static final Log logger = LogFactory
-			.getLog(MessageBrokerHandlerAdapter.class);
+    private static final Log logger = LogFactory.getLog(MessageBrokerHandlerAdapter.class);
 
-	private ServletConfig servletConfig;
+    private ServletConfig servletConfig;
 
-	public long getLastModified(HttpServletRequest request, Object handler) {
-		return -1;
-	}
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public long getLastModified(HttpServletRequest request, Object handler) {
+        return -1;
+    }
 
-	public ModelAndView handle(HttpServletRequest req, HttpServletResponse res,
-			Object handler) throws Exception {
-		MessageBroker broker = (MessageBroker) handler;
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public ModelAndView handle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {
+        MessageBroker broker = (MessageBroker) handler;
 
-		try {
-			// Update thread locals
-			broker.initThreadLocals();
-			// Set this first so it is in place for the session creation event.
-			FlexContext.setThreadLocalObjects(null, null, broker, req, res,
-					servletConfig);
-			HttpFlexSession.getFlexSession(req);
+        try {
+            // Update thread locals
+            broker.initThreadLocals();
+            // Set this first so it is in place for the session creation event.
+            FlexContext.setThreadLocalObjects(null, null, broker, req, res, this.servletConfig);
+            HttpFlexSession.getFlexSession(req);
 
-			String contextPath = req.getContextPath();
-			String pathInfo = req.getPathInfo();
-			String endpointPath = req.getServletPath();
-			if (pathInfo != null) {
-				endpointPath = endpointPath + pathInfo;
-			}
-			Endpoint endpoint = null;
-			try {
-				endpoint = broker.getEndpoint(endpointPath, contextPath);
-			} catch (MessageException me) {
-				if (logger.isInfoEnabled()) {
-					logger.info("Received invalid request for endpoint path '"
-							+ endpointPath + "'.");
-				}
+            String contextPath = req.getContextPath();
+            String pathInfo = req.getPathInfo();
+            String endpointPath = req.getServletPath();
+            if (pathInfo != null) {
+                endpointPath = endpointPath + pathInfo;
+            }
+            Endpoint endpoint = null;
+            try {
+                endpoint = broker.getEndpoint(endpointPath, contextPath);
+            } catch (MessageException me) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Received invalid request for endpoint path '" + endpointPath + "'.");
+                }
 
-				if (!res.isCommitted()) {
-					res.sendError(HttpServletResponse.SC_NOT_FOUND);
-				}
+                if (!res.isCommitted()) {
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
 
-				return null;
-			}
+                return null;
+            }
 
-			try {
-				if (logger.isInfoEnabled()) {
-					logger.info(
-							"Channel endpoint "+endpoint.getId()+" received request.");
-				}
-				endpoint.service(req, res);
-			} catch (UnsupportedOperationException ue) {
-				if (logger.isInfoEnabled()) {
-					logger.info("Channel endpoint "+endpoint.getId()+" received request for an unsupported operation.", ue);
-				}
+            try {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Channel endpoint " + endpoint.getId() + " received request.");
+                }
+                endpoint.service(req, res);
+            } catch (UnsupportedOperationException ue) {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Channel endpoint " + endpoint.getId() + " received request for an unsupported operation.", ue);
+                }
 
-				if (!res.isCommitted()) {
-					res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-				}
-			}
-		} finally {
-			FlexContext.clearThreadLocalObjects();
-		}
+                if (!res.isCommitted()) {
+                    res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                }
+            }
+        } finally {
+            FlexContext.clearThreadLocalObjects();
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public boolean supports(Object handler) {
-		return handler instanceof MessageBroker;
-	}
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void setServletConfig(ServletConfig servletConfig) {
+        this.servletConfig = servletConfig;
+    }
 
-	public void setServletConfig(ServletConfig servletConfig) {
-		this.servletConfig = servletConfig;
-	}
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public boolean supports(Object handler) {
+        return handler instanceof MessageBroker;
+    }
 
 }

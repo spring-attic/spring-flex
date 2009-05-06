@@ -1,3 +1,19 @@
+/*
+ * Copyright 2002-2009 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.flex.messaging;
 
 import static org.mockito.Mockito.when;
@@ -14,124 +30,131 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
 
 public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTests {
 
-	private String servicesConfigPath;
-	
-	private @Mock BeanFactory beanFactory;
-	
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
-	}
-	
-	public void testMessageServiceExists() throws Exception {
-		setDirty();
-		MessageServiceChecker checker = new MessageServiceChecker();
-		addStartupProcessor(checker);
-		addStartupProcessor(new MessageServiceConfigProcessor());
-		servicesConfigPath = super.getServicesConfigPath();
-		
-		getMessageBroker();
-		
-		assertTrue("Processors not invoked", checker.beforeInvoked && checker.afterInvoked);
-		assertSame("Pre-configured MessageService should be unmodified",
-				checker.beforeMessageService, checker.afterMessageService);
-	}
-	
-	public void testMessageServiceAddedWithBrokerDefaultChannels() throws Exception {
-		setDirty();
-		addStartupProcessor(new MessageServiceConfigProcessor());
-		servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
-		
-		MessageService messageService = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
-	
-		assertTrue("The broker's default channel was not assigned to the MessageService",messageService.getDefaultChannels().contains("my-default-amf"));
-		assertEquals("The default adapter was not set", "actionscript", messageService.getDefaultAdapter());
-	}
-	
-	public void testMessageServiceAddedWithInferredDefaultChannels() throws Exception {
-		setDirty();
-		addStartupProcessor(new MessageServiceConfigProcessor());
-		servicesConfigPath = "classpath:org/springframework/flex/messaging/inferred-default-channels-config.xml";
-		
-		MessageService messageService = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
-		assertTrue("The default channel was not determined",messageService.getDefaultChannels().contains("my-inferred-default-amf"));
-		assertEquals("The default adapter was not set", "actionscript", messageService.getDefaultAdapter());
-	}
-	
-	public void testMessageServiceAddedWithCustomDefaults() throws Exception {
-		setDirty();
-		MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
-		processor.setBeanFactory(beanFactory);
-		processor.setDefaultAdapterId("my-adapter");
-		processor.setDefaultChannels(new String[] { "my-custom-default-amf" });
-		addStartupProcessor(processor);
-		servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
-		
-		when(beanFactory.getType("my-adapter")).thenReturn(TestAdapter.class);
+    private String servicesConfigPath;
 
-		MessageService messageService = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
-		assertTrue("The default channel was not set",messageService.getDefaultChannels().contains("my-custom-default-amf"));
-		assertEquals("The default adapter was not set", "my-adapter", messageService.getDefaultAdapter());
-	}
-	
-	public void testMessageServiceAddedWithInvalidDefaultId() throws Exception {
-		setDirty();
-		MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
-		processor.setBeanFactory(beanFactory);
-		processor.setDefaultAdapterId("my-adapter");
-		processor.setDefaultChannels(new String[] { "my-custom-default-amf" });
-		addStartupProcessor(processor);
-		servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
-		
-		try {
-			getMessageBroker().getServiceByType(MessageService.class.getName());
-			fail("An error should be thrown.");
-		} catch(IllegalArgumentException ex) {
-			//expected
-		}
-	}
-	
-	public void testMessageServiceAddedWithInvalidCustomChannels() throws Exception {
-		setDirty();
-		MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
-		processor.setDefaultChannels(new String[] { "my-bogus-channel" });
-		addStartupProcessor(processor);
-		servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
-		
-		try {
-			getMessageBroker();
-			fail("Invalid channels not detected");
-		} catch(IllegalArgumentException ex) {
-			//expected
-			setDirty();
-		}
-	}
-	
-	protected String getServicesConfigPath() {
-		return servicesConfigPath;
-	}
-	
-	private static class TestAdapter extends JavaAdapter {}
-	
-	private static class MessageServiceChecker implements MessageBrokerConfigProcessor {
+    private @Mock
+    BeanFactory beanFactory;
 
-		protected MessageService beforeMessageService;
-		protected MessageService afterMessageService;
-		protected boolean beforeInvoked = false;
-		protected boolean afterInvoked = false;
-		
-		public MessageBroker processAfterStartup(MessageBroker broker) {
-			afterInvoked = true;
-			afterMessageService = (MessageService) broker.getServiceByType(MessageService.class.getName());
-			assertNotNull(afterMessageService);
-			return broker;
-		}
+    @Override
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
-		public MessageBroker processBeforeStartup(MessageBroker broker) {
-			beforeInvoked = true;
-			beforeMessageService = (MessageService) broker.getServiceByType(MessageService.class.getName());
-			assertNotNull(beforeMessageService);
-			return broker;
-		}
-		
-	}
+    public void testMessageServiceAddedWithBrokerDefaultChannels() throws Exception {
+        setDirty();
+        addStartupProcessor(new MessageServiceConfigProcessor());
+        this.servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
+
+        MessageService messageService = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
+
+        assertTrue("The broker's default channel was not assigned to the MessageService", messageService.getDefaultChannels().contains(
+            "my-default-amf"));
+        assertEquals("The default adapter was not set", "actionscript", messageService.getDefaultAdapter());
+    }
+
+    public void testMessageServiceAddedWithCustomDefaults() throws Exception {
+        setDirty();
+        MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
+        processor.setBeanFactory(this.beanFactory);
+        processor.setDefaultAdapterId("my-adapter");
+        processor.setDefaultChannels(new String[] { "my-custom-default-amf" });
+        addStartupProcessor(processor);
+        this.servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
+
+        when(this.beanFactory.getType("my-adapter")).thenReturn(TestAdapter.class);
+
+        MessageService messageService = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
+        assertTrue("The default channel was not set", messageService.getDefaultChannels().contains("my-custom-default-amf"));
+        assertEquals("The default adapter was not set", "my-adapter", messageService.getDefaultAdapter());
+    }
+
+    public void testMessageServiceAddedWithInferredDefaultChannels() throws Exception {
+        setDirty();
+        addStartupProcessor(new MessageServiceConfigProcessor());
+        this.servicesConfigPath = "classpath:org/springframework/flex/messaging/inferred-default-channels-config.xml";
+
+        MessageService messageService = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
+        assertTrue("The default channel was not determined", messageService.getDefaultChannels().contains("my-inferred-default-amf"));
+        assertEquals("The default adapter was not set", "actionscript", messageService.getDefaultAdapter());
+    }
+
+    public void testMessageServiceAddedWithInvalidCustomChannels() throws Exception {
+        setDirty();
+        MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
+        processor.setDefaultChannels(new String[] { "my-bogus-channel" });
+        addStartupProcessor(processor);
+        this.servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
+
+        try {
+            getMessageBroker();
+            fail("Invalid channels not detected");
+        } catch (IllegalArgumentException ex) {
+            // expected
+            setDirty();
+        }
+    }
+
+    public void testMessageServiceAddedWithInvalidDefaultId() throws Exception {
+        setDirty();
+        MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
+        processor.setBeanFactory(this.beanFactory);
+        processor.setDefaultAdapterId("my-adapter");
+        processor.setDefaultChannels(new String[] { "my-custom-default-amf" });
+        addStartupProcessor(processor);
+        this.servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
+
+        try {
+            getMessageBroker().getServiceByType(MessageService.class.getName());
+            fail("An error should be thrown.");
+        } catch (IllegalArgumentException ex) {
+            // expected
+        }
+    }
+
+    public void testMessageServiceExists() throws Exception {
+        setDirty();
+        MessageServiceChecker checker = new MessageServiceChecker();
+        addStartupProcessor(checker);
+        addStartupProcessor(new MessageServiceConfigProcessor());
+        this.servicesConfigPath = super.getServicesConfigPath();
+
+        getMessageBroker();
+
+        assertTrue("Processors not invoked", checker.beforeInvoked && checker.afterInvoked);
+        assertSame("Pre-configured MessageService should be unmodified", checker.beforeMessageService, checker.afterMessageService);
+    }
+
+    @Override
+    protected String getServicesConfigPath() {
+        return this.servicesConfigPath;
+    }
+
+    private static class MessageServiceChecker implements MessageBrokerConfigProcessor {
+
+        protected MessageService beforeMessageService;
+
+        protected MessageService afterMessageService;
+
+        protected boolean beforeInvoked = false;
+
+        protected boolean afterInvoked = false;
+
+        public MessageBroker processAfterStartup(MessageBroker broker) {
+            this.afterInvoked = true;
+            this.afterMessageService = (MessageService) broker.getServiceByType(MessageService.class.getName());
+            assertNotNull(this.afterMessageService);
+            return broker;
+        }
+
+        public MessageBroker processBeforeStartup(MessageBroker broker) {
+            this.beforeInvoked = true;
+            this.beforeMessageService = (MessageService) broker.getServiceByType(MessageService.class.getName());
+            assertNotNull(this.beforeMessageService);
+            return broker;
+        }
+
+    }
+
+    private static class TestAdapter extends JavaAdapter {
+    }
 }

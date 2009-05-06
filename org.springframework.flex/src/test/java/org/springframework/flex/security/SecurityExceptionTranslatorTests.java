@@ -1,8 +1,23 @@
+/*
+ * Copyright 2002-2009 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.flex.security;
 
 import junit.framework.TestCase;
 
-import org.springframework.flex.security.SecurityExceptionTranslator;
 import org.springframework.security.AccessDeniedException;
 import org.springframework.security.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.AuthenticationException;
@@ -12,39 +27,40 @@ import flex.messaging.security.SecurityException;
 
 public class SecurityExceptionTranslatorTests extends TestCase {
 
-	private SecurityExceptionTranslator translator;
-	
-	public void setUp() {
-		translator = new SecurityExceptionTranslator();
-	}
-	
-	public void testAuthorizationException() {
-		
-		String error = "Invalid authentication";
-		MessageException ex = translator.translate(new AuthenticationCredentialsNotFoundException(error));
-		assertTrue("Should be a SecurityException", ex instanceof SecurityException);		
-		assertEquals(error, ex.getMessage());
-		assertEquals(SecurityException.CLIENT_AUTHENTICATION_CODE, ex.getCode());
-		assertTrue(ex.getRootCause() instanceof AuthenticationException);
+    private SecurityExceptionTranslator translator;
 
-	}
+    @Override
+    public void setUp() {
+        this.translator = new SecurityExceptionTranslator();
+    }
 
-	public void testAccessDeniedException() {
-		
-		String error = "Access is denied";
-		
-		MessageException ex = translator.translate(new AccessDeniedException(error));
-		assertTrue("Should be a SecurityException", ex instanceof SecurityException);	
-		assertEquals(error, ex.getMessage());
-		assertEquals(SecurityException.CLIENT_AUTHORIZATION_CODE, ex.getCode());
-		assertTrue(ex.getRootCause() instanceof AccessDeniedException);
-		
-	}
-	
-	public void testUnknownExceptionPassthrough() {
-		
-		MessageException expected = new MessageException();
-		assertNull(translator.translate(expected));
-	}
+    public void testAccessDeniedException() {
+
+        String error = "Access is denied";
+
+        MessageException ex = this.translator.translate(new AccessDeniedException(error));
+        assertTrue("Should be a SecurityException", ex instanceof SecurityException);
+        assertEquals(error, ex.getMessage());
+        assertEquals(SecurityException.CLIENT_AUTHORIZATION_CODE, ex.getCode());
+        assertTrue(ex.getRootCause() instanceof AccessDeniedException);
+
+    }
+
+    public void testAuthorizationException() {
+
+        String error = "Invalid authentication";
+        MessageException ex = this.translator.translate(new AuthenticationCredentialsNotFoundException(error));
+        assertTrue("Should be a SecurityException", ex instanceof SecurityException);
+        assertEquals(error, ex.getMessage());
+        assertEquals(SecurityException.CLIENT_AUTHENTICATION_CODE, ex.getCode());
+        assertTrue(ex.getRootCause() instanceof AuthenticationException);
+
+    }
+
+    public void testUnknownExceptionPassthrough() {
+
+        MessageException expected = new MessageException();
+        assertNull(this.translator.translate(expected));
+    }
 
 }

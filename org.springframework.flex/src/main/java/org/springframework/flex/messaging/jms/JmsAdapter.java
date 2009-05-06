@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2009 the original author or authors.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,6 @@ import javax.jms.Destination;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
@@ -45,172 +44,231 @@ import flex.messaging.services.MessageService;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
 /**
- * A {@link MessagingAdapter} implementation that enables sending and receiving
- * messages via JMS.
+ * A {@link MessagingAdapter} implementation that enables sending and receiving messages via JMS.
  * 
  * @author Mark Fisher
  */
 public class JmsAdapter extends MessagingAdapter implements MessageClientListener, InitializingBean, BeanNameAware {
 
-	private final Log logger = LogFactory.getLog(getClass());
+    private final Log logger = LogFactory.getLog(getClass());
 
-	private volatile ConnectionFactory connectionFactory;
+    private volatile ConnectionFactory connectionFactory;
 
-	private volatile Object destination;
+    private volatile Object destination;
 
-	private volatile boolean pubSubDomain;
+    private volatile boolean pubSubDomain;
 
-	private volatile MessageConverter messageConverter;
+    private volatile MessageConverter messageConverter;
 
-	private final JmsTemplate jmsTemplate = new JmsTemplate();
+    private final JmsTemplate jmsTemplate = new JmsTemplate();
 
-	private final DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
+    private final DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
 
-	private final Set<Object> subscriberIds = new HashSet<Object>();
+    private final Set<Object> subscriberIds = new HashSet<Object>();
 
-	private final Map<Object, MessageClient> clientMap = new HashMap<Object, MessageClient>(); 
+    private final Map<Object, MessageClient> clientMap = new HashMap<Object, MessageClient>();
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void afterPropertiesSet() {
+        Assert.notNull(this.connectionFactory, "connectionFactory is required");
+        Assert.notNull(this.destination, "destination or destination name is required");
+        this.jmsTemplate.setConnectionFactory(this.connectionFactory);
+        MessageConverter converterToSet = this.messageConverter;
+        if (converterToSet == null || !(converterToSet instanceof FlexMessageConverter)) {
+            converterToSet = new FlexMessageConverter(converterToSet);
+        }
+        this.jmsTemplate.setMessageConverter(converterToSet);
+        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter();
+        messageListenerAdapter.setMessageConverter(converterToSet);
+        messageListenerAdapter.setDelegate(this);
+        this.messageListenerContainer.setConnectionFactory(this.connectionFactory);
+        this.messageListenerContainer.setMessageListener(messageListenerAdapter);
+        this.messageListenerContainer.setAutoStartup(false);
+        if (this.destination instanceof Destination) {
+            this.jmsTemplate.setDefaultDestination((Destination) this.destination);
+            this.messageListenerContainer.setDestination((Destination) this.destination);
+        } else {
+            this.jmsTemplate.setPubSubDomain(this.pubSubDomain);
+            this.jmsTemplate.setDefaultDestinationName((String) this.destination);
+            this.messageListenerContainer.setPubSubDomain(this.pubSubDomain);
+            this.messageListenerContainer.setDestinationName((String) this.destination);
+        }
+        this.jmsTemplate.afterPropertiesSet();
+        this.messageListenerContainer.afterPropertiesSet();
+    }
 
-	public JmsTemplate getJmsTemplate() {
-		return jmsTemplate;
-	}
+    /**
+     * Returns the {@link JmsTemplate} used by this adapter
+     * 
+     * @return the jms template
+     */
+    public JmsTemplate getJmsTemplate() {
+        return this.jmsTemplate;
+    }
 
-	public void setBeanName(String beanName) {
-		this.setId(beanName);
-	}
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean handlesSubscriptions() {
+        return true;
+    }
 
-	public void setConnectionFactory(ConnectionFactory connectionFactory) {
-		this.connectionFactory = connectionFactory;
-	}
+    /**
+     * Invoked when a Message is received from a Flex client.
+     */
+    @Override
+    public Object invoke(Message flexMessage) {
+        this.jmsTemplate.convertAndSend(flexMessage);
+        return null;
+    }
 
-	public void setDestinationResolver(DestinationResolver destinationResolver) {
-		Assert.notNull(destinationResolver, "destinationResolver must not be null");
-		this.jmsTemplate.setDestinationResolver(destinationResolver);
-		this.messageListenerContainer.setDestinationResolver(destinationResolver);
-	}
-	
-	public void setTransactionManager(PlatformTransactionManager transactionManager) {
-		Assert.notNull(transactionManager, "transactionManager must not be null");
-		this.messageListenerContainer.setTransactionManager(transactionManager);
-	}
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public Object manage(CommandMessage commandMessage) {
+        String clientId = (String) commandMessage.getClientId();
+        if (commandMessage.getOperation() == CommandMessage.SUBSCRIBE_OPERATION) {
+            this.subscriberIds.add(clientId);
+            synchronized (this.messageListenerContainer) {
+                if (!this.messageListenerContainer.isRunning()) {
+                    this.messageListenerContainer.start();
+                }
+            }
+            if (this.logger.isInfoEnabled()) {
+                this.logger.info("client [" + clientId + "] subscribed to destination [" + this.getDestination().getId() + "]");
+            }
+        } else if (commandMessage.getOperation() == CommandMessage.UNSUBSCRIBE_OPERATION) {
+            this.subscriberIds.remove(clientId);
+            synchronized (this.messageListenerContainer) {
+                if (this.subscriberIds.isEmpty() && this.messageListenerContainer.isRunning()) {
+                    this.messageListenerContainer.stop();
+                }
+            }
+            if (this.logger.isInfoEnabled()) {
+                this.logger.info("client [" + clientId + "] unsubscribed from destination [" + this.getDestination().getId() + "]");
+            }
+        }
+        return null;
+    }
 
-	public void setJmsDestination(Destination destination) {
-		this.destination = destination;
-	}
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void messageClientCreated(MessageClient messageClient) {
+        messageClient.addMessageClientDestroyedListener(this);
+        this.clientMap.put(messageClient.getClientId(), messageClient);
+    }
 
-	public void setQueueName(String queueName) {
-		this.destination = queueName;
-	}
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void messageClientDestroyed(MessageClient messageClient) {
+        this.clientMap.remove(messageClient.getClientId());
+    }
 
-	public void setTopicName(String topicName) {
-		this.pubSubDomain = true;
-		this.destination = topicName;
-	}
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void setBeanName(String beanName) {
+        this.setId(beanName);
+    }
 
-	public void setMessageConverter(MessageConverter messageConverter) {
-		this.messageConverter = messageConverter;
-	}
+    /**
+     * Sets the {@link ConnectionFactory} to use for sending and receiving JMS messages
+     * 
+     * @param connectionFactory the connection factory
+     */
+    public void setConnectionFactory(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
 
-	public void afterPropertiesSet() {
-		Assert.notNull(this.connectionFactory, "connectionFactory is required");
-		Assert.notNull(this.destination, "destination or destination name is required");
-		this.jmsTemplate.setConnectionFactory(this.connectionFactory);
-		MessageConverter converterToSet = this.messageConverter;
-		if (converterToSet == null || !(converterToSet instanceof FlexMessageConverter)) {
-			converterToSet = new FlexMessageConverter(converterToSet);
-		}
-		this.jmsTemplate.setMessageConverter(converterToSet);
-		MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter();
-		messageListenerAdapter.setMessageConverter(converterToSet);
-		messageListenerAdapter.setDelegate(this);
-		this.messageListenerContainer.setConnectionFactory(this.connectionFactory);
-		this.messageListenerContainer.setMessageListener(messageListenerAdapter);
-		this.messageListenerContainer.setAutoStartup(false);
-		if (this.destination instanceof Destination) {
-			this.jmsTemplate.setDefaultDestination((Destination) this.destination);
-			this.messageListenerContainer.setDestination((Destination) this.destination);
-		}
-		else {
-			this.jmsTemplate.setPubSubDomain(this.pubSubDomain);
-			this.jmsTemplate.setDefaultDestinationName((String) this.destination);
-			this.messageListenerContainer.setPubSubDomain(this.pubSubDomain);
-			this.messageListenerContainer.setDestinationName((String) this.destination);
-		}
-		this.jmsTemplate.afterPropertiesSet();
-		this.messageListenerContainer.afterPropertiesSet();
-	}
+    /**
+     * Sets the {@link DestinationResolver} for resolving the JMS destination for this adapter
+     * 
+     * @param destinationResolver the destination resolver
+     */
+    public void setDestinationResolver(DestinationResolver destinationResolver) {
+        Assert.notNull(destinationResolver, "destinationResolver must not be null");
+        this.jmsTemplate.setDestinationResolver(destinationResolver);
+        this.messageListenerContainer.setDestinationResolver(destinationResolver);
+    }
 
-	@Override
-	public void start() {
-		super.start();
-		MessageClient.addMessageClientCreatedListener(this);
-		this.messageListenerContainer.afterPropertiesSet();
-	}
+    /**
+     * Sets the JMS {@link Destination} for messages sent and received by this adapter
+     * 
+     * @param destination the destination
+     */
+    public void setJmsDestination(Destination destination) {
+        this.destination = destination;
+    }
 
-	@Override
-	public boolean handlesSubscriptions() {
-		return true;
-	}
+    /**
+     * Sets the {@link MessageConverter} for messages sent and received by this adapter.
+     * 
+     * @param messageConverter the message converter
+     */
+    public void setMessageConverter(MessageConverter messageConverter) {
+        this.messageConverter = messageConverter;
+    }
 
-	/**
-	 * Invoked when a Message is received from a Flex client.
-	 */
-	@Override
-	public Object invoke(Message flexMessage) {
-		this.jmsTemplate.convertAndSend(flexMessage);
-		return null;
-	}
+    /**
+     * Sets the JMS queue name for messages sent and received by this adapter.
+     * 
+     * @param messageConverter the JMS queue name
+     */
+    public void setQueueName(String queueName) {
+        this.destination = queueName;
+    }
 
-	/**
-	 * Invoked when a Message is received from a JMS client.
-	 */
-	void handleMessage(Message flexMessage) {
-		flexMessage.setDestination(this.getDestination().getId());
-		MessageService messageService = ((MessageService) getDestination().getService());
+    /**
+     * Sets the JMS topic name for messages sent and received by this adapter.
+     * 
+     * @param messageConverter the JMS topic name
+     */
+    public void setTopicName(String topicName) {
+        this.pubSubDomain = true;
+        this.destination = topicName;
+    }
+
+    /**
+     * Sets the {@link PlatformTransactionManager} to be used when sending and receiving messages
+     * 
+     * @param transactionManager the transaction manager
+     */
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        Assert.notNull(transactionManager, "transactionManager must not be null");
+        this.messageListenerContainer.setTransactionManager(transactionManager);
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public void start() {
+        super.start();
+        MessageClient.addMessageClientCreatedListener(this);
+        this.messageListenerContainer.afterPropertiesSet();
+    }
+
+    /**
+     * Invoked when a Message is received from a JMS client.
+     */
+    void handleMessage(Message flexMessage) {
+        flexMessage.setDestination(this.getDestination().getId());
+        MessageService messageService = (MessageService) getDestination().getService();
         messageService.pushMessageToClients(flexMessage, true);
         messageService.sendPushMessageFromPeer(flexMessage, true);
-	}
-
-	@Override
-	public Object manage(CommandMessage commandMessage) {
-		String clientId = (String) commandMessage.getClientId();
-		if (commandMessage.getOperation() == CommandMessage.SUBSCRIBE_OPERATION) {
-			this.subscriberIds.add(clientId);
-			synchronized (this.messageListenerContainer) {
-				if (!this.messageListenerContainer.isRunning()) {
-					this.messageListenerContainer.start();
-				}
-			}
-			if (logger.isInfoEnabled()) {
-				logger.info("client [" +clientId +"] subscribed to destination [" + this.getDestination().getId() + "]");
-			}
-		}
-		else if (commandMessage.getOperation() == CommandMessage.UNSUBSCRIBE_OPERATION) {
-			this.subscriberIds.remove(clientId);
-			synchronized (this.messageListenerContainer) {
-				if (this.subscriberIds.isEmpty() && this.messageListenerContainer.isRunning()) {
-					this.messageListenerContainer.stop();
-				}
-			}
-			if (logger.isInfoEnabled()) {
-				logger.info("client [" +clientId +"] unsubscribed from destination [" + this.getDestination().getId() + "]");
-			}
-		}
-		return null;
-	}
-
-
-	/*
-	 * MessageClientListener implementation
-	 */
-
-	public void messageClientCreated(MessageClient messageClient) {
-		messageClient.addMessageClientDestroyedListener(this);
-		this.clientMap.put(messageClient.getClientId(), messageClient);
-	}
-
-	public void messageClientDestroyed(MessageClient messageClient) {
-		this.clientMap.remove(messageClient.getClientId());
-	}
+    }
 
 }

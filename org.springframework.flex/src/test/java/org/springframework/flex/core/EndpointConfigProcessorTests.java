@@ -1,6 +1,22 @@
+/*
+ * Copyright 2002-2009 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.flex.core;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -16,9 +32,6 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.Advised;
-import org.springframework.flex.core.EndpointAdvisor;
-import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
-import org.springframework.flex.core.EndpointConfigProcessor;
 import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.MessageBroker;
@@ -29,84 +42,91 @@ import flex.messaging.endpoints.amf.AMFFilter;
 
 public class EndpointConfigProcessorTests extends TestCase {
 
-	MessageBroker broker;
-	@Mock
-	AbstractEndpoint endpoint1;
-	@Mock
-	AbstractEndpoint endpoint2;
-	@Mock
-	MethodInterceptor advice1;
-	@Mock
-	MethodInterceptor advice2;
-	EndpointServiceMessagePointcutAdvisor advisor1;
-	EndpointServiceMessagePointcutAdvisor advisor2;
-	EndpointConfigProcessor processor;
+    MessageBroker broker;
 
-	@SuppressWarnings("unchecked")
-	public void setUp() {
-		MockitoAnnotations.initMocks(this);
+    @Mock
+    AbstractEndpoint endpoint1;
 
-		advisor1 = new EndpointServiceMessagePointcutAdvisor(advice1);
-		advisor2 = new EndpointServiceMessagePointcutAdvisor(advice2);
+    @Mock
+    AbstractEndpoint endpoint2;
 
-		broker = new MessageBroker();
-		Map endpoints = new HashMap();
-		endpoints.put("foo", endpoint1);
+    @Mock
+    MethodInterceptor advice1;
 
-		when(endpoint1.getId()).thenReturn("bar");
-		when(endpoint1.getUrl()).thenReturn("http://foo.com/bar");
-		broker.addEndpoint(endpoint1);
+    @Mock
+    MethodInterceptor advice2;
 
-		when(endpoint2.getId()).thenReturn("baz");
-		when(endpoint2.getUrl()).thenReturn("http://foo.com/baz");
-		broker.addEndpoint(endpoint2);
-	}
+    EndpointServiceMessagePointcutAdvisor advisor1;
 
-	@SuppressWarnings("unchecked")
-	public void testPostProcessAfterInit() throws Exception {
+    EndpointServiceMessagePointcutAdvisor advisor2;
 
-		List<EndpointAdvisor> advisors = new ArrayList<EndpointAdvisor>();
-		advisors.add(advisor1);
-		advisors.add(advisor2);
-		processor = new EndpointConfigProcessor(advisors);
+    EndpointConfigProcessor processor;
 
-		MessageBroker processedBroker = (MessageBroker) processor
-				.processAfterStartup(broker);
-		assertSame(broker, processedBroker);
+    @Override
+    @SuppressWarnings("unchecked")
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
 
-		Collection endpoints = processedBroker.getEndpoints().values();
+        this.advisor1 = new EndpointServiceMessagePointcutAdvisor(this.advice1);
+        this.advisor2 = new EndpointServiceMessagePointcutAdvisor(this.advice2);
 
-		Iterator i = endpoints.iterator();
-		while (i.hasNext()) {
-			Endpoint endpoint = (Endpoint) i.next();
+        this.broker = new MessageBroker();
+        Map endpoints = new HashMap();
+        endpoints.put("foo", this.endpoint1);
 
-			assertTrue(endpoint instanceof AbstractEndpoint);
-			assertTrue(endpoint instanceof Advised);
-			
-			Advised advisedEndpoint = (Advised) endpoint;
+        when(this.endpoint1.getId()).thenReturn("bar");
+        when(this.endpoint1.getUrl()).thenReturn("http://foo.com/bar");
+        this.broker.addEndpoint(this.endpoint1);
 
-			assertTrue(advisedEndpoint.getAdvisors().length == 2);
-			assertTrue(advisedEndpoint.isFrozen());
-			assertTrue(advisedEndpoint.isProxyTargetClass());
-			assertTrue(advisedEndpoint.indexOf(advisor1) == 0);
-			assertTrue(advisedEndpoint.indexOf(advisor2) == 1);
-			
-			Object targetEndpoint = advisedEndpoint.getTargetSource().getTarget();
-			if (targetEndpoint instanceof BaseHTTPEndpoint) {
-				Field filterChainField = ReflectionUtils.findField(targetEndpoint.getClass(), "filterChain");
-				assertNotNull("Endpoint should have a filterChain field",filterChainField);
-				AMFFilter filter = (AMFFilter) ReflectionUtils.getField(filterChainField, targetEndpoint);
-				assertNotNull("Endpoint should have a populated filterChain field");
-				while (filter != null) {
-					Field endpointField = ReflectionUtils.findField(filter.getClass(), "endpoint");
-					if (endpointField != null) {
-						Object endpointValue = ReflectionUtils.getField(endpointField, filter);
-						assertSame("AMFFilter's endpoint field should be the proxy instance", advisedEndpoint, endpointValue);
-					}
-					filter = filter.getNext();
-				}
-			}
-		}
-	}
+        when(this.endpoint2.getId()).thenReturn("baz");
+        when(this.endpoint2.getUrl()).thenReturn("http://foo.com/baz");
+        this.broker.addEndpoint(this.endpoint2);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testPostProcessAfterInit() throws Exception {
+
+        List<EndpointAdvisor> advisors = new ArrayList<EndpointAdvisor>();
+        advisors.add(this.advisor1);
+        advisors.add(this.advisor2);
+        this.processor = new EndpointConfigProcessor(advisors);
+
+        MessageBroker processedBroker = this.processor.processAfterStartup(this.broker);
+        assertSame(this.broker, processedBroker);
+
+        Collection endpoints = processedBroker.getEndpoints().values();
+
+        Iterator i = endpoints.iterator();
+        while (i.hasNext()) {
+            Endpoint endpoint = (Endpoint) i.next();
+
+            assertTrue(endpoint instanceof AbstractEndpoint);
+            assertTrue(endpoint instanceof Advised);
+
+            Advised advisedEndpoint = (Advised) endpoint;
+
+            assertTrue(advisedEndpoint.getAdvisors().length == 2);
+            assertTrue(advisedEndpoint.isFrozen());
+            assertTrue(advisedEndpoint.isProxyTargetClass());
+            assertTrue(advisedEndpoint.indexOf(this.advisor1) == 0);
+            assertTrue(advisedEndpoint.indexOf(this.advisor2) == 1);
+
+            Object targetEndpoint = advisedEndpoint.getTargetSource().getTarget();
+            if (targetEndpoint instanceof BaseHTTPEndpoint) {
+                Field filterChainField = ReflectionUtils.findField(targetEndpoint.getClass(), "filterChain");
+                assertNotNull("Endpoint should have a filterChain field", filterChainField);
+                AMFFilter filter = (AMFFilter) ReflectionUtils.getField(filterChainField, targetEndpoint);
+                assertNotNull("Endpoint should have a populated filterChain field");
+                while (filter != null) {
+                    Field endpointField = ReflectionUtils.findField(filter.getClass(), "endpoint");
+                    if (endpointField != null) {
+                        Object endpointValue = ReflectionUtils.getField(endpointField, filter);
+                        assertSame("AMFFilter's endpoint field should be the proxy instance", advisedEndpoint, endpointValue);
+                    }
+                    filter = filter.getNext();
+                }
+            }
+        }
+    }
 
 }
