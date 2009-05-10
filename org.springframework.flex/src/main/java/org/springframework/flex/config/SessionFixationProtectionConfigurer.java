@@ -57,10 +57,11 @@ public class SessionFixationProtectionConfigurer implements BeanFactoryPostProce
 
             beanFactory.registerSingleton(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, new FlexSessionInvalidatingAuthenticationListener());
 
-            RootBeanDefinition filterList = (RootBeanDefinition) beanFactory.getBeanDefinition("_filterChainList");
-
-            if (filterList == null) {
-                log.warn("Spring Security filter chain could not be found.  You must install the RequestContextFilter or RequestContextListener"
+            RootBeanDefinition filterList = null;
+            if (beanFactory.containsBean("_filterChainList")) {
+                filterList = (RootBeanDefinition) beanFactory.getMergedBeanDefinition("_filterChainList");
+            } else {
+                log.warn("Spring Security filter chain could not be auto-detected.  You must install the RequestContextFilter or RequestContextListener"
                     + "manually in order for the flex session fixation protection integration to function as expected.");
                 return;
             }
