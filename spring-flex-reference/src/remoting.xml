@@ -75,7 +75,7 @@
     	</programlisting>
     	<para>
     		By default, the remote service destination exposed to the Flex client will use bean name of the bean being exported as the service id of the 
-    		destination, but this may be overridden using the <code>service-id</code> attribute on the <code>remoting-destination</code> tag.
+    		destination, but this may be overridden using the <code>destination-id</code> attribute on the <code>remoting-destination</code> tag.
     	</para>
     	<para>
     		An alternate way of using the <code>remoting-destination</code> tag is as a child element of an top-level bean definition.  This is even more concise 
@@ -108,7 +108,7 @@
 <bean id="product" class="org.springframework.flex.remoting.RemotingDestinationExporter">
     <property name="messageBroker" ref="_messageBroker"/>
     <property name="service" ref="productService"/>
-    <property name="serviceId" value="productService"/>
+    <property name="destinationId" value="productService"/>
     <property name="includeMethods" value="read, update"/>
     <property name="excludeMethods" value="create, delete"/>
     <property name="channels" value="my-amf, my-secure-amf"/>
