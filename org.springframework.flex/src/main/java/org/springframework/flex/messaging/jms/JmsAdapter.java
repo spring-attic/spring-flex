@@ -258,7 +258,6 @@ public class JmsAdapter extends MessagingAdapter implements MessageClientListene
     public void start() {
         super.start();
         MessageClient.addMessageClientCreatedListener(this);
-        this.messageListenerContainer.afterPropertiesSet();
     }
 
     /**
