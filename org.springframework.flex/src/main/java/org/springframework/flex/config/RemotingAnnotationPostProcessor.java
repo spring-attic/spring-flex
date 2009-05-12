@@ -16,6 +16,7 @@
 
 package org.springframework.flex.config;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -117,7 +119,12 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
      */
     private Set<RemotingDestinationMetadata> findRemotingDestinations(ConfigurableListableBeanFactory beanFactory) {
         Set<RemotingDestinationMetadata> remotingDestinations = new HashSet<RemotingDestinationMetadata>();
-        for (String beanName : beanFactory.getBeanDefinitionNames()) {
+        Set<String> beanNames = new HashSet<String>();
+        beanNames.addAll(Arrays.asList(beanFactory.getBeanDefinitionNames()));
+        if (beanFactory.getParentBeanFactory() instanceof ListableBeanFactory) {
+            beanNames.addAll(Arrays.asList(((ListableBeanFactory)beanFactory.getParentBeanFactory()).getBeanDefinitionNames()));
+        }
+        for (String beanName : beanNames) {
             Class<?> handlerType = beanFactory.getType(beanName);
             RemotingDestination remotingDestination = null;
             if (handlerType != null) {

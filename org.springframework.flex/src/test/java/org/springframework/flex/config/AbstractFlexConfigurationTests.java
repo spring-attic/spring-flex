@@ -25,11 +25,22 @@ public abstract class AbstractFlexConfigurationTests extends AbstractSingleSprin
 
     @Override
     protected ConfigurableApplicationContext createApplicationContext(String[] locations) {
+        ConfigurableApplicationContext parentContext = createParentContext();
+
         GenericWebApplicationContext context = new GenericWebApplicationContext();
         context.setServletContext(new MockServletContext(new WebInfResourceLoader(context)));
         prepareApplicationContext(context);
         customizeBeanFactory(context.getDefaultListableBeanFactory());
         createBeanDefinitionReader(context).loadBeanDefinitions(locations);
+        context.setParent(parentContext);
+        context.refresh();
+        return context;
+    }
+
+    private ConfigurableApplicationContext createParentContext() {
+        GenericWebApplicationContext context = new GenericWebApplicationContext();
+        context.setServletContext(new MockServletContext(new WebInfResourceLoader(context)));
+        createBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/parent-context.xml" });
         context.refresh();
         return context;
     }
