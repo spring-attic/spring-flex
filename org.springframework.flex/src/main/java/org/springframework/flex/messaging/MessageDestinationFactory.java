@@ -163,7 +163,6 @@ public class MessageDestinationFactory extends AbstractDestinationFactory {
         destination.getAdapter().initialize(adapterId, getProperties());
         destination.initialize(getDestinationId(), getProperties());
         destination.start();
-        destination.getAdapter().start();
     }
 
     private ConfigMap getNetworkMap() {
