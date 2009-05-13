@@ -1,6 +1,7 @@
 Bundle-SymbolicName: org.springframework.flex
 Bundle-Name: Spring BlazeDS Integration
 Bundle-Vendor: SpringSource
+Bundle-Version: 1.0.0.RC2
 Bundle-ManifestVersion: 2
 Excluded-Imports: org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests,
  org.springframework.util.ReflectionUtils,
