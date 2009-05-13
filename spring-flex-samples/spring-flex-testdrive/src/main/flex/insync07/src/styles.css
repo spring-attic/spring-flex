@@ -1,0 +1,32 @@
+@font-face
+{
+    src: url("assets/fonts/MyriadWebPro.ttf");
+    font-family: main;
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face
+{
+    src: url("assets/fonts/MyriadWebPro-Bold.ttf");
+    font-family: main;
+    font-style: normal;
+    font-weight: bold;
+}
+
+Application {
+	background-color: #E1E1E1;
+	background-size: "100%";
+	font-family: main;
+	color: #333333;
+	font-size: 12;
+}
+
+.appTitle {
+	font-size: 24;
+	color: #006699;
+}
+
+Button {
+	corner-radius: 2;
+}

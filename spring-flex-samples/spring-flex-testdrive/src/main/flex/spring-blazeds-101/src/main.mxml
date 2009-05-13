@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<!-- "productService" is defined in Spring's configuration file WEB-INF/config/web-application-config.xml
+	and provides remote access to the flex.spring.samples.product.ProductDAO class --> 
+	<mx:RemoteObject id="ro" destination="productService"/>
+
+	<mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
+
+	<!-- the findAll() method is defined in flex.spring.samples.product.ProductDAO -->
+	<mx:Button label="Get Data" click="ro.findAll()"/>
+	
+</mx:Application>

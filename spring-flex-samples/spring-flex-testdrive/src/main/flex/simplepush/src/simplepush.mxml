@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" fontSize="20" backgroundColor="#FFFFFF">
+	
+	<mx:Script>
+		<![CDATA[
+		
+			import mx.messaging.messages.IMessage;
+			
+			private function messageHandler(message:IMessage):void
+			{
+				pushedValue.text = ""+ message.body;	
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:ChannelSet id="cs">
+		<!-- <mx:StreamingAMFChannel url="http://localhost:8080/messagebroker/streamingamf"/> -->
+		<mx:AMFChannel url="http://localhost:8080/messagebroker/amflongpolling"/>
+		<mx:AMFChannel url="http://localhost:8080/messagebroker/amfpolling"/>
+	</mx:ChannelSet>
+	
+	<mx:Consumer id="consumer" destination="simple-feed" channelSet="{cs}" 
+		message="messageHandler(event.message)"/>
+
+	<mx:TextInput id="pushedValue" width="250"/>
+
+	<mx:Button label="Subscribe" click="consumer.subscribe()" enabled="{!consumer.subscribed}"/>
+	<mx:Button label="Unsubscribe" click="consumer.unsubscribe()" enabled="{consumer.subscribed}"/>
+
+		
+</mx:Application>

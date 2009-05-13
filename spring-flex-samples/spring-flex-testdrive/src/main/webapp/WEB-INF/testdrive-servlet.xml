@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:flex="http://www.springframework.org/schema/flex"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/flex 
+		http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+ 
+	<flex:message-broker>
+		<flex:message-service
+			default-channels="my-streaming-amf,my-longpolling-amf,my-polling-amf" />
+		<flex:secured />
+	</flex:message-broker>
+
+	<!-- Expose the productService bean for BlazeDS remoting -->
+	<flex:remoting-destination ref="productService" />
+
+	<!-- Expose the contactService bean for BlazeDS remoting -->
+	<flex:remoting-destination ref="contactService" />
+
+	<!-- Expost the securedProductService bean for BlazeDS remoting -->
+	<flex:remoting-destination ref="securedProductService" />
+
+	<!-- Messaging destinations -->
+	<flex:message-destination id="chat" />
+	<flex:message-destination id="simple-feed" />
+	<flex:message-destination id="market-feed" allow-subtopics="true" subtopic-separator="." />
+	<flex:jms-message-destination id="jms-chat" jms-destination="chatTopic" /> 	<!-- See configuration of "chatTopic" in /WEB-INF/spring/infrastructure-context.xml -->    	
+
+	<!-- MessageTemplate makes it easy to publish messages -->
+	<bean id="defaultMessageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />
+
+	<!-- Pojo used to start and stop the data feed that pushes data in the 'simple-feed' destination -->
+	<bean id="simpleFeedStarter" class="flex.spring.samples.simplefeed.SimpleFeed">
+		<constructor-arg ref="defaultMessageTemplate" />
+		<flex:remoting-destination />
+	</bean>
+
+	<!-- Pojo used to start and stop the data feed that pushes data in the 'market-feed' destination -->
+	<bean id="marketFeedStarter" class="flex.spring.samples.marketfeed.MarketFeed">
+		<constructor-arg value="stocklist.xml" />
+		<flex:remoting-destination />
+	</bean>
+
+</beans>

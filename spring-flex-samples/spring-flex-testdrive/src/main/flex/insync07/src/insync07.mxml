@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" xmlns:code="http://code.google.com/p/flexlib/">
+
+	<mx:Script>
+		<![CDATA[
+
+			import mx.rpc.events.FaultEvent;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable] private var contacts:ArrayCollection;
+
+			private function resultHandler(event:ResultEvent):void
+			{
+				contacts = event.result as ArrayCollection
+			}
+
+			private function faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultDetail);
+			}
+
+			public function openContact(contact:Contact):void
+			{
+				var children:Array = tn.getChildren();
+				for (var i:int = 0; i<children.length; i++)
+				{
+					if (ContactForm(children[i]).contact.id == contact.id)
+					{
+						tn.selectedChild = children[i];
+						return;
+					}
+				}
+				
+				var form:ContactForm = new ContactForm();
+				tn.addChild(form);
+				form.contact = contact;
+				tn.selectedChild = form;
+			}
+
+			private function search():void
+			{
+				ro.findByName(sb.text);
+			}
+
+			private function getFullName(item:Object):String
+			{
+				return item.firstName + " " + item.lastName;
+			}
+
+		]]>
+	</mx:Script>
+
+	<mx:Style source="styles.css"/>
+
+	<mx:RemoteObject id="ro" destination="contactService" fault="faultHandler(event)">
+		<mx:method name="findByName" result="resultHandler(event)"/>
+	</mx:RemoteObject>
+
+	<mx:HBox width="100%" verticalAlign="middle" horizontalGap="20">
+		<mx:Label text="inSync" styleName="appTitle"/>
+		<mx:Spacer width="100%"/>
+		<mx:Button icon="@Embed('assets/icon_plus.png')" height="28" width="31"
+			toolTip="New Contact" click="openContact(new Contact())"/>
+
+		<SearchBox id="sb" right="143" width="145" height="18" dataProvider="{contacts}"
+			textChange="search()"
+			labelFunction="getFullName"
+			select="openContact(sb.selectedItem as Contact)"/>
+	</mx:HBox>
+
+	<code:SuperTabNavigator id="tn" width="100%" height="100%"/>
+
+</mx:Application>

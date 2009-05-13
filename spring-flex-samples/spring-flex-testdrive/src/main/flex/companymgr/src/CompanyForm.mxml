@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	backgroundColor="#FFFFFF"
+	label="{company.id>0?company.name:'New Company'}" xmlns:local="*">
+
+	<mx:Metadata>
+        [Event(name="companyCreated", type="CompanyEvent")]
+        [Event(name="companyUpdated", type="CompanyEvent")]
+        [Event(name="companyDeleted", type="CompanyEvent")]
+    </mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+
+		import mx.collections.ArrayCollection;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		import mx.controls.Alert;
+		
+		[Bindable] public var company:Company;
+		[Bindable] public var industries:ArrayCollection;
+
+		private function save():void
+		{
+			company.name = companyName.text;
+			company.address = address.text;
+			company.city = city.text;
+			company.state = state.text;
+			company.zip = zip.text;
+			company.phone = phone.text;
+			company.industry = industry.selectedItem as Industry;
+			if (company.id == 0)
+			{
+				ro.create(company);	
+			}
+			else
+			{
+				ro.update(company);
+			}
+		}
+
+		private function deleteItem():void
+		{
+			ro.remove(company);		
+		}
+
+		private function create_resultHandler(event:ResultEvent):void
+		{
+			company.id = event.result.id;
+			dispatchEvent(new CompanyEvent(CompanyEvent.CREATED, company));			
+		}
+
+		private function update_resultHandler(event:ResultEvent):void
+		{
+			dispatchEvent(new CompanyEvent(CompanyEvent.UPDATED, company));			
+		}
+
+		private function remove_resultHandler(event:ResultEvent):void
+		{
+			dispatchEvent(new CompanyEvent(CompanyEvent.DELETED, company));			
+		}
+		
+		private function faultHandler(event:FaultEvent):void
+		{
+			Alert.show(event.fault.faultDetail);
+		}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:RemoteObject id="ro" destination="companyService">
+		<mx:method name="create" result="create_resultHandler(event)"/>
+		<mx:method name="update" result="update_resultHandler(event)"/>
+		<mx:method name="remove" result="remove_resultHandler(event)"/>
+	</mx:RemoteObject>
+	
+	<mx:Form>
+		<mx:FormItem label="Id">
+			<mx:TextInput text="{company.id}" enabled="false"/>
+		</mx:FormItem>
+		<mx:FormItem label="Name">
+			<mx:TextInput id="companyName" text="{company.name}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Industry">
+			<local:ComboBox id="industry" dataProvider="{industries}" labelField="name" valueField="id" value="{company.industry.id}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Address">
+			<mx:TextInput id="address" text="{company.address}"/>
+		</mx:FormItem>
+		<mx:FormItem label="City">
+			<mx:TextInput id="city" text="{company.city}"/>
+		</mx:FormItem>
+		<mx:FormItem label="State">
+			<mx:TextInput id="state" text="{company.state}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Zip">
+			<mx:TextInput id="zip" text="{company.zip}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Phone">
+			<mx:TextInput id="phone" text="{company.phone}"/>
+		</mx:FormItem>
+	</mx:Form>
+
+	<mx:HBox left="8" bottom="8">
+		<mx:Button label="Close" click="parent.removeChild(this)"/>
+		<mx:Button label="Save" click="save()"/>
+		<mx:Button label="Delete" click="deleteItem()"/>
+	</mx:HBox>
+	
+</mx:Canvas>

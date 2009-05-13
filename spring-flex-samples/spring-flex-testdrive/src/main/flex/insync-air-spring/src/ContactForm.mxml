@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	backgroundColor="#FFFFFF"
+	label="{contact.id>0?contact.firstName+' '+contact.lastName:'New Contact'}">
+
+	<mx:Metadata>
+        [Event(name="contactCreated", type="ContactEvent")]
+        [Event(name="contactUpdated", type="ContactEvent")]
+        [Event(name="contactDeleted", type="ContactEvent")]
+    </mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+
+		import mx.messaging.ChannelSet;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		import mx.controls.Alert;
+		
+		[Bindable] public var contact:Contact;
+
+		public function set channelSet(channelSet:ChannelSet):void
+		{
+			ro.channelSet = channelSet;
+		}
+
+		private function save():void
+		{
+			contact.firstName = firstName.text;
+			contact.lastName = lastName.text;
+			contact.email = email.text;
+			contact.phone = phone.text;
+			contact.address = address.text;
+			contact.city = city.text;
+			contact.state = state.text;
+			contact.zip = zip.text;
+			if (contact.id == 0)
+			{
+				ro.create(contact);	
+			}
+			else
+			{
+				ro.update(contact);
+			}
+		}
+
+		private function deleteItem():void
+		{
+			ro.remove(contact);		
+		}
+
+		private function create_resultHandler(event:ResultEvent):void
+		{
+			contact.id = event.result.id;
+			dispatchEvent(new ContactEvent(ContactEvent.CREATED, contact));			
+		}
+
+		private function update_resultHandler(event:ResultEvent):void
+		{
+			dispatchEvent(new ContactEvent(ContactEvent.UPDATED, contact));			
+		}
+
+		private function remove_resultHandler(event:ResultEvent):void
+		{
+			dispatchEvent(new ContactEvent(ContactEvent.DELETED, contact));			
+		}
+		
+		private function faultHandler(event:FaultEvent):void
+		{
+			Alert.show(event.fault.faultDetail);
+		}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:RemoteObject id="ro" destination="contactService">
+		<mx:method name="create" result="create_resultHandler(event)"/>
+		<mx:method name="update" result="update_resultHandler(event)"/>
+		<mx:method name="remove" result="remove_resultHandler(event)"/>
+	</mx:RemoteObject>
+	
+	<mx:Form>
+		<mx:FormItem label="Id">
+			<mx:TextInput text="{contact.id}" enabled="false"/>
+		</mx:FormItem>
+		<mx:FormItem label="First Name">
+			<mx:TextInput id="firstName" text="{contact.firstName}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Last Name">
+			<mx:TextInput id="lastName" text="{contact.lastName}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Email">
+			<mx:TextInput id="email" text="{contact.email}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Phone">
+			<mx:TextInput id="phone" text="{contact.phone}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Address">
+			<mx:TextInput id="address" text="{contact.address}"/>
+		</mx:FormItem>
+		<mx:FormItem label="City">
+			<mx:TextInput id="city" text="{contact.city}"/>
+		</mx:FormItem>
+		<mx:FormItem label="State">
+			<mx:TextInput id="state" text="{contact.state}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Zip">
+			<mx:TextInput id="zip" text="{contact.zip}"/>
+		</mx:FormItem>
+	</mx:Form>
+
+	<mx:HBox left="8" bottom="8">
+		<mx:Button label="Save" click="save()"/>
+		<mx:Button label="Delete" click="deleteItem()"/>
+	</mx:HBox>
+	
+</mx:Canvas>

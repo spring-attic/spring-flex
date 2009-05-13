@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Spring BlazeDS Integration Test Drive</title>
+<link href="main.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<h1>Spring / BlazeDS Integration Test Drive</h1>
+<p>In this Test Drive, you  run a series of short sample applications that demonstrate the key features of the Spring BlazeDS Integration. This Test Drive is still work in progress. Please send your feedback to <a href="mailto:ccoenrae@adobe.com">ccoenrae@adobe.com</a>.</p>
+<p><a href="http://coenraets.org">Christophe Coenraets</a>, May 11th 2009</p>
+<br />
+<div class="highlight">
+
+<h2>Samples Index</h2>
+<h4>Remoting</h4>
+<ul>
+<li><a href="#inventory">Spring BlazeDS Integration 101</a>: The basics</li>
+<li><a href="#insync">inSync Contact Management Application</a>: A simple CRUD application built in 8 steps</li>
+<li><a href="#air">inSync AIR version</a>: A desktop version of the inSync application</li>
+<li><a href="#company">Company Manager</a>: Similar to inSync, but using <strong>annotation-based configuration</strong> (new in RC1). Also demonstrates object associations.</li>
+</ul>
+<h4>Messaging (new in RC1)</h4>
+<ul>
+<li><a href="#chat">Chat</a>: Messaging basics</li>
+<li><a href="#simplepush">Simple Data Push</a>: A simple data push example</li>
+<li><a href="#traderdesktop">Traderdesktop</a>: A more sophisticated data push example showing how to use subtopics</li>
+<li><a href="#jmschat">JMS Chat</a>: A chat application using a JMS topic and exchanging messages with a Swing-based client</li>
+<li><a href="#collaboration">Collaboration</a>: A simple example showing how to use messaging to remotely drive another client's application</li>
+</ul>
+<h4>Security</h4>
+<ul>
+<li><a href="#security">Security integration 101</a></li>
+</ul>
+
+
+
+<h2>Source code:</h2>
+<ul>
+  <li>The Flex source code is in spring-flex-testdrive/projects/flex</li>
+  <li>The Java source code is in spring-flex-testdrive/projects/java/</li>
+  <li>The remoting destinations are configured in the Spring configuration file (spring-flex-testdrive/tomcat/webapps/ROOT/WEB-INF/config/web-application-config.xml), except for the Company Manager sample which uses annotation-based configuration.</li>
+</ul>
+<p>If you want to open the source code in Flex Builder,  read <a href="fb-project-setup.htm">these instructions</a> to set up your Flex Builder projects.</p>
+
+</div>
+
+<h2>Remoting Samples</h2>
+
+<a name="inventory"></a>
+<div class="item">
+  <h3>Spring BlazeDS Integration 101</h3>
+  <h4>Run the sample:</h4>
+<ol>
+
+  <li>Click <a href="spring-blazeds-101/main.html">here</a> to run the application</li>
+  <li>Click &quot;Get Data&quot;:  The DataGrid is populated with  data returned by the findAll() method of the ProductDAO Java class. </li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open main.mxml in the spring-flex-testdrive/projects/flex/spring-blazeds-101/src directory  to look at the source code of the application.</p>
+<p>Open the following files in a text editor to look at the source code for the server side  of the application: </p>
+<ul>
+  <li>{context-root}/WEB-INF/config/web-application-config.xml</li>
+  <li>spring-flex-testdrive/projects/java/flex/spring/samples/product/ProducDAO.java</li>
+</ul>
+<p>Note that in this first sample, we use a simplistic DAO implementation with low level JDBC code and no real abstraction. This was done intentionally to provide a bare-bones example that focuses exclusively on the Spring/BlazeDS Integration plumbing. In all the other examples of this Test Drive, we use the JdbcTemplate abstraction of the Spring framework to build the data access objects.</p>
+<p>Using RemoteObject, you can directly invoke methods of Java objects  deployed in your application server, and consume the return value. The return value can be a value of a primitive data type, an object, a  collection of objects, an object graph, etc.</p>
+<p>Using the Spring BlazeDS integration, Spring beans are exposed using the typical Spring remoting exporter configuration. See the "product" bean definition in web-application-config.xml.</p>
+<p>Java objects returned by server-side methods are deserialized into  either dynamic or typed ActionScript objects. In this example, we don't have an explicit ActionScript version of the Product Java class. Product objects are therefore deserialized into dynamic objects. In InSync03 below, we start working with strongly typed model objects. </p>
+</div>
+
+<br />
+
+<a name="insync"></a>
+<div class="item">
+  <h3>InSync01: Searching Contacts</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="insync01/insync01.html">here</a> to run the application</li>
+  <li>Click the Search button to retrieve all the contacts in the database</li>
+  <li>Enter a few characters in the Search input field before clicking the Search button in order to search by name</li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open insync01.mxml in the spring-flex-testdrive/projects/flex/insync01/src directory  to look at the source code of the application.</p>
+<p>Open the following files in a text editor to look at the source code for the server side  of the application: </p>
+<ul>
+  <li>{context-root}/WEB-INF/config/web-application-config.xml</li>
+  <li>spring-flex-testdrive/projects/java/flex/spring/samples/contact/ContactDAO.java</li>
+</ul>
+</div>
+<br />
+
+<div class="item">
+  <h3>InSync02: Using the RemoteObject Events</h3>
+  <h4>Run the sample:</h4>
+  <p>Click <a href="insync02/insync02.html">here</a> to run the application</p>
+<h4>Code walkthrough:</h4>
+<p>Open insync02.mxml in the spring-flex-testdrive/projects/flex/insync02/src directory  to look at the source code of the application.</p>
+<p>This version is similar to InSync01, but demonstrates how to use the ResultEvent and FaultEvent to have a finer control over RemoteObject calls.<br />
+</p>
+</div>
+<br />
+
+<div class="item">
+  <h3>InSync03: Strong Typing</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="insync03/insync03.html">here</a> to run the application</li>
+  <li>Click the Search button to retrieve all the contacts in the database</li>
+  <li>Enter a few characters in the Search input field before clicking the Search button to search by name</li>
+  <li>Select a contact in the DataGrid</li>
+  <li>Edit the contact in the Contact form and click &quot;Save&quot; to persist your changes</li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open insync03.mxml, Contact.as, and ContactForm.mxml in the spring-flex-testdrive/projects/flex/insync03/src directory  to look at the source code of the application.</p>
+<p>In this version, we work with strongly typed contact objects. The Contact.as class is the ActionScript representation of spring.flex.samples.contact.Contact.java. The [RemoteClass(alias=&quot;flex.spring.samples.contact.Contact&quot;)] annotation in Contact.as is used to indicate that instances of Contact.as sent to the server should be deserialized as instances of flex.spring.samples.contact.Contact at the server side, and that similarly, instances of flex.spring.samples.contact.Contact retrieved from the server should be deserialized as instances of Contact.as.<br />
+</p>
+</div>
+<br />
+
+<div class="item">
+  <h3>InSync04: Opening Multiple Contacts</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="insync04/insync04.html">here</a> to run the application</li>
+  <li>Click the Search button to retrieve all the contacts in the database</li>
+  <li>Enter a few characters in the Search input field before clicking the Search button to search by name</li>
+  <li>Double-click a contact in the DataGrid to open it in a separate Tab </li>
+  <li>Edit the contact in the Contact form and click &quot;Save&quot; to persist your changes</li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open insync04.mxml in the spring-flex-testdrive/projects/flex/insync04/src directory  to look at the source code of the application.<br />
+</p>
+</div>
+<br />
+
+<div class="item">
+  <h3>InSync05: Adding New Contacts</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="insync05/insync05.html">here</a> to run the application</li>
+  <li>Click the Search button to retrieve all the contacts in the database</li>
+  <li>Click the New Contact button</li>
+  <li>Edit the new contact in the Contact form and click &quot;Save&quot; to create the contact</li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open insync05.mxml and ContactForm.mxml in the spring-flex-testdrive/projects/flex/insync05/src directory  to look at the source code of the application.</p>
+<p>This version enables the user of the application to add contacts. In ContactForm, we remotely invoke the create() method of ContactDAO when dealing with a new contact, and the update() method when updating an existing contact.<br />
+</p>
+</div>
+<br />
+
+<div class="item">
+  <h3>InSync06: Adding Event Notification for &quot;Loosely Coupled&quot; UI Synchronization</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="insync06/insync06.html">here</a> to run the application</li>
+  <li>Click the Search button to retrieve all the contacts in the database</li>
+  <li>Enter a few characters in the Search input field before clicking the Search button to search by name</li>
+  <li>Double-click a contact in the DataGrid to open it in a separate Tab </li>
+  <li>Modify the first name or last name of the contact and click &quot;Save&quot;. Notice that the DataGrid is updated to reflect your changes.</li>
+  <li>Add a new contact and click &quot;Save&quot; to create the contact. Notice that the contact appears in the DataGrid.</li>
+  <li>Delete a contact and notice that the contact is removed from the DataGrid.</li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open insync06.mxml, ContactForm.mxml, and ContactEvent.as in the spring-flex-testdrive/projects/flex/insync06/src directory  to look at the source code of the application.</p>
+<p>In this version, ContactForm dispatches events when a contact has been created, updated, or deleted. Other components of the application can register as listeners to these events to perform a specific task when a contact is created, updated or deleted. In this case, the main application registers as a listener to these events and refreshes the contact DataGrid to make sure it reflects the changes made in ContactForm.<br />
+</p>
+</div>
+<br />
+
+<div class="item">
+  <h3>InSync07: Styling the Application</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="insync07/insync07.html">here</a> to run the application</li>
+  <li>Click the Search button to retrieve all the contacts in the database</li>
+  <li>Enter a few characters in the Search input field before clicking the Search button to search by name</li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open insync07.mxml and styles.css in the spring-flex-testdrive/projects/flex/insync07/src directory  to look at the source code of the application.<br />
+</p>
+</div>
+<br />
+
+<a name="air"></a>
+<div class="item">
+  <h3>inSync AIR: Desktop Version and the Client-Side Channel API</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="insync-air-spring/insync-air-spring.air">here</a> to install the application</li>
+  <li>Click the Search button to retrieve all the contacts in the database</li>
+  <li>Enter a few characters in the Search input field before clicking the Search button to search by name</li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open main.mxml in the spring-flex-testdrive/projects/flex/insync-air-spring/src directory  to look at the source code of the application.</p>
+<p>In this version we also use the client-side Channel API to programmatically provide the endpoint of the AMF channel. By default, the endpoint is read from services-config.xml at compile time. This means that the compiled application includes a hardcoded value for the AMF endpoint URL, which is not appropriate for real life applications. The client-side Channel API allows you to provide the endpoint URL at runtime. In this version, the URL is now hardcoded in the client code which is not a good solution either. The key, in a real life application, is to obtain that URL dynamically. One approach is to read a configuration file using the HTTPService.<br />
+</p>
+</div>
+<br />
+
+<a name="company"></a>
+<div class="item">
+  <h3>Company Manager</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="companymgr/companymgr.html">here</a> to run the application</li>
+  <li>Click the Search button to retrieve all the contacts in the database</li>
+  <li>Enter a few characters in the Search input field before clicking the Search button to search by name</li>
+  </ol>
+<h4>Code walkthrough:</h4>
+<p>Open companymgr.mxml, Company.as, Industry.as, and CompanyForm.mxml in the spring-flex-testdrive/projects/flex/companymgr/src directory  to look at the source code of the application.</p>
+<p>Open the following files in a text editor to look at the source code for the server side  of the application: </p>
+<ul>
+  <li>{context-root}/WEB-INF/config/web-application-config.xml</li>
+  <li>spring-flex-testdrive/projects/java/flex/spring/samples/company/CompanyDAO.java</li>
+  <li>spring-flex-testdrive/projects/java/flex/spring/samples/company/IndustryDAO.java</li>
+  <li>spring-flex-testdrive/projects/java/flex/spring/samples/company/Company.java</li>
+  <li>spring-flex-testdrive/projects/java/flex/spring/samples/company/Industry.java</li>
+</ul>
+<p>Note that the CompanyDAO and IndustryDAO beans are not defined in web-application-config.xml but are configured using annotations (<code>@Service</code>, 
+  <code>@RemotingDestination</code>, <code>@Autowired</code>, <code>@RemotingInclude</code>, and <code>@RemotingExclude</code>). This application is similar to inSync, but demonstrates object associations: the Company class has a property of type Industry.<br />
+</p>
+</div>
+<br />
+
+<h2>Messaging Samples</h2>
+
+<a name="chat"></a>
+<div class="item">
+  <h3>Chat</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="chat/chat.html">here</a> to run the application</li>
+  <li>Access the same URL in another browser window to open a second instance of the chat application </li>
+  <li>Type a message in one of the chat clients and click &quot;Send&quot;: the message appears in the two chat clients </li>
+</ol>
+
+<h4>Code walkthrough:</h4>
+<p>Open chat.mxml in the spring-flex-testdrive/projects/flex/chat/src directory to look at the source code of the application. The Message Service manages a set of destinations that Flex clients can publish and subscribe to. Flex provides two components, Producer and Consumer, that you use to  publish and subscribe to a destination. To subscribe to a destination, you use the <code>subscribe()</code> method of the Consumer class. When a message is published to a destination that you subscribed to, the <code>message</code> event is triggered on the Consumer.</p>
+
+<p>Open {context-root}/WEB-INF/config/web-application-config.xml in a text editor to look at the message service configuration. The message service is configured using  <code>&lt;flex:message-service /&gt;</code> inside <code>&lt;flex:message-broker /&gt;</code>. The &quot;chat&quot; destination is configured using <code>&lt;flex:message-destination id=&quot;chat&quot; /&gt;</code></p>
+</div>
+<br />
+
+<a name="simplepush"></a>
+<div class="item">
+  <h3>Simple Data Push</h3>
+  <h4>Run the sample</h4>
+  <p>This example demonstrates how to use the message service to push data from the server to the client. At the server-side, a Java component publishes simulated real time values to a message destination. The Flex client subscribes to that destination and displays the values in real time. </p>
+  <ol>
+
+  <li>To start the feed at the server-side, run the <a href="feedstarter/feedstarter.html">Feed Starter application</a> and start the "Simple Feed".</li>
+  <li>Click <a href="simplepush/simplepush.html">here</a> to run the client application.</li>
+  <li>Click the Subscribe button. Pushed values appear in the text field. You can click the Unsubscribe button to unsubscribe from the destination. </li>
+  <li>To stop the feed when you are done experimenting with the application, access the <a href="feedstarter/feedstarter.html">Feed Starter application</a> and stop the "Simple Feed".</li>
+  </ol>
+  <h4>Code walk through</h4>
+  <p>Open simplepush.mxml in the spring-flex-testdrive/projects/flex/simplepush/src directory to look at the source code of the application.</p>
+  <p>Open the following files in a text editor to look at the source code for the server side  of the application: </p>
+  <ul>
+    <li>spring-flex-testdrive/projects/java/flex/spring/samples/simplefeed/SimpleFeed.Java</li>
+    <li>{context-root}/WEB-INF/config/web-application-config.xml</li>
+  </ul>
+  <p>In SimpleFeed.java, the MessageTemplate class is used to publish messages to the "simple-feed" destination.</p>
+</div>
+<br />
+
+<a name="traderdesktop"></a>
+<div class="item">
+  <h3>Traderdesktop</h3>
+  <h4>Run the sample</h4>
+  <p>Traderdesktop is a more sophisticated data push example showing how to  use subtopics to selectively subscribe to specific messages. In this case, the user can subscribe to updates for specific stocks only. At the server side, a Java component publishes simulated market data to a messaging destination.</p>
+  <ol>
+
+  <li>To start the feed  at the server-side, run the <a href="feedstarter/feedstarter.html">Feed Starter application</a> and start the "Market Feed".</li>
+  <li>Click <a href="traderdesktop/traderdesktop.html">here</a> to run the client application.</li>
+  <li>To stop the feed when you are done experimenting with the application, access the <a href="feedstarter/feedstarter.html">Feed Starter application</a> and stop the "Market Feed".</li>
+  </ol>
+  <h4>Code walk through</h4>
+  <p>Open traderdesktop.mxml in the spring-flex-testdrive/projects/flex/traderdesktop/src directory to look at the source code of the application.</p>
+  <p>Open the following files in a text editor to look at the source code for the server side  of the application: </p>
+  <ul>
+    <li>spring-flex-testdrive/projects/java/flex/spring/samples/marketfeed/MarketFeed.Java</li>
+    <li>{context-root}/WEB-INF/config/web-application-config.xml</li>
+  </ul>
+</div>
+<br />
+
+<a name="jmschat"></a>
+<div class="item">
+  <h3>JMS Chat</h3>
+  <h4>Run the sample:</h4>
+<p>This application is identical to the regular chat application above. The only difference is the name of the destination: "jms-chat". At the server-side, the "jms-chat" destination is mapped to a JMS topic.</p> 
+<ol>
+  <li>Click <a href="jmschat/jmschat.html">here</a> to run the application</li>
+  <li>Access the same URL in another browser window to open a second instance of the chat application </li>
+  <li>Type a message in one of the chat clients and click &quot;Send&quot;: the message appears in the two chat clients </li>
+  <li>You can also start the Java (Swing) client: run jmschat.bat or jmschat.sh in spring-flex-testdrive/bin. This is an axample of how you can exchange messages between Flex and Java apps through JMS topics.
+</ol>
+
+<h4>Code walkthrough:</h4>
+<p>Open jmschat.mxml in the spring-flex-testdrive/projects/flex/jmschat/src directory to look at the source code of the application.</p>
+
+<p>Open {context-root}/WEB-INF/config/web-application-config.xml in a text editor to look at the message service configuration. Note that the "jms-chat" destination is mapped to the &quot;chatTopic&quot; (sampletopic.flex.jms.chat) JMS topic. In this application, we use an embedded ActiveMQ message broker configured by the connectionFactory bean. You don't have to start ActiveMQ in a separate process.</p>
+
+</div>
+<br />
+
+<a name="collaboration"></a>
+<div class="item">
+  <h3>Collaboration</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="collaboration/collaboration.html">here</a> to run the application</li>
+  <li>Access the same URL in another browser window to open a second instance of the chat application </li>
+  <li>Enter some data in one browser and notice that the data appears in the other browser as well.</li>
+  <li>Select another tab in the accordion in one broswer, and notice that the other client's user interface is synchronized accordingly.</li>
+</ol>
+
+<h4>Code walkthrough:</h4>
+<p>Open collaboration.mxml in the spring-flex-testdrive/projects/flex/collaboration/src directory to look at the source code of the application.</p>
+
+<p>Open {context-root}/WEB-INF/config/web-application-config.xml in a text editor to look at the message service configuration.</p>
+
+</div>
+<br />
+
+
+<h2>Security Samples</h2>
+
+<a name="security"></a>
+<div class="item">
+  <h3>Security Integration 101</h3>
+  <h4>Run the sample:</h4>
+<ol>
+  <li>Click <a href="http://localhost:8080/secured/secured.html">here</a> to run the application</li>
+  <li>Click &quot;Get Data&quot; without logging in first: you  get an &quot;Access Denied&quot; exception</li>
+  <li>Log in (use UserId: john / Password: john), and click &quot;Get Data&quot; again: you should now get the data</li>
+  <li>Click &quot;Logout&quot; and &quot;Get Data&quot; again: you get the &quot;Access Denied&quot; exception again</li>
+  <li>If you are already authenticated, you don't have to use the ChannelSet login. For example, access <a href="http://localhost:8080/login.jsp">http://localhost:8080/login.jsp</a>, and logon using john / john. <a href="http://localhost:8080/secured/secured.html">Come back to the application</a> and click Get Data without logging in inside the application: you should get the data.</li>
+</ol>
+
+<h4>Code walkthrough:</h4>
+<p>Open secured.mxml in the spring-flex-testdrive/projects/flex/secured/src directory to look at the source code of the application.</p>
+<p>Open the following files in a text editor to look at the the server side configuration: </p>
+<ul>
+  <li>{context-root}/WEB-INF/config/web-application-config.xml</li>
+  <li>{context-root}/WEB-INF/config/web-application-security.xml</li>  
+</ul>
+
+<p>Note that the &quot;find*&quot; methods of securedProductService are secured in web-application-config.xml. A basic authentication provider is defined in web-application-security.xml.<br />
+</p>
+</div>
+
+<br />
+
+</body>
+</html>

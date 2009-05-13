@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	applicationComplete="applicationCompleteHandler()">
+
+	<mx:Script>
+		<![CDATA[
+
+			import mx.messaging.ChannelSet;
+			import mx.messaging.channels.AMFChannel;
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			
+			private function applicationCompleteHandler():void
+			{
+				var channel:AMFChannel = new AMFChannel("my-amf", "http://localhost:8080/messagebroker/amf");
+				var channelSet:ChannelSet = new ChannelSet();
+				channelSet.addChannel(channel);
+				ro.channelSet = channelSet;
+			}
+
+			private function faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultString, "Error accessing RemoteObject");
+			}
+			
+			private function login():void
+			{
+				ro.channelSet.login(userId.text, password.text);
+			}
+
+			private function logout():void
+			{
+				ro.channelSet.logout();	
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:RemoteObject id="ro" destination="securedProductService" fault="faultHandler(event)"/>
+
+	<mx:Form>
+		<mx:FormItem label="User Id">
+			<mx:TextInput id="userId"/>
+		</mx:FormItem>
+		<mx:FormItem label="Password">
+			<mx:TextInput id="password" displayAsPassword="true"/>
+		</mx:FormItem>
+		<mx:FormItem direction="horizontal">
+			<mx:Button label="Login" click="login()"/>
+			<mx:Button label="Logout" click="logout()"/>
+		</mx:FormItem>
+	</mx:Form>
+	
+	<mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
+
+	<mx:Button label="Get Data" click="ro.findAll()"/>
+	
+</mx:Application>
