@@ -3,7 +3,7 @@
 
 	<path id="bundles">
 		<pathelement location="../org.springframework.flex"/>
-		<pathelement location="../spring-flex-samples/spring-flex-testdrive"/>
+		<pathelement location="../spring-flex-samples/spring-flex-testdrive/testdrive"/>
 	</path>
 
 	<property file="${basedir}/../build.properties"/>
