@@ -139,7 +139,7 @@
 			<arg value="${flex.output.dir}/insync-air-spring" />
 			<arg value="main.swf" />
 			<arg value="-C" />
-			<arg value="${src.flex.dir}/insync-air-spring/src" />
+			<arg value="${src.flex.dir}/insync-air-spring/src/main/flex" />
 			<arg value="assets"/>
 		</java>
 	</target>
