@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+	creationComplete="creationCompleteHandler()">
+
+	<mx:Script>
+		<![CDATA[
+
+			import mx.rpc.events.FaultEvent;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable] private var companies:ArrayCollection;
+			[Bindable] private var industries:ArrayCollection;
+
+			private function creationCompleteHandler():void
+			{
+				roIndustry.findAll();
+			}
+
+			private function company_findByName_resultHandler(event:ResultEvent):void
+			{
+				companies = event.result as ArrayCollection
+			}
+
+			private function industry_findAll_resultHandler(event:ResultEvent):void
+			{
+				industries = event.result as ArrayCollection
+			}
+
+			private function faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultDetail);
+			}
+
+			public function openCompany(company:Company):void
+			{
+				var children:Array = tn.getChildren();
+				for (var i:int = 0; i<children.length; i++)
+				{
+					if (CompanyForm(children[i]).company.id == company.id)
+					{
+						tn.selectedChild = children[i];
+						return;
+					}
+				}
+				
+				var form:CompanyForm = new CompanyForm();
+				form.addEventListener(CompanyEvent.CREATED, companyCreatedHandler);
+				form.addEventListener(CompanyEvent.UPDATED, companyUpdatedHandler);
+				form.addEventListener(CompanyEvent.DELETED, companyDeletedHandler);
+				tn.addChild(form);
+				form.company = company;
+				form.industries = industries;
+				tn.selectedChild = form;
+			}
+
+			private function search():void
+			{
+				roCompany.findByName(searchStr.text);
+			}
+
+			private function companyCreatedHandler(event:CompanyEvent):void
+			{
+				search();				
+			}
+
+			private function companyUpdatedHandler(event:CompanyEvent):void
+			{
+				search();				
+			}
+
+			private function companyDeletedHandler(event:CompanyEvent):void
+			{
+				tn.removeChild(event.target as CompanyForm);
+				search();				
+			}
+
+		]]>
+	</mx:Script>
+
+	<mx:RemoteObject id="roCompany" destination="companyService">
+		<mx:method name="findByName" result="company_findByName_resultHandler(event)"/>
+	</mx:RemoteObject>
+
+	<mx:RemoteObject id="roIndustry" destination="industryService">
+		<mx:method name="findAll" result="industry_findAll_resultHandler(event)"/>
+	</mx:RemoteObject>
+
+	<mx:ApplicationControlBar width="100%">
+		<mx:TextInput id="searchStr"/>
+		<mx:Button label="Search" click="search()"/>
+		<mx:Button label="New Company" click="openCompany(new Company())"/>
+	</mx:ApplicationControlBar>
+
+	<mx:HDividedBox width="100%" height="100%">
+		<mx:DataGrid id="dg" dataProvider="{companies}" width="30%" height="100%"
+			doubleClickEnabled="true"
+			doubleClick="openCompany(dg.selectedItem as Company)">
+			<mx:columns>
+				<mx:DataGridColumn dataField="name" headerText="Name"/>
+				<mx:DataGridColumn dataField="city" headerText="City"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:TabNavigator id="tn" width="70%" height="100%"/>
+	</mx:HDividedBox>
+
+</mx:Application>
