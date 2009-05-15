@@ -1,6 +1,6 @@
 SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
-http://www.springsource.org/projects/blaze-ds-integration
+http://www.springsource.org/spring-flex
 
 Changes in version 1.0.0.RC1 (04.24.2009)
 -----------------------------------------
