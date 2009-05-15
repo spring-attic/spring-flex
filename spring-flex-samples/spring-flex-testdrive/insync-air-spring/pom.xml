@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.flex.samples</groupId>
+		<artifactId>spring-flex-testdrive</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>org.springframework.flex.samples</groupId>
+	<artifactId>insync-air-spring</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>swf</packaging>
+
+	<name>Insync AIR Sample</name>
+
+	<build>
+		<finalName>main</finalName>
+		<sourceDirectory>src/main/flex</sourceDirectory>
+		<testSourceDirectory>src/test/flex</testSourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>3.2.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<output>${basedir}/../testdrive/target/testdrive/insync-air-spring/${project.build.finalName}.swf</output>
+					<locales>
+						<locale>en_US</locale>
+					</locales>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.1-beta-1</version>
+				<executions>
+					<execution>
+						<id>generate-cert</id>
+						<phase>package</phase>
+						<configuration>
+							<executable>java</executable>
+							<workingDirectory>${basedir}/../testdrive/target/testdrive/insync-air-spring</workingDirectory>
+							<arguments>
+								<argument>-jar</argument>
+								<argument>${basedir}/libs/adt.jar</argument>
+								<argument>-certificate</argument>
+								<argument>-cn</argument>
+								<argument>SpringFlexTestdrive</argument>
+								<argument>2048-RSA</argument>
+								<argument>testdrivecert.p12</argument>
+								<argument>12345</argument>
+							</arguments>
+						</configuration>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>package-air</id>
+						<phase>package</phase>
+						<configuration>
+							<executable>java</executable>
+							<workingDirectory>${basedir}/../testdrive/target/testdrive/insync-air-spring</workingDirectory>
+							<arguments>
+								<argument>-jar</argument>
+								<argument>${basedir}/libs/adt.jar</argument>
+								<argument>-package</argument>
+								<argument>-storetype</argument>
+								<argument>pkcs12</argument>
+								<argument>-keystore</argument>
+								<argument>testdrivecert.p12</argument>
+								<argument>-storepass</argument>
+								<argument>12345</argument>
+								<argument>-keypass</argument>
+								<argument>12345</argument>
+								<argument>insync-air-spring.air</argument>
+								<argument>${basedir}/../testdrive/src/main/webapp/insync-air-spring/main-app.xml</argument>
+								<argument>-C</argument>
+								<argument>${basedir}/../testdrive/target/testdrive/insync-air-spring</argument>
+								<argument>main.swf</argument>
+								<argument>-C</argument>
+								<argument>${project.build.sourceDirectory}</argument>
+								<argument>assets</argument>
+							</arguments>
+						</configuration>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+
+
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>air-framework</artifactId>
+			<version>3.2.0.3958</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>flexlib</groupId>
+			<artifactId>flexlib-bin</artifactId>
+			<version>2.4</version>
+			<type>swc</type>
+		</dependency>
+	</dependencies>
+
+</project>
