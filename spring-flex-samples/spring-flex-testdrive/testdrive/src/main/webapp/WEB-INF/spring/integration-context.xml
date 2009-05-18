@@ -21,6 +21,6 @@
 
 	<beans:bean id="counter" class="flex.spring.samples.integration.Counter"/>
 
-	<beans:bean id="logger" class="flex.spring.samples.integration.Logger"/>
+	<beans:bean id="logger" class="demo.Logger"/>
 
 </beans:beans>

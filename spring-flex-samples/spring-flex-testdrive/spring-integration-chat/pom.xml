@@ -17,7 +17,7 @@
 	<name>Spring Integration Chat Sample</name>
 
 	<build>
-		<finalName>spring-integration-chat</finalName>
+		<finalName>sichat</finalName>
 		<sourceDirectory>src/main/flex</sourceDirectory>
 		<testSourceDirectory>src/test/flex</testSourceDirectory>
 		<plugins>
@@ -27,7 +27,7 @@
 				<version>3.2.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<output>${basedir}/../testdrive/src/main/webapp/${project.build.finalName}/${project.build.finalName}.swf</output>
+					<output>${basedir}/../testdrive/src/main/webapp/spring-integration-chat/${project.build.finalName}.swf</output>
 					<services>${basedir}/../testdrive/src/main/webapp/WEB-INF/flex/services-config.xml</services>
 					<contextRoot>/</contextRoot>
 					<locales>
