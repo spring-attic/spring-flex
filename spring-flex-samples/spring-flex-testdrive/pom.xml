@@ -26,6 +26,7 @@
 		<module>secured</module>
 		<module>simplepush</module>
 		<module>spring-blazeds-101</module>
+		<module>spring-integration-chat</module>
 		<module>traderdesktop</module>
 		<module>testdrive</module>
 	</modules>
