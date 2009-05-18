@@ -13,33 +13,10 @@
 	<property name="FLEX_HOME" value="${flex.sdk.dir}"/>
 	<property name="ADT.JAR" value="${flex.sdk.dir}/lib/adt.jar"/>
 
-	<!-- Overriding jar.init to include Flex compilation -->
-	<target name="jar.init" depends="compile-flex">
-		<fail message="The 'integration.repo.dir' property must be set on this project.">
-			<condition>
-				<not>
-					<isset property="integration.repo.dir"/>
-				</not>
-			</condition>
-		</fail>
-		<fail message="The 'ivy.cache.dir' property must be set on this project.">
-			<condition>
-				<not>
-					<isset property="ivy.cache.dir"/>
-				</not>
-			</condition>
-		</fail>
-		<fail message="The 'version' property must be set on this project.">
-			<condition>
-				<not>
-					<isset property="version"/>
-				</not>
-			</condition>
-		</fail>
-	</target>
-
+	<target name="jar" depends="compile-flex, jar.quick"/>
+	
 	<!-- Overriding jar to more closely mirror the Maven build -->
-	<target name="jar" depends="ivy.init, resolve.compile, compile.init, jar.init"
+	<target name="jar.quick" depends="ivy.init, resolve.compile, compile.init, jar.init"
 				description="Creates a WAR file containing the output of a compilation of the source tree.">
 		<delete quiet="true" file="${ivy.output.file}"/>
 		<mkdir dir="${ivy.output.dir}"/>
