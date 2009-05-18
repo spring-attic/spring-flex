@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="spring-flex-testdrive">
+<project name="spring-flex-testdrive" xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<property name="source.version" value="1.5"/>
 	<property name="ivy.cache.dir" value="${basedir}/../../../ivy-cache"/>
@@ -12,7 +12,8 @@
 	<taskdef resource="flexTasks.tasks" classpath="${flex.sdk.dir}/ant/lib/flexTasks.jar"/>
 	<property name="FLEX_HOME" value="${flex.sdk.dir}"/>
 	<property name="ADT.JAR" value="${flex.sdk.dir}/lib/adt.jar"/>
-	
+
+	<!-- Overriding jar.init to include Flex compilation -->
 	<target name="jar.init" depends="compile-flex">
 		<fail message="The 'integration.repo.dir' property must be set on this project.">
 			<condition>
@@ -37,6 +38,44 @@
 		</fail>
 	</target>
 
+	<!-- Overriding jar to more closely mirror the Maven build -->
+	<target name="jar" depends="ivy.init, resolve.compile, compile.init, jar.init"
+				description="Creates a WAR file containing the output of a compilation of the source tree.">
+		<delete quiet="true" file="${ivy.output.file}"/>
+		<mkdir dir="${ivy.output.dir}"/>
+		<delete quiet="true" file="${war.output.file}"/>
+		<mkdir dir="${war.output.dir}"/>
+		<delete quiet="true" file="${source-jar.output.file}"/>
+		<mkdir dir="${source-jar.output.dir}"/>
+
+		<copy todir="${war.staging.dir}">
+			<fileset dir="${main.webapp.dir}"/>
+		</copy>
+
+		<compile classpath.id="compile.classpath" input.dir="${main.java.dir}" output.dir="${main.output.dir}"
+					resources.dir="${main.resources.dir}"/>
+
+		<copy todir="${war.classes.dir}">
+			<fileset dir="${main.output.dir}"/>
+		</copy>
+
+		<ivy:retrieve resolveId="compile.classpath" conf="compile,runtime" type="jar"
+					pattern="${war.lib.dir}/[artifact]-[revision].[ext]" log="download-only"/>
+
+		<jar destfile="${war.output.file}" basedir="${war.staging.dir}" index="true" filesetmanifest="merge">
+			<manifest>
+				<attribute name="Implementation-Title" value="${implementation.title}"/>
+				<attribute name="Implementation-Version" value="${implementation.version}"/>
+			</manifest>
+		</jar>
+		<jar destfile="${source-jar.output.file}" basedir="${main.java.dir}" index="true"/>
+		<ivy:publish resolver="integration" pubdate="${timestamp}" status="${release.type}">
+			<artifacts pattern="${war.output.dir}/[artifact].[ext]"/>
+			<artifacts pattern="${source-jar.output.dir}/[artifact].[ext]"/>
+			<artifacts pattern="${ivy.output.dir}/[artifact].[ext]"/>
+		</ivy:publish>
+	</target>
+
 	<target name="compile-swf">
 		<mxmlc file="${src.flex.dir}/${project.dir}/src/main/flex/${main.file}.mxml" output="${flex.output.dir}/${project.dir}/${main.file}.swf" incremental="true"
 			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/">
@@ -44,7 +83,7 @@
 			<source-path path-element="${flex.sdk.dir}/frameworks"/>
 		</mxmlc>
 	</target>
-	
+
 	<target name="compile-swf-with-libs">
 		<mxmlc file="${src.flex.dir}/${project.dir}/src/main/flex/${main.file}.mxml" output="${flex.output.dir}/${project.dir}/${main.file}.swf" incremental="true"
 			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/">
@@ -55,7 +94,7 @@
 			</compiler.library-path>
 		</mxmlc>
 	</target>
-	
+
 	<target name="compile-swf-with-libs-for-air">
 		<mxmlc file="${src.flex.dir}/${project.dir}/src/main/flex/${main.file}.mxml" output="${flex.output.dir}/${project.dir}/${main.file}.swf" incremental="true"
 			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/">
@@ -72,10 +111,12 @@
 
 	<target name="compile-flex" depends="chat, collaboration, companymgr, feedstarter, insync-air-spring, insync01, insync02, 
 		insync03, insync04, insync05, insync06, insync07, jmschat, secured, simplepush, spring-blazeds-101, traderdesktop"/>
-	
+
 	<target name="clean-swf">
 		<delete>
 			<fileset dir="${flex.output.dir}" includes="**/*.cache" />
+			<fileset dir="${flex.output.dir}" includes="**/*.air" />
+			<fileset dir="${flex.output.dir}" includes="**/*.p12" />
 			<fileset dir="${flex.output.dir}" excludes="**/playerProductInstall.swf" includes="**/*.swf" />
 		</delete>
 	</target>

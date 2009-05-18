@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>org.springframework.flex.samples</groupId>
 		<artifactId>spring-flex-testdrive</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0.0-BUILD-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>feedstarter</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<packaging>swf</packaging>
 
 	<name>Feed Starter Sample</name>
@@ -27,7 +27,9 @@
 				<version>3.2.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<output>${basedir}/../testdrive/target/testdrive/${project.build.finalName}/${project.build.finalName}.swf</output>
+					<output>${basedir}/../testdrive/src/main/webapp/${project.build.finalName}/${project.build.finalName}.swf</output>
+					<services>${basedir}/../testdrive/src/main/webapp/WEB-INF/flex/services-config.xml</services>
+					<contextRoot>/</contextRoot>
 					<locales>
 						<locale>en_US</locale>
 					</locales>

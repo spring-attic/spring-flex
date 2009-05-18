@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>spring-flex-testdrive</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Spring BlazeDS Integration Testdrive Samples</name>
+	<name>Spring BlazeDS Integration Test Drive Samples</name>
 
 	<modules>
 		<module>chat</module>
@@ -30,6 +30,16 @@
 		<module>testdrive</module>
 	</modules>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-reactor-plugin</artifactId>
+				<version>1.0</version>
+			</plugin>
+		</plugins>
+	</build>
+	
 	<repositories>
 		<repository>
 			<id>flex-mojos-repository</id>

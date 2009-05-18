@@ -5,15 +5,15 @@
 	<parent>
 		<groupId>org.springframework.flex.samples</groupId>
 		<artifactId>spring-flex-testdrive</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0.0-BUILD-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>testdrive</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<packaging>war</packaging>
 	
-	<name>Spring BlazeDS Integration Testdrive Web Application</name>
+	<name>Spring BlazeDS Integration Test Drive Web Application</name>
 	
 	<properties>
 		<spring.version>2.5.6.SEC01</spring.version>
@@ -70,11 +70,16 @@
 		<dependency>
 			<groupId>org.springframework.flex</groupId>
 			<artifactId>spring-flex</artifactId>
-			<version>1.0.0.RC1</version>
+			<version>1.0.0.RC2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
@@ -88,9 +93,14 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>2.1_3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
