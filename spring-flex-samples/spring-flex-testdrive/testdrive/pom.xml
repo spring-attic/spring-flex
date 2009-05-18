@@ -111,6 +111,16 @@
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<version>5.1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.camel</groupId>
+					<artifactId>camel-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
