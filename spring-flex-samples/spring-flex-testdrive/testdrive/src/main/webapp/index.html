@@ -7,11 +7,21 @@
 </head>
 <body>
 
-<h1>Spring / BlazeDS Integration Test Drive</h1>
-<p>In this Test Drive, you  run a series of short sample applications that demonstrate the key features of the Spring BlazeDS Integration. This Test Drive is still work in progress. Please send your feedback to <a href="mailto:ccoenrae@adobe.com">ccoenrae@adobe.com</a>.</p>
-<p><a href="http://coenraets.org">Christophe Coenraets</a>, May 11th 2009</p>
+<h1>Spring BlazeDS Integration Test Drive</h1>
+<p>In this Test Drive, you  run a series of short sample applications that demonstrate the key features of Spring BlazeDS Integration. This Test Drive is a continual work in progress and will be updated with each release of the project. Please submit your feedback to the Spring BlazeDS Integration team via the <a href="http://forum.springsource.org/forumdisplay.php?f=61">project forum</a>.</p>
+<p>These samples have been developed in collaboration between Adobe and SpringSource, with contributions from:</p> 
+<ul>
+<li><a href="http://coenraets.org">Christophe Coenraets</a></li>
+<li><a href="http://blog.springsource.com/author/jgrelle/">Jeremy Grelle</a></li>
+<li><a href="http://blog.springsource.com/author/markf/">Mark Fisher</a></li>
+</ul>
 <br />
 <div class="highlight">
+
+<p>This version of the Test Drive uses a layered Spring configuration, with the core domain services and supporting infrastructure loaded in a root application context via the ContextLoaderListener, 
+and the Flex integration configured separately via the DispatcherServlet's child application context.  This layered approach with explicit separation of concerns is by no means required, but 
+it does have some benefits over a non-layered approach such as opening up the option of writing out-of-container integration tests for the core domain services without having to load the BlazeDS 
+infrastructure.</p>
 
 <h2>Samples Index</h2>
 <h4>Remoting</h4>
@@ -21,7 +31,7 @@
 <li><a href="#air">inSync AIR version</a>: A desktop version of the inSync application</li>
 <li><a href="#company">Company Manager</a>: Similar to inSync, but using <strong>annotation-based configuration</strong> (new in RC1). Also demonstrates object associations.</li>
 </ul>
-<h4>Messaging (new in RC1)</h4>
+<h4>Messaging</h4>
 <ul>
 <li><a href="#chat">Chat</a>: Messaging basics</li>
 <li><a href="#simplepush">Simple Data Push</a>: A simple data push example</li>
@@ -38,9 +48,10 @@
 
 <h2>Source code:</h2>
 <ul>
-  <li>The Flex source code is in spring-flex-testdrive/projects/flex</li>
-  <li>The Java source code is in spring-flex-testdrive/projects/java/</li>
-  <li>The remoting destinations are configured in the Spring configuration file (spring-flex-testdrive/tomcat/webapps/ROOT/WEB-INF/config/web-application-config.xml), except for the Company Manager sample which uses annotation-based configuration.</li>
+  <li>The Flex source code is in {project}/src/main/flex/ of each individual flex project</li>
+  <li>The Java source code is in testdrive/src/main/java/</li>
+  <li>The root Spring configuration (including setup of the core services, security, and supporting infrastructure) is in testdrive/src/main/webapp/WEB-INF/spring/</li>
+  <li>The BlazeDS integration support is configured in the 'testdrive' DispatcherServlet's configuration file (testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml)</li>
 </ul>
 <p>If you want to open the source code in Flex Builder,  read <a href="fb-project-setup.htm">these instructions</a> to set up your Flex Builder projects.</p>
 
@@ -58,15 +69,16 @@
   <li>Click &quot;Get Data&quot;:  The DataGrid is populated with  data returned by the findAll() method of the ProductDAO Java class. </li>
   </ol>
 <h4>Code walkthrough:</h4>
-<p>Open main.mxml in the spring-flex-testdrive/projects/flex/spring-blazeds-101/src directory  to look at the source code of the application.</p>
-<p>Open the following files in a text editor to look at the source code for the server side  of the application: </p>
+<p>Open main.mxml in the spring-blazeds-101/src/main/flex directory to look at the source code of the client.</p>
+<p>Open the following files to look at the source code for the server side  of the application: </p>
 <ul>
-  <li>{context-root}/WEB-INF/config/web-application-config.xml</li>
-  <li>spring-flex-testdrive/projects/java/flex/spring/samples/product/ProducDAO.java</li>
+  <li>testdrive/src/main/webapp/WEB-INF/spring/services-context.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml</li>
+  <li>testdrive/src/main/java/flex/spring/samples/product/ProductDAO.java</li>
 </ul>
 <p>Note that in this first sample, we use a simplistic DAO implementation with low level JDBC code and no real abstraction. This was done intentionally to provide a bare-bones example that focuses exclusively on the Spring/BlazeDS Integration plumbing. In all the other examples of this Test Drive, we use the JdbcTemplate abstraction of the Spring framework to build the data access objects.</p>
-<p>Using RemoteObject, you can directly invoke methods of Java objects  deployed in your application server, and consume the return value. The return value can be a value of a primitive data type, an object, a  collection of objects, an object graph, etc.</p>
-<p>Using the Spring BlazeDS integration, Spring beans are exposed using the typical Spring remoting exporter configuration. See the "product" bean definition in web-application-config.xml.</p>
+<p>Using RemoteObject, you can directly invoke methods of Java objects  deployed in your application server, and consume the return value. The return value can be a value of a primitive data type, an object, a collection of objects, an object graph, etc.</p>
+<p>Using Spring BlazeDS Integration, Spring beans are exposed using the flex:remoting-destination configuration tag. See the "product" bean definition in services-context.xml and the remoting destination that references it in testdrive-servlet.xml</p>
 <p>Java objects returned by server-side methods are deserialized into  either dynamic or typed ActionScript objects. In this example, we don't have an explicit ActionScript version of the Product Java class. Product objects are therefore deserialized into dynamic objects. In InSync03 below, we start working with strongly typed model objects. </p>
 </div>
 
@@ -82,11 +94,12 @@
   <li>Enter a few characters in the Search input field before clicking the Search button in order to search by name</li>
   </ol>
 <h4>Code walkthrough:</h4>
-<p>Open insync01.mxml in the spring-flex-testdrive/projects/flex/insync01/src directory  to look at the source code of the application.</p>
-<p>Open the following files in a text editor to look at the source code for the server side  of the application: </p>
+<p>Open insync01.mxml in the insync01/src/main/flex directory to look at the source code of the application.</p>
+<p>Open the following files to look at the source code for the server side of the application: </p>
 <ul>
-  <li>{context-root}/WEB-INF/config/web-application-config.xml</li>
-  <li>spring-flex-testdrive/projects/java/flex/spring/samples/contact/ContactDAO.java</li>
+  <li>testdrive/src/main/webapp/WEB-INF/spring/services-context.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml</li>
+  <li>testdrive/src/main/java/flex/spring/samples/contact/ContactDAO.java</li>
 </ul>
 </div>
 <br />
