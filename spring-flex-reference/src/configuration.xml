@@ -82,7 +82,7 @@
     	</para>
     	<programlisting language="xml"><![CDATA[
 <!-- Bootstraps and exposes the BlazeDS MessageBroker -->
-<bean id="_messageBroker" class="org.springframework.flex.messaging.MessageBrokerFactoryBean" >
+<bean id="_messageBroker" class="org.springframework.flex.core.MessageBrokerFactoryBean" >
 	<property name="servicesConfigPath" value="classpath*:services-config.xml" />
 </bean>]]>    	
     	</programlisting>
@@ -135,7 +135,7 @@
 </bean>
 
 <!-- Dispatches requests mapped to a MessageBroker -->
-<bean class="org.springframework.flex.messaging.servlet.MessageBrokerHandlerAdapter"/>]]>    
+<bean class="org.springframework.flex.servlet.MessageBrokerHandlerAdapter"/>]]>    
 		</programlisting>
 		<para>
 			Channel definitions in the BlazeDS services-config.xml must correspond to the chosen mapping.  For example, to set up a typical AMF channel in 
@@ -236,7 +236,7 @@
     	<programlisting language="java"><![CDATA[
 package com.example;
 
-import org.springframework.flex.messaging.config.MessageBrokerConfigProcessor;
+import org.springframework.flex.config.MessageBrokerConfigProcessor;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
