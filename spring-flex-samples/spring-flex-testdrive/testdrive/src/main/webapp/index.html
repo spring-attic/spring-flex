@@ -37,6 +37,7 @@ infrastructure.</p>
 <li><a href="#simplepush">Simple Data Push</a>: A simple data push example</li>
 <li><a href="#traderdesktop">Traderdesktop</a>: A more sophisticated data push example showing how to use subtopics</li>
 <li><a href="#jmschat">JMS Chat</a>: A chat application using a JMS topic and exchanging messages with a Swing-based client</li>
+<li><a href="#pojomessaging">POJO Messaging</a>: An example of passing Messages between a Flex client and a server-side POJO using Spring Integration MessageChannels</li>
 <li><a href="#collaboration">Collaboration</a>: A simple example showing how to use messaging to remotely drive another client's application</li>
 </ul>
 <h4>Security</h4>
@@ -322,6 +323,26 @@ infrastructure.</p>
 
 </div>
 <br />
+
+<a name="pojomessaging"></a>
+<div class="item">
+  <h3>POJO Messaging</h3>
+  <h4>Run the sample:</h4>
+<p>This application uses the same frontend as the two chat applications. However, in this case messages are sent between the client and a server-side POJO. There are separate inbound and outbound destinations, and these are mapped to Spring Integration channels.</p> 
+<ol>
+  <li>Click <a href="spring-messaging/messaging.html">here</a> to run the application</li>
+  <li>Type &quot;start&quot; in the text field and click &quot;Send&quot;</li>
+  <li>Incremental values should display in the upper text area every 5 seconds</li>
+  <li>You can send a &quot;stop&quot; message as well or any integer value to set the counter</li>
+  <li>Any other message text will trigger log output in the console</li>
+</ol>
+
+<h4>Code walkthrough:</h4>
+<p>Open messaging.mxml in the spring-messaging/src/main/flex directory to look at the source code of the client.</p>
+
+<p>Open testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml to look at the message service configuration. Note that the &quot;si-receive&quot; and &quot;si-send&quot; destinations are mapped to the &quot;toFlex&quot; and &quot;fromFlex&quot; Message Channels respectively. Those are configured in testdrive/src/main/webapp/WEB-INF/spring/integration-context.xml. Also, in that configuration file you will see the &quot;inbound-channel-adapter&quot; and &quot;service-activator&quot; Spring Integration components and the &quot;counter&quot; bean definition they reference. The Counter source code is located within testdrive/src/main/java in the &quot;flex.spring.samples.integration&quot; package.</p>
+
+</div>
 
 <a name="collaboration"></a>
 <div class="item">
