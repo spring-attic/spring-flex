@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="consumer.subscribe()">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.messaging.messages.AsyncMessage;
+			import mx.messaging.messages.IMessage;
+			
+			private function send():void
+			{
+				var message:IMessage = new AsyncMessage();
+				message.body = msg.text;
+				producer.send(message);
+				msg.text = "";
+			}
+			
+			private function messageHandler(message:IMessage):void
+			{
+				log.text += message.body + "\n";	
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:ChannelSet id="cs">
+		<mx:AMFChannel url="http://localhost:8080/messagebroker/amflongpolling"/>
+		<mx:AMFChannel url="http://localhost:8080/messagebroker/amfpolling"/>
+	</mx:ChannelSet>
+	
+	<mx:Producer id="producer" destination="si-send" channelSet="{cs}"/>
+	<mx:Consumer id="consumer" destination="si-receive" channelSet="{cs}" message="messageHandler(event.message)"/>
+
+	<mx:Panel title="Incoming Messages" width="90%" height="90%">
+		<mx:TextArea id="log" width="100%" height="100%"/>
+		<mx:ControlBar>
+			 <mx:TextInput id="msg" width="100%" enter="send()"/>
+			 <mx:Button label="Send" click="send()"/> 
+		</mx:ControlBar>
+	</mx:Panel>
+
+</mx:Application>
