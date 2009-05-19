@@ -17,10 +17,8 @@
 		</poller>
 	</inbound-channel-adapter>
 
-	<service-activator input-channel="fromFlex" ref="logger"/>
+	<service-activator input-channel="fromFlex" ref="counter" method="handle"/>
 	
 	<beans:bean id="counter" class="flex.spring.samples.integration.Counter"/>
-
-	<beans:bean id="logger" class="flex.spring.samples.integration.Logger"/>
 
 </beans:beans>

@@ -9,14 +9,14 @@
 			private function send():void
 			{
 				var message:IMessage = new AsyncMessage();
-				message.body = "from Flex: " + msg.text;
+				message.body = msg.text;
 				producer.send(message);
 				msg.text = "";
 			}
 			
 			private function messageHandler(message:IMessage):void
 			{
-				log.text += "from SI: " + message.body + "\n";	
+				log.text += message.body + "\n";	
 			}
 		]]>
 	</mx:Script>
