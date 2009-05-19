@@ -18,9 +18,9 @@
 	</inbound-channel-adapter>
 
 	<service-activator input-channel="fromFlex" ref="logger"/>
-
+	
 	<beans:bean id="counter" class="flex.spring.samples.integration.Counter"/>
 
-	<beans:bean id="logger" class="demo.Logger"/>
+	<beans:bean id="logger" class="flex.spring.samples.integration.Logger"/>
 
 </beans:beans>
