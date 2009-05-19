@@ -14,7 +14,7 @@
 	<property name="ADT.JAR" value="${flex.sdk.dir}/lib/adt.jar"/>
 
 	<target name="jar" depends="compile-flex, jar.quick"/>
-	
+
 	<!-- Overriding jar to more closely mirror the Maven build -->
 	<target name="jar.quick" depends="ivy.init, resolve.compile, compile.init, jar.init"
 				description="Creates a WAR file containing the output of a compilation of the source tree.">
@@ -87,7 +87,7 @@
 	</target>
 
 	<target name="compile-flex" depends="chat, collaboration, companymgr, feedstarter, insync-air-spring, insync01, insync02, 
-		insync03, insync04, insync05, insync06, insync07, jmschat, secured, simplepush, spring-blazeds-101, traderdesktop"/>
+		insync03, insync04, insync05, insync06, insync07, jmschat, secured, simplepush, spring-blazeds-101, spring-messaging, traderdesktop"/>
 
 	<target name="clean-swf">
 		<delete>
@@ -236,6 +236,13 @@
 		<antcall target="compile-swf">
 			<param name="project.dir" value="spring-blazeds-101" />
 			<param name="main.file" value="main" />
+		</antcall>
+	</target>
+
+	<target name="spring-messaging">
+		<antcall target="compile-swf">
+			<param name="project.dir" value="spring-messaging" />
+			<param name="main.file" value="messaging" />
 		</antcall>
 	</target>
 

@@ -32,6 +32,7 @@
 		<dependency org="org.springframework" name="org.springframework.jms" rev="${org.springframework}" conf="compile->runtime"/>
 		<dependency org="org.springframework.security" name="org.springframework.security" rev="2.0.4.A" conf="compile->runtime" />
 		<dependency org="org.springframework.flex" name="org.springframework.flex" rev="latest.integration" conf="compile->runtime" />
+		<dependency org="org.springframework.integration" name="org.springframework.integration" rev="1.0.2.RELEASE" conf="compile->runtime" />
 	</dependencies>
 
 </ivy-module>
