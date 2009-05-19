@@ -7,14 +7,15 @@
 <!ENTITY remoting SYSTEM "remoting.xml">
 <!ENTITY security SYSTEM "security.xml">
 <!ENTITY messaging SYSTEM "messaging.xml">
+<!ENTITY samples SYSTEM "samples.xml">
 ]>
 
 <book>
 	<bookinfo>
 		<title>Spring BlazeDS Integration Reference Guide</title>
 		<productname>Spring BlazeDS Integration</productname>
-		<releaseinfo>Version 1.0.0.RC1</releaseinfo>
-		<pubdate>April 2009</pubdate>
+		<releaseinfo>Version 1.0.0.RC2</releaseinfo>
+		<pubdate>May 2009</pubdate>
 		<authorgroup>
 			<author>
 				<firstname>Jeremy</firstname>
@@ -39,5 +40,6 @@
 	&remoting;
 	&security;
 	&messaging;
+	&samples;
 	
 </book>
