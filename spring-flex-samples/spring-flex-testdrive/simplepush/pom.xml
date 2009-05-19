@@ -9,9 +9,7 @@
 		<version>1.0.0-BUILD-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>simplepush</artifactId>
-	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<packaging>swf</packaging>
 
 	<name>Simple Push Sample</name>

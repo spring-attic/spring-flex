@@ -9,9 +9,7 @@
 		<version>1.0.0-BUILD-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>spring-blazeds-101</artifactId>
-	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<packaging>swf</packaging>
 
 	<name>Spring BlazeDS Integration 101 Sample</name>

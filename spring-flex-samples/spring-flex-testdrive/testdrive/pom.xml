@@ -8,9 +8,7 @@
 		<version>1.0.0-BUILD-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>testdrive</artifactId>
-	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<packaging>war</packaging>
 	
 	<name>Spring BlazeDS Integration Test Drive Web Application</name>
