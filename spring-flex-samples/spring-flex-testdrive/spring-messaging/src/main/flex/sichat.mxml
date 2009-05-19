@@ -29,7 +29,7 @@
 	<mx:Producer id="producer" destination="si-send" channelSet="{cs}"/>
 	<mx:Consumer id="consumer" destination="si-receive" channelSet="{cs}" message="messageHandler(event.message)"/>
 
-	<mx:Panel title="Chat" width="90%" height="90%">
+	<mx:Panel title="Incoming Messages" width="90%" height="90%">
 		<mx:TextArea id="log" width="100%" height="100%"/>
 		<mx:ControlBar>
 			 <mx:TextInput id="msg" width="100%" enter="send()"/>
