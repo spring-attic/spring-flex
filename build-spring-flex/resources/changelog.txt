@@ -2,6 +2,22 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
+Changes in version 1.0.0.RC2 (05.19.2009)
+-----------------------------------------
+General
+* The Test Drive samples are now included in the distribution and configured for use with Eclipse WTP
+* Maven central compatible POMs have been published to the repository at http://maven.springframework.org/milestone/
+* Minor revisions to the documentation including a new chapter on working with the test drive sample 
+
+Enhancements
+* FLEX-49 - @RemotingDestination should be able to be used on beans in the parent application context
+
+Bug Fixes
+* FLEX-37 - Flex schema missing from SpringFramework.org
+* FLEX-46 - Spring Security's filter chain not being detected correctly
+* FLEX-47 - Jackson is getting set as optional in the auto-generated pom.xml
+* FLEX-48 - Multiple consumers created per JmsAdapter instance
+
 Changes in version 1.0.0.RC1 (04.24.2009)
 -----------------------------------------
 General
