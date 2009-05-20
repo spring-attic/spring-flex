@@ -1,7 +1,7 @@
 package
 {
 	[Bindable]
-	[RemoteClass(alias="flex.spring.samples.contact.Contact")]
+	[RemoteClass(alias="org.springframework.flex.samples.contact.Contact")]
 	public class Contact
 	{
 		public var id:int;

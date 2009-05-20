@@ -128,7 +128,7 @@ infrastructure.</p>
   </ol>
 <h4>Code walkthrough:</h4>
 <p>Open insync03.mxml, Contact.as, and ContactForm.mxml in the insync03/src/main/flex directory to look at the source code of the application.</p>
-<p>In this version, we work with strongly typed contact objects. The Contact.as class is the ActionScript representation of flex.spring.samples.contact.Contact.java. The [RemoteClass(alias=&quot;flex.spring.samples.contact.Contact&quot;)] annotation in Contact.as is used to indicate that instances of Contact.as sent to the server should be deserialized as instances of flex.spring.samples.contact.Contact at the server side, and that similarly, instances of flex.spring.samples.contact.Contact retrieved from the server should be deserialized as instances of Contact.as.<br />
+<p>In this version, we work with strongly typed contact objects. The Contact.as class is the ActionScript representation of org.springframework.flex.samples.contact.Contact.java. The [RemoteClass(alias=&quot;org.springframework.flex.samples.contact.Contact&quot;)] annotation in Contact.as is used to indicate that instances of Contact.as sent to the server should be deserialized as instances of org.springframework.flex.samples.contact.Contact at the server side, and that similarly, instances of org.springframework.flex.samples.contact.Contact retrieved from the server should be deserialized as instances of Contact.as.<br />
 </p>
 </div>
 <br />
@@ -339,7 +339,7 @@ infrastructure.</p>
 <h4>Code walkthrough:</h4>
 <p>Open messaging.mxml in the spring-messaging/src/main/flex directory to look at the source code of the client.</p>
 
-<p>Open testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml to look at the message service configuration. Note that the &quot;si-receive&quot; and &quot;si-send&quot; destinations are mapped to the &quot;toFlex&quot; and &quot;fromFlex&quot; Message Channels respectively. Those are configured in testdrive/src/main/webapp/WEB-INF/spring/integration-context.xml. Also, in that configuration file you will see the &quot;inbound-channel-adapter&quot; and &quot;service-activator&quot; Spring Integration components and the &quot;counter&quot; bean definition they reference. The Counter source code is located within testdrive/src/main/java in the &quot;flex.spring.samples.integration&quot; package.</p>
+<p>Open testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml to look at the message service configuration. Note that the &quot;si-receive&quot; and &quot;si-send&quot; destinations are mapped to the &quot;toFlex&quot; and &quot;fromFlex&quot; Message Channels respectively. Those are configured in testdrive/src/main/webapp/WEB-INF/spring/integration-context.xml. Also, in that configuration file you will see the &quot;inbound-channel-adapter&quot; and &quot;service-activator&quot; Spring Integration components and the &quot;counter&quot; bean definition they reference. The Counter source code is located within testdrive/src/main/java in the &quot;org.springframework.flex.samples.integration&quot; package.</p>
 
 </div>
 

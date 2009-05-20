@@ -35,13 +35,14 @@
 	<bean id="defaultMessageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />
 
 	<!-- Pojo used to start and stop the data feed that pushes data in the 'simple-feed' destination -->
-	<bean id="simpleFeedStarter" class="flex.spring.samples.simplefeed.SimpleFeed">
+	<bean id="simpleFeedStarter" class="org.springframework.flex.samples.simplefeed.SimpleFeed">
 		<constructor-arg ref="defaultMessageTemplate" />
 		<flex:remoting-destination />
 	</bean>
 
 	<!-- Pojo used to start and stop the data feed that pushes data in the 'market-feed' destination -->
-	<bean id="marketFeedStarter" class="flex.spring.samples.marketfeed.MarketFeed">
+	<bean id="marketFeedStarter" class="org.springframework.flex.samples.marketfeed.MarketFeed">
+		<constructor-arg ref="defaultMessageTemplate" />
 		<constructor-arg value="stocklist.xml" />
 		<flex:remoting-destination />
 	</bean>

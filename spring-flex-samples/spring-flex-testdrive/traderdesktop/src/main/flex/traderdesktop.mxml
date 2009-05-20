@@ -5,7 +5,7 @@
 	<mx:Script>
 		<![CDATA[
 
-			import flex.spring.samples.marketfeed.Stock;
+			import org.springframework.flex.samples.marketfeed.Stock;
 			import mx.controls.Alert;
 			import mx.collections.ArrayCollection;
 			import mx.messaging.events.MessageEvent;

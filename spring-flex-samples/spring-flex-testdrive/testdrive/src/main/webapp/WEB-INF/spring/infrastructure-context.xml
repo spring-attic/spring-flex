@@ -16,7 +16,7 @@
 	</bean>
 
 	<!-- Create and populate the tables if the springflexdemodb database -->
-	<bean id="dbInit" class="flex.spring.samples.util.DatabaseInitializer">
+	<bean id="dbInit" class="org.springframework.flex.samples.util.DatabaseInitializer">
 		<constructor-arg ref="dataSource" />
 	</bean>
 

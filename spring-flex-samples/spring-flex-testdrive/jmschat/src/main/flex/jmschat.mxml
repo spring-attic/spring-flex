@@ -8,8 +8,6 @@
 			import mx.messaging.messages.AsyncMessage;
 			import mx.messaging.messages.IMessage;
 			
-			private var lastMessageId:String;
-			
 			private function send():void
 			{
 				var message:IMessage = new AsyncMessage();
@@ -21,11 +19,7 @@
 							
 			private function messageHandler(message:IMessage):void
 			{
-				if (message.messageId != lastMessageId) // working around bug http://jira.springframework.org/browse/FLEX-48 (fixed in latest builds)
-				{ 										// where messages are received multiple times when mapping to a JMS topic
-					log.text += message.body.userId + ": " + message.body.chatMessage + "\n";
-					lastMessageId = message.messageId;
-				}	
+				log.text += message.body.userId + ": " + message.body.chatMessage + "\n";
 			}
 			
 		]]>
