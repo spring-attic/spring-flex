@@ -11,7 +11,9 @@ Spring-powered RIAs using Adobe Flex.
 ----------------
 Spring BlazeDS Integration requires Java SE 5.0, Spring Framework 2.5.0, and Adobe BlazeDS 3.2.0 or above to run.
 
-Java SE 5 with Ant 1.7 is required to build.
+Java SE 5 with Ant 1.7 is required to build the entire project.
+
+Maven 2.0.9+ can be used to build the Test Drive samples.
 
 Release distribution contents:
 
@@ -23,6 +25,7 @@ Release distribution contents:
 "projects/build-spring-flex" is the directory to access to build the Spring BlazeDS Integration distribution
 "projects/spring-build" is the master build system used by all Spring projects, including Spring BlazeDS Integration
 "projects/org.springframework.flex" contains buildable Spring BlazeDS Integration project sources
+"projects/spring-flex-samples/spring-flex-testdrive" contains buildable Spring BlazeDS Integration Test Drive sample sources
 
 See the readme.txt within the above directories for additional information.
 
