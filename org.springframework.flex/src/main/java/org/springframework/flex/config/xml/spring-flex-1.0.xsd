@@ -372,6 +372,17 @@ A bean reference to a Spring Integration MessageChannel.
 							</xsd:documentation>
 						</xsd:annotation>
 					</xsd:attribute>
+					<xsd:attribute name="extract-payload" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+Indicates whether the Flex Message body should be extracted for use as the Spring Integration
+Message's payload. If this flag is set to false, the entire Flex Message will be used as the
+Spring Integration Message payload. The default value is true.
+]]>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>

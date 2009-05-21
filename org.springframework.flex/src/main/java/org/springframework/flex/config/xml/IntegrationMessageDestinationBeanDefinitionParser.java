@@ -40,6 +40,8 @@ public class IntegrationMessageDestinationBeanDefinitionParser extends AbstractM
     // --------------------------- XML Config Attributes ---------------------//
     private static final String MESSAGE_CHANNEL_ATTR = "message-channel";
 
+    private static final String EXTRACT_PAYLOAD_ATTR = "extract-payload";
+
     // --------------------------- Bean Configuration Properties -------------//
     private static final String SERVICE_ADAPTER_PROPERTY = "serviceAdapter";
 
@@ -52,6 +54,7 @@ public class IntegrationMessageDestinationBeanDefinitionParser extends AbstractM
         BeanDefinitionBuilder adapterBuilder = BeanDefinitionBuilder.genericBeanDefinition(INTEGRATION_ADAPTER_CLASS_NAME);
 
         ParsingUtils.mapRequiredBeanRefAttributes(element, adapterBuilder, MESSAGE_CHANNEL_ATTR);
+        ParsingUtils.mapOptionalAttributes(element, adapterBuilder, EXTRACT_PAYLOAD_ATTR);
 
         String serviceAdapterId = ParsingUtils.registerInfrastructureComponent(element, parserContext, adapterBuilder);
         destinationBuilder.addPropertyValue(SERVICE_ADAPTER_PROPERTY, serviceAdapterId);
