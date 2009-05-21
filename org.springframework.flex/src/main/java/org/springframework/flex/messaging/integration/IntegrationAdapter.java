@@ -32,6 +32,7 @@ import org.springframework.integration.endpoint.AbstractEndpoint;
 import org.springframework.integration.endpoint.EventDrivenConsumer;
 import org.springframework.integration.endpoint.PollingConsumer;
 import org.springframework.integration.message.GenericMessage;
+import org.springframework.integration.message.MessageBuilder;
 import org.springframework.integration.message.MessageHandler;
 import org.springframework.util.Assert;
 
@@ -52,12 +53,23 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
 
     private volatile MessageChannel messageChannel;
 
+    private volatile boolean extractPayload = true;
+
     private final Set<Object> subscriberIds = new HashSet<Object>();
 
     private volatile AbstractEndpoint consumerEndpoint;
 
     /**
-     * 
+     * Specify whether the Flex Message body should be extracted
+     * to be used as the payload of a Spring Integration Message.
+     * If this is set to <code>false</code>, the entire Flex Message
+     * will be sent as the payload. The default is <code>true</code>.
+     */
+    public void setExtractPayload(boolean extractPayload) {
+        this.extractPayload = extractPayload;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void afterPropertiesSet() {
@@ -73,6 +85,9 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
      * Invoked when a Message is received from the Spring Integration channel.
      */
     public void handleMessage(org.springframework.integration.core.Message<?> message) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("received Integration Message: " + message);
+        }
         AsyncMessage flexMessage = new AsyncMessage();
         flexMessage.setBody(message.getPayload());
         MessageHeaders headers = message.getHeaders();
@@ -107,8 +122,25 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
      * Invoked when a Message is received from a Flex client.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Object invoke(flex.messaging.messages.Message flexMessage) {
-        this.messageChannel.send(new GenericMessage<flex.messaging.messages.Message>(flexMessage));
+        if (logger.isDebugEnabled()) {
+            logger.debug("received Flex Message: " + flexMessage);
+        }
+        org.springframework.integration.core.Message<?> message = null;
+        if (this.extractPayload) {
+            Map headers = flexMessage.getHeaders();
+            headers.put(FlexHeaders.MESSAGE_ID, flexMessage.getMessageId());
+            headers.put(FlexHeaders.CLIENT_ID, flexMessage.getClientId());
+            headers.put(FlexHeaders.DESTINATION_ID, flexMessage.getDestination());
+            headers.put(FlexHeaders.TIMESTAMP, flexMessage.getTimestamp());
+            headers.put(FlexHeaders.TIME_TO_LIVE, flexMessage.getTimeToLive());
+            message = MessageBuilder.withPayload(flexMessage.getBody()).copyHeaders(headers).build();
+        }
+        else {
+            message = new GenericMessage<flex.messaging.messages.Message>(flexMessage);
+        }
+        this.messageChannel.send(message);
         return null;
     }
 

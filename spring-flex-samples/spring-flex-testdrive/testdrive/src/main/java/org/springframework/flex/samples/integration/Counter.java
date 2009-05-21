@@ -21,8 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import flex.messaging.messages.Message;
-
 /**
  * 
  * @author Mark Fisher
@@ -40,15 +38,14 @@ public class Counter {
         return this.running ? this.count.getAndIncrement() : null;
     }
 
-    public void handle(Message message) {
-        String s = message.getBody().toString();
-        if ("start".equalsIgnoreCase(s)) {
+    public void handle(String message) {
+        if ("start".equalsIgnoreCase(message)) {
             this.running = true;
-        } else if ("stop".equalsIgnoreCase(s)) {
+        } else if ("stop".equalsIgnoreCase(message)) {
             this.running = false;
         } else {
             try {
-                this.count.set(Integer.parseInt(s));
+                this.count.set(Integer.parseInt(message));
             } catch (NumberFormatException e) {
                 this.log.info("UNSUPPORTED FLEX MESSAGE RECEIVED: " + message);
             }
