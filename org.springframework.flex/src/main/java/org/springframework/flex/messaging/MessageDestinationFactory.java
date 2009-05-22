@@ -44,7 +44,7 @@ import flex.messaging.services.Service;
  */
 public class MessageDestinationFactory extends AbstractDestinationFactory {
 
-    protected final ConfigMap properties;
+    private final ConfigMap properties;
 
     /**
      * Creates a new MessageDestinationFactory
