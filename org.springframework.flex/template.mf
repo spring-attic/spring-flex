@@ -18,6 +18,6 @@ Import-Template:
  flex.management;version="[3.2.0, 4.0.0)",
  flex.messaging.*;version="[3.2.0, 4.0.0)",
  org.aopalliance.*;version="[1.0.0, 1.0.0]",
- org.codehaus.jackson.*;version="[0.9.9.4, 0.9.9.4]"
+ org.codehaus.jackson.*;version="[1.0.0, 2.0.0]"
 Unversioned-Imports: 
  org.w3c.dom
