@@ -130,12 +130,15 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
         org.springframework.integration.core.Message<?> message = null;
         if (this.extractPayload) {
             Map headers = flexMessage.getHeaders();
-            headers.put(FlexHeaders.MESSAGE_ID, flexMessage.getMessageId());
             headers.put(FlexHeaders.CLIENT_ID, flexMessage.getClientId());
             headers.put(FlexHeaders.DESTINATION_ID, flexMessage.getDestination());
-            headers.put(FlexHeaders.TIMESTAMP, flexMessage.getTimestamp());
-            headers.put(FlexHeaders.TIME_TO_LIVE, flexMessage.getTimeToLive());
-            message = MessageBuilder.withPayload(flexMessage.getBody()).copyHeaders(headers).build();
+            long timestamp = flexMessage.getTimestamp();
+            message = MessageBuilder.withPayload(flexMessage.getBody())
+                    .copyHeaders(headers)
+                    .setHeader(MessageHeaders.ID, flexMessage.getMessageId())
+                    .setHeader(MessageHeaders.TIMESTAMP, timestamp)
+                    .setExpirationDate(timestamp + flexMessage.getTimeToLive())
+                    .build();
         }
         else {
             message = new GenericMessage<flex.messaging.messages.Message>(flexMessage);

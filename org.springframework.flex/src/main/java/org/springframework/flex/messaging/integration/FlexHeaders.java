@@ -24,14 +24,8 @@ package org.springframework.flex.messaging.integration;
  */
 public abstract class FlexHeaders {
 
-    public static final String MESSAGE_ID = "flex_message_id";
-
     public static final String CLIENT_ID = "flex_client_id";
 
     public static final String DESTINATION_ID = "flex_destination_id";
-
-    public static final String TIMESTAMP = "flex_timestamp";
-
-    public static final String TIME_TO_LIVE = "flex_time_to_live";
 
 }
