@@ -16,9 +16,7 @@
 
 package org.springframework.flex.messaging.jms;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.jms.ConnectionFactory;
@@ -36,8 +34,6 @@ import org.springframework.jms.support.destination.DestinationResolver;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 
-import flex.messaging.MessageClient;
-import flex.messaging.MessageClientListener;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
 import flex.messaging.services.MessageService;
@@ -48,7 +44,7 @@ import flex.messaging.services.messaging.adapters.MessagingAdapter;
  * 
  * @author Mark Fisher
  */
-public class JmsAdapter extends MessagingAdapter implements MessageClientListener, InitializingBean, BeanNameAware {
+public class JmsAdapter extends MessagingAdapter implements InitializingBean, BeanNameAware {
 
     private final Log logger = LogFactory.getLog(getClass());
 
@@ -65,8 +61,6 @@ public class JmsAdapter extends MessagingAdapter implements MessageClientListene
     private final DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
 
     private final Set<Object> subscriberIds = new HashSet<Object>();
-
-    private final Map<Object, MessageClient> clientMap = new HashMap<Object, MessageClient>();
 
     /**
      * 
@@ -162,23 +156,6 @@ public class JmsAdapter extends MessagingAdapter implements MessageClientListene
      * 
      * {@inheritDoc}
      */
-    public void messageClientCreated(MessageClient messageClient) {
-        messageClient.addMessageClientDestroyedListener(this);
-        this.clientMap.put(messageClient.getClientId(), messageClient);
-    }
-
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public void messageClientDestroyed(MessageClient messageClient) {
-        this.clientMap.remove(messageClient.getClientId());
-    }
-
-    /**
-     * 
-     * {@inheritDoc}
-     */
     public void setBeanName(String beanName) {
         this.setId(beanName);
     }
@@ -257,7 +234,6 @@ public class JmsAdapter extends MessagingAdapter implements MessageClientListene
     @Override
     public void start() {
         super.start();
-        MessageClient.addMessageClientCreatedListener(this);
     }
 
     /**
