@@ -44,7 +44,7 @@
 	<flex:integration-message-destination id="integrationSimpleConfig" message-channel="testIntegrationChannel" />
 	
 	<flex:integration-message-destination id="integrationCustomConfig" message-channel="testIntegrationChannel" allow-subtopics="true" channels="my-polling-amf, my-secure-amf" 
-		cluster-message-routing="broadcast" message-broker="messageServiceBroker" message-time-to-live="1" send-security-constraint="fooConstraint" 
+		cluster-message-routing="broadcast" extract-payload="false" message-broker="messageServiceBroker" message-time-to-live="1" send-security-constraint="fooConstraint" 
 		subscribe-security-constraint="barConstraint" subscription-timeout-minutes="1" subtopic-separator="/" throttle-inbound-max-frequency="500"
 		throttle-inbound-policy="ERROR" throttle-outbound-max-frequency="500" throttle-outbound-policy="IGNORE" />
 	

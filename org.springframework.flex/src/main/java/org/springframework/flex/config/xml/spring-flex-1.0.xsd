@@ -3,6 +3,7 @@
 	xmlns="http://www.springframework.org/schema/flex"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:tool="http://www.springframework.org/schema/tool"
 	targetNamespace="http://www.springframework.org/schema/flex"
 	elementFormDefault="qualified" attributeFormDefault="unqualified"
 	version="1.0">
@@ -19,6 +20,8 @@ A XML-based DSL for configuring Spring BlazeDS Integration.
 	</xsd:annotation>
 	
 	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" />
+	<xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool-2.5.xsd" />
+	
 	
 	<xsd:element name="message-broker">
 		<xsd:annotation>
@@ -32,6 +35,11 @@ is not required unless you are configuring multiple MessageBrokers in one Applic
 considered rare).
 ]]>
 			</xsd:documentation>
+			<xsd:appinfo>
+				<tool:annotation>
+					<tool:exports type="flex.messaging.MessageBroker"/>
+				</tool:annotation>
+			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -133,6 +141,11 @@ to specify an implemention of flex.messaging.config.ConfigurationParser other th
 implementation.  								
 ]]>
 							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref" >
+									<tool:expected-type type="flex.messaging.config.ConfigurationManager"/>
+								</tool:annotation>
+							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>
 					<xsd:attribute name="mapping-order" type="xsd:int">
@@ -177,6 +190,9 @@ reference to the bean to be exported, or as child tag of the bean to be exported
 A reference to the bean to be exported for remoting.  Required when used as a top-level tag.								
 ]]>
 					</xsd:documentation>
+					<xsd:appinfo>
+						<tool:annotation kind="ref"/>
+					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="message-broker" type="xsd:string">
@@ -187,6 +203,11 @@ The id of the Spring-managed MessageBroker that will route messages to the expor
 explicit id has been specified for the MessageBroker.							
 ]]>
 					</xsd:documentation>
+					<xsd:appinfo>
+						<tool:annotation kind="ref">
+							<tool:expected-type type="flex.messaging.MessageBroker"/>
+						</tool:annotation>
+					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="destination-id" type="xsd:string">
@@ -235,6 +256,9 @@ A reference to a custom Spring-managed ServiceAdapter (usually created via a Man
 invoking methods on this destination.  Optional.								
 ]]>
 					</xsd:documentation>
+					<xsd:appinfo>
+						<tool:annotation kind="ref"/>
+					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:attribute>
 		</xsd:complexType>
@@ -264,6 +288,9 @@ MessagingAdapter.  Note that any of the standard MessagingAdapter attributes set
 custom adapter's initialize method.  Optional.	
 ]]>
 							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref"/>
+							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>
 				</xsd:extension>
@@ -291,6 +318,11 @@ The bean name of the JMS ConnectionFactory to be used by this destination. If no
 reference will be "connectionFactory".
 ]]>
 							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref">
+									<tool:expected-type type="javax.jms.ConnectionFactory"/>
+								</tool:annotation>
+							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>			
 					<xsd:attribute name="jms-destination" type="xsd:string">
@@ -300,6 +332,11 @@ reference will be "connectionFactory".
 A reference to a JMS Destination instance.
 ]]>
 							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref">
+									<tool:expected-type type="jaxax.jms.Destination"/>
+								</tool:annotation>
+							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>
 					<xsd:attribute name="queue-name" type="xsd:string">
@@ -327,6 +364,11 @@ The name of a JMS Topic.
 A reference to a MessageConverter bean.
 ]]>
 							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref">
+									<tool:expected-type type="org.springframework.jms.support.converter.MessageConverter"/>
+								</tool:annotation>
+							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>
 					<xsd:attribute name="destination-resolver" type="xsd:string">
@@ -336,6 +378,11 @@ A reference to a MessageConverter bean.
 A reference to a DestinationResolver bean.
 ]]>
 							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref">
+									<tool:expected-type type="org.springframework.jms.support.destination.DestinationResolver"/>
+								</tool:annotation>
+							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>
 					<xsd:attribute name="transaction-manager" type="xsd:string">
@@ -345,6 +392,11 @@ A reference to a DestinationResolver bean.
 A reference to a PlatformTransactionManager to be used by this adapter's MessageListenerContainer.
 ]]>
 							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref">
+									<tool:expected-type type="org.springframework.transaction.PlatformTransactionManager"/>
+								</tool:annotation>
+							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>
 				</xsd:extension>
@@ -370,9 +422,14 @@ Creates a Flex MessageDestination backed by a Spring Integration MessageChannel.
 A bean reference to a Spring Integration MessageChannel.
 ]]>
 							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref">
+									<tool:expected-type type="org.springframework.integration.core.MessageChannel"/>
+								</tool:annotation>
+							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>
-					<xsd:attribute name="extract-payload" type="xsd:string">
+					<xsd:attribute name="extract-payload" type="xsd:boolean">
 						<xsd:annotation>
 							<xsd:documentation>
 								<![CDATA[
@@ -566,6 +623,11 @@ Ant-style pattern for request paths that should be routed to the MessageBroker.
 A reference to a custom bean instance of org.springframework.flex.config.MessageBrokerConfigProcessor.								
 ]]>
 				</xsd:documentation>
+				<xsd:appinfo>
+					<tool:annotation kind="ref">
+						<tool:expected-type type="org.springframework.flex.config.MessageBrokerConfigProcessor"/>
+					</tool:annotation>
+				</xsd:appinfo>
 			</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
@@ -575,9 +637,14 @@ A reference to a custom bean instance of org.springframework.flex.config.Message
 			<xsd:annotation>
 				<xsd:documentation>
 					<![CDATA[
-A reference to a custom bean instance of org.springframework.flex.messaging.ExceptionTranslator.								
+A reference to a custom bean instance of org.springframework.flex.core.ExceptionTranslator.								
 ]]>
 				</xsd:documentation>
+				<xsd:appinfo>
+					<tool:annotation kind="ref">
+						<tool:expected-type type="org.springframework.flex.core.ExceptionTranslator"/>
+					</tool:annotation>
+				</xsd:appinfo>
 			</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
@@ -587,9 +654,14 @@ A reference to a custom bean instance of org.springframework.flex.messaging.Exce
 			<xsd:annotation>
 				<xsd:documentation>
 					<![CDATA[
-A reference to a custom bean instance of org.springframework.flex.messaging.MessageInterceptor.								
+A reference to a custom bean instance of org.springframework.flex.core.MessageInterceptor.								
 ]]>
 				</xsd:documentation>
+				<xsd:appinfo>
+					<tool:annotation kind="ref">
+						<tool:expected-type type="org.springframework.flex.core.MessageInterceptor"/>
+					</tool:annotation>
+				</xsd:appinfo>
 			</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
@@ -623,6 +695,11 @@ A bean reference to the Spring Security AuthenticationManager.  Only required wh
 the AuthenticationManager. 								
 ]]>
 				</xsd:documentation>
+				<xsd:appinfo>
+					<tool:annotation kind="ref">
+						<tool:expected-type type="org.springframework.security.AuthenticationManager"/>
+					</tool:annotation>
+				</xsd:appinfo>
 			</xsd:annotation>
 		</xsd:attribute>
 		<xsd:attribute name="access-decision-manager" type="xsd:string">
@@ -633,15 +710,18 @@ A bean reference to the Spring Security AccessDecisionManager.  Only required wh
 the AccessDecisionManager. 								
 ]]>
 				</xsd:documentation>
+				<xsd:appinfo>
+					<tool:annotation kind="ref">
+						<tool:expected-type type="org.springframework.security.AccessDecisionManager"/>
+					</tool:annotation>
+				</xsd:appinfo>
 			</xsd:annotation>
 		</xsd:attribute>
 		<xsd:attribute name="per-client-authentication" type="xsd:boolean" default="false">
 			<xsd:annotation>
 				<xsd:documentation>
 					<![CDATA[
-Configures per-client authentication in BlazeDS.  Note that per-client authentication is not expected to work
-properly in the current M2 release of Spring BlazeDS integration, but special support will be provided for it
-in the future. 								
+Enables per-client authentication in BlazeDS when set to true.  Default is false. 								
 ]]>
 				</xsd:documentation>
 			</xsd:annotation>
