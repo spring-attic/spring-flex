@@ -66,6 +66,11 @@
 		</flex:secured>
 	</flex:message-broker>
 	
+	<flex:message-broker id="flex-56-regression">
+    	<flex:config-processor ref="processor1" />
+    	<flex:remoting-service default-channels="my-amf"/>
+	</flex:message-broker> 
+	
 	<security:http auto-config="true"/>
 	
 	<security:authentication-provider>

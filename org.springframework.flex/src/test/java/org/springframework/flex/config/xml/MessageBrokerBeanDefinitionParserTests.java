@@ -254,6 +254,14 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertTrue("Default mapping not correct", defaultMapping.getUrlMap().containsKey("/*"));
         assertEquals("Default mapping not correct", BeanIds.MESSAGE_BROKER, defaultMapping.getUrlMap().get("/*"));
     }
+    
+    /**
+     * Uncomment this only for faster dev time testing
+     */
+//     @Override
+//     protected String[] getConfigLocations() {
+//     return new String[] {"classpath:org/springframework/flex/config/message-broker.xml"};
+//     }
 
     public static final class TestConfigProcessor implements MessageBrokerConfigProcessor {
 
