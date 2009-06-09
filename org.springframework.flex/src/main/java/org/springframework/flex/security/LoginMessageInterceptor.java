@@ -39,7 +39,7 @@ import flex.messaging.messages.Message;
  * <li>name - the "name" property from the authentication</li>
  * <li>authorities - an array of String representations of the authentication's authorities (i.e. obtained through
  * {@link GrantedAuthority#getAuthority})</li>
- * <ul>
+ * </ul>
  * 
  * @author Jeremy Grelle
  */
