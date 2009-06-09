@@ -120,7 +120,7 @@
     		scenarios where multiple handler mapping types are installed in the same context) using the <code>mapping-order</code> attribute.
     	</para>
 		<para>
-			Then the <code>SimpleUrlHandlerMapping</code> in the Spring WebApplicationContext maps all requests to the Spring-managed <code>MessageBroker</code> via 
+			The <code>SimpleUrlHandlerMapping</code> in the Spring WebApplicationContext maps all requests to the Spring-managed <code>MessageBroker</code> via 
 			the <code>MessageBrokerHandlerAdapter</code>.  The default setup installed by the <code>message-broker</code> config tag is equivalent to the
 			following bean definitions:
 		</para>
@@ -154,16 +154,69 @@
 			See the <ulink url="http://livedocs.adobe.com/blazeds/1/blazeds_devguide/">BlazeDS documentation</ulink> for more information on configuring communication 
 			channels in services-config.xml.
 		</para>
+	</sect1>
+	<sect1 id="flex-and-spring-mvc">
+		<title>Using Flex clients alongside Spring MVC Controllers</title>
 		<para>
 			It could often be the case that your application needs to serve more than just Flex-based clients.  For example, you may be constructing a RESTful architecture
-			that is meant to serve multiple client-types.  You could potentially even be consuming RESTful endpoints using the Flex HTTPService component.  In this case, 
-			you will want to choose a more flexible mapping strategy, such as mapping <code>/spring/*</code> to the <code>DispatcherServlet</code>, mapping <code>/messagebroker/*</code>
-			to the Spring-managed <code>MessageBroker</code>, and modifying any BlazeDS channel definitions accordingly.  You would override the default mapping strategy
+			that is meant to serve multiple client-types.  You could potentially even be consuming RESTful endpoints using the Flex HTTPService component.  Spring MVC's controller 
+			model provides a simple, flexible means to create such RESTful endpoints. In these sorts of hybrid web application secenarios, 
+			you will need to consider an alternate mapping strategy.  
+		</para>
+		<para>
+			The simplest approach is to use a hierarchical application context with multiple <code>DispatcherServlets</code>.  In this approach, you configure
+			your main application layer (services, security, supporting infrastructure, etc) in a parent context loaded via the <code>ContextLoaderListener</code>, and then
+			configure all aspects of your Spring MVC controllers in one child <code>DispatcherServlet</code> context, and all aspects specific to your Flex client in a separate 
+			child <code>DispatcherServlet</code> context.  This approach could look as follows in web.xml:     
+		</para>
+		<programlisting language="xml"><![CDATA[
+<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+        /WEB-INF/spring/*-context.xml
+    </param-value>
+</context-param>
+
+<listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
+
+<servlet>
+    <servlet-name>flex</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>flex</servlet-name>
+    <url-pattern>/messagebroker/*</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>spring-mvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>spring-mvc</servlet-name>
+    <url-pattern>/spring/*</url-pattern>
+</servlet-mapping>]]> 		
+		</programlisting>
+		<para>
+			Here the parent application context is being assembled from a group of files ending in <code>-context.xml</code> contained in the <code>/WEB-INF/spring/</code> directory.  The child 
+			context for the Flex-specific setup would be built (by convention) from <code>/WEB-INF/flex-servlet.xml</code>, and the context for the Spring MVC controllers would be built from <code>/WEB-INF/spring-mvc-servlet.xml</code>.  
+			This approach provides a nice separation of concerns and will allow Spring 2.5+ annotated controllers to work using their default configuration.
+		</para>
+		<para>
+			An alternate approach is to keep things consolidated under one <code>DispatcherServlet</code> context.  The down-side to this approach is that it requires some additional manual configuration, and you 
+			have to modify your mapping approach accordingly, such as mapping <code>/spring/*</code> to the <code>DispatcherServlet</code>, mapping <code>/messagebroker/*</code>
+			to the Spring-managed <code>MessageBroker</code> via the <code>mapping</code> XML namespace config tag, and modifying any BlazeDS channel definitions accordingly.  You would override the default mapping strategy
 			of the <code>message-broker</code> tag as follows:
 		</para>
 		<programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:mapping pattern="/messagebroker/*" />
+    <flex:mapping pattern="/messagebroker/*" />
 </flex:message-broker>]]> 		
 		</programlisting>
 		<para>
@@ -178,6 +231,11 @@
     </properties>
 </channel-definition>]]> 		
 		</programlisting>
+		<para>
+			In addition to setting up the consolidated mapping strategy, you will also have to manually enable the correct <code>HandlerMapping</code> and <code>HandlerAdapter</code> for your Spring MVC controllers 
+			<ulink url="http://static.springframework.org/spring/docs/2.5.x/reference/mvc.html#mvc-ann-setup">as described in the Spring MVC documentation</ulink>, due to the fact that alternate <code>HandlerMapping</code> and 
+			<code>HandlerAdapter</code> beans are configured automatically when using the <code>message-broker</code> tag.
+		</para>
     </sect1>
     <sect1 id="client-side-remoting">
     	<title>Using Spring-managed Destinations from the Flex Client</title>
