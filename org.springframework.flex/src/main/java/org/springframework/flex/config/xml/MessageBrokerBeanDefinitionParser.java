@@ -186,9 +186,9 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         validateMessageBroker(element, parserContext);
 
-        ParsingUtils.mapOptionalAttributes(element, builder, SERVICES_CONFIG_PATH_ATTR);
+        ParsingUtils.mapOptionalAttributes(element, parserContext, builder, SERVICES_CONFIG_PATH_ATTR);
 
-        ParsingUtils.mapOptionalBeanRefAttributes(element, builder, CONFIGURATION_MANAGER_ATTR);
+        ParsingUtils.mapOptionalBeanRefAttributes(element, builder, parserContext, CONFIGURATION_MANAGER_ATTR);
 
         registerHandlerAdapterIfNecessary(element, parserContext);
 
@@ -234,7 +234,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         BeanDefinitionBuilder messagingProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(MESSAGING_PROCESSOR_CLASS_NAME);
 
         if (messageServiceElement != null) {
-            ParsingUtils.mapAllAttributes(messageServiceElement, messagingProcessorBuilder);
+            ParsingUtils.mapAllAttributes(messageServiceElement, parserContext, messagingProcessorBuilder);
         }
 
         String brokerId = parent.getAttribute(ID_ATTRIBUTE);
@@ -252,7 +252,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         BeanDefinitionBuilder remotingProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(REMOTING_PROCESSOR_CLASS_NAME);
 
         if (remotingServiceElement != null) {
-            ParsingUtils.mapAllAttributes(remotingServiceElement, remotingProcessorBuilder);
+            ParsingUtils.mapAllAttributes(remotingServiceElement, parserContext, remotingProcessorBuilder);
         }
 
         String brokerId = parent.getAttribute(ID_ATTRIBUTE);

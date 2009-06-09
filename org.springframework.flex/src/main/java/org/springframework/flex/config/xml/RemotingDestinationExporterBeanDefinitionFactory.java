@@ -82,7 +82,7 @@ abstract class RemotingDestinationExporterBeanDefinitionFactory {
         brokerId = StringUtils.hasText(brokerId) ? brokerId : BeanIds.MESSAGE_BROKER;
         builder.addPropertyReference(MESSAGE_BROKER_PROPERTY, brokerId);
 
-        ParsingUtils.mapOptionalAttributes(element, builder, CHANNELS_ATTR, INCLUDE_METHODS_ATTR, EXCLUDE_METHODS_ATTR, SERVICE_ADAPTER_ATTR);
+        ParsingUtils.mapOptionalAttributes(element, parserContext, builder, CHANNELS_ATTR, INCLUDE_METHODS_ATTR, EXCLUDE_METHODS_ATTR, SERVICE_ADAPTER_ATTR);
 
         String beanName = ParsingUtils.registerInfrastructureComponent(element, parserContext, builder);
 

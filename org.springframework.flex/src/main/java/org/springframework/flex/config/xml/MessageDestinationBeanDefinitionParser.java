@@ -42,7 +42,7 @@ public class MessageDestinationBeanDefinitionParser extends AbstractMessageDesti
     @Override
     protected void parseAdapter(Element element, ParserContext parserContext, BeanDefinitionBuilder destinationBuilder) {
 
-        ParsingUtils.mapOptionalAttributes(element, destinationBuilder, SERVICE_ADAPTER_ATTR);
+        ParsingUtils.mapOptionalAttributes(element, parserContext, destinationBuilder, SERVICE_ADAPTER_ATTR);
     }
 
 }

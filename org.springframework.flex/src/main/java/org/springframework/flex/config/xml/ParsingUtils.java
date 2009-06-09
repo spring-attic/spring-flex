@@ -22,7 +22,6 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSimpleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.core.Conventions;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
@@ -46,55 +45,57 @@ abstract class ParsingUtils {
         return count;
     }
 
-    static void mapAllAttributes(Element element, BeanDefinitionBuilder builder) {
-        new SimpleBeanDefinitionParser().mapToBuilder(element, builder);
+    static void mapAllAttributes(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+        new SimpleBeanDefinitionParser().mapToBuilder(element, parserContext, builder);
     }
 
-    static void mapOptionalAttributes(Element element, BeanDefinitionBuilder builder, String... attrs) {
+    static void mapOptionalAttributes(Element element, ParserContext parserContext, BeanDefinitionBuilder builder, String... attrs) {
         for (String attr : attrs) {
             String value = element.getAttribute(attr);
             if (StringUtils.hasText(value)) {
                 String propertyName = Conventions.attributeNameToPropertyName(attr);
-                Assert.state(StringUtils.hasText(propertyName),
-                    "Illegal property name returned from 'Conventions.attributeNameToPropertyName(String)': cannot be null or empty.");
+                if (validateProperty(element, parserContext, propertyName, attr)) {
+                    builder.addPropertyValue(propertyName, value);
+                }
+            }
+        }
+    }
+
+    static void mapOptionalBeanRefAttributes(Element element, BeanDefinitionBuilder builder, ParserContext parserContext, String... attrs) {
+        for (String attr : attrs) {
+            String value = element.getAttribute(attr);
+            if (StringUtils.hasText(value)) {
+                String propertyName = Conventions.attributeNameToPropertyName(attr);
+                if (validateProperty(element, parserContext, propertyName, attr)) {
+                    builder.addPropertyReference(propertyName, value);
+                }
+            }
+        }
+    }
+
+    static void mapRequiredAttributes(Element element, ParserContext parserContext, BeanDefinitionBuilder builder, String... attrs) {
+        for (String attr : attrs) {
+            String value = element.getAttribute(attr);
+            if(!validateRequiredAttribute(element,parserContext,attr)) {
+                return;
+            }
+            String propertyName = Conventions.attributeNameToPropertyName(attr);
+            if (validateProperty(element, parserContext, propertyName, attr)) {
                 builder.addPropertyValue(propertyName, value);
             }
         }
     }
 
-    static void mapOptionalBeanRefAttributes(Element element, BeanDefinitionBuilder builder, String... attrs) {
+    static void mapRequiredBeanRefAttributes(Element element, ParserContext parserContext, BeanDefinitionBuilder builder, String... attrs) {
         for (String attr : attrs) {
             String value = element.getAttribute(attr);
-            if (StringUtils.hasText(value)) {
-                String propertyName = Conventions.attributeNameToPropertyName(attr);
-                Assert.state(StringUtils.hasText(propertyName),
-                    "Illegal property name returned from 'Conventions.attributeNameToPropertyName(String)': cannot be null or empty.");
+            if(!validateRequiredAttribute(element,parserContext,attr)) {
+                return;
+            }
+            String propertyName = Conventions.attributeNameToPropertyName(attr);
+            if (validateProperty(element, parserContext, propertyName, attr)) {
                 builder.addPropertyReference(propertyName, value);
             }
-        }
-    }
-
-    static void mapRequiredAttributes(Element element, BeanDefinitionBuilder builder, String... attrs) {
-        for (String attr : attrs) {
-            String value = element.getAttribute(attr);
-            Assert.isTrue(StringUtils.hasText(value), "The '" + attr + "' attribute is required.");
-            String propertyName = Conventions.attributeNameToPropertyName(attr);
-            Assert.state(StringUtils.hasText(propertyName),
-                "Illegal property name returned from 'Conventions.attributeNameToPropertyName(String)': cannot be null or empty.");
-            builder.addPropertyValue(propertyName, value);
-
-        }
-    }
-
-    static void mapRequiredBeanRefAttributes(Element element, BeanDefinitionBuilder builder, String... attrs) {
-        for (String attr : attrs) {
-            String value = element.getAttribute(attr);
-            Assert.isTrue(StringUtils.hasText(value), "The '" + attr + "' attribute is required.");
-            String propertyName = Conventions.attributeNameToPropertyName(attr);
-            Assert.state(StringUtils.hasText(propertyName),
-                "Illegal property name returned from 'Conventions.attributeNameToPropertyName(String)': cannot be null or empty.");
-            builder.addPropertyReference(propertyName, value);
-
         }
     }
 
@@ -109,11 +110,33 @@ abstract class ParsingUtils {
         componentBuilder.getRawBeanDefinition().setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
         parserContext.registerBeanComponent(new BeanComponentDefinition(componentBuilder.getBeanDefinition(), beanName));
     }
+    
+    private static boolean validateRequiredAttribute(Element element, ParserContext parserContext, String attr) {
+        if (!StringUtils.hasText(attr)) {
+            parserContext.getReaderContext().error("The '" + attr + "' attribute is required.", parserContext.extractSource(element));
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean validateProperty(Element element, ParserContext parserContext, String propertyName, String attr) {
+        if (!StringUtils.hasText(propertyName)) {
+            parserContext.getReaderContext().error(
+                "Illegal property name trying to convert from attribute '" + attr + "' : cannot be null or empty.",
+                parserContext.extractSource(element));
+            return false;
+        }
+        return true;
+    }
 
     private static class SimpleBeanDefinitionParser extends AbstractSimpleBeanDefinitionParser {
 
-        protected void mapToBuilder(Element element, BeanDefinitionBuilder builder) {
-            this.doParse(element, builder);
+        protected void mapToBuilder(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+            try {
+                this.doParse(element, builder);
+            } catch (Exception ex) {
+                parserContext.getReaderContext().error(ex.getMessage(), parserContext.extractSource(element), ex);
+            }
         }
     }
 

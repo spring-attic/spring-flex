@@ -53,8 +53,8 @@ public class IntegrationMessageDestinationBeanDefinitionParser extends AbstractM
     protected void parseAdapter(Element element, ParserContext parserContext, BeanDefinitionBuilder destinationBuilder) {
         BeanDefinitionBuilder adapterBuilder = BeanDefinitionBuilder.genericBeanDefinition(INTEGRATION_ADAPTER_CLASS_NAME);
 
-        ParsingUtils.mapRequiredBeanRefAttributes(element, adapterBuilder, MESSAGE_CHANNEL_ATTR);
-        ParsingUtils.mapOptionalAttributes(element, adapterBuilder, EXTRACT_PAYLOAD_ATTR);
+        ParsingUtils.mapRequiredBeanRefAttributes(element, parserContext, adapterBuilder, MESSAGE_CHANNEL_ATTR);
+        ParsingUtils.mapOptionalAttributes(element, parserContext, adapterBuilder, EXTRACT_PAYLOAD_ATTR);
 
         String serviceAdapterId = ParsingUtils.registerInfrastructureComponent(element, parserContext, adapterBuilder);
         destinationBuilder.addPropertyValue(SERVICE_ADAPTER_PROPERTY, serviceAdapterId);

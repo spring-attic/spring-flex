@@ -94,9 +94,9 @@ public abstract class AbstractMessageDestinationBeanDefinitionParser extends Abs
         brokerId = StringUtils.hasText(brokerId) ? brokerId : BeanIds.MESSAGE_BROKER;
         destinationBuilder.addPropertyReference(MESSAGE_BROKER_PROPERTY, brokerId);
 
-        ParsingUtils.mapOptionalAttributes(element, destinationBuilder, CHANNELS_ATTR, SUBSCRIPTION_TIMEOUT_ATTR, THROTTLE_INBOUND_FREQ_ATTR,
-            THROTTLE_INBOUND_POLICY_ATTR, THROTTLE_OUTBOUND_FREQ_ATTR, THROTTLE_OUTBOUND_POLICY_ATTR, ALLOW_SUBTOPICS_ATTR, CLUSTER_ROUTING_ATTR,
-            MESSAGE_TTL_ATTR, SEND_CONSTRAINT_ATTR, SUBSCRIBE_CONSTRAINT_ATTR, SUBTOPIC_SEPARATOR_ATTR);
+        ParsingUtils.mapOptionalAttributes(element, parserContext, destinationBuilder, CHANNELS_ATTR, SUBSCRIPTION_TIMEOUT_ATTR,
+            THROTTLE_INBOUND_FREQ_ATTR, THROTTLE_INBOUND_POLICY_ATTR, THROTTLE_OUTBOUND_FREQ_ATTR, THROTTLE_OUTBOUND_POLICY_ATTR, ALLOW_SUBTOPICS_ATTR,
+            CLUSTER_ROUTING_ATTR, MESSAGE_TTL_ATTR, SEND_CONSTRAINT_ATTR, SUBSCRIBE_CONSTRAINT_ATTR, SUBTOPIC_SEPARATOR_ATTR);
 
         parseAdapter(element, parserContext, destinationBuilder);
 
