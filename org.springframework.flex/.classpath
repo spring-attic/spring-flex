@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.beans/2.5.6.A/org.springframework.beans-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.beans/2.5.6.A/org.springframework.beans-sources-2.5.6.A.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.context/2.5.6.A/org.springframework.context-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.context/2.5.6.A/org.springframework.context-sources-2.5.6.A.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.context.support/2.5.6.A/org.springframework.context.support-2.5.6.A.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.core/2.5.6.A/org.springframework.core-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.core/2.5.6.A/org.springframework.core-sources-2.5.6.A.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/javax.jms/com.springsource.javax.jms/1.1.0/com.springsource.javax.jms-1.1.0.jar" sourcepath="/FLEX_IVY_CACHE/javax.jms/com.springsource.javax.jms/1.1.0/com.springsource.javax.jms-sources-1.1.0.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.4.0/com.springsource.javax.servlet-2.4.0.jar" sourcepath="/FLEX_IVY_CACHE/javax.servlet/com.springsource.javax.servlet/2.4.0/com.springsource.javax.servlet-sources-2.4.0.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.web/2.5.6.A/org.springframework.web-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.web/2.5.6.A/org.springframework.web-sources-2.5.6.A.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.web.servlet/2.5.6.A/org.springframework.web.servlet-2.5.6.A.jar" sourcepath="FLEX_IVY_CACHE/org.springframework/org.springframework.web.servlet/2.5.6.A/org.springframework.web.servlet-sources-2.5.6.A.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.junit/com.springsource.org.junit/4.4.0/com.springsource.org.junit-4.4.0.jar" sourcepath="/FLEX_IVY_CACHE/org.junit/com.springsource.org.junit/4.4.0/com.springsource.org.junit-sources-4.4.0.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-1.1.1.jar" sourcepath="/FLEX_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.logging/1.1.1/com.springsource.org.apache.commons.logging-sources-1.1.1.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.jms/2.5.6.A/org.springframework.jms-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.jms/2.5.6.A/org.springframework.jms-sources-2.5.6.A.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.test/2.5.6.A/org.springframework.test-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.test/2.5.6.A/org.springframework.test-sources-2.5.6.A.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/edu.emory.mathcs.backport/com.springsource.edu.emory.mathcs.backport/2.2.0/com.springsource.edu.emory.mathcs.backport-2.2.0.jar" sourcepath="/FLEX_IVY_CACHE/edu.emory.mathcs.backport/com.springsource.edu.emory.mathcs.backport/2.2.0/com.springsource.edu.emory.mathcs.backport-sources-2.2.0.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.apache.commons/com.springsource.org.apache.commons.httpclient/3.1.0/com.springsource.org.apache.commons.httpclient-3.1.0.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/3.2.0.3978/com.springsource.flex.messaging-3.2.0.3978.jar" sourcepath="/FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/3.2.0.3978/com.springsource.flex.messaging-sources-3.2.0.3978.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.common/3.2.0.3978/com.springsource.flex.messaging.common-3.2.0.3978.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.http/3.2.0.3978/com.springsource.flex.messaging.services.http-3.2.0.3978.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.remoting/3.2.0.3978/com.springsource.flex.messaging.services.remoting-3.2.0.3978.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework.integration/org.springframework.integration/1.0.2.RELEASE/org.springframework.integration-1.0.2.RELEASE.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework.integration/org.springframework.integration/1.0.2.RELEASE/org.springframework.integration-sources-1.0.2.RELEASE.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-2.0.4.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-sources-2.0.4.A.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.mockito/com.springsource.org.mockito/1.6.0/com.springsource.org.mockito-1.6.0.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.hamcrest/com.springsource.org.hamcrest.core/1.1.0/com.springsource.org.hamcrest.core-1.1.0.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.objenesis/com.springsource.org.objenesis/1.0.0/com.springsource.org.objenesis-1.0.0.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.aop/2.5.6.A/org.springframework.aop-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.aop/2.5.6.A/org.springframework.aop-sources-2.5.6.A.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/net.sourceforge.cglib/com.springsource.net.sf.cglib/2.1.3/com.springsource.net.sf.cglib-2.1.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/com.springsource.server.ide.server.core.runtime.classpath/SpringSource dm Server (Runtime) v1.0.1"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.transaction/2.5.6.A/org.springframework.transaction-2.5.6.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.transaction/2.5.6.A/org.springframework.transaction-sources-2.5.6.A.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.codehaus.jackson/com.springsource.org.codehaus.jackson/1.0.0/com.springsource.org.codehaus.jackson-1.0.0.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
