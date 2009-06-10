@@ -76,9 +76,6 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
         return new ServiceFactoryInstance(this, id, properties);
     }
 
-    /**
-     * @exclude
-     */
     public void initialize(String id, ConfigMap configMap) {
         // No-op
     }
@@ -86,7 +83,6 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     /**
      * Lookup will be handled directly by the created FactoryInstance
      * 
-     * @exclude
      */
     public Object lookup(FactoryInstance instanceInfo) {
         throw new UnsupportedOperationException("FlexFactory.lookup");

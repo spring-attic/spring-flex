@@ -201,7 +201,7 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
     /**
      * Sets the JMS queue name for messages sent and received by this adapter.
      * 
-     * @param messageConverter the JMS queue name
+     * @param queueName the JMS queue name
      */
     public void setQueueName(String queueName) {
         this.destination = queueName;
@@ -210,7 +210,7 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
     /**
      * Sets the JMS topic name for messages sent and received by this adapter.
      * 
-     * @param messageConverter the JMS topic name
+     * @param topicName the JMS topic name
      */
     public void setTopicName(String topicName) {
         this.pubSubDomain = true;

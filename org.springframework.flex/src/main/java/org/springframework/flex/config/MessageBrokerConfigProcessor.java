@@ -19,8 +19,8 @@ package org.springframework.flex.config;
 import flex.messaging.MessageBroker;
 
 /**
- * Factory hook that allows for custom configuration of a {@link MessageBroker} when created by a {@link
- * {@link MessageBroker}FactoryBean}.
+ * Factory hook that allows for custom configuration of a {@link MessageBroker} when created by a
+ * {@link MessageBrokerFactoryBean}.
  * 
  * @author Jeremy Grelle
  * @see org.springframework.flex.core.MessageBrokerFactoryBean
