@@ -2,6 +2,19 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
+Changes in version 1.0.0.RELEASE (06.09.2009)
+-----------------------------------------
+General
+* Maven central compatible POMs will be mirrored to http://repo1.maven.org
+* Marked Jackson and CGLib dependencies as required in ivy and pom configurations since they are almost always needed in practice
+* Added documentation about using Spring MVC controllers alongside Spring BlazeDS Integration in the same application.
+
+Enhancements
+* FLEX-51 - Extract FlexMessage body for Spring Integration Message payload by default
+* FLEX-55 - Map Flex Message id, timestamp, and timeToLive directly into Spring Integration Message
+* FLEX-57 - Add tooling metadata to the XML config schema.
+* FLEX-58 - Refactor the XML parsing subsystem to always use the ErrorReporter API to report configuration problems
+
 Changes in version 1.0.0.RC2 (05.19.2009)
 -----------------------------------------
 General

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.flex.samples</groupId>
 		<artifactId>spring-flex-testdrive</artifactId>
-		<version>1.0.0-BUILD-SNAPSHOT</version>
+		<version>1.0.0.RELEASE</version>
 	</parent>
 
 	<artifactId>testdrive</artifactId>
@@ -73,7 +73,7 @@
 		<dependency>
 			<groupId>org.springframework.flex</groupId>
 			<artifactId>spring-flex</artifactId>
-			<version>1.0.0.RC2</version>
+			<version>1.0.0.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -99,11 +99,6 @@
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>1.6.3</version>
-		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>2.1_3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
