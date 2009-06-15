@@ -6,7 +6,7 @@
 	<artifactId>spring-flex</artifactId>
 	<packaging>jar</packaging>
 	<name>Spring BlazeDS Integration</name>
-	<version>1.0.0.RELEASE</version>
+	<version>1.0.1.BUILD-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
