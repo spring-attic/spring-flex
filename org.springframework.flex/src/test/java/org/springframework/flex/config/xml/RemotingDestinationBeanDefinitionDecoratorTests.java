@@ -73,6 +73,7 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
         assertNotNull("Could not find the remoting service", rs);
         RemotingDestination rd = (RemotingDestination) rs.getDestination("remoteBean2");
         assertNotNull("Destination not found", rd);
+        assertEquals("Source not properly set", Bean1.class.getName(), rd.getSource());
     }
 
     public void testInvalidConfig() {
@@ -83,6 +84,15 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
             // Expected
         }
     }
+
+    /**
+     * Uncomment this only for faster dev time testing
+     */
+//    @Override
+//    protected String[] getConfigLocations() {
+//        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml",
+//            "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
+//    }
 
     public static final class Bean1 {
 

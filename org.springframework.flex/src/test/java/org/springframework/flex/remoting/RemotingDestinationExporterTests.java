@@ -211,6 +211,7 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         assertTrue("RemotingDestination not started", remotingDestination.isStarted());
         assertEquals("Default adapter not set", "java-object", remotingDestination.getAdapter().getId());
         assertTrue("No channels set on destination", remotingDestination.getChannels().size() > 0);
+        assertEquals("Source should be class name of target object", this.testService.getClass().getName(), remotingDestination.getSource());
     }
 
     public void testDestinationRegisteredWithDestinationId() throws Exception {

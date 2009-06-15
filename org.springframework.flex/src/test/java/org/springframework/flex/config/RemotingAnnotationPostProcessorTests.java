@@ -40,6 +40,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertNotNull("Could not find the remoting service", rs);
         flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedAutowiredRemoteBean");
         assertNotNull("Destination not found", rd);
+        assertEquals("Source not properly set", AnnotatedAutowiredRemoteBean.class.getName(), rd.getSource());
     }
 
     public void testExportAnnotatedBeanWithDefaults() {
@@ -49,6 +50,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertNotNull("Could not find the remoting service", rs);
         flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedRemoteBean");
         assertNotNull("Destination not found", rd);
+        assertEquals("Source not properly set", AnnotatedRemoteBean.class.getName(), rd.getSource());
     }
     
     public void testExportAnnotatedBeanFromParentContextWithDefaults() {
@@ -58,6 +60,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertNotNull("Could not find the remoting service", rs);
         flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedRemoteBean3");
         assertNotNull("Destination not found", rd);
+        assertEquals("Source not properly set", MyService1.class.getName(), rd.getSource());
     }
 
     public void testExportAnnotatedXmlConfiguredBeanWithDefaults() {
@@ -67,6 +70,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertNotNull("Could not find the remoting service", rs);
         flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedRemoteBean1");
         assertNotNull("Destination not found", rd);
+        assertEquals("Source not properly set", MyService1.class.getName(), rd.getSource());
     }
 
     @SuppressWarnings("unchecked")

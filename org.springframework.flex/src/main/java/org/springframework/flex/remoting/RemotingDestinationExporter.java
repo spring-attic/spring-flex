@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.flex.core.AbstractDestinationFactory;
 import org.springframework.flex.core.MessageBrokerFactoryBean;
 import org.springframework.util.Assert;
@@ -131,6 +132,7 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
         RemotingDestination destination = (RemotingDestination) remotingService.createDestination(destinationId);
 
         destination.setFactory(this);
+        destination.setSource(AopUtils.getTargetClass(service).getName());
 
         if (log.isInfoEnabled()) {
             log.info("Created remoting destination with id '" + destinationId + "'");
