@@ -78,6 +78,10 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
             FlexContext.getMessageBroker().stop();
             FlexContext.setThreadLocalObjects(null, null, null, null, null, null);
         }
+        clearProcessors();
+    }
+    
+    protected final void clearProcessors() {
         this.startupProcessors.clear();
     }
 

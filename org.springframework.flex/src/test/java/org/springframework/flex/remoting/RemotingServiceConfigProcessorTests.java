@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
 
@@ -88,8 +89,9 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         try {
             getMessageBroker();
             fail("Invalid channels not detected");
-        } catch (IllegalArgumentException ex) {
+        } catch (BeanInitializationException ex) {
             // expected
+            assertTrue("IllegalArgumentException expected", ex.getCause() instanceof IllegalArgumentException);
             setDirty();
         }
     }
@@ -106,8 +108,10 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         try {
             getMessageBroker().getServiceByType(RemotingService.class.getName());
             fail("An error should be thrown.");
-        } catch (IllegalArgumentException ex) {
+        } catch (BeanInitializationException ex) {
             // expected
+            assertTrue("IllegalArgumentException expected", ex.getCause() instanceof IllegalArgumentException);
+            setDirty();
         }
     }
 

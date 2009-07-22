@@ -30,6 +30,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
@@ -112,70 +113,77 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
      */
     public void afterPropertiesSet() throws Exception {
 
-        ServletConfig servletConfig = new DelegatingServletConfig();
-
-        // Set the servlet config as thread local
-        FlexContext.setThreadLocalObjects(null, null, null, null, null, servletConfig);
-
-        // Get the configuration manager
-        if (this.configurationManager == null) {
-            this.configurationManager = new FlexConfigurationManager(this.resourceLoader, this.servicesConfigPath);
-        }
-
-        // Load configuration
-        MessagingConfiguration messagingConfig = this.configurationManager.getMessagingConfiguration(servletConfig);
-
-        // Set up logging system ahead of everything else.
-        messagingConfig.createLogAndTargets();
-
-        // Create broker.
-        this.messageBroker = messagingConfig.createBroker(this.name, this.beanClassLoader);
-
-        // Set the servlet config as thread local
-        FlexContext.setThreadLocalObjects(null, null, this.messageBroker, null, null, servletConfig);
-
-        setupInternalPathResolver();
-
-        setInitServletContext();
-
-        if (logger.isInfoEnabled()) {
-            logger.info(VersionInfo.buildMessage());
-        }
-
-        // Create endpoints, services, security, and logger on the broker based
-        // on configuration
-        messagingConfig.configureBroker(this.messageBroker);
-
-        long timeBeforeStartup = 0;
-        if (logger.isInfoEnabled()) {
-            timeBeforeStartup = System.currentTimeMillis();
-            logger.info("MessageBroker with id '" + this.messageBroker.getId() + "' is starting.");
-        }
-
-        // initialize the httpSessionToFlexSessionMap
-        synchronized (HttpFlexSession.mapLock) {
-            if (servletConfig.getServletContext().getAttribute(HttpFlexSession.SESSION_MAP) == null) {
-                servletConfig.getServletContext().setAttribute(HttpFlexSession.SESSION_MAP, new ConcurrentHashMap());
+        try {
+            ServletConfig servletConfig = new DelegatingServletConfig();
+    
+            // Set the servlet config as thread local
+            FlexContext.setThreadLocalObjects(null, null, null, null, null, servletConfig);
+    
+            // Get the configuration manager
+            if (this.configurationManager == null) {
+                this.configurationManager = new FlexConfigurationManager(this.resourceLoader, this.servicesConfigPath);
             }
+    
+            // Load configuration
+            MessagingConfiguration messagingConfig = this.configurationManager.getMessagingConfiguration(servletConfig);
+    
+            // Set up logging system ahead of everything else.
+            messagingConfig.createLogAndTargets();
+    
+            // Create broker.
+            this.messageBroker = messagingConfig.createBroker(this.name, this.beanClassLoader);
+    
+            // Set the servlet config as thread local
+            FlexContext.setThreadLocalObjects(null, null, this.messageBroker, null, null, servletConfig);
+    
+            setupInternalPathResolver();
+    
+            setInitServletContext();
+    
+            if (logger.isInfoEnabled()) {
+                logger.info(VersionInfo.buildMessage());
+            }
+    
+            // Create endpoints, services, security, and logger on the broker based
+            // on configuration
+            messagingConfig.configureBroker(this.messageBroker);
+    
+            long timeBeforeStartup = 0;
+            if (logger.isInfoEnabled()) {
+                timeBeforeStartup = System.currentTimeMillis();
+                logger.info("MessageBroker with id '" + this.messageBroker.getId() + "' is starting.");
+            }
+    
+            // initialize the httpSessionToFlexSessionMap
+            synchronized (HttpFlexSession.mapLock) {
+                if (servletConfig.getServletContext().getAttribute(HttpFlexSession.SESSION_MAP) == null) {
+                    servletConfig.getServletContext().setAttribute(HttpFlexSession.SESSION_MAP, new ConcurrentHashMap());
+                }
+            }
+    
+            this.messageBroker = processBeforeStart(this.messageBroker);
+    
+            this.messageBroker.start();
+    
+            this.messageBroker = processAfterStart(this.messageBroker);
+    
+            if (logger.isInfoEnabled()) {
+                long timeAfterStartup = System.currentTimeMillis();
+                Long diffMillis = new Long(timeAfterStartup - timeBeforeStartup);
+                logger.info("MessageBroker with id '" + this.messageBroker.getId() + "' is ready (startup time: '" + diffMillis + "' ms)");
+            }
+    
+            // Report replaced tokens
+            this.configurationManager.reportTokens();
+    
+            // Report any unused properties.
+            messagingConfig.reportUnusedProperties();
+        
+        } catch (Throwable error) {
+            //Ensure the broker gets cleaned up properly, then re-throw
+            destroy();
+            throw new BeanInitializationException("MessageBroker initialization failed", error);
         }
-
-        this.messageBroker = processBeforeStart(this.messageBroker);
-
-        this.messageBroker.start();
-
-        this.messageBroker = processAfterStart(this.messageBroker);
-
-        if (logger.isInfoEnabled()) {
-            long timeAfterStartup = System.currentTimeMillis();
-            Long diffMillis = new Long(timeAfterStartup - timeBeforeStartup);
-            logger.info("MessageBroker with id '" + this.messageBroker.getId() + "' is ready (startup time: '" + diffMillis + "' ms)");
-        }
-
-        // Report replaced tokens
-        this.configurationManager.reportTokens();
-
-        // Report any unused properties.
-        messagingConfig.reportUnusedProperties();
     }
 
     /**

@@ -16,11 +16,15 @@
 
 package org.springframework.flex.core;
 
+import org.springframework.flex.config.MessageBrokerConfigProcessor;
+
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
 
 public class MessageBrokerFactoryBeanTests extends AbstractMessageBrokerTests {
 
+    private boolean testErrorCase = false;
+    
     public void testBrokerInitialization() throws Exception {
 
         MessageBroker broker = getMessageBroker();
@@ -30,4 +34,100 @@ public class MessageBrokerFactoryBeanTests extends AbstractMessageBrokerTests {
         assertNotNull("remoting-service not found", remotingService);
         assertTrue("The remoting service was not started", remotingService.isStarted());
     }
+    
+    public void testBrokerInitialization_InvalidConfigFileFailure() throws Exception {
+        
+        setDirty();
+        testErrorCase = true;
+        
+        MessageBroker broker;
+        
+        try {
+            broker = getMessageBroker();
+        } catch (Exception ex) {
+            //Expected - continue
+        }
+        
+        testErrorCase = false;
+        
+        broker = createMessageBroker();
+        
+        assertNotNull("MessageBroker was not created.", broker);        
+    }
+    
+    public void testBrokerInitialization_ConfigProcessorErrorBeforeStartup() throws Exception {
+        
+        setDirty();
+        
+        addStartupProcessor(new BeforeStartupErrorThrowingProcessor());
+        
+        MessageBroker broker;
+        
+        try {
+            broker = getMessageBroker();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            //Expected - continue
+        }
+       
+        clearProcessors();
+        
+        broker = createMessageBroker();
+        
+        assertNotNull("MessageBroker was not created.", broker);       
+    }
+    
+    public void testBrokerInitialization_ConfigProcessorErrorAfterStartup() throws Exception {
+        
+        setDirty();
+        
+        addStartupProcessor(new AfterStartupErrorThrowingProcessor());
+        
+        MessageBroker broker;
+        
+        try {
+            broker = getMessageBroker();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            //Expected - continue
+        }
+       
+        clearProcessors();
+        
+        broker = createMessageBroker();
+        
+        assertNotNull("MessageBroker was not created.", broker);       
+    }
+
+    @Override
+    protected String getServicesConfigPath() {
+        if (testErrorCase) {
+            return "fubar";
+        } else {
+            return super.getServicesConfigPath();
+        }
+    }
+    
+    public static final class BeforeStartupErrorThrowingProcessor implements MessageBrokerConfigProcessor {
+
+        public MessageBroker processAfterStartup(MessageBroker broker) {
+            return broker;
+        }
+
+        public MessageBroker processBeforeStartup(MessageBroker broker) {
+            throw new RuntimeException("failure before startup");
+        }        
+    }
+    
+    public static final class AfterStartupErrorThrowingProcessor implements MessageBrokerConfigProcessor {
+
+        public MessageBroker processAfterStartup(MessageBroker broker) {
+            throw new RuntimeException("failure before startup");
+        }
+
+        public MessageBroker processBeforeStartup(MessageBroker broker) {
+            return broker;
+        }        
+    }
+
 }
