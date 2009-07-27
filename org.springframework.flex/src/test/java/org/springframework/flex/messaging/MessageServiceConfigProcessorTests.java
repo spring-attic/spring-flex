@@ -53,6 +53,7 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
         assertEquals("The default adapter was not set", "actionscript", messageService.getDefaultAdapter());
     }
 
+    @SuppressWarnings("unchecked")
     public void testMessageServiceAddedWithCustomDefaults() throws Exception {
         setDirty();
         MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
@@ -62,7 +63,7 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
         addStartupProcessor(processor);
         this.servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
 
-        when(this.beanFactory.getType("my-adapter")).thenReturn(TestAdapter.class);
+        when((Class) this.beanFactory.getType("my-adapter")).thenReturn(TestAdapter.class);
 
         MessageService messageService = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
         assertTrue("The default channel was not set", messageService.getDefaultChannels().contains("my-custom-default-amf"));

@@ -53,6 +53,7 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         assertEquals("The default adapter was not set", "java-object", remotingService.getDefaultAdapter());
     }
 
+    @SuppressWarnings("unchecked")
     public void testRemotingServiceAddedWithCustomDefaults() throws Exception {
         setDirty();
         RemotingServiceConfigProcessor processor = new RemotingServiceConfigProcessor();
@@ -62,7 +63,7 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         addStartupProcessor(processor);
         this.servicesConfigPath = "classpath:org/springframework/flex/remoting/default-channels-config.xml";
 
-        when(this.beanFactory.getType("my-adapter")).thenReturn(TestAdapter.class);
+        when((Class) this.beanFactory.getType("my-adapter")).thenReturn(TestAdapter.class);
 
         RemotingService remotingService = (RemotingService) getMessageBroker().getServiceByType(RemotingService.class.getName());
         assertTrue("The default channel was not set", remotingService.getDefaultChannels().contains("my-custom-default-amf"));
