@@ -52,7 +52,7 @@ public class ExceptionTranslationAdvice implements ThrowsAdvice {
         Throwable candidate = original;
 
         if (ClassUtils.isAssignable(MessageException.class, candidateType)) {
-            MessageException me = (MessageException) original;
+            MessageException me = (MessageException) candidate;
             if (SERVER_PROCESSING_CODE.equals(me.getCode()) && me.getRootCause() != null) {
                 candidateType = me.getRootCause().getClass();
                 candidate = me.getRootCause();
