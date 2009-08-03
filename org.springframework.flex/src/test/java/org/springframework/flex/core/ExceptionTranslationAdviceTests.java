@@ -95,6 +95,8 @@ public class ExceptionTranslationAdviceTests extends TestCase {
     public void testUnknownExceptionPassthrough() {
 
         MessageException expected = new MessageException();
+        expected.setCode("Server.Processing");
+        expected.setRootCause(new RuntimeException());
         when(this.endpoint.serviceMessage(this.inMessage)).thenThrow(expected);
 
         try {

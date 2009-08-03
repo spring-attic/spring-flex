@@ -43,30 +43,31 @@ public class ExceptionTranslationAdvice implements ThrowsAdvice {
     /**
      * Apply translation to the thrown exception.
      * 
-     * @param t the thrown exception
+     * @param original the thrown exception
      * @throws Throwable the translated exception
      */
-    public void afterThrowing(Throwable t) throws Throwable {
+    public void afterThrowing(Throwable original) throws Throwable {
 
-        Class<?> candidate = t.getClass();
+        Class<?> candidateType = original.getClass();
+        Throwable candidate = original;
 
-        if (ClassUtils.isAssignable(MessageException.class, candidate)) {
-            MessageException me = (MessageException) t;
+        if (ClassUtils.isAssignable(MessageException.class, candidateType)) {
+            MessageException me = (MessageException) original;
             if (SERVER_PROCESSING_CODE.equals(me.getCode()) && me.getRootCause() != null) {
-                candidate = me.getRootCause().getClass();
-                t = me.getRootCause();
+                candidateType = me.getRootCause().getClass();
+                candidate = me.getRootCause();
             }
         }
 
         for (ExceptionTranslator translator : this.exceptionTranslators) {
-            if (translator.handles(candidate)) {
-                MessageException result = translator.translate(t);
+            if (translator.handles(candidateType)) {
+                MessageException result = translator.translate(candidate);
                 if (result != null) {
                     throw result;
                 }
             }
         }
-        throw t;
+        throw original;
     }
 
     /**
