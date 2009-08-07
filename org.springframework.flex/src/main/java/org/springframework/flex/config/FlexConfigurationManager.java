@@ -28,6 +28,7 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.JdkVersion;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -155,17 +156,22 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 
         public InputStream getConfigurationFile(String path) {
             try {
-                Resource resource = this.resourceLoader.getResource(path);
-                if (resource.exists()) {
-                    pushConfigurationFile(resource);
-                    if (log.isInfoEnabled()) {
-                        log.info("Loading Flex services configuration from: " + resource.toString());
-                    }
-                    return resource.getInputStream();
+                Resource resource;
+                if (this.resourceLoader instanceof ResourcePatternResolver) {
+                    ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
+                    Resource[] resources = resolver.getResources(path);
+                    Assert.notEmpty(resources, "Flex configuration file could not be resolved using pattern: " + path);
+                    Assert.isTrue(resources.length == 1, "Invalid pattern used for flex configuration file.  More than one resource resolved using pattern: " + path);
+                    resource = resources[0];
                 } else {
-                    throw new IllegalStateException("Flex configuration file does not exist at path: " + path);
+                    resource = this.resourceLoader.getResource(path);
                 }
-
+                Assert.isTrue(resource.exists(),"Flex configuration file does not exist at path: " + path);
+                pushConfigurationFile(resource);
+                if (log.isInfoEnabled()) {
+                    log.info("Loading Flex services configuration from: " + resource.toString());
+                }
+                return resource.getInputStream();                
             } catch (IOException e) {
                 throw new IllegalStateException("Flex configuration file could not be loaded from path: " + path);
             }

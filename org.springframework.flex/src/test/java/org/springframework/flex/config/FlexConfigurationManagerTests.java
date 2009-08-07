@@ -71,6 +71,50 @@ public class FlexConfigurationManagerTests extends TestCase {
         assertNotNull(messagingConfiguration.getServiceSettings("proxy-service"));
         assertNotNull(messagingConfiguration.getServiceSettings("remoting-service"));
     }
+    
+    public void testGetMessagingConfigurationDoesNotExist() {
+        this.configManager = new FlexConfigurationManager(this.context, "classpath:org/springframework/flex/core/foo.xml");
+
+        try {
+            this.configManager.getMessagingConfiguration(this.config);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            // expected
+        }
+    }
+    
+    public void testGetMessagingConfiguration_ClasspathResourcePattern() {
+        this.configManager = new FlexConfigurationManager(this.context, "classpath*:org/springframework/flex/core/services-config.xml");
+
+        MessagingConfiguration messagingConfiguration = this.configManager.getMessagingConfiguration(this.config);
+
+        assertNotNull(messagingConfiguration);
+        assertNotNull(messagingConfiguration.getServiceSettings("message-service"));
+        assertNotNull(messagingConfiguration.getServiceSettings("proxy-service"));
+        assertNotNull(messagingConfiguration.getServiceSettings("remoting-service"));
+    }
+    
+    public void testGetMessagingConfiguration_ClasspathResourcePatternDoesNotExist() {
+        this.configManager = new FlexConfigurationManager(this.context, "classpath*:org/springframework/flex/core/foo.xml");
+
+        try {
+            this.configManager.getMessagingConfiguration(this.config);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            // expected
+        } 
+    }
+    
+    public void testGetMessagingConfiguration_ClasspathResourcePatternTooAmbiguous() {
+        this.configManager = new FlexConfigurationManager(this.context, "classpath*:org/springframework/flex/core/*-config.xml");
+
+        try {
+            this.configManager.getMessagingConfiguration(this.config);
+            fail();
+        } catch (IllegalArgumentException ex) {
+            // expected
+        } 
+    }
 
     public void testGetMessagingConfiguration_NullServletConfig() {
         this.configManager = new FlexConfigurationManager(this.context, "classpath:org/springframework/flex/core/services-config.xml");
