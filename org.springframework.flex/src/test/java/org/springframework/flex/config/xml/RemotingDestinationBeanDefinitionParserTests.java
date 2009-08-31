@@ -23,6 +23,9 @@ import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.flex.config.AbstractFlexConfigurationTests;
 import org.springframework.flex.config.BeanIds;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.handler.DispatcherServletWebRequest;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -76,6 +79,22 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
         assertNotNull("Destination not found", rd);
         assertEquals("Source not properly set", Bean1.class.getName(), rd.getSource());
     }
+    
+    public void testExportScopedBeanWithDefaults() {
+        RequestContextHolder.setRequestAttributes(new DispatcherServletWebRequest(new MockHttpServletRequest()));
+        
+        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for default ID", this.broker);
+        RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
+        assertNotNull("Could not find the remoting service", rs);
+        RemotingDestination rd = (RemotingDestination) rs.getDestination("scopedBean");
+        assertNotNull("Destination not found", rd);
+        assertEquals("Source not properly set", Bean1.class.getName(), rd.getSource());
+        Bean1 bean = (Bean1) rd.getFactoryInstance().lookup();
+        assertEquals("bar", bean.bar());
+        
+        RequestContextHolder.resetRequestAttributes();
+    }
 
     public void testInvalidConfig() {
         try {
@@ -95,7 +114,7 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
 //            "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
 //    }
 
-    public static final class Bean1 {
+    public static class Bean1 {
 
         public String bar() {
             return "bar";
