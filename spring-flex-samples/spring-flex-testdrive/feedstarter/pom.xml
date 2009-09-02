@@ -27,7 +27,7 @@
 				<configuration>
 					<output>${basedir}/../testdrive/src/main/webapp/${project.build.finalName}/${project.build.finalName}.swf</output>
 					<services>${basedir}/../testdrive/src/main/webapp/WEB-INF/flex/services-config.xml</services>
-					<contextRoot>/</contextRoot>
+					<contextRoot>/testdrive</contextRoot>
 					<locales>
 						<locale>en_US</locale>
 					</locales>

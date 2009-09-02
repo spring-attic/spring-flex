@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
 	applicationComplete="applicationCompleteHandler()">
 
 	<mx:Script>
@@ -8,14 +8,21 @@
 			import mx.messaging.ChannelSet;
 			import mx.messaging.channels.AMFChannel;
 			import mx.controls.Alert;
+			import mx.rpc.AsyncToken;
+			import mx.rpc.AsyncResponder;
 			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable]
+			private var user:Object = null;
 			
 			private function applicationCompleteHandler():void
 			{
-				var channel:AMFChannel = new AMFChannel("my-amf", "http://localhost:8080/messagebroker/amf");
+				var channel:AMFChannel = new AMFChannel("my-amf", "http://localhost:8080/testdrive/messagebroker/amf");
 				var channelSet:ChannelSet = new ChannelSet();
 				channelSet.addChannel(channel);
 				ro.channelSet = channelSet;
+				chat.consumer.subscribe();
 			}
 
 			private function faultHandler(event:FaultEvent):void
@@ -25,12 +32,26 @@
 			
 			private function login():void
 			{
-				ro.channelSet.login(userId.text, password.text);
+				var token:AsyncToken = ro.channelSet.login(userId.text, password.text);
+	  			token.addResponder(
+	  				new AsyncResponder(
+	  					function(event:ResultEvent, token:Object = null):void{
+	  						user = event.result;
+	  					},
+	  					function(event:FaultEvent, token:Object = null):void{
+	  						Alert.show(event.fault.faultString, "Login Failed");
+	  					}
+	  				)
+	  			);
 			}
 
 			private function logout():void
 			{
-				ro.channelSet.logout();	
+				ro.channelSet.logout();
+				user = null;
+				userId.text = "";
+				password.text = "";
+				grid.dataProvider.removeAll();		
 			}
 			
 		]]>
@@ -51,8 +72,26 @@
 		</mx:FormItem>
 	</mx:Form>
 	
-	<mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
-
-	<mx:Button label="Get Data" click="ro.findAll()"/>
+	<mx:Accordion width="100%" visible="{user != null}">
 	
+		<mx:Canvas label="Products" width="100%">
+			<mx:Panel width="100%">
+				<mx:DataGrid id="grid" dataProvider="{ro.findAll.lastResult}" width="100%" height="100%">
+					<mx:columns>
+						<mx:DataGridColumn dataField="productId" headerText="Product ID" visible="{user != null ? user.authorities.indexOf('ROLE_ADMIN') >= 0 : false}"/>
+						<mx:DataGridColumn dataField="name" headerText="Name" />
+					    <mx:DataGridColumn dataField="category" headerText="Category" />
+					    <mx:DataGridColumn dataField="description" headerText="Description" />
+					    <mx:DataGridColumn dataField="image" headerText="Image" />
+					    <mx:DataGridColumn dataField="price" headerText="Price" />
+					    <mx:DataGridColumn dataField="qty" headerText="Qty" />
+					</mx:columns>
+				</mx:DataGrid>
+				<mx:Button label="Get Data" click="ro.findAll()"/>
+			</mx:Panel>
+		</mx:Canvas>
+		
+		<Chat id="chat" username="{user.name}"/>
+		
+	</mx:Accordion>
 </mx:Application>

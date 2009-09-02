@@ -32,9 +32,9 @@
 		will use to try to communicate with the server. If the first channel fails, the system will try to communicate 
         with the second channel defined in the channelSet. -->
 	<mx:ChannelSet id="cs">
-		<!-- <mx:StreamingAMFChannel url="http://localhost:8080/messagebroker/streamingamf"/> -->
-		<mx:AMFChannel url="http://localhost:8080/messagebroker/amflongpolling"/>
-		<mx:AMFChannel url="http://localhost:8080/messagebroker/amfpolling"/>
+		<!-- <mx:StreamingAMFChannel url="http://localhost:8080/testdrive/messagebroker/streamingamf"/> -->
+		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
+		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
 	</mx:ChannelSet>
 	
 	<mx:Producer id="producer" destination="chat" channelSet="{cs}"/>

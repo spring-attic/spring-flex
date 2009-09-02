@@ -22,7 +22,7 @@
 			
 			private function init():void
 			{
-				var channel:AMFChannel = new AMFChannel("my-amf", "http://localhost:8080/messagebroker/amf");
+				var channel:AMFChannel = new AMFChannel("my-amf", "http://localhost:8080/testdrive/messagebroker/amf");
 				channelSet = new ChannelSet();
 				channelSet.addChannel(channel);
 				ro.channelSet = channelSet;

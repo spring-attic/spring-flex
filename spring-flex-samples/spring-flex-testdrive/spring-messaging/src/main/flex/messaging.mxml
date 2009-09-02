@@ -22,8 +22,8 @@
 	</mx:Script>
 	
 	<mx:ChannelSet id="cs">
-		<mx:AMFChannel url="http://localhost:8080/messagebroker/amflongpolling"/>
-		<mx:AMFChannel url="http://localhost:8080/messagebroker/amfpolling"/>
+		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
+		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
 	</mx:ChannelSet>
 	
 	<mx:Producer id="producer" destination="si-send" channelSet="{cs}"/>

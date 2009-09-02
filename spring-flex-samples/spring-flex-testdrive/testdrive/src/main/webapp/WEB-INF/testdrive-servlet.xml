@@ -20,11 +20,12 @@
 	<!-- Expose the contactService bean for BlazeDS remoting -->
 	<flex:remoting-destination ref="contactService" />
 
-	<!-- Expost the securedProductService bean for BlazeDS remoting -->
+	<!-- Expose the securedProductService bean for BlazeDS remoting -->
 	<flex:remoting-destination ref="securedProductService" />
 
 	<!-- Messaging destinations -->
 	<flex:message-destination id="chat" />
+	<flex:message-destination id="secured-chat" send-security-constraint="trusted" />
 	<flex:message-destination id="simple-feed" />
 	<flex:message-destination id="market-feed" allow-subtopics="true" subtopic-separator="." />
 	<flex:jms-message-destination id="jms-chat" jms-destination="chatTopic" /> 	<!-- See configuration of "chatTopic" in /WEB-INF/spring/infrastructure-context.xml -->

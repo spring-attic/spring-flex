@@ -2,7 +2,7 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
 	
 	<mx:ChannelSet id="cs">
-		<mx:AMFChannel url="http://localhost:8080/messagebroker/amf"/>
+		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amf"/>
 	</mx:ChannelSet>
 	
 	<mx:RemoteObject id="simpleFeedStarter" destination="simpleFeedStarter" channelSet="{cs}"/>

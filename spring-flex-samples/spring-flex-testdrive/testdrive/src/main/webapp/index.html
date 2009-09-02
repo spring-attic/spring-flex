@@ -368,13 +368,14 @@ infrastructure.</p>
 <a name="security"></a>
 <div class="item">
   <h3>Security Integration 101</h3>
-  <h4>Run the sample:</h4>
+  <h4>Run the sample and login as various users to see the effect of the security settings:</h4>
 <ol>
-  <li>Click <a href="http://localhost:8080/secured/secured.html">here</a> to run the application</li>
-  <li>Click &quot;Get Data&quot; without logging in first: you  get an &quot;Access Denied&quot; exception</li>
+  <li>Click <a href="secured/secured.html">here</a> to run the application</li>
   <li>Log in (use UserId: john / Password: john), and click &quot;Get Data&quot; again: you should now get the data</li>
-  <li>Click &quot;Logout&quot; and &quot;Get Data&quot; again: you get the &quot;Access Denied&quot; exception again</li>
-  <li>If you are already authenticated, you don't have to use the ChannelSet login. For example, access <a href="http://localhost:8080/login.jsp">http://localhost:8080/login.jsp</a>, and logon using john / john. <a href="http://localhost:8080/secured/secured.html">Come back to the application</a> and click Get Data without logging in inside the application: you should get the data.</li>
+  <li>Expand the &quot;Chat&quot; panel and enter a message.  You should see the message published to the main chat window.</li>
+  <li>Log out and then log in as the admin user (use UserId: admin / Password: admin).  You should now see an additional column in the table that is conditionally displayed based on the user's permissions.</li>
+  <li>Log out and then log in as the guest user (use UserId: guest / Password: guest).  If you click &quot;Get Data&quot; an &quot;Access Denied&quot; error will be displayed as this user does not have sufficient permissions.</li>
+  <li>As the &quot;guest&quot; user, again expand the &quot;Chat&quot; panel and attempt to enter a message.  You should receive an error due to not having sufficient permissions.</li>
 </ol>
 
 <h4>Code walkthrough:</h4>

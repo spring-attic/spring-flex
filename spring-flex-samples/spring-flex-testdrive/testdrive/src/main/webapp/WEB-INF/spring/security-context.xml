@@ -4,11 +4,14 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
 
-	<http auto-config="true"/>
+	<http entry-point-ref="preAuthenticatedEntryPoint" />
+    
+    <beans:bean id="preAuthenticatedEntryPoint" class="org.springframework.security.ui.preauth.PreAuthenticatedProcessingFilterEntryPoint" />
 	
 	<authentication-provider>
 		<user-service>
-			<user name="john" password="john" authorities="ROLE_USER, ROLE_ADMIN" />
+			<user name="john" password="john" authorities="ROLE_USER" />
+			<user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN" />
 			<user name="guest" password="guest" authorities="ROLE_GUEST" />
 		</user-service>
 	</authentication-provider>
