@@ -14,7 +14,7 @@
 	<name>Spring BlazeDS Integration Test Drive Web Application</name>
 	
 	<properties>
-		<spring.version>2.5.6.SEC01</spring.version>
+		<spring.version>3.0.0.M4</spring.version>
 	</properties>
 	
 	<build>
@@ -75,6 +75,38 @@
 			<artifactId>spring-flex</artifactId>
 			<version>1.0.1.BUILD-SNAPSHOT</version>
 		</dependency>
+		<!-- Overrides for using Spring 3.0 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- End Overrides -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>

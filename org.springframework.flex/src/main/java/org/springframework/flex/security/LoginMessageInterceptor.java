@@ -16,14 +16,9 @@
 
 package org.springframework.flex.security;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
-import org.springframework.security.Authentication;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.context.SecurityContextHolder;
 
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
@@ -32,18 +27,10 @@ import flex.messaging.messages.Message;
  * {@link MessageInterceptor} implementation that replaces the standard login success message with one that contains
  * relevant information about the logged in user.
  * 
- * <p>
- * The body of the returned message will contain the following properties as obtained from the {@link Authentication}
- * object:
- * <ul>
- * <li>name - the "name" property from the authentication</li>
- * <li>authorities - an array of String representations of the authentication's authorities (i.e. obtained through
- * {@link GrantedAuthority#getAuthority})</li>
- * </ul>
- * 
+ * @see AuthenticationResultTranslator
  * @author Jeremy Grelle
  */
-public class LoginMessageInterceptor implements MessageInterceptor {
+public class LoginMessageInterceptor extends AuthenticationResultTranslator implements MessageInterceptor {
 
     private static final String SUCCESS_MSG = "success";
 
@@ -66,18 +53,6 @@ public class LoginMessageInterceptor implements MessageInterceptor {
      */
     public Message preProcess(MessageProcessingContext context, Message inputMessage) {
         return inputMessage;
-    }
-
-    private Map<String, Object> getAuthenticationResult() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Map<String, Object> authenticationResult = new HashMap<String, Object>();
-        authenticationResult.put("name", authentication.getName());
-        String[] authorities = new String[authentication.getAuthorities().length];
-        for (int i = 0; i < authorities.length; i++) {
-            authorities[i] = authentication.getAuthorities()[i].getAuthority();
-        }
-        authenticationResult.put("authorities", authorities);
-        return authenticationResult;
     }
 
 }

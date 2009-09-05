@@ -55,7 +55,7 @@
 
 	<target name="compile-swf">
 		<mxmlc file="${src.flex.dir}/${project.dir}/src/main/flex/${main.file}.mxml" output="${flex.output.dir}/${project.dir}/${main.file}.swf" fork="true" incremental="true"
-			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/">
+			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/testdrive">
 			<load-config filename="${flex.sdk.dir}/frameworks/flex-config.xml"/>
 			<source-path path-element="${flex.sdk.dir}/frameworks"/>
 		</mxmlc>
@@ -63,7 +63,7 @@
 
 	<target name="compile-swf-with-libs">
 		<mxmlc file="${src.flex.dir}/${project.dir}/src/main/flex/${main.file}.mxml" output="${flex.output.dir}/${project.dir}/${main.file}.swf" fork="true" incremental="true"
-			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/">
+			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/testdrive">
 			<load-config filename="${flex.sdk.dir}/frameworks/flex-config.xml"/>
 			<source-path path-element="${flex.sdk.dir}/frameworks"/>
 			<compiler.library-path dir="${src.flex.dir}/${project.dir}" append="true">
@@ -74,7 +74,7 @@
 
 	<target name="compile-swf-with-libs-for-air">
 		<mxmlc file="${src.flex.dir}/${project.dir}/src/main/flex/${main.file}.mxml" output="${flex.output.dir}/${project.dir}/${main.file}.swf" fork="true" incremental="true"
-			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/">
+			services="${src.flex.dir}/testdrive/src/main/webapp/WEB-INF/flex/services-config.xml" context-root="/testdrive">
 			<load-config filename="${flex.sdk.dir}/frameworks/flex-config.xml"/>
 			<source-path path-element="${flex.sdk.dir}/frameworks"/>
 			<compiler.library-path dir="${flex.sdk.dir}/frameworks" append="true">
