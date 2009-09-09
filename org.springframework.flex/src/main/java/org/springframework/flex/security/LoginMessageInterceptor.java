@@ -27,10 +27,10 @@ import flex.messaging.messages.Message;
  * {@link MessageInterceptor} implementation that replaces the standard login success message with one that contains
  * relevant information about the logged in user.
  * 
- * @see AuthenticationResultTranslator
+ * @see AuthenticationResultUtils
  * @author Jeremy Grelle
  */
-public class LoginMessageInterceptor extends AuthenticationResultTranslator implements MessageInterceptor {
+public class LoginMessageInterceptor implements MessageInterceptor {
 
     private static final String SUCCESS_MSG = "success";
 
@@ -41,7 +41,7 @@ public class LoginMessageInterceptor extends AuthenticationResultTranslator impl
     public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
         if (inputMessage instanceof CommandMessage && ((CommandMessage) inputMessage).getOperation() == CommandMessage.LOGIN_OPERATION) {
             if (SUCCESS_MSG.equals(outputMessage.getBody())) {
-                outputMessage.setBody(getAuthenticationResult());
+                outputMessage.setBody(AuthenticationResultUtils.getAuthenticationResult());
             }
         }
         return outputMessage;
