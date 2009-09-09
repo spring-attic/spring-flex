@@ -43,7 +43,8 @@ mvn install
     	<para>
     		There is an individual project for each Flex sample, and one WTP project for the 'testdrive' WAR.  Once the projects have been imported, you can start the web application by selecting the 
     		'testdrive' project, right-clicking and selecting Run As->Run on Server.  The samples have been most thoroughly tested in Tomcat 6.0, but should run in any Servlet 2.4 container that WTP supports.  Once 
-    		the application has started successfully, you can access the samples walk-through at <ulink url="http://localhost:8080/testdrive">http://localhost:8080/testdrive</ulink> 
+    		the application has started successfully, you can access the samples walk-through at <ulink url="http://localhost:8080/testdrive">http://localhost:8080/testdrive</ulink> (If running on a server other than 
+    		Tomcat, change the port number as needed.)
     	</para>
     </sect1>
 </chapter>
