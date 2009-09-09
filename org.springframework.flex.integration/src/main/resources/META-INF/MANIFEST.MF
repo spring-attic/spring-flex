@@ -7,8 +7,8 @@ Web-ContextPath: flex-integration
 Bundle-ManifestVersion: 2
 Module-Type: Web
 Bundle-SymbolicName: org.springframework.flex.integration
-Bundle-Version: 1.0.0
-Import-Bundle: org.springframework.flex;version="[1.0.0,1.0.0.RELEASE]",
+Bundle-Version: 1.0.1
+Import-Bundle: org.springframework.flex;version="[1.0.1,1.0.1.RELEASE]",
  org.springframework.web.servlet;version="[2.5.6.A,2.5.6.A]",
  com.springsource.flex.messaging;version="[3.2.0.3978,3.2.0.3978]",
  com.springsource.flex.messaging.common;version="[3.2.0.3978,3.2.0.3978]",
