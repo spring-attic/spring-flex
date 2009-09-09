@@ -14,7 +14,8 @@
 	<name>Spring BlazeDS Integration Test Drive Web Application</name>
 	
 	<properties>
-		<spring.version>3.0.0.M4</spring.version>
+	    <!-- To use Spring 3, change the following value as appropriate and uncomment the necessary dependency overrides below -->
+		<spring.version>2.5.6.SEC01</spring.version>
 	</properties>
 	
 	<build>
@@ -76,7 +77,7 @@
 			<version>1.0.1.BUILD-SNAPSHOT</version>
 		</dependency>
 		<!-- Overrides for using Spring 3.0 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.version}</version>
@@ -105,7 +106,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
-		</dependency>
+		</dependency> -->
 		<!-- End Overrides -->
 		<dependency>
 			<groupId>org.springframework</groupId>

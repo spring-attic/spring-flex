@@ -376,6 +376,7 @@ infrastructure.</p>
   <li>Log out and then log in as the admin user (use UserId: admin / Password: admin).  You should now see an additional column in the table that is conditionally displayed based on the user's permissions.</li>
   <li>Log out and then log in as the guest user (use UserId: guest / Password: guest).  If you click &quot;Get Data&quot; an &quot;Access Denied&quot; error will be displayed as this user does not have sufficient permissions.</li>
   <li>As the &quot;guest&quot; user, again expand the &quot;Chat&quot; panel and attempt to enter a message.  You should receive an error due to not having sufficient permissions.</li>
+  <li>The sample also demonstrates detection of a user that's already been authenticated, and the loading of that user's information.  For example, log out and then access <a href="login.jsp">http://localhost:8080/testdrive/login.jsp</a>, and logon using john / john. You will then be redirected into the secured sample.  Notice that the user information has been populated and you can access data as if you'd logged in through the Flex UI.</li>
 </ol>
 
 <h4>Code walkthrough:</h4>
