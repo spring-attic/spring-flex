@@ -34,7 +34,7 @@ mvn install
     	<para>
     		The individual Test Drive projects are pre-configured to be imported in Eclipse and run with WTP.  (There are a number of individual projects, so you may want to consider creating a fresh
     		workspace or at least create a new working set to manage the projects.)  We recommend using the free <ulink url="http://www.springsource.com/products/sts">SpringSource Tool Suite</ulink> to work with the samples so that you can take full 
-    		advantage of its extensive Spring support, but any version of Eclipse 3.4 with WTP should work.  
+    		advantage of its extensive Spring support, but any version of Eclipse 3.4+ with WTP should work.  
     	</para>
     	<para>	
     		To import the samples, select File->Import...->General->Existing Projects into Workspace and navigate to the
@@ -43,7 +43,7 @@ mvn install
     	<para>
     		There is an individual project for each Flex sample, and one WTP project for the 'testdrive' WAR.  Once the projects have been imported, you can start the web application by selecting the 
     		'testdrive' project, right-clicking and selecting Run As->Run on Server.  The samples have been most thoroughly tested in Tomcat 6.0, but should run in any Servlet 2.4 container that WTP supports.  Once 
-    		the application has started successfully, you can access the samples walk-through at http://localhost:8080/ 
+    		the application has started successfully, you can access the samples walk-through at <ulink url="http://localhost:8080/testdrive">http://localhost:8080/testdrive</ulink> 
     	</para>
     </sect1>
 </chapter>
