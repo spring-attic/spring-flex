@@ -20,13 +20,17 @@ import javax.servlet.ServletConfig;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.mock.web.MockServletConfig;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
+import flex.messaging.config.ApacheXPathServerConfigurationParser;
 import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.MessagingConfiguration;
+import flex.messaging.config.XPathServerConfigurationParser;
 
 public class FlexConfigurationManagerTests extends TestCase {
 
@@ -35,6 +39,8 @@ public class FlexConfigurationManagerTests extends TestCase {
     StaticWebApplicationContext context = new StaticWebApplicationContext();
 
     ConfigurationManager configManager;
+    
+    private static final Log log = LogFactory.getLog(FlexConfigurationManagerTests.class);
 
     @Override
     public void setUp() {
@@ -70,6 +76,47 @@ public class FlexConfigurationManagerTests extends TestCase {
         assertNotNull(messagingConfiguration.getServiceSettings("message-service"));
         assertNotNull(messagingConfiguration.getServiceSettings("proxy-service"));
         assertNotNull(messagingConfiguration.getServiceSettings("remoting-service"));
+    }
+    
+    public void testParserPerformance() {
+        long start = 0;
+        long end = 0;
+        long defaultTotal = 0;
+        long java5Total = 0;
+        long xalanTotal = 0;
+        int iterations = 5;
+        
+        this.configManager = new FlexConfigurationManager(this.context, "classpath:org/springframework/flex/core/services-config.xml");
+        
+        start = System.currentTimeMillis();
+        for (int x=0; x<iterations; x++) {
+            this.configManager.getMessagingConfiguration(this.config);
+        }
+        end = System.currentTimeMillis();
+        defaultTotal = end - start;
+        
+        ((FlexConfigurationManager)this.configManager).setConfigurationParser(new XPathServerConfigurationParser());
+              
+        start = System.currentTimeMillis();
+        for (int x=0; x<iterations; x++) {
+            this.configManager.getMessagingConfiguration(this.config);
+        }
+        end = System.currentTimeMillis();
+        java5Total = end - start;
+        
+        ((FlexConfigurationManager)this.configManager).setConfigurationParser(new ApacheXPathServerConfigurationParser());
+        
+        start = System.currentTimeMillis();
+        for (int x=0; x<iterations; x++) {
+            this.configManager.getMessagingConfiguration(this.config);
+        }
+        end = System.currentTimeMillis();
+        xalanTotal = end - start;
+        
+        log.info("Default total parser time = "+defaultTotal+"ms");
+        log.info("Java 5 total parser time = "+java5Total+"ms");
+        log.info("Xalan total parser time = "+xalanTotal+"ms");
+        
     }
     
     public void testGetMessagingConfigurationDoesNotExist() {
