@@ -8,7 +8,7 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			/WEB-INF/spring/*-context.xml
+			/WEB-INF/spring/*-config.xml
 		</param-value>
 	</context-param>
 	
@@ -27,13 +27,13 @@
 	</listener>
 	
 	<servlet>
-		<servlet-name>testdrive</servlet-name>
+		<servlet-name>flex</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
-    	<servlet-name>testdrive</servlet-name>
+    	<servlet-name>flex</servlet-name>
     	<url-pattern>/messagebroker/*</url-pattern>
  	</servlet-mapping>
 

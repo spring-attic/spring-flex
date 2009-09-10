@@ -16,6 +16,7 @@
 	<P>Valid users:</P>
 	<P/>
 	<P>username <b>john</b>, password <b>john</b>
+	<P>username <b>admin</b>, password <b>admin</b>
 	<br>username <b>guest</b>, password <b>guest</b></P>
 	<p/>
 

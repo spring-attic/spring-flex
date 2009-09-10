@@ -28,9 +28,9 @@
 	<flex:message-destination id="secured-chat" send-security-constraint="trusted" />
 	<flex:message-destination id="simple-feed" />
 	<flex:message-destination id="market-feed" allow-subtopics="true" subtopic-separator="." />
-	<flex:jms-message-destination id="jms-chat" jms-destination="chatTopic" /> 	<!-- See configuration of "chatTopic" in /WEB-INF/spring/infrastructure-context.xml -->
-	<flex:integration-message-destination id="si-receive" message-channel="toFlex"/> <!-- See configuration of "toFlex" in /WEB-INF/spring/integration-context.xml -->
-	<flex:integration-message-destination id="si-send" message-channel="fromFlex"/> <!-- See configuration of "fromFlex" in /WEB-INF/spring/integration-context.xml -->    	
+	<flex:jms-message-destination id="jms-chat" jms-destination="chatTopic" /> 	<!-- See configuration of "chatTopic" in /WEB-INF/spring/infrastructure-config.xml -->
+	<flex:integration-message-destination id="si-receive" message-channel="toFlex"/> <!-- See configuration of "toFlex" in /WEB-INF/spring/integration-config.xml -->
+	<flex:integration-message-destination id="si-send" message-channel="fromFlex"/> <!-- See configuration of "fromFlex" in /WEB-INF/spring/integration-config.xml -->    	
 
 	<!-- MessageTemplate makes it easy to publish messages -->
 	<bean id="defaultMessageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />

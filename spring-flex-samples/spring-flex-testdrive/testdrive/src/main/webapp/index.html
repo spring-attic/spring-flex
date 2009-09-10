@@ -53,7 +53,7 @@ infrastructure.</p>
   <li>The Flex source code is in {project}/src/main/flex/ of each individual flex project</li>
   <li>The Java source code is in testdrive/src/main/java/</li>
   <li>The root Spring configuration (including setup of the core services, security, and supporting infrastructure) is in testdrive/src/main/webapp/WEB-INF/spring/</li>
-  <li>The BlazeDS integration support is configured in the 'testdrive' DispatcherServlet's configuration file (testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml)</li>
+  <li>The BlazeDS integration support is configured in the 'flex' DispatcherServlet's configuration file (testdrive/src/main/webapp/WEB-INF/flex-servlet.xml)</li>
 </ul>
 
 </div>
@@ -73,13 +73,13 @@ infrastructure.</p>
 <p>Open main.mxml in the spring-blazeds-101/src/main/flex directory to look at the source code of the client.</p>
 <p>Open the following files to look at the source code for the server side  of the application: </p>
 <ul>
-  <li>testdrive/src/main/webapp/WEB-INF/spring/services-context.xml</li>
-  <li>testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/spring/app-config.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/flex-servlet.xml</li>
   <li>testdrive/src/main/java/flex/spring/samples/product/ProductDAO.java</li>
 </ul>
 <p>Note that in this first sample, we use a simplistic DAO implementation with low level JDBC code and no real abstraction. This was done intentionally to provide a bare-bones example that focuses exclusively on the Spring/BlazeDS Integration plumbing. In all the other examples of this Test Drive, we use the JdbcTemplate abstraction of the Spring framework to build the data access objects.</p>
 <p>Using RemoteObject, you can directly invoke methods of Java objects  deployed in your application server, and consume the return value. The return value can be a value of a primitive data type, an object, a collection of objects, an object graph, etc.</p>
-<p>Using Spring BlazeDS Integration, Spring beans are exposed using the <code>&lt;flex:remoting-destination /&gt;</code> configuration tag. See the "product" bean definition in services-context.xml and the remoting destination that references it in testdrive-servlet.xml</p>
+<p>Using Spring BlazeDS Integration, Spring beans are exposed using the <code>&lt;flex:remoting-destination /&gt;</code> configuration tag. See the "product" bean definition in app-config.xml and the remoting destination that references it in flex-servlet.xml</p>
 <p>Java objects returned by server-side methods are deserialized into  either dynamic or typed ActionScript objects. In this example, we don't have an explicit ActionScript version of the Product Java class. Product objects are therefore deserialized into dynamic objects. In InSync03 below, we start working with strongly typed model objects. </p>
 </div>
 
@@ -98,8 +98,8 @@ infrastructure.</p>
 <p>Open insync01.mxml in the insync01/src/main/flex directory to look at the source code of the application.</p>
 <p>Open the following files to look at the source code for the server side of the application: </p>
 <ul>
-  <li>testdrive/src/main/webapp/WEB-INF/spring/services-context.xml</li>
-  <li>testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/spring/app-config.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/flex-servlet.xml</li>
   <li>testdrive/src/main/java/flex/spring/samples/contact/ContactDAO.java</li>
 </ul>
 </div>
@@ -227,8 +227,8 @@ infrastructure.</p>
 <p>Open companymgr.mxml, Company.as, Industry.as, and CompanyForm.mxml in the companymgr/src/main/flex directory to look at the source code of the application.</p>
 <p>Open the following files to look at the source code for the server side  of the application: </p>
 <ul>
-  <li>testdrive/src/main/webapp/WEB-INF/spring/services-context.xml</li>
-  <li>testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/spring/app-config.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/flex-servlet.xml</li>
   <li>testdrive/src/main/java/flex/spring/samples/company/CompanyDAO.java</li>
   <li>testdrive/src/main/java/flex/spring/samples/company/IndustryDAO.java</li>
   <li>testdrive/src/main/java/flex/spring/samples/company/Company.java</li>
@@ -255,7 +255,7 @@ infrastructure.</p>
 <h4>Code walkthrough:</h4>
 <p>Open chat.mxml in the chat/src/main/flex directory to look at the source code of the application. The Message Service manages a set of destinations that Flex clients can publish and subscribe to. Flex provides two components, Producer and Consumer, that you use to publish and subscribe to a destination. To subscribe to a destination, you use the <code>subscribe()</code> method of the Consumer class. When a message is published to a destination that you subscribed to, the <code>message</code> event is triggered on the Consumer.</p>
 
-<p>Open testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml to look at the message service configuration. The message service is configured using <code>&lt;flex:message-service /&gt;</code> inside <code>&lt;flex:message-broker /&gt;</code>. The &quot;chat&quot; destination is configured using <code>&lt;flex:message-destination id=&quot;chat&quot; /&gt;</code></p>
+<p>Open testdrive/src/main/webapp/WEB-INF/flex-servlet.xml to look at the message service configuration. The message service is configured using <code>&lt;flex:message-service /&gt;</code> inside <code>&lt;flex:message-broker /&gt;</code>. The &quot;chat&quot; destination is configured using <code>&lt;flex:message-destination id=&quot;chat&quot; /&gt;</code></p>
 </div>
 <br />
 
@@ -276,7 +276,7 @@ infrastructure.</p>
   <p>Open the following files in a text editor to look at the source code for the server side of the application: </p>
   <ul>
     <li>testdrive/src/main/java/flex/spring/samples/simplefeed/SimpleFeed.Java</li>
-    <li>testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml</li>
+    <li>testdrive/src/main/webapp/WEB-INF/flex-servlet.xml</li>
   </ul>
   <p>In SimpleFeed.java, the MessageTemplate class is used to publish messages to the "simple-feed" destination.</p>
 </div>
@@ -298,7 +298,7 @@ infrastructure.</p>
   <p>Open the following files in a text editor to look at the source code for the server side  of the application: </p>
   <ul>
     <li>testdrive/src/main/java/flex/spring/samples/marketfeed/MarketFeed.Java</li>
-    <li>testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml</li>
+    <li>testdrive/src/main/webapp/WEB-INF/flex-servlet.xml</li>
   </ul>
 </div>
 <br />
@@ -318,7 +318,7 @@ infrastructure.</p>
 <h4>Code walkthrough:</h4>
 <p>Open jmschat.mxml in the jmschat/src/main/flex directory to look at the source code of the application.</p>
 
-<p>Open testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml to look at the message service configuration. Note that the "jms-chat" destination is mapped to the &quot;chatTopic&quot; (sampletopic.flex.jms.chat) JMS topic that is configured in testdrive/src/main/webapp/WEB-INF/spring/infrastructure-context.xml. In this application, we use an embedded ActiveMQ message broker configured by the connectionFactory bean. You don't have to start ActiveMQ in a separate process.</p>
+<p>Open testdrive/src/main/webapp/WEB-INF/flex-servlet.xml to look at the message service configuration. Note that the "jms-chat" destination is mapped to the &quot;chatTopic&quot; (sampletopic.flex.jms.chat) JMS topic that is configured in testdrive/src/main/webapp/WEB-INF/spring/infrastructure-config.xml. In this application, we use an embedded ActiveMQ message broker configured by the connectionFactory bean. You don't have to start ActiveMQ in a separate process.</p>
 
 </div>
 <br />
@@ -339,7 +339,7 @@ infrastructure.</p>
 <h4>Code walkthrough:</h4>
 <p>Open messaging.mxml in the spring-messaging/src/main/flex directory to look at the source code of the client.</p>
 
-<p>Open testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml to look at the message service configuration. Note that the &quot;si-receive&quot; and &quot;si-send&quot; destinations are mapped to the &quot;toFlex&quot; and &quot;fromFlex&quot; Message Channels respectively. Those are configured in testdrive/src/main/webapp/WEB-INF/spring/integration-context.xml. Also, in that configuration file you will see the &quot;inbound-channel-adapter&quot; and &quot;service-activator&quot; Spring Integration components and the &quot;counter&quot; bean definition they reference. The Counter source code is located within testdrive/src/main/java in the &quot;org.springframework.flex.samples.integration&quot; package.</p>
+<p>Open testdrive/src/main/webapp/WEB-INF/flex-servlet.xml to look at the message service configuration. Note that the &quot;si-receive&quot; and &quot;si-send&quot; destinations are mapped to the &quot;toFlex&quot; and &quot;fromFlex&quot; Message Channels respectively. Those are configured in testdrive/src/main/webapp/WEB-INF/spring/integration-config.xml. Also, in that configuration file you will see the &quot;inbound-channel-adapter&quot; and &quot;service-activator&quot; Spring Integration components and the &quot;counter&quot; bean definition they reference. The Counter source code is located within testdrive/src/main/java in the &quot;org.springframework.flex.samples.integration&quot; package.</p>
 
 </div>
 
@@ -357,7 +357,7 @@ infrastructure.</p>
 <h4>Code walkthrough:</h4>
 <p>Open collaboration.mxml in the collaboration/src/main/flex directory to look at the source code of the application.</p>
 
-<p>Open testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml to look at the message service configuration.</p>
+<p>Open testdrive/src/main/webapp/WEB-INF/flex-servlet.xml to look at the message service configuration.</p>
 
 </div>
 <br />
@@ -383,12 +383,12 @@ infrastructure.</p>
 <p>Open secured.mxml in the secured/src/main/flex directory to look at the source code of the application.</p>
 <p>Open the following files in a text editor to look at the the server side configuration: </p>
 <ul>
-  <li>testdrive/src/main/webapp/WEB-INF/testdrive-servlet.xml</li>
-  <li>testdrive/src/main/webapp/WEB-INF/spring/security-context.xml</li>  
-  <li>testdrive/src/main/webapp/WEB-INF/spring/services-context.xml</li>  
+  <li>testdrive/src/main/webapp/WEB-INF/flex-servlet.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/spring/security-config.xml</li>  
+  <li>testdrive/src/main/webapp/WEB-INF/spring/app-config.xml</li>  
 </ul>
 
-<p>Note that the &quot;find*&quot; methods of securedProductService are secured in services-context.xml. A basic authentication provider is defined in security-context.xml, and the BlazeDS support is enabled by the <code>&lt;flex:secured&gt;</code> tag in testdrive-servlet.xml.<br />
+<p>Note that the &quot;find*&quot; methods of securedProductService are secured in app-config.xml. A basic authentication provider is defined in security-config.xml, and the BlazeDS support is enabled by the <code>&lt;flex:secured&gt;</code> tag in flex-servlet.xml.<br />
 </p>
 </div>
 
