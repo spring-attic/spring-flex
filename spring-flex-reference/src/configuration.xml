@@ -52,8 +52,7 @@
     		This makes the Spring BlazeDS Integration configuration tags available under the <code>flex</code> namespace in your configuration files.  The above setup will
     		be assumed for the rest of the configuration examples to follow.  For the full detail of every attribute and tag available in the config namespace, be sure
     		to refer to the spring-flex-1.0.xsd as every element and attribute is fully documented there.  Using an XSD-aware XML editor such as the one in Eclipse
-    		should bring up the documentation automatically as you type.  (Note that until the final xsd is published to the above web address, you would need to manually
-    		add the XSD to your XML catalog in Eclipse for auto-completion to work correctly.)
+    		should bring up the documentation automatically as you type.
     	</para>
     	<para>
     		At a minimum, the <code>MessageBrokerFactoryBean</code> must be configured as a bean in your Spring WebApplicationContext in order to bootstrap the <code>MessageBroker</code>,
@@ -113,7 +112,7 @@
 		</programlisting>
 		<para> 
     		When using the <code>message-broker</code> config tag, a <code>SimpleUrlHandlerMapping</code> is installed that by default maps all 
-    		incoming <code>DispatcherServlet</code> requests to the Spring-manager <code>MessageBroker</code> using a <code>/*</code>path pattern.  
+    		incoming <code>DispatcherServlet</code> requests to the Spring-managed <code>MessageBroker</code> using a <code>/*</code>path pattern.  
     		The default mapping can be overridden by providing one or more <code>mapping</code> child elements.  If you want to provide your own
     		<code>HandlerMapping</code> bean configuration, you can disable the default using the <code>disable-default-mapping</code> attribute 
     		of the <code>message-broker</code> tag.  The order of the installed <code>SimpleUrlHandlerMapping</code> can be set (for complex 
