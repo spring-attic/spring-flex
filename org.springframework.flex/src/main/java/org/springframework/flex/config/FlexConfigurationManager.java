@@ -119,7 +119,7 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
     }
 
     /**
-     * Sets the parser to be used in building a MessagingConfiguration. Defaults to the BlazeDS Apache Xalan based
+     * Sets the parser to be used in building a MessagingConfiguration. Defaults to a JAXP 1.3+ XPath based
      * implementation.
      * 
      * @param parser the configuration parser to be used
@@ -216,7 +216,7 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
             this.configurationPathStack.push(configFile);
         }
     }
-    
+
     private static class CachingXPathServerConfigurationParser extends ServerConfigurationParser {
 
         private XPath xpath = null;
