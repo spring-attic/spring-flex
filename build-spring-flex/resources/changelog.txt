@@ -12,10 +12,21 @@ expanded to show how to take advantage of the extended functionality that the Sp
 the traditional BlazeDS security mechanisms.  See the specific Jira issues referenced below for further details.
 
 Enhancements
-* 
+* FLEX-59 - Set the 'source' property on RemotingDestinations to better support Adobe tooling
+* FLEX-62 - Configure the testdrive sample to not be deployed as the root web application.
+* FLEX-67 - Provide bundles that can wire to Spring 3
+* FLEX-72 - Enhance the Spring Security demo to show more typical use cases
+* FLEX-73 - Update the naming conventions used in the Test Drive sample to be consistent with STS project templates
+* FLEX-74 - Refactor the Authentication translation logic from LoginMessageInterceptor into a re-usable utils class
+* FLEX-75 - Add HttpFlexSession configuration to the sample app's web.xml to reduce confusion
+* FLEX-76 - Add some further detail to the Security integration docs on configuration recommendations
 
 Bug Fixes
-*
+* FLEX-60 - Direct dependence on xalan API causes unnecessary configuration problems
+* FLEX-61 - Handle resource cleanup after MessageBroker startup failure.
+* FLEX-64 - Flex bundle has a mandatory import for a spring integration package but declares the dependency as optional in its ivy.xml and pom.xml
+* FLEX-69 - Exceptions thrown by java back to flex are not handled correctly by Spring BlazeDS integration
+* FLEX-70 - Problems with message-broker services-config-path
 
 Changes in version 1.0.0.RELEASE (06.09.2009)
 -----------------------------------------
