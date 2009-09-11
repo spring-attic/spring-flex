@@ -10,15 +10,15 @@
         	different combinations here, we'll leave most of that to the Spring Security documentation.  
         </para>
         <para>
-        	Here is a typical simple Spring Security starting configuration for use in conjunction with the explicit integration features 
-        	provided by Spring BlazeDS integration:   
+        	Here is a simple Spring Security starting configuration for use in conjunction with the explicit integration features 
+        	provided by Spring BlazeDS integration that should be a solid starting point for securing a typical Flex application:   
         </para>
         <programlisting language="xml"><![CDATA[
 <beans:beans xmlns="http://www.springframework.org/schema/security"
   xmlns:beans="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans 
-                      http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                      http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/security 
                       http://www.springframework.org/schema/security/spring-security-2.0.4.xsd"> 
     
@@ -36,6 +36,14 @@
     
 </beans:beans>]]>
 		</programlisting>
+		<para>
+			With a typical Flex application, this approach is preferred to using Spring Security's auto-config setup.  Auto-config sets up a number of 
+			features that typically are not needed with a Flex application.  For instance, auto-config sets up a default <code>intercept-url</code> entry that
+			requires authentication for all URL paths within the application.  This does not work well for the needs of a typical BlazeDS setup as it would result in
+			the server returning a 403 area code for un-authenticated calls to BlazeDS endpoints which the Flex client does not handle gracefully.  (See <link linkend="secured-endpoint-path">
+			Securing BlazeDS Channels by Endpoint URL Path</link> for an alternative to <code>intercept-url</code> that generates proper AMF responses for the Flex client.) 
+			It is recommended to start simple as in this example, and add the additional features as needed.  
+		</para>
         <para>
         	We will assume the above configuration is in place for the remainder of the examples in this chapter.
         </para>
