@@ -2,6 +2,21 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
+Changes in version 1.0.1.RELEASE (09.11.2009)
+-----------------------------------------
+General
+* The bundled Test Drive sample has undergone a good bit of general cleanup.  Most notably, it has been configured
+to no longer run as the root web application, the naming conventions of the Spring configuration files has changed to
+align with the conventions used in SpringSource Tool Suite project templates, and the Spring Security example has been
+expanded to show how to take advantage of the extended functionality that the Spring Security integration provides over
+the traditional BlazeDS security mechanisms.  See the specific Jira issues referenced below for further details.
+
+Enhancements
+* 
+
+Bug Fixes
+*
+
 Changes in version 1.0.0.RELEASE (06.09.2009)
 -----------------------------------------
 General

@@ -1,4 +1,4 @@
-SPRING BLAZEDS INTEGRATION 1.0.0.M1 (December 2008)
+SPRING BLAZEDS INTEGRATION 1.0.1.RELEASE (September 2009)
 ----------------------------------
 http://www.springsource.org/projects/blaze-ds-integration
 
@@ -9,7 +9,7 @@ Spring-powered RIAs using Adobe Flex.
 
 2. RELEASE NOTES
 ----------------
-Spring BlazeDS Integration requires Java SE 5.0, Spring Framework 2.5.0, and Adobe BlazeDS 3.2.0 or above to run.
+Spring BlazeDS Integration requires Java SE 5.0, Spring Framework 2.5.6, and Adobe BlazeDS 3.2.0 or above to run.
 
 Java SE 5 with Ant 1.7 is required to build.
 
@@ -21,7 +21,7 @@ Release distribution contents:
 "docs" contains the Spring BlazeDS Integration reference manual and API Javadocs
 "projects" contains all buildable projects, including sample applications
 "projects/build-spring-flex" is the directory to access to build the Spring BlazeDS Integration distribution
-"projects/spring-build" is the master build system used by all Spring projects, including Spring BlazeDS Integration
+"projects/spring-build" is the master build system used by many Spring projects, including Spring BlazeDS Integration
 "projects/org.springframework.flex" contains buildable Spring BlazeDS Integration project sources
 
 See the readme.txt within the above directories for additional information.
@@ -34,8 +34,9 @@ The following jar files are included in the distribution.
 The contents of each jar and its dependencies are noted.
 Dependencies in [brackets] are optional, and are just necessary for certain functionality.
 
-* org.springframework.flex-1.0.0.M1.jar
+* org.springframework.flex-1.0.1.RELEASE.jar
 - Contents: The Spring BlazeDS Integration library, containing Spring's integration for Adobe BlazeDS.
-- Dependencies: Spring MVC, BlazeDS
+- Runtime Dependencies: Spring Core, Spring MVC, BlazeDS, Jackson, Commons Logging and HttpClient, CGLib, Backport of javax.util.concurrent, 
+[Spring Security], [Spring Integration], [Spring JMS]    
 
-For an exact list of project dependencies, see each project's ivy file at "projects/${project_name}/ivy.xml".
+For an exact list of project dependencies including version numbers, see each project's ivy file at "projects/${project_name}/ivy.xml" or pom file at "projects/${project_name}/pom.xml"

@@ -14,8 +14,8 @@
 	<bookinfo>
 		<title>Spring BlazeDS Integration Reference Guide</title>
 		<productname>Spring BlazeDS Integration</productname>
-		<releaseinfo>Version 1.0.0.RELEASE</releaseinfo>
-		<pubdate>June 2009</pubdate>
+		<releaseinfo>Version 1.0.1.RELEASE</releaseinfo>
+		<pubdate>September 2009</pubdate>
 		<authorgroup>
 			<author>
 				<firstname>Jeremy</firstname>
