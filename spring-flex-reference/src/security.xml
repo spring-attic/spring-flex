@@ -11,7 +11,7 @@
         </para>
         <para>
         	Here is a simple Spring Security starting configuration for use in conjunction with the explicit integration features 
-        	provided by Spring BlazeDS integration that should be a solid starting point for securing a typical Flex application:   
+        	provided by Spring BlazeDS Integration that should be a solid starting point for securing a typical Flex application:   
         </para>
         <programlisting language="xml"><![CDATA[
 <beans:beans xmlns="http://www.springframework.org/schema/security"
@@ -40,7 +40,7 @@
 			With a typical Flex application, this approach is preferred to using Spring Security's auto-config setup.  Auto-config sets up a number of 
 			features that typically are not needed with a Flex application.  For instance, auto-config sets up a default <code>intercept-url</code> entry that
 			requires authentication for all URL paths within the application.  This does not work well for the needs of a typical BlazeDS setup as it would result in
-			the server returning a 403 area code for un-authenticated calls to BlazeDS endpoints which the Flex client does not handle gracefully.  (See <link linkend="secured-endpoint-path">
+			the server returning a 403 response code for un-authenticated calls to BlazeDS endpoints which the Flex client does not handle gracefully.  (See <link linkend="secured-endpoint-path">
 			Securing BlazeDS Channels by Endpoint URL Path</link> for an alternative to <code>intercept-url</code> that generates proper AMF responses for the Flex client.) 
 			It is recommended to start simple as in this example, and add the additional features as needed.  
 		</para>
