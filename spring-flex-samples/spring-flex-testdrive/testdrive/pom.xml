@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.flex.samples</groupId>
 		<artifactId>spring-flex-testdrive</artifactId>
-		<version>1.0.1.RELEASE</version>
+		<version>1.0.1.BUILD-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>testdrive</artifactId>
@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>org.springframework.flex</groupId>
 			<artifactId>spring-flex</artifactId>
-			<version>1.0.1.RELEASE</version>
+			<version>1.0.1.BUILD-SNAPSHOT</version>
 		</dependency>
 		<!-- Overrides for using Spring 3.0 -->
 		<!-- <dependency>
