@@ -2,7 +2,7 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
-Changes in version 1.0.1.RELEASE (09.22.2009)
+Changes in version 1.0.1.RELEASE (09.23.2009)
 -----------------------------------------
 General
 * The bundled Test Drive sample has undergone a good bit of general cleanup.  Most notably, it has been configured
