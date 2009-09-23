@@ -6,13 +6,19 @@
               http://www.springframework.org/schema/flex 
               http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
         
+        <flex:message-broker id="remoteServiceBroker2" />
+        
         <bean id="remoteBean2" class="org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionDecoratorTests$Bean1">
         	<flex:remoting-destination/>
         </bean>
         
         <bean id="remoteBean3" class="org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionDecoratorTests$Bean1">
-        	<flex:remoting-destination message-broker="remoteServiceBroker" destination-id="exportedRemoteBean3" 
+        	<flex:remoting-destination message-broker="remoteServiceBroker2" destination-id="exportedRemoteBean3" 
         		channels="my-amf, my-secure-amf" include-methods="foo, bar" exclude-methods="baz, zoo" service-adapter="customAdapter1"/>
+        </bean>
+        
+        <bean id="customAdapter1" class="org.springframework.flex.core.ManageableComponentFactoryBean">
+        	<constructor-arg value="org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests$TestAdapter"/>
         </bean>
                   
 </beans>

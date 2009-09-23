@@ -37,7 +37,7 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
 
     @SuppressWarnings("unchecked")
     public void testExportBeanWithCustomSettings() {
-        this.broker = (MessageBroker) getApplicationContext().getBean("remoteServiceBroker", MessageBroker.class);
+        this.broker = (MessageBroker) getApplicationContext().getBean("remoteServiceBroker2", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -106,6 +106,6 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
 
     @Override
     protected String[] getConfigLocations() {
-        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml", "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
+        return new String[] { "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
     }
 }

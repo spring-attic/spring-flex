@@ -129,6 +129,6 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
 
     @Override
     protected String[] getConfigLocations() {
-        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml", "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
+        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml" };
     }
 }
