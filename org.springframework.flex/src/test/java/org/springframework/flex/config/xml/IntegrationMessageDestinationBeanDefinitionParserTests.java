@@ -59,4 +59,9 @@ public class IntegrationMessageDestinationBeanDefinitionParserTests extends Abst
 
     }
 
+    @Override
+    protected String[] getConfigLocations() {
+        return new String[] { "classpath:org/springframework/flex/config/message-destination.xml" };
+    }
+
 }

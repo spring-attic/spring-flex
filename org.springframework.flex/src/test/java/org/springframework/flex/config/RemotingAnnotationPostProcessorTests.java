@@ -19,10 +19,13 @@ package org.springframework.flex.config;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests.TestAdapter;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.flex.remoting.RemotingExclude;
 import org.springframework.flex.remoting.RemotingInclude;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -32,6 +35,15 @@ import flex.messaging.services.remoting.adapters.RemotingMethod;
 public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurationTests {
 
     private MessageBroker broker;
+
+    @Override
+    protected ConfigurableApplicationContext createParentContext() {
+        GenericWebApplicationContext context = new GenericWebApplicationContext();
+        context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
+        createBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/annotated-remote-bean-context.xml" });
+        context.refresh();
+        return context;
+    }
 
     public void testExportAnnotatedBeanWithAutowiredConstructor() {
         this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
@@ -131,5 +143,10 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         @RemotingExclude
         public void zoo() {
         }
+    }
+
+    @Override
+    protected String[] getConfigLocations() {
+        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml" };
     }
 }

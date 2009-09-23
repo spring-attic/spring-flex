@@ -61,4 +61,9 @@ public class MessageDestinationBeanDefinitionParserTests extends AbstractMessage
             return null;
         }
     }
+
+    @Override
+    protected String[] getConfigLocations() {
+        return new String[] { "classpath:org/springframework/flex/config/message-destination.xml" };
+    }
 }

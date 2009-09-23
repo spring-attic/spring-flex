@@ -28,11 +28,13 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.flex.config.AbstractFlexConfigurationTests;
 import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.config.FlexConfigurationManager;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
+import org.springframework.flex.config.TestWebInfResourceLoader;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.flex.core.MessageInterceptionAdvice;
@@ -42,6 +44,9 @@ import org.springframework.flex.security.EndpointInterceptor;
 import org.springframework.flex.security.FlexSessionInvalidatingAuthenticationListener;
 import org.springframework.flex.security.SpringSecurityLoginCommand;
 import org.springframework.flex.servlet.MessageBrokerHandlerAdapter;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.security.util.FilterChainProxy;
+import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
@@ -58,6 +63,16 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
 public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
 
     private MessageBroker broker;
+
+    
+    @Override
+    protected ConfigurableApplicationContext createParentContext() {
+        GenericWebApplicationContext context = new GenericWebApplicationContext();
+        context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
+        createBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml" });
+        context.refresh();
+        return context;
+    }
 
     public void testMessageBroker_CustomConfigManager() {
         this.broker = (MessageBroker) getApplicationContext().getBean("customConfigManager", MessageBroker.class);
@@ -184,7 +199,9 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
         }
         getApplicationContext().getBean(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, FlexSessionInvalidatingAuthenticationListener.class);
-        getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER, RequestContextFilter.class);
+        RequestContextFilter filter = (RequestContextFilter) getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER, RequestContextFilter.class);
+        FilterChainProxy filterChain = (FilterChainProxy) getApplicationContext().getParent().getBean(org.springframework.security.config.BeanIds.FILTER_CHAIN_PROXY, FilterChainProxy.class);
+        assertTrue(((List)filterChain.getFilterChainMap().get("/**")).contains(filter));
     }
 
     public void testMessageBroker_DisabledHandlerMapping() {
@@ -254,14 +271,6 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertTrue("Default mapping not correct", defaultMapping.getUrlMap().containsKey("/*"));
         assertEquals("Default mapping not correct", BeanIds.MESSAGE_BROKER, defaultMapping.getUrlMap().get("/*"));
     }
-    
-    /**
-     * Uncomment this only for faster dev time testing
-     */
-//     @Override
-//     protected String[] getConfigLocations() {
-//     return new String[] {"classpath:org/springframework/flex/config/message-broker.xml"};
-//     }
 
     public static final class TestConfigProcessor implements MessageBrokerConfigProcessor {
 
@@ -326,5 +335,10 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         public Message preProcess(MessageProcessingContext context, Message inputMessage) {
             return null;
         }
+    }  
+
+    @Override
+    protected String[] getConfigLocations() {
+        return new String[] { "classpath:org/springframework/flex/config/message-broker.xml" };
     }
 }

@@ -98,4 +98,9 @@ public class JmsMessageDestinationBeanDefinitionParserTests extends AbstractMess
 
     public static final class TestDestination implements Destination {
     }
+
+    @Override
+    protected String[] getConfigLocations() {
+        return new String[] { "classpath:org/springframework/flex/config/message-destination.xml" };
+    }
 }

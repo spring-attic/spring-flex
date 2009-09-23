@@ -105,15 +105,6 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
         }
     }
 
-    /**
-     * Uncomment this only for faster dev time testing
-     */
-//    @Override
-//    protected String[] getConfigLocations() {
-//        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml",
-//            "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
-//    }
-
     public static class Bean1 {
 
         public String bar() {
@@ -134,5 +125,10 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
     }
 
     public static final class TestAdapter extends JavaAdapter {
+    }
+
+    @Override
+    protected String[] getConfigLocations() {
+        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml", "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
     }
 }

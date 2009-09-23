@@ -85,15 +85,6 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
         }
     }
 
-    /**
-     * Uncomment this only for faster dev time testing
-     */
-//    @Override
-//    protected String[] getConfigLocations() {
-//        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml",
-//            "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
-//    }
-
     public static final class Bean1 {
 
         public String bar() {
@@ -111,5 +102,10 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
         public String zoo() {
             return "zoo";
         }
+    }
+
+    @Override
+    protected String[] getConfigLocations() {
+        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml", "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
     }
 }
