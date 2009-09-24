@@ -8,9 +8,6 @@
               http://www.springframework.org/schema/flex/spring-flex-1.0.xsd
               http://www.springframework.org/schema/security
               http://www.springframework.org/schema/security/spring-security-2.0.4.xsd"> 
-    
-    <!-- Uncomment the default broker here only for faster dev-time testing -->
-	<!--  <flex:message-broker/> -->
 	
 	<!-- Default config -->
 	<flex:message-broker id="messageServiceBroker"/>

@@ -2,7 +2,7 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
-Changes in version 1.0.1.RELEASE (09.11.2009)
+Changes in version 1.0.1.RELEASE (09.23.2009)
 -----------------------------------------
 General
 * The bundled Test Drive sample has undergone a good bit of general cleanup.  Most notably, it has been configured
@@ -27,6 +27,7 @@ Bug Fixes
 * FLEX-64 - Flex bundle has a mandatory import for a spring integration package but declares the dependency as optional in its ivy.xml and pom.xml
 * FLEX-69 - Exceptions thrown by java back to flex are not handled correctly by Spring BlazeDS integration
 * FLEX-70 - Problems with message-broker services-config-path
+* FLEX-77 - Spring Security session fixation protection integration not working when security is defined in a parent context
 
 Changes in version 1.0.0.RELEASE (06.09.2009)
 -----------------------------------------

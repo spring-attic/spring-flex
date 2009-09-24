@@ -20,11 +20,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-class WebInfResourceLoader implements ResourceLoader {
+public class TestWebInfResourceLoader implements ResourceLoader {
 
     ApplicationContext context;
 
-    WebInfResourceLoader(ApplicationContext context) {
+    public TestWebInfResourceLoader(ApplicationContext context) {
         this.context = context;
     }
 

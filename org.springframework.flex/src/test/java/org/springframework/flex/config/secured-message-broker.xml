@@ -1,0 +1,18 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:security="http://www.springframework.org/schema/security"
+  xmlns:flex="http://www.springframework.org/schema/flex"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  			  http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  			  http://www.springframework.org/schema/security
+              http://www.springframework.org/schema/security/spring-security-2.0.4.xsd
+              http://www.springframework.org/schema/flex 
+              http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+              
+    <flex:message-broker id="defaultSecured2">
+    	<flex:secured/>
+    </flex:message-broker>
+	
+	<import resource="security-context.xml"/>
+	
+</beans> 

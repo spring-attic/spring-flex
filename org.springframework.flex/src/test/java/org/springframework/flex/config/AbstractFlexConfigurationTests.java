@@ -19,7 +19,11 @@ package org.springframework.flex.config;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.AbstractSingleSpringContextTests;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.support.GenericWebApplicationContext;
+
+import flex.messaging.FlexContext;
+import flex.messaging.MessageBroker;
 
 public abstract class AbstractFlexConfigurationTests extends AbstractSingleSpringContextTests {
 
@@ -28,27 +32,26 @@ public abstract class AbstractFlexConfigurationTests extends AbstractSingleSprin
         ConfigurableApplicationContext parentContext = createParentContext();
 
         GenericWebApplicationContext context = new GenericWebApplicationContext();
-        context.setServletContext(new MockServletContext(new WebInfResourceLoader(context)));
+        context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
         prepareApplicationContext(context);
         customizeBeanFactory(context.getDefaultListableBeanFactory());
+        
+        locations = (String[]) ObjectUtils.addObjectToArray(locations, "classpath:org/springframework/flex/config/default-message-broker.xml");
+        if (MessageBroker.getMessageBroker(BeanIds.MESSAGE_BROKER) != null) {
+            FlexContext.clearThreadLocalObjects();
+            MessageBroker.getMessageBroker(BeanIds.MESSAGE_BROKER).stop();
+        }
+        
         createBeanDefinitionReader(context).loadBeanDefinitions(locations);
         context.setParent(parentContext);
         context.refresh();
         return context;
     }
 
-    private ConfigurableApplicationContext createParentContext() {
-        GenericWebApplicationContext context = new GenericWebApplicationContext();
-        context.setServletContext(new MockServletContext(new WebInfResourceLoader(context)));
-        createBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/parent-context.xml" });
-        context.refresh();
-        return context;
+    protected ConfigurableApplicationContext createParentContext() {
+        return null;
     }
 
     @Override
-    protected String[] getConfigLocations() {
-        return new String[] { "classpath:org/springframework/flex/config/message-broker.xml",
-            "classpath:org/springframework/flex/config/remote-service.xml", "classpath:org/springframework/flex/config/remote-service-decorator.xml",
-            "classpath:org/springframework/flex/config/message-destination.xml" };
-    }
+    protected abstract String[] getConfigLocations();
 }
