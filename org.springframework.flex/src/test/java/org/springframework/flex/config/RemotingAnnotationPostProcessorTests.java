@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests.TestAdapter;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.flex.remoting.RemotingExclude;
 import org.springframework.flex.remoting.RemotingInclude;
@@ -87,7 +86,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
 
     @SuppressWarnings("unchecked")
     public void testExportBeanWithCustomSettings() {
-        this.broker = (MessageBroker) getApplicationContext().getBean("remoteServiceBroker", MessageBroker.class);
+        this.broker = (MessageBroker) getApplicationContext().getBean("annotatedRemoteServiceBroker", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -117,6 +116,11 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
             assertFalse(Arrays.asList(includeNames).contains(exclude.getName()));
         }
     }
+    
+    @Override
+    protected String[] getConfigLocations() {
+        return new String[] { "classpath:org/springframework/flex/config/remote-service-annotations.xml" };
+    }
 
     public static class MyDependency {
     }
@@ -125,7 +129,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
     public static class MyService1 {
     }
 
-    @RemotingDestination(value = "exportedAnnotatedRemoteBean2", messageBroker = "remoteServiceBroker", channels = { "my-amf", "my-secure-amf" }, serviceAdapter = "customAdapter1")
+    @RemotingDestination(value = "exportedAnnotatedRemoteBean2", messageBroker = "annotatedRemoteServiceBroker", channels = { "my-amf", "my-secure-amf" }, serviceAdapter = "customAdapter1")
     public static class MyService2 {
 
         @RemotingInclude
@@ -144,9 +148,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         public void zoo() {
         }
     }
-
-    @Override
-    protected String[] getConfigLocations() {
-        return new String[] { "classpath:org/springframework/flex/config/remote-service.xml" };
+    
+    public static final class TestAdapter extends JavaAdapter {
     }
 }

@@ -28,6 +28,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.MessageBroker;
+import flex.messaging.endpoints.Endpoint;
 import flex.messaging.endpoints.amf.AMFFilter;
 
 /**
@@ -59,13 +60,13 @@ public class EndpointConfigProcessor implements MessageBrokerConfigProcessor, Be
         Iterator i = broker.getEndpoints().keySet().iterator();
         while (i.hasNext()) {
             String key = (String) i.next();
-            Object endpoint = broker.getEndpoints().get(key);
+            Endpoint endpoint = broker.getEndpoints().get(key);
             ProxyFactory factory = new ProxyFactory();
             factory.setProxyTargetClass(true);
             factory.addAllAdvisors(this.advisors);
             factory.setTarget(endpoint);
             factory.setFrozen(true);
-            Object proxy = factory.getProxy(this.proxyClassLoader);
+            Endpoint proxy = (Endpoint) factory.getProxy(this.proxyClassLoader);
             fixFilterChain(endpoint, proxy);
             broker.getEndpoints().put(key, proxy);
         }

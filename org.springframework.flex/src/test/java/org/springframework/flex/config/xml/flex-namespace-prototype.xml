@@ -30,7 +30,7 @@
 	
 	<jms-message-destination id="foo2"  />
 
-	<beans:bean id="foo" class="com.bar.MyClass">
+	<!-- <beans:bean id="foo" class="com.bar.MyClass">
     	<remoting-destination/>
-	</beans:bean>
+	</beans:bean> -->
 </beans:beans>

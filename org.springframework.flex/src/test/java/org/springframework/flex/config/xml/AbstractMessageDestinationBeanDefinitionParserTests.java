@@ -22,6 +22,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.config.ThrottleSettings;
+import flex.messaging.config.ThrottleSettings.Policy;
 import flex.messaging.services.MessageService;
 
 public abstract class AbstractMessageDestinationBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
@@ -47,9 +48,9 @@ public abstract class AbstractMessageDestinationBeanDefinitionParserTests extend
         assertEquals(1, destination.getNetworkSettings().getSubscriptionTimeoutMinutes());
         assertEquals("/", destination.getServerSettings().getSubtopicSeparator());
         assertEquals(500, destination.getNetworkSettings().getThrottleSettings().getIncomingDestinationFrequency());
-        assertEquals(ThrottleSettings.POLICY_ERROR, destination.getNetworkSettings().getThrottleSettings().getInboundPolicy());
+        assertEquals(Policy.ERROR, destination.getNetworkSettings().getThrottleSettings().getInboundPolicy());
         assertEquals(500, destination.getNetworkSettings().getThrottleSettings().getOutgoingDestinationFrequency());
-        assertEquals(ThrottleSettings.POLICY_IGNORE, destination.getNetworkSettings().getThrottleSettings().getOutboundPolicy());
+        assertEquals(Policy.IGNORE, destination.getNetworkSettings().getThrottleSettings().getOutboundPolicy());
 
     }
 
