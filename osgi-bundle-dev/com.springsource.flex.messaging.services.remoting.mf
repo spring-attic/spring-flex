@@ -2,13 +2,13 @@ Bundle-SymbolicName: com.springsource.flex.messaging.services.remoting
 Bundle-Name: Adobe BlazeDS - Remoting Module
 Bundle-Vendor: SpringSource
 Bundle-ManifestVersion: 2
-Bundle-Version: 4.0.0.7548
+Bundle-Version: 4.0.0.10153
 Ignored-Existing-Headers: 
  Import-Package,
  Export-Package,
  Fragment-Host
 Fragment-Host: 
- com.springsource.flex.messaging;bundle-version="[4.0.0.7548, 4.0.0.7548]"
+ com.springsource.flex.messaging;bundle-version="[4.0.0.10153, 4.0.0.10153]"
 Import-Template: 
  javax.management;version="0",
  javax.sql;version="0"

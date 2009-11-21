@@ -1,0 +1,17 @@
+<project>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.adobe.flex</groupId>
+  <artifactId>com.springsource.flex.messaging.common</artifactId>
+  <version>4.0.0.10153</version>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.xalan</groupId>
+      <artifactId>com.springsource.org.apache.xalan</artifactId>
+      <version>2.7.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  
+</project>

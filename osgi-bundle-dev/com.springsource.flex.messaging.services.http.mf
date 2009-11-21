@@ -2,9 +2,9 @@ Bundle-SymbolicName: com.springsource.flex.messaging.services.http
 Bundle-Name: Adobe BlazeDS - Proxy Module
 Bundle-Vendor: SpringSource
 Bundle-ManifestVersion: 2
-Bundle-Version: 4.0.0.7548
+Bundle-Version: 4.0.0.10153
 Fragment-Host: 
- com.springsource.flex.messaging;bundle-version="[4.0.0.7548, 4.0.0.7548]"
+ com.springsource.flex.messaging;bundle-version="[4.0.0.10153, 4.0.0.10153]"
 Import-Template: 
  javax.servlet.*;version="[2.4.0, 3.0.0)",
  org.apache.commons.httpclient.*;version="[3.0.1, 4.0.0)"

@@ -2,7 +2,7 @@ Bundle-SymbolicName: com.springsource.flex.messaging
 Bundle-Name: Adobe BlazeDS - Messaging Core
 Bundle-Vendor: SpringSource
 Bundle-ManifestVersion: 2
-Bundle-Version: 4.0.0.7548
+Bundle-Version: 4.0.0.10153
 Ignored-Existing-Headers: 
  Import-Package,
  Export-Package

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.flex.samples</groupId>
 		<artifactId>spring-flex-testdrive</artifactId>
-		<version>1.0.1.BUILD-SNAPSHOT</version>
+		<version>1.5.0.BUILD-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>testdrive</artifactId>
@@ -14,8 +14,7 @@
 	<name>Spring BlazeDS Integration Test Drive Web Application</name>
 	
 	<properties>
-	    <!-- To use Spring 3, change the following value as appropriate and uncomment the necessary dependency overrides below -->
-		<spring.version>2.5.6.SEC01</spring.version>
+		<spring.version>3.0.0.RC2</spring.version>
 	</properties>
 	
 	<build>
@@ -52,7 +51,7 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core-tiger</artifactId>
-			<version>2.0.4</version>
+			<version>2.0.5.RELEASE</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
@@ -74,7 +73,7 @@
 		<dependency>
 			<groupId>org.springframework.flex</groupId>
 			<artifactId>spring-flex</artifactId>
-			<version>1.0.1.BUILD-SNAPSHOT</version>
+			<version>1.5.0.BUILD-SNAPSHOT</version>
 		</dependency>
 		<!-- Overrides for using Spring 3.0 -->
 		<!-- <dependency>

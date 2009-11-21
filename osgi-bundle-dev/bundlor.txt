@@ -2,12 +2,12 @@
 
 ./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-data-req.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-data-req.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging.services.licensing-2.6.0.201390.jar
 
-./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-core.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/com.springsource.flex.messaging.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging-4.0.0.7548.jar
+./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-core.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/com.springsource.flex.messaging.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging-4.0.0.10153.jar
 
-./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-common.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/com.springsource.flex.messaging.common.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging.common-4.0.0.7548.jar
+./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-common.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/com.springsource.flex.messaging.common.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging.common-4.0.0.10153.jar
 
-./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-proxy.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/com.springsource.flex.messaging.services.http.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging.services.http-4.0.0.7548.jar
+./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-proxy.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/com.springsource.flex.messaging.services.http.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging.services.http-4.0.0.10153.jar
 
-./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-remoting.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/com.springsource.flex.messaging.services.remoting.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging.services.remoting-4.0.0.7548.jar
+./bundlor.sh transform  -b ~/workspace-flex/spring-flex/osgi-bundle-dev/flex-messaging-remoting.jar -m ~/workspace-flex/spring-flex/osgi-bundle-dev/com.springsource.flex.messaging.services.remoting.mf -o ~/workspace-flex/spring-flex/osgi-bundle-dev/target/com.springsource.flex.messaging.services.remoting-4.0.0.10153.jar
 
 
