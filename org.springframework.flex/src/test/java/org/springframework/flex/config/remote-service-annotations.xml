@@ -1,0 +1,25 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:flex="http://www.springframework.org/schema/flex"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/flex http://www.springframework.org/schema/flex/spring-flex-1.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<flex:message-broker id="annotatedRemoteServiceBroker"/>
+	
+	<context:component-scan base-package="org.springframework.flex.config"/>
+	
+	<bean id="annotatedRemoteBean1" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService1"/>
+        
+    <bean id="annotatedRemoteBean2" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService2"/>
+        
+    <bean id="autowiredDependency" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyDependency"/>
+    
+    <bean id="customAdapter1" class="org.springframework.flex.core.ManageableComponentFactoryBean">
+        <constructor-arg value="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$TestAdapter"/>
+    </bean>
+    
+</beans>

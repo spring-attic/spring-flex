@@ -133,7 +133,7 @@ abstract class ParsingUtils {
 
         protected void mapToBuilder(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
             try {
-                this.doParse(element, builder);
+                this.doParse(element, parserContext, builder);
             } catch (Exception ex) {
                 parserContext.getReaderContext().error(ex.getMessage(), parserContext.extractSource(element), ex);
             }
