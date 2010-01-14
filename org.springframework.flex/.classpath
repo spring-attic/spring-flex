@@ -98,5 +98,7 @@
 			<attribute name="owner.project.facets" value="jst.java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.apache.activemq/com.springsource.org.apache.activemq/5.3.0/com.springsource.org.apache.activemq-5.3.0.jar"/>
+	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.apache.geronimo.specs/com.springsource.javax.management.j2ee/1.0.1/com.springsource.javax.management.j2ee-1.0.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

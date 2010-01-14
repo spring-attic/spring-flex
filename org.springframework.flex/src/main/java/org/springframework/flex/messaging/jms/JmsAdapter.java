@@ -43,6 +43,7 @@ import flex.messaging.services.messaging.adapters.MessagingAdapter;
  * A {@link MessagingAdapter} implementation that enables sending and receiving messages via JMS.
  * 
  * @author Mark Fisher
+ * @author Jeremy Grelle
  */
 public class JmsAdapter extends MessagingAdapter implements InitializingBean, BeanNameAware {
 
@@ -233,7 +234,24 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
      */
     @Override
     public void start() {
+        if (!this.messageListenerContainer.isActive()) {
+            this.messageListenerContainer.initialize();
+        }
         super.start();
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        this.messageListenerContainer.shutdown();
+        super.stop();
+    }
+
+    DefaultMessageListenerContainer getMessageListenerContainer() {
+        return this.messageListenerContainer;
     }
 
     /**
