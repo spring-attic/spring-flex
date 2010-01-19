@@ -46,6 +46,35 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         adapter.manage(unsubscribeMessage);
         
         assertFalse("MessageListener not stopped",adapter.getMessageListenerContainer().isRunning());
+        assertFalse("MessageListener should be shut down", adapter.getMessageListenerContainer().isActive());
+    }
+    
+    public void testDestinationSubscribeTwiceSendUnsubscribe() throws Exception {
+        JmsAdapter adapter = createAdapter();
+        
+        CommandMessage subscribeMessage = new CommandMessage(CommandMessage.SUBSCRIBE_OPERATION);
+        subscribeMessage.setClientId("1234");
+        subscribeMessage.setDestination(DEST_ID);
+        adapter.manage(subscribeMessage);
+        
+        assertTrue("MessageListener not initialized", adapter.getMessageListenerContainer().isActive());
+        assertTrue("MessageListener not running",adapter.getMessageListenerContainer().isRunning());
+        
+        CommandMessage subscribeMessage2 = new CommandMessage(CommandMessage.SUBSCRIBE_OPERATION);
+        subscribeMessage2.setClientId("5678");
+        subscribeMessage2.setDestination(DEST_ID);
+        adapter.manage(subscribeMessage2);
+        
+        AsyncMessage testMessage = new AsyncMessage();
+        testMessage.setBody("test");
+        adapter.invoke(testMessage);
+        
+        CommandMessage unsubscribeMessage = new CommandMessage(CommandMessage.UNSUBSCRIBE_OPERATION);
+        unsubscribeMessage.setClientId("1234");
+        unsubscribeMessage.setDestination(DEST_ID);
+        adapter.manage(unsubscribeMessage);
+        
+        assertTrue("MessageListener stopped unexpectedly",adapter.getMessageListenerContainer().isRunning());
         assertTrue("MessageListener shut down unexpectedly", adapter.getMessageListenerContainer().isActive());
     }
     
@@ -67,6 +96,35 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         adapter.manage(unsubscribeMessage);
         
         assertFalse("MessageListener not stopped",adapter.getMessageListenerContainer().isRunning());
+        assertFalse("MessageListener not shut down", adapter.getMessageListenerContainer().isActive());
+        
+        adapter.stop();
+        assertFalse("MessageListener not shut down", adapter.getMessageListenerContainer().isActive());
+    }
+    
+    public void testSubscribeTwiceUnsubscribeStop() throws Exception{
+        
+        JmsAdapter adapter = createAdapter();
+        
+        CommandMessage subscribeMessage = new CommandMessage(CommandMessage.SUBSCRIBE_OPERATION);
+        subscribeMessage.setClientId("1234");
+        subscribeMessage.setDestination(DEST_ID);
+        adapter.manage(subscribeMessage);
+        
+        assertTrue("MessageListener not initialized", adapter.getMessageListenerContainer().isActive());
+        assertTrue("MessageListener not running",adapter.getMessageListenerContainer().isRunning());
+        
+        CommandMessage subscribeMessage2 = new CommandMessage(CommandMessage.SUBSCRIBE_OPERATION);
+        subscribeMessage2.setClientId("5678");
+        subscribeMessage2.setDestination(DEST_ID);
+        adapter.manage(subscribeMessage2);
+        
+        CommandMessage unsubscribeMessage = new CommandMessage(CommandMessage.UNSUBSCRIBE_OPERATION);
+        unsubscribeMessage.setClientId("1234");
+        unsubscribeMessage.setDestination(DEST_ID);
+        adapter.manage(unsubscribeMessage);
+        
+        assertTrue("MessageListener stopped unexpectedly",adapter.getMessageListenerContainer().isRunning());
         assertTrue("MessageListener shut down unexpectedly", adapter.getMessageListenerContainer().isActive());
         
         adapter.stop();
