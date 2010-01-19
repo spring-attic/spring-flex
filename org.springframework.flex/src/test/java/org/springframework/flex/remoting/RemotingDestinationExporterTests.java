@@ -22,9 +22,12 @@ import java.util.Iterator;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
+import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.support.StaticWebApplicationContext;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -39,7 +42,7 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 
     RemotingDestinationExporter exporter;
 
-    Object testService = new StubService();
+    Object testService = new StubServiceImpl();
 
     private @Mock
     BeanFactory beanFactory;
@@ -107,7 +110,6 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
     }
 
     public void testDestinationConfiguredWithNullService() throws Exception {
-
         this.exporter.setService(null);
         try {
             this.exporter.afterPropertiesSet();
@@ -224,6 +226,24 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 
         assertNotNull("RemotingDestination not registered", remotingService.getDestination(destinationId));
     }
+    
+    public void testDestinationConfiguredWithSourceClassForProxy() throws Exception {
+        StaticWebApplicationContext context = new StaticWebApplicationContext();
+        
+        MutablePropertyValues props = new MutablePropertyValues();
+        props.addPropertyValue("serviceUrl", "/foo/bar");
+        props.addPropertyValue("serviceInterface", StubService.class);
+        context.registerSingleton("proxiedBean", HttpInvokerProxyFactoryBean.class, props);
+        context.refresh();
+        exporter.setBeanFactory(context);
+        exporter.setService("proxiedBean");
+        exporter.setDestinationId("proxiedBean");
+        exporter.afterPropertiesSet();
+        
+        RemotingService remotingService = getRemotingService();
+        RemotingDestination remotingDestination = (RemotingDestination) remotingService.getDestination("proxiedBean");
+        assertEquals("Source not set correctly", StubService.class.getName(), remotingDestination.getSource());
+    }
 
     private void configureExporter() throws Exception {
 
@@ -239,7 +259,11 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         return (RemotingService) broker.getServiceByType(RemotingService.class.getName());
     }
 
-    private static final class StubService {
+    private static interface StubService {
+        public String retreiveStringValue();
+    }
+    
+    private static final class StubServiceImpl implements StubService {
 
         public String retreiveStringValue() {
             return "foo";

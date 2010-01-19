@@ -108,7 +108,11 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     }
 
     /**
-     * Sets the bean being exported
+     * Sets the bean being exported.
+     * 
+     * Supports setting either a direct bean instance reference, or the String identifier of the bean, to be looked up
+     * from the BeanFactory. The latter is preferred, as it allows more accurate calculation of the "source" property of
+     * the destination, required for tooling introspection of the destination.
      * 
      * @param service the bean being exported
      */
@@ -123,6 +127,25 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     @Override
     protected Destination createDestination(String destinationId, MessageBroker broker) {
         Assert.notNull(this.service, "The 'service' property is required.");
+        String source = null;
+        Class<?> sourceClass = null;
+        if (this.service instanceof String) {
+            String beanId = (String) service;
+            this.service = getBeanFactory().getBean(beanId);
+            sourceClass = AopUtils.getTargetClass(this.service);
+            if (sourceClass == null) {
+                sourceClass = getBeanFactory().getType(beanId);
+            }
+        } else {
+            sourceClass = AopUtils.getTargetClass(this.service);
+        }
+        if (sourceClass != null) {
+            source = sourceClass.getName();
+        } else {
+            if (log.isWarnEnabled()) {
+                log.warn("The source class being exported as RemotingDestination with id '"+destinationId+"' cannot be calculated.");
+            }
+        }
 
         // Look up the remoting service
         RemotingService remotingService = (RemotingService) broker.getServiceByType(RemotingService.class.getName());
@@ -132,7 +155,7 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
         RemotingDestination destination = (RemotingDestination) remotingService.createDestination(destinationId);
 
         destination.setFactory(this);
-        destination.setSource(AopUtils.getTargetClass(service).getName());
+        destination.setSource(source);
 
         if (log.isInfoEnabled()) {
             log.info("Created remoting destination with id '" + destinationId + "'");

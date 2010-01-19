@@ -80,7 +80,7 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
         assertEquals("Source not properly set", Bean1.class.getName(), rd.getSource());
     }
     
-    public void testExportScopedBeanWithDefaults() {
+    public void testExportScopedBeanWithDefaults() throws ClassNotFoundException, LinkageError {
         RequestContextHolder.setRequestAttributes(new DispatcherServletWebRequest(new MockHttpServletRequest()));
         
         this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);

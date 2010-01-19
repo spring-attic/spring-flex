@@ -98,7 +98,8 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
                 : remotingDestinationConfig.getBeanName();
 
             exporterBuilder.addPropertyReference(MESSAGE_BROKER_PROPERTY, messageBrokerId);
-            exporterBuilder.addPropertyReference(SERVICE_PROPERTY, remotingDestinationConfig.getBeanName());
+            exporterBuilder.addPropertyValue(SERVICE_PROPERTY, remotingDestinationConfig.getBeanName());
+            exporterBuilder.addDependsOn(remotingDestinationConfig.getBeanName());
             exporterBuilder.addPropertyValue(DESTINATION_ID_PROPERTY, destinationId);
             exporterBuilder.addPropertyValue(CHANNELS_PROPERTY, remotingDestination.channels());
             exporterBuilder.addPropertyValue(INCLUDE_METHODS_PROPERTY, remotingDestinationConfig.getIncludeMethods());
