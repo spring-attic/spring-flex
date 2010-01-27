@@ -126,6 +126,9 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
             beanNames.addAll(Arrays.asList(((ListableBeanFactory)beanFactory.getParentBeanFactory()).getBeanDefinitionNames()));
         }
         for (String beanName : beanNames) {
+            if (beanName.startsWith("scopedTarget.")) {
+                continue;
+            }
             Class<?> handlerType = beanFactory.getType(beanName);
             RemotingDestination remotingDestination = null;
             if (handlerType != null) {
