@@ -10,7 +10,7 @@
 
 	<flex:message-broker id="annotatedRemoteServiceBroker"/>
 	
-	<context:component-scan base-package="org.springframework.flex.config"/>
+	<context:component-scan base-package="org.springframework.flex.config" scoped-proxy="targetClass"/>
 	
 	<bean id="annotatedRemoteBean1" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService1"/>
         
