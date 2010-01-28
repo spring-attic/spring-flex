@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.flex.config;
+package org.springframework.flex.security;
 
 import java.util.List;
 
@@ -30,8 +30,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
-import org.springframework.flex.security.FlexSessionInvalidatingAuthenticationListener;
-import org.springframework.flex.security.SpringSecurityLoginCommand;
+import org.springframework.flex.config.BeanIds;
 import org.springframework.security.ui.FilterChainOrder;
 import org.springframework.security.util.FilterChainProxy;
 import org.springframework.security.util.UrlMatcher;
@@ -47,9 +46,9 @@ import org.springframework.web.filter.RequestContextFilter;
  * 
  * @author Jeremy Grelle
  */
-public class SessionFixationProtectionConfigurer implements BeanFactoryPostProcessor, ApplicationEventPublisherAware, ApplicationListener {
+public class SessionFixationProtectionPostProcessor implements BeanFactoryPostProcessor, ApplicationEventPublisherAware, ApplicationListener {
 
-    private static final Log log = LogFactory.getLog(SessionFixationProtectionConfigurer.class);
+    private static final Log log = LogFactory.getLog(SessionFixationProtectionPostProcessor.class);
 
     private boolean processed = false;
 
@@ -61,7 +60,7 @@ public class SessionFixationProtectionConfigurer implements BeanFactoryPostProce
      */
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         if (beanFactory.getBeanNamesForType(SpringSecurityLoginCommand.class).length > 0
-            && beanFactory.containsBean(org.springframework.security.config.BeanIds.SESSION_FIXATION_PROTECTION_FILTER)) {
+            && beanFactory.containsBean("_sessionFixationProtectionFilter")) {
 
             beanFactory.registerSingleton(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, new FlexSessionInvalidatingAuthenticationListener());
             beanFactory.registerSingleton(BeanIds.REQUEST_CONTEXT_FILTER, new PriorityOrderedRequestContextFilter());
@@ -82,8 +81,8 @@ public class SessionFixationProtectionConfigurer implements BeanFactoryPostProce
     public void onApplicationEvent(ApplicationEvent event) {
         if (!this.processed && event instanceof ContextRefreshedEvent) {
             ContextRefreshedEvent refreshEvent = (ContextRefreshedEvent) event;
-            if (refreshEvent.getApplicationContext().containsBean(org.springframework.security.config.BeanIds.FORM_LOGIN_FILTER)) {
-                Object authFilterBean = refreshEvent.getApplicationContext().getBean(org.springframework.security.config.BeanIds.FORM_LOGIN_FILTER);
+            if (refreshEvent.getApplicationContext().containsBean("_formLoginFilter")) {
+                Object authFilterBean = refreshEvent.getApplicationContext().getBean("_formLoginFilter");
                 if (authFilterBean != null && authFilterBean instanceof ApplicationEventPublisherAware) {
                     ((ApplicationEventPublisherAware) authFilterBean).setApplicationEventPublisher(this.applicationEventPublisher);
                 }
