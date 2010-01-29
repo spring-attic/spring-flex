@@ -113,7 +113,7 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
 
     /**
      * Helper that searches the BeanFactory for beans annotated with @RemotingDestination, being careful not to force
-     * eager creation of the beans.
+     * eager creation of the beans if it can be avoided.
      * 
      * @param beanFactory the BeanFactory to search
      * @return a set of collected RemotingDestinationMetadata
@@ -129,8 +129,23 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
             if (beanName.startsWith("scopedTarget.")) {
                 continue;
             }
-            Class<?> handlerType = beanFactory.getType(beanName);
             RemotingDestination remotingDestination = null;
+            BeanDefinition bd = beanFactory.getMergedBeanDefinition(beanName);
+            if (bd.isAbstract()) {
+                continue;
+            }
+            if (bd instanceof AbstractBeanDefinition) {
+                AbstractBeanDefinition abd = (AbstractBeanDefinition) bd;
+                if (abd.hasBeanClass()) {
+                    Class<?> beanClass = abd.getBeanClass();
+                    remotingDestination = AnnotationUtils.findAnnotation(beanClass, RemotingDestination.class);
+                    if (remotingDestination != null) {
+                        remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, beanClass));
+                        continue;
+                    }
+                }
+            }
+            Class<?> handlerType = beanFactory.getType(beanName);
             if (handlerType != null) {
                 remotingDestination = AnnotationUtils.findAnnotation(handlerType, RemotingDestination.class);
             } else {
@@ -140,19 +155,7 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
             }
             if (remotingDestination != null) {
                 remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, handlerType));
-            } else {
-                BeanDefinition bd = beanFactory.getMergedBeanDefinition(beanName);
-                if (bd instanceof AbstractBeanDefinition) {
-                    AbstractBeanDefinition abd = (AbstractBeanDefinition) bd;
-                    if (abd.hasBeanClass()) {
-                        Class<?> beanClass = abd.getBeanClass();
-                        remotingDestination = AnnotationUtils.findAnnotation(beanClass, RemotingDestination.class);
-                        if (remotingDestination != null) {
-                            remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, beanClass));
-                        }
-                    }
-                }
-            }
+            } 
         }
         return remotingDestinations;
     }

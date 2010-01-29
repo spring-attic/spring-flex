@@ -22,4 +22,11 @@
         <constructor-arg value="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$TestAdapter"/>
     </bean>
     
+    <!-- The following two bean definitions are necessary to satisfy the requirements of FLEX-99 -->
+    <bean id="abstractFactoryBean" class="org.springframework.flex.config.NoDefaultConstructorFactoryBean" abstract="true"/>
+	
+	<bean id="actualFactoryBean" parent="abstractFactoryBean">
+		<constructor-arg value="foo"/>
+	</bean>
+    
 </beans>
