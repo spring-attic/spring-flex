@@ -100,7 +100,7 @@
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework/org.springframework.asm/3.0.0.RELEASE/org.springframework.asm-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework/org.springframework.expression/3.0.0.RELEASE/org.springframework.expression-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security.core/3.0.0.RELEASE/org.springframework.security.core-3.0.0.RELEASE.jar" sourcepath="/FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security.core/3.0.0.RELEASE/org.springframework.security.core-sources-3.0.0.RELEASE.jar"/>
-	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security.web/3.0.0.RELEASE/org.springframework.security.web-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security.web/3.0.0.RELEASE/org.springframework.security.web-3.0.0.RELEASE.jar" sourcepath="/FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security.web/3.0.0.RELEASE/org.springframework.security.web-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security.config/3.0.0.RELEASE/org.springframework.security.config-3.0.0.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.springframework.flex-1.0.x"/>
 	<classpathentry kind="output" path="target/classes"/>

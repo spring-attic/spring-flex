@@ -16,6 +16,8 @@
 
 package org.springframework.flex.security3;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -48,8 +50,9 @@ public class LoginMessageInterceptorTests extends TestCase {
 
     @SuppressWarnings("unchecked")
     public final void testPostProcessSuccessfulLogin() {
-
-        Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_USER") });
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         this.inputMessage = new CommandMessage(CommandMessage.LOGIN_OPERATION);

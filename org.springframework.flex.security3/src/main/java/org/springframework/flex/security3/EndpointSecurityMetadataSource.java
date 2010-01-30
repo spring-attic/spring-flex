@@ -16,14 +16,16 @@
 
 package org.springframework.flex.security3;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.RequestKey;
 import org.springframework.security.web.util.UrlMatcher;
@@ -93,8 +95,10 @@ public class EndpointSecurityMetadataSource extends DefaultFilterInvocationSecur
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
         Collection<ConfigAttribute> pathDefinitions = super.getAllConfigAttributes();
-        LinkedHashSet allDefinitions = new LinkedHashSet();
-        allDefinitions.addAll(this.endpointMap.values());
+        List<ConfigAttribute> allDefinitions = new ArrayList<ConfigAttribute>();
+        for (Collection<ConfigAttribute> attrValues : this.endpointMap.values()) {
+            allDefinitions.addAll(attrValues);
+        }
         allDefinitions.addAll(pathDefinitions);
         return Collections.unmodifiableCollection(allDefinitions);
     }

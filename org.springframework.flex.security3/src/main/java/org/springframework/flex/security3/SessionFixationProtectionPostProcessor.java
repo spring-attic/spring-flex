@@ -22,9 +22,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
@@ -47,7 +47,7 @@ import org.springframework.web.filter.RequestContextFilter;
  * 
  * @author Jeremy Grelle
  */
-public class SessionFixationProtectionPostProcessor implements BeanFactoryPostProcessor, ApplicationEventPublisherAware, ApplicationListener {
+public class SessionFixationProtectionPostProcessor implements BeanFactoryPostProcessor, ApplicationEventPublisherAware, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Log log = LogFactory.getLog(SessionFixationProtectionPostProcessor.class);
 
@@ -63,7 +63,7 @@ public class SessionFixationProtectionPostProcessor implements BeanFactoryPostPr
      */
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         if (beanFactory.getBeanNamesForType(SpringSecurityLoginCommand.class).length > 0
-            && beanFactory.getBeanNamesForType(SessionFixationProtectionStrategy.class).length > 0) {
+            && BeanFactoryUtils.beanNamesForTypeIncludingAncestors(beanFactory, SessionFixationProtectionStrategy.class).length > 0) {
 
             beanFactory.registerSingleton(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, new FlexSessionInvalidatingAuthenticationListener());
             beanFactory.registerSingleton(BeanIds.REQUEST_CONTEXT_FILTER, new PriorityOrderedRequestContextFilter());
@@ -80,22 +80,21 @@ public class SessionFixationProtectionPostProcessor implements BeanFactoryPostPr
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (!this.processed && event instanceof ContextRefreshedEvent) {
-            ContextRefreshedEvent refreshEvent = (ContextRefreshedEvent) event;
-            String[] authFilterBeans = refreshEvent.getApplicationContext().getBeanNamesForType(UsernamePasswordAuthenticationFilter.class);
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        if (!this.processed) {
+            String[] authFilterBeans = event.getApplicationContext().getBeanNamesForType(UsernamePasswordAuthenticationFilter.class);
             for (int i=0; i<authFilterBeans.length; i++) {
-                UsernamePasswordAuthenticationFilter filter = (UsernamePasswordAuthenticationFilter) refreshEvent.getApplicationContext().getBean(authFilterBeans[i]);
+                UsernamePasswordAuthenticationFilter filter = (UsernamePasswordAuthenticationFilter) event.getApplicationContext().getBean(authFilterBeans[i]);
                 filter.setApplicationEventPublisher(this.applicationEventPublisher);
             }
             
-            if (refreshEvent.getApplicationContext().containsBean(filterChainProxyId)) {
-                FilterChainProxy proxy = (FilterChainProxy) refreshEvent.getApplicationContext().getBean(
+            if (event.getApplicationContext().containsBean(filterChainProxyId)) {
+                FilterChainProxy proxy = (FilterChainProxy) event.getApplicationContext().getBean(
                     filterChainProxyId, FilterChainProxy.class);
                 UrlMatcher matcher = proxy.getMatcher();
                 Object compiledPath = matcher.compile(matcher.getUniversalMatchPattern());
                 if (proxy.getFilterChainMap().containsKey(compiledPath)) {
-                    proxy.getFilterChainMap().get(compiledPath).add(0, (Filter) refreshEvent.getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER));
+                    proxy.getFilterChainMap().get(compiledPath).add(0, (Filter) event.getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER));
                 }
                 this.processed = true;
             } else {

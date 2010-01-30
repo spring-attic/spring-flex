@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -48,7 +47,7 @@ public class FlexSessionInvalidatingAuthenticationListenerTests extends TestCase
 
         RequestContextHolder.resetRequestAttributes();
 
-        ApplicationEvent event = new InteractiveAuthenticationSuccessEvent(this.authentication, UsernamePasswordAuthenticationFilter.class);
+        InteractiveAuthenticationSuccessEvent event = new InteractiveAuthenticationSuccessEvent(this.authentication, UsernamePasswordAuthenticationFilter.class);
 
         this.listener.onApplicationEvent(event);
 
@@ -59,22 +58,11 @@ public class FlexSessionInvalidatingAuthenticationListenerTests extends TestCase
 
         RequestContextHolder.setRequestAttributes(this.attributes);
 
-        ApplicationEvent event = new InteractiveAuthenticationSuccessEvent(this.authentication, UsernamePasswordAuthenticationFilter.class);
+        InteractiveAuthenticationSuccessEvent event = new InteractiveAuthenticationSuccessEvent(this.authentication, UsernamePasswordAuthenticationFilter.class);
 
         this.listener.onApplicationEvent(event);
 
         verify(this.attributes).removeAttribute("__flexSession", RequestAttributes.SCOPE_SESSION);
-    }
-
-    @SuppressWarnings("serial")
-    public void testOtherEvent() {
-
-        RequestContextHolder.resetRequestAttributes();
-
-        this.listener.onApplicationEvent(new ApplicationEvent(this) {
-        });
-
-        verify(this.attributes, never()).removeAttribute("__flexSession", RequestAttributes.SCOPE_SESSION);
     }
 
 }

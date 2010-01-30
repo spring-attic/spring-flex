@@ -17,6 +17,7 @@
 package org.springframework.flex.security3;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -67,16 +69,15 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
     private Message message;
 
     @Override
-    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        LinkedHashMap requestMap = new LinkedHashMap();
+        LinkedHashMap<RequestKey, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestKey, Collection<ConfigAttribute>>();
         List<ConfigAttribute> attrs = new ArrayList<ConfigAttribute>();
         attrs.add(new SecurityConfig("ROLE_USER"));
         requestMap.put(new RequestKey("**/messagebroker/**"), attrs);
         this.source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), requestMap);
 
-        List voters = new ArrayList();
+        List<AccessDecisionVoter> voters = new ArrayList<AccessDecisionVoter>();
         voters.add(new RoleVoter());
         ((AffirmativeBased) this.adm).setDecisionVoters(voters);
 
@@ -89,7 +90,9 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
     }
 
     public void testServiceAuthorized() throws Exception {
-        Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_USER") });
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         MessageBroker broker = getMessageBroker();
@@ -123,7 +126,7 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
 
     public void testServiceUnauthorized() throws Exception {
 
-        Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", new GrantedAuthority[] {});
+        Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", new ArrayList<GrantedAuthority>());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         MessageBroker broker = getMessageBroker();

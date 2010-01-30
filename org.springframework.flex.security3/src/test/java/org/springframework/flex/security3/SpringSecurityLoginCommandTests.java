@@ -16,8 +16,8 @@
 
 package org.springframework.flex.security3;
 
-import static org.mockito.Mockito.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.when;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -82,7 +82,9 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
     }
 
     public void testDoAuthorization_MatchingAuthority() throws Exception {
-        GrantedAuthority[] authorities = new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_USER"), new GrantedAuthorityImpl("ROLE_ABUSER") };
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new GrantedAuthorityImpl("ROLE_ABUSER"));
         Principal principal = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
 
         this.cmd = new SpringSecurityLoginCommand(mgr);
@@ -94,7 +96,9 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
     }
 
     public void testDoAuthorization_NoMatchingAuthority() throws Exception {
-        GrantedAuthority[] authorities = new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_USER"), new GrantedAuthorityImpl("ROLE_ABUSER") };
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new GrantedAuthorityImpl("ROLE_ABUSER"));
         Principal principal = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
 
         this.cmd = new SpringSecurityLoginCommand(mgr);

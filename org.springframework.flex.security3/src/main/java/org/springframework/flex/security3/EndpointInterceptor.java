@@ -16,8 +16,12 @@
 
 package org.springframework.flex.security3;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
+import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
@@ -33,11 +37,21 @@ import flex.messaging.messages.Message;
  * @author Jeremy Grelle
  */
 @SuppressWarnings("unchecked")
-public class EndpointInterceptor extends AbstractSecurityInterceptor implements MessageInterceptor {
+public class EndpointInterceptor extends AbstractSecurityInterceptor implements MessageInterceptor, BeanFactoryAware {
 
     private static final String STATUS_TOKEN = "_enpointInterceptorStatusToken";
 
     private EndpointSecurityMetadataSource securityMetadataSource;
+    
+    private BeanFactory beanFactory;
+    
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (getAccessDecisionManager() == null) {
+            setAccessDecisionManager(beanFactory.getBean(AccessDecisionManager.class));
+        }
+        super.afterPropertiesSet();
+    }
 
     public EndpointSecurityMetadataSource getObjectDefinitionSource() {
         return this.securityMetadataSource;
@@ -84,6 +98,14 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
             context.getAttributes().put(STATUS_TOKEN, token);
         }
         return inputMessage;
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;        
     }
 
     /**

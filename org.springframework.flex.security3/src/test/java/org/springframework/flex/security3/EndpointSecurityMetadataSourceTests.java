@@ -43,13 +43,12 @@ public class EndpointSecurityMetadataSourceTests extends TestCase {
 
     private EndpointSecurityMetadataSource source;
 
-    //@SuppressWarnings("unchecked")
     public void testGetAttributes_ForProtectedEndpointId() {
         HashMap<String, Collection<ConfigAttribute>> endpointMap = new HashMap<String, Collection<ConfigAttribute>>();
         List<ConfigAttribute> attrs = new ArrayList<ConfigAttribute>();
         attrs.add(new SecurityConfig("ROLE_USER"));
         endpointMap.put("foo", attrs);
-        this.source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), new LinkedHashMap(), endpointMap);
+        this.source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), new LinkedHashMap<RequestKey, Collection<ConfigAttribute>>(), endpointMap);
 
         when(this.mockEndpoint.getId()).thenReturn("foo");
 
@@ -58,11 +57,10 @@ public class EndpointSecurityMetadataSourceTests extends TestCase {
         assertTrue(def.size() > 0);
     }
 
-    //@SuppressWarnings("unchecked")
     public void testGetAttributes_ForProtectedURL() {
         List<ConfigAttribute> attrs = new ArrayList<ConfigAttribute>();
         attrs.add(new SecurityConfig("ROLE_USER"));
-        LinkedHashMap requestMap = new LinkedHashMap();
+        LinkedHashMap<RequestKey, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestKey, Collection<ConfigAttribute>>();
         requestMap.put(new RequestKey("**/messagebroker/**"), attrs);
         this.source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), requestMap);
 
@@ -73,9 +71,8 @@ public class EndpointSecurityMetadataSourceTests extends TestCase {
         assertTrue(def.size() > 0);
     }
 
-    @SuppressWarnings("unchecked")
     public void testSupportsEndpoint() {
-        this.source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), new LinkedHashMap());
+        this.source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), new LinkedHashMap<RequestKey, Collection<ConfigAttribute>>());
 
         assertTrue(this.source.supports(Endpoint.class));
         assertTrue(this.source.supports(this.mockEndpoint.getClass()));

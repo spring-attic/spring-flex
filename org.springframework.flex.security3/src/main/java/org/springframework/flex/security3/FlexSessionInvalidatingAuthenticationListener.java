@@ -18,7 +18,6 @@ package org.springframework.flex.security3;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.web.context.request.RequestAttributes;
@@ -39,7 +38,7 @@ import org.springframework.web.context.request.RequestContextHolder;
  * @author Jeremy Grelle
  * 
  */
-public class FlexSessionInvalidatingAuthenticationListener implements ApplicationListener {
+public class FlexSessionInvalidatingAuthenticationListener implements ApplicationListener<InteractiveAuthenticationSuccessEvent> {
 
     private static final String FLEX_SESSION_KEY = "__flexSession";
 
@@ -49,15 +48,13 @@ public class FlexSessionInvalidatingAuthenticationListener implements Applicatio
      * 
      * {@inheritDoc}
      */
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof InteractiveAuthenticationSuccessEvent) {
-            if (RequestContextHolder.getRequestAttributes() == null) {
-                log.error("Unable to find a thread-bound RequestAttributes object.  You must install either a RequestContextListener or RequestContextFilter in order "
-                    + "for this listener to have access to the current HttpSession to be able to clean up the FlexSession correctly.");
-                return;
-            }
-            RequestContextHolder.getRequestAttributes().removeAttribute(FLEX_SESSION_KEY, RequestAttributes.SCOPE_SESSION);
+    public void onApplicationEvent(InteractiveAuthenticationSuccessEvent event) {
+        if (RequestContextHolder.getRequestAttributes() == null) {
+            log.error("Unable to find a thread-bound RequestAttributes object.  You must install either a RequestContextListener or RequestContextFilter in order "
+                + "for this listener to have access to the current HttpSession to be able to clean up the FlexSession correctly.");
+            return;
         }
+        RequestContextHolder.getRequestAttributes().removeAttribute(FLEX_SESSION_KEY, RequestAttributes.SCOPE_SESSION);
     }
 
 }
