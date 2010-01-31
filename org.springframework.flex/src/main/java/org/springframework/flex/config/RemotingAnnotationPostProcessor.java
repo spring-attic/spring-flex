@@ -131,7 +131,7 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
             }
             RemotingDestination remotingDestination = null;
             BeanDefinition bd = beanFactory.getMergedBeanDefinition(beanName);
-            if (bd.isAbstract()) {
+            if (bd.isAbstract() || bd.isLazyInit()) {
                 continue;
             }
             if (bd instanceof AbstractBeanDefinition) {
