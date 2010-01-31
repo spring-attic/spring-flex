@@ -68,6 +68,8 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     private String[] includeMethods;
 
     private String[] excludeMethods;
+    
+    private Class<?> sourceClass = null;
 
     /**
      * 
@@ -128,19 +130,18 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     protected Destination createDestination(String destinationId, MessageBroker broker) {
         Assert.notNull(this.service, "The 'service' property is required.");
         String source = null;
-        Class<?> sourceClass = null;
         if (this.service instanceof String) {
             String beanId = (String) service;
             this.service = getBeanFactory().getBean(beanId);
-            sourceClass = AopUtils.getTargetClass(this.service);
-            if (sourceClass == null) {
-                sourceClass = getBeanFactory().getType(beanId);
+            this.sourceClass = AopUtils.getTargetClass(this.service);
+            if (this.sourceClass == null) {
+                this.sourceClass = getBeanFactory().getType(beanId);
             }
         } else {
-            sourceClass = AopUtils.getTargetClass(this.service);
+            this.sourceClass = AopUtils.getTargetClass(this.service);
         }
-        if (sourceClass != null) {
-            source = sourceClass.getName();
+        if (this.sourceClass != null) {
+            source = this.sourceClass.getName();
         } else {
             if (log.isWarnEnabled()) {
                 log.warn("The source class being exported as RemotingDestination with id '"+destinationId+"' cannot be calculated.");
@@ -238,8 +239,9 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     private List<RemotingMethod> getRemotingMethods(String[] methodNames) {
         List<RemotingMethod> remotingMethods = new ArrayList<RemotingMethod>();
         for (String name : methodNames) {
-            Assert.isTrue(ClassUtils.hasAtLeastOneMethodWithName(this.service.getClass(), name), "Could not find method with name '" + name
-                + "' on the exported service of type " + this.service.getClass());
+            Class<?> classToCheck = this.sourceClass != null ? this.sourceClass : this.service.getClass();
+            Assert.isTrue(ClassUtils.hasAtLeastOneMethodWithName(classToCheck, name), "Could not find method with name '" + name
+                + "' on the exported service of type " + classToCheck);
             RemotingMethod method = new RemotingMethod();
             method.setName(name);
             remotingMethods.add(method);
