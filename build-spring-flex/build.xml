@@ -5,13 +5,9 @@
 		<pathelement location="../org.springframework.flex"/>
 	</path>
 	
-	<path id="unit.test.bundles">
-		<pathelement location="../org.springframework.flex"/>
-		<pathelement location="../org.springframework.flex.security3"/>
-	</path>
-	
 	<path id="bundles">
 		<path refid="maven.central.bundles" />
+		<pathelement location="../org.springframework.flex.security3"/>
 		<pathelement location="../spring-flex-samples/spring-flex-testdrive/testdrive"/>
 	</path>
 
