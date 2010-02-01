@@ -8,6 +8,8 @@
 	<target name="jar" />
 	
 	<target name="package" />
+	
+	<target name="publish" />
 
 	<target name="compile-and-merge" depends="ivy.init, resolve.compile, compile.init, jar.init"
 	            description="Merges the output of a compilation of the source tree with the ouput of the compilation of a seperate source tree.">
