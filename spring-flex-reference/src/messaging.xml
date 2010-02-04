@@ -174,7 +174,7 @@
 
 <bean id="defaultMessageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />
 
-<flex:message-destination id="chatOut" message-channel="bookingUpdates" />]]>
+<flex:message-destination id="bookingUpdates" />]]>
     	</programlisting>
     	<para>
     		and assuming the Flex client is subscribed to the "bookingUpdates" destination, this could be achieved with the following controller code:
