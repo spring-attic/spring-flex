@@ -241,7 +241,7 @@
     	<para>
     		Explicit channel definition is a requirement when using dynamic destinations (meaning any destination that is added programmatically and not defined in the BlazeDS 
     		services-config.xml, i.e. the destinations created by the <code>remoting-destination</code> tag and the various <code>*-message-destination</code> tags).  See 
-    		Adobe's documentation here for more detail: http://livedocs.adobe.com/blazeds/1/blazeds_devguide/runtimeconfig_5.html#194376
+    		<ulink url="http://livedocs.adobe.com/blazeds/1/blazeds_devguide/runtimeconfig_5.html#194376">Adobe's documentation</ulink> for more detail.
     	</para>
 		<para>
 			The only way you don't have to explicitly define the ChannelSet on the client is if
