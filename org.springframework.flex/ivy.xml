@@ -48,7 +48,7 @@
 		<!-- test time only dependencies -->
 		<dependency org="org.apache.log4j" name="com.springsource.org.apache.log4j" rev="1.2.15" conf="test->runtime"/>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="4.4.0" conf="test->runtime" />
-		<dependency org="org.mockito" name="com.springsource.org.mockito" rev="1.6.0" conf="test->runtime" />
+		<dependency org="org.mockito" name="com.springsource.org.mockito" rev="1.8.0" conf="test->runtime" />
 		<dependency org="org.springframework" name="org.springframework.test" rev="${org.springframework}" conf="test->runtime" />
 		<dependency org="org.apache.activemq" name="com.springsource.org.apache.activemq" rev="5.3.0" conf="test->runtime" />
 		<dependency org="org.apache.geronimo.specs" name="com.springsource.javax.management.j2ee" rev="1.0.1" conf="test->runtime" />

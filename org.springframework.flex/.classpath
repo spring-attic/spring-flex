@@ -79,7 +79,6 @@
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.http/3.2.0.3978/com.springsource.flex.messaging.services.http-3.2.0.3978.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.remoting/3.2.0.3978/com.springsource.flex.messaging.services.remoting-3.2.0.3978.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework.integration/org.springframework.integration/1.0.2.RELEASE/org.springframework.integration-1.0.2.RELEASE.jar" sourcepath="/FLEX_MAINT_IVY_CACHE/org.springframework.integration/org.springframework.integration/1.0.2.RELEASE/org.springframework.integration-sources-1.0.2.RELEASE.jar"/>
-	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.mockito/com.springsource.org.mockito/1.6.0/com.springsource.org.mockito-1.6.0.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.hamcrest/com.springsource.org.hamcrest.core/1.1.0/com.springsource.org.hamcrest.core-1.1.0.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.objenesis/com.springsource.org.objenesis/1.0.0/com.springsource.org.objenesis-1.0.0.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
@@ -99,6 +98,7 @@
 	</classpathentry>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.apache.activemq/com.springsource.org.apache.activemq/5.3.0/com.springsource.org.apache.activemq-5.3.0.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.apache.geronimo.specs/com.springsource.javax.management.j2ee/1.0.1/com.springsource.javax.management.j2ee-1.0.1.jar"/>
-	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-2.0.4.A.jar"/>
+	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-2.0.4.A.jar" sourcepath="/FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-sources-2.0.4.A.jar"/>
+	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.mockito/com.springsource.org.mockito/1.8.0/com.springsource.org.mockito-1.8.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

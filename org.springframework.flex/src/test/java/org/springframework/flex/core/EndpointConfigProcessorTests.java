@@ -16,29 +16,28 @@
 
 package org.springframework.flex.core;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.Advised;
-import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.MessageBroker;
+import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.AbstractEndpoint;
-import flex.messaging.endpoints.BaseHTTPEndpoint;
-import flex.messaging.endpoints.Endpoint;
-import flex.messaging.endpoints.amf.AMFFilter;
+import flex.messaging.messages.Message;
 
 public class EndpointConfigProcessorTests extends TestCase {
 
@@ -49,12 +48,17 @@ public class EndpointConfigProcessorTests extends TestCase {
 
     @Mock
     AbstractEndpoint endpoint2;
+    
+    CustomEndpoint endpoint3;
 
     @Mock
     MethodInterceptor advice1;
 
     @Mock
     MethodInterceptor advice2;
+    
+    @Mock
+    Message testMessage;
 
     EndpointServiceMessagePointcutAdvisor advisor1;
 
@@ -63,7 +67,6 @@ public class EndpointConfigProcessorTests extends TestCase {
     EndpointConfigProcessor processor;
 
     @Override
-    @SuppressWarnings("unchecked")
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
@@ -71,20 +74,25 @@ public class EndpointConfigProcessorTests extends TestCase {
         this.advisor2 = new EndpointServiceMessagePointcutAdvisor(this.advice2);
 
         this.broker = new MessageBroker();
-        Map endpoints = new HashMap();
-        endpoints.put("foo", this.endpoint1);
 
         when(this.endpoint1.getId()).thenReturn("bar");
         when(this.endpoint1.getUrl()).thenReturn("http://foo.com/bar");
+        when(this.endpoint1.serviceMessage(this.testMessage)).thenReturn(this.testMessage);
         this.broker.addEndpoint(this.endpoint1);
 
         when(this.endpoint2.getId()).thenReturn("baz");
         when(this.endpoint2.getUrl()).thenReturn("http://foo.com/baz");
+        when(this.endpoint2.serviceMessage(this.testMessage)).thenReturn(this.testMessage);
         this.broker.addEndpoint(this.endpoint2);
+        
+        this.endpoint3 = new CustomEndpoint();
+        this.endpoint3.setId("custom");
+        this.endpoint3.setUrl("http://foo.com/custom");
+        this.broker.addEndpoint(this.endpoint3);
     }
 
     @SuppressWarnings("unchecked")
-    public void testPostProcessAfterInit() throws Exception {
+    public void testPostProcessAfterInit() throws Throwable {
 
         List<EndpointAdvisor> advisors = new ArrayList<EndpointAdvisor>();
         advisors.add(this.advisor1);
@@ -96,11 +104,11 @@ public class EndpointConfigProcessorTests extends TestCase {
 
         Collection endpoints = processedBroker.getEndpoints().values();
 
+        int counter = 0;
         Iterator i = endpoints.iterator();
         while (i.hasNext()) {
-            Endpoint endpoint = (Endpoint) i.next();
+            AbstractEndpoint endpoint = (AbstractEndpoint) i.next();
 
-            assertTrue(endpoint instanceof AbstractEndpoint);
             assertTrue(endpoint instanceof Advised);
 
             Advised advisedEndpoint = (Advised) endpoint;
@@ -110,22 +118,26 @@ public class EndpointConfigProcessorTests extends TestCase {
             assertTrue(advisedEndpoint.isProxyTargetClass());
             assertTrue(advisedEndpoint.indexOf(this.advisor1) == 0);
             assertTrue(advisedEndpoint.indexOf(this.advisor2) == 1);
+            
+            counter++;
+            
+            endpoint.serviceMessage(this.testMessage);
+            
+            ArgumentCaptor<MethodInvocation> arg = ArgumentCaptor.forClass(MethodInvocation.class);
+            verify(advice1, times(counter)).invoke(arg.capture());
+            arg.getValue().proceed();
+            verify(advice2, times(counter)).invoke(arg.capture());
+            Object result = arg.getValue().proceed();
+            
+            assertEquals(this.testMessage, result);
+        }
+    }
+    
+    public static class CustomEndpoint extends AMFEndpoint {
 
-            Object targetEndpoint = advisedEndpoint.getTargetSource().getTarget();
-            if (targetEndpoint instanceof BaseHTTPEndpoint) {
-                Field filterChainField = ReflectionUtils.findField(targetEndpoint.getClass(), "filterChain");
-                assertNotNull("Endpoint should have a filterChain field", filterChainField);
-                AMFFilter filter = (AMFFilter) ReflectionUtils.getField(filterChainField, targetEndpoint);
-                assertNotNull("Endpoint should have a populated filterChain field");
-                while (filter != null) {
-                    Field endpointField = ReflectionUtils.findField(filter.getClass(), "endpoint");
-                    if (endpointField != null) {
-                        Object endpointValue = ReflectionUtils.getField(endpointField, filter);
-                        assertSame("AMFFilter's endpoint field should be the proxy instance", advisedEndpoint, endpointValue);
-                    }
-                    filter = filter.getNext();
-                }
-            }
+        @Override
+        public Message serviceMessage(Message message) {
+            return message;
         }
     }
 
