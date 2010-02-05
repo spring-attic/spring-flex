@@ -11,46 +11,62 @@
 	<artifactId>testdrive</artifactId>
 	<packaging>war</packaging>
 
+
 	<name>Spring BlazeDS Integration Test Drive Web Application</name>
 
 	<build>
 		<finalName>testdrive</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.0.2</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>inplace</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<filesets>
+						    <fileset>
+						        <directory>src/main/webapp/WEB-INF/classes</directory>
+						    </fileset>
+							<fileset>
+								<directory>src/main/webapp/WEB-INF/lib</directory>
+							</fileset>
+						</filesets>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>
 
 		<profile>
-			<id>Spring_2_5</id>
+			<id>spring_2_5</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
 				<spring.version>2.5.6.SEC01</spring.version>
 			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.springframework.security</groupId>
-					<artifactId>spring-security-core-tiger</artifactId>
-					<version>2.0.5.RELEASE</version>
-					<exclusions>
-						<exclusion>
-							<groupId>org.springframework</groupId>
-							<artifactId>spring-support</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
-			</dependencies>
-
 			<build>
 				<plugins>
 					<plugin>
@@ -68,13 +84,43 @@
 					</plugin>
 				</plugins>
 			</build>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-core-tiger</artifactId>
+					<version>2.0.5.RELEASE</version>
+					<exclusions>
+						<exclusion>
+							<groupId>org.springframework</groupId>
+							<artifactId>spring-support</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+			</dependencies>
 		</profile>
 
 		<profile>
-			<id>Spring_3_0</id>
+			<id>spring_3_0</id>
 			<properties>
 				<spring.version>3.0.0.RELEASE</spring.version>
 			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.0.2</version>
+						<configuration>
+							<webResources>
+								<resource>
+									<directory>src/main/spring_3_0_resources</directory>
+									<targetPath>WEB-INF</targetPath>
+								</resource>
+							</webResources>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 			<dependencies>
 				<dependency>
 					<groupId>org.springframework.security</groupId>
