@@ -9,6 +9,12 @@
         	Flex/BlazeDS application.  Spring Security provides a wealth of different configuration options, but rather than go into the many
         	different combinations here, we'll leave most of that to the Spring Security documentation.  
         </para>
+        <para>
+            As of version 1.0.2, Spring BlazeDS Integration also supports both Spring Security versions 2 and 3.  The Spring Security version being
+            used will be detected at startup time and the proper integration support automatically installed.  Note that if you were previously customizing/extending 
+            any of the classes in the org.springframework.flex.security package, you will need to switch to the versions in the org.springframework.flex.security3 
+            package in order to be compatible with Spring Security 3.
+        </para>
         <sect2 id="spring-security-config">
             <title>A simple Spring Security 2 configuration</title>
 	        <para>
@@ -47,6 +53,37 @@
 				It is recommended to start simple as in this example, and add the additional features as needed.  
 			</para>
 		</sect2>
+		<sect2 id="spring-security-3-config">
+            <title>A simple Spring Security 3 configuration</title>
+            <para>
+                Here is an equivalent starting configuration using the Spring Security 3 schema:
+            </para>
+            <programlisting language="xml"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+    <http entry-point-ref="entryPoint">
+        <anonymous enabled="false"/>
+    </http>
+    
+    <beans:bean id="entryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+    
+    <authentication-manager>
+       <authentication-provider>
+           <user-service>
+            <user name="john" password="john" authorities="ROLE_USER" />
+            <user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN" />
+            <user name="guest" password="guest" authorities="ROLE_GUEST" />
+           </user-service>
+       </authentication-provider>
+    </authentication-manager>
+
+</beans:beans>]]>
+        </programlisting>
+        </sect2>
 		<sect2 id="security-filter-config">
 		    <title>Enabling the Spring Security filter chain in web.xml</title>
 		    <para>
