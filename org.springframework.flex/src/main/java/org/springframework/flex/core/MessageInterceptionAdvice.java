@@ -50,23 +50,35 @@ public class MessageInterceptionAdvice implements MethodInterceptor {
     public Object invoke(MethodInvocation mi) throws Throwable {
         MessageProcessingContext context = new MessageProcessingContext(mi.getThis());
         Message inputMessage = (Message) mi.getArguments()[0];
+        Stack<ResourceHandlingMessageInterceptor> resourceHandlerStack = new Stack<ResourceHandlingMessageInterceptor>();
+
         for (MessageInterceptor interceptor : this.messageInterceptors) {
+            if (interceptor instanceof ResourceHandlingMessageInterceptor) {
+                resourceHandlerStack.add((ResourceHandlingMessageInterceptor) interceptor);
+            }
             inputMessage = interceptor.preProcess(context, inputMessage);
         }
         mi.getArguments()[0] = inputMessage;
+
         Message outputMessage = null;
         try {
             outputMessage = (Message) mi.proceed();
-        } finally {
-            if (outputMessage != null) {
-                Stack<MessageInterceptor> postProcessStack = new Stack<MessageInterceptor>();
-                postProcessStack.addAll(this.messageInterceptors);
-                while (!postProcessStack.empty()) {
-                    MessageInterceptor interceptor = postProcessStack.pop();
-                    outputMessage = interceptor.postProcess(context, inputMessage, outputMessage);
-                }
+        } catch (Exception ex) {
+            doAfterComplete(resourceHandlerStack, context, inputMessage, outputMessage, ex);
+            throw ex;
+        }
+
+        if (outputMessage != null) {
+            Stack<MessageInterceptor> postProcessStack = new Stack<MessageInterceptor>();
+            postProcessStack.addAll(this.messageInterceptors);
+            while (!postProcessStack.empty()) {
+                MessageInterceptor interceptor = postProcessStack.pop();
+                outputMessage = interceptor.postProcess(context, inputMessage, outputMessage);
             }
         }
+        
+        doAfterComplete(resourceHandlerStack, context, inputMessage, outputMessage, null);
+
         return outputMessage;
     }
 
@@ -77,6 +89,13 @@ public class MessageInterceptionAdvice implements MethodInterceptor {
      */
     public void setMessageInterceptors(Set<MessageInterceptor> messageInterceptors) {
         this.messageInterceptors = messageInterceptors;
+    }
+
+    private void doAfterComplete(Stack<ResourceHandlingMessageInterceptor> resourceHandlerStack, MessageProcessingContext context,
+        Message inputMessage, Message outputMessage, Exception ex) {
+        while (!resourceHandlerStack.empty()) {
+            resourceHandlerStack.pop().afterCompletion(context, inputMessage, outputMessage, ex);
+        }
     }
 
 }
