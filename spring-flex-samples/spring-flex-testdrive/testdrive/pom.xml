@@ -44,11 +44,20 @@
 					<version>2.4</version>
 					<configuration>
 						<filesets>
-						    <fileset>
-						        <directory>src/main/webapp/WEB-INF/classes</directory>
-						    </fileset>
+							<fileset>
+								<directory>src/main/webapp/WEB-INF/classes</directory>
+							</fileset>
 							<fileset>
 								<directory>src/main/webapp/WEB-INF/lib</directory>
+							</fileset>
+							<fileset>
+								<directory>src/main/webapp/WEB-INF/spring</directory>
+							</fileset>
+							<fileset>
+								<directory>src/main/webapp/WEB-INF</directory>
+								<includes>
+									<include>flex-servlet.xml</include>
+								</includes>
 							</fileset>
 						</filesets>
 					</configuration>
@@ -76,7 +85,7 @@
 						<configuration>
 							<webResources>
 								<resource>
-									<directory>src/main/spring_2_5_resources</directory>
+									<directory>${basedir}/src/main/spring_2_5_resources</directory>
 									<targetPath>WEB-INF</targetPath>
 								</resource>
 							</webResources>
@@ -113,7 +122,7 @@
 						<configuration>
 							<webResources>
 								<resource>
-									<directory>src/main/spring_3_0_resources</directory>
+									<directory>${basedir}/src/main/spring_3_0_resources</directory>
 									<targetPath>WEB-INF</targetPath>
 								</resource>
 							</webResources>
