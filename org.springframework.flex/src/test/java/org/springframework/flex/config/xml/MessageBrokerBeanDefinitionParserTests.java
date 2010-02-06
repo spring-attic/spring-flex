@@ -40,6 +40,7 @@ import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
+import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
 import org.springframework.flex.security.EndpointInterceptor;
 import org.springframework.flex.security.FlexSessionInvalidatingAuthenticationListener;
 import org.springframework.flex.security.SpringSecurityLoginCommand;
@@ -140,6 +141,8 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
                 TestMessageInterceptor.class)));
             assertTrue("Custom interceptor not found", interceptors.contains(getApplicationContext().getBean("interceptor2",
                 TestMessageInterceptor.class)));
+            assertTrue("Custom interceptor not found", interceptors.contains(getApplicationContext().getBean("interceptor3",
+                TestResourceHandlingInterceptor.class)));
         }
     }
 
@@ -335,7 +338,22 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         public Message preProcess(MessageProcessingContext context, Message inputMessage) {
             return null;
         }
-    }  
+    }
+    
+    public static final class TestResourceHandlingInterceptor implements ResourceHandlingMessageInterceptor {
+
+        public void afterCompletion(MessageProcessingContext context, Message inputMessage, Message outputMessage, Exception ex) {
+            
+        }
+
+        public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
+            return null;
+        }
+
+        public Message preProcess(MessageProcessingContext context, Message inputMessage) {
+            return null;
+        }   
+    }
 
     @Override
     protected String[] getConfigLocations() {
