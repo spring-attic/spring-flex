@@ -6,7 +6,7 @@
 	<artifactId>spring-flex</artifactId>
 	<packaging>jar</packaging>
 	<name>Spring BlazeDS Integration</name>
-	<version>1.0.2.BUILD-SNAPSHOT</version>
+	<version>1.0.2.RELEASE</version>
 
 	<dependencies>
 		<dependency>
@@ -111,13 +111,25 @@
 		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-core</artifactId>
-			<version>1.0.2.SR1</version>
+			<version>1.0.3.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core-tiger</artifactId>
 			<version>2.0.4</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>3.0.1.RELEASE</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>3.0.1.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
