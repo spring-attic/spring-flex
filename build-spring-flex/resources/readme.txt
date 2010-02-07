@@ -1,4 +1,4 @@
-SPRING BLAZEDS INTEGRATION 1.0.1.RELEASE (September 2009)
+SPRING BLAZEDS INTEGRATION 1.0.2.RELEASE (February 2010)
 ----------------------------------
 http://www.springsource.org/projects/blaze-ds-integration
 
@@ -20,11 +20,6 @@ Release distribution contents:
 "src" contains the Spring BlazeDS Integration distribution source jar files
 "docs" contains the Spring BlazeDS Integration reference manual and API Javadocs
 "projects" contains all buildable projects, including sample applications
-"projects/build-spring-flex" is the directory to access to build the Spring BlazeDS Integration distribution
-"projects/spring-build" is the master build system used by many Spring projects, including Spring BlazeDS Integration
-"projects/org.springframework.flex" contains buildable Spring BlazeDS Integration project sources
-
-See the readme.txt within the above directories for additional information.
 
 Spring BlazeDS Integration is released under the terms of the Apache Software License (see license.txt).
 
@@ -34,7 +29,7 @@ The following jar files are included in the distribution.
 The contents of each jar and its dependencies are noted.
 Dependencies in [brackets] are optional, and are just necessary for certain functionality.
 
-* org.springframework.flex-1.0.1.RELEASE.jar
+* org.springframework.flex-1.0.2.RELEASE.jar
 - Contents: The Spring BlazeDS Integration library, containing Spring's integration for Adobe BlazeDS.
 - Runtime Dependencies: Spring Core, Spring MVC, BlazeDS, Jackson, Commons Logging and HttpClient, CGLib, Backport of javax.util.concurrent, 
 [Spring Security], [Spring Integration], [Spring JMS]    
