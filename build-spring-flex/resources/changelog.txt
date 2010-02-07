@@ -5,7 +5,7 @@ http://www.springsource.org/spring-flex
 Changes in version 1.0.2.RELEASE (02.08.2010)
 -----------------------------------------
 General
-* Spring Security 3 supports has been added and the bundled Test Drive sample now has an additional Maven build 
+* Spring Security 3 support has been added and the bundled Test Drive sample now has an additional Maven build 
 profile for building the sample to use Spring 3 and Spring Security 3.  See the docs at 
 http://static.springsource.org/spring-flex/docs/1.0.x/reference/html/ch06.html for instructions on how to enable
 this optional profile.
