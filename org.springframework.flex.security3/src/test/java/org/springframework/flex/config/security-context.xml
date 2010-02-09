@@ -22,5 +22,5 @@
     
     <bean id="testHelper" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$AccessDecisionManagerLogger"/>
 	
-	<security:global-method-security secured-annotations="enabled" jsr250-annotations="enabled"/>
+	<security:global-method-security secured-annotations="enabled" />
 </beans> 
