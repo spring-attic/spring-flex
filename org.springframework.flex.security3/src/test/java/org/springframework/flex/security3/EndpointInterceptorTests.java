@@ -32,13 +32,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.flex.core.MessageInterceptionAdvice;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
-import org.springframework.security.access.vote.AffirmativeBased;
-import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -55,8 +51,6 @@ import flex.messaging.messages.Message;
 
 public class EndpointInterceptorTests extends TestCase {
 
-    private final AccessDecisionManager adm = new AffirmativeBased();
-
     @Mock
     private AuthenticationManager mgr;
     
@@ -72,7 +66,7 @@ public class EndpointInterceptorTests extends TestCase {
     private AbstractEndpoint advisedEndpoint;
 
     @Override
-    public void setUp() {
+    public void setUp() throws Exception{
         MockitoAnnotations.initMocks(this);
 
         LinkedHashMap<RequestKey, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestKey, Collection<ConfigAttribute>>();
@@ -81,15 +75,11 @@ public class EndpointInterceptorTests extends TestCase {
         requestMap.put(new RequestKey("**/messagebroker/amf"), attrs);
         EndpointSecurityMetadataSource source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), requestMap);
 
-        List<AccessDecisionVoter> voters = new ArrayList<AccessDecisionVoter>();
-        voters.add(new RoleVoter());
-        ((AffirmativeBased) this.adm).setDecisionVoters(voters);
-
         EndpointInterceptor interceptor;
         interceptor = new EndpointInterceptor();
         interceptor.setAuthenticationManager(this.mgr);
-        interceptor.setAccessDecisionManager(this.adm);
         interceptor.setObjectDefinitionSource(source);
+        interceptor.afterPropertiesSet();
         MessageInterceptionAdvice advice = new MessageInterceptionAdvice();
         advice.getMessageInterceptors().add(interceptor);
 

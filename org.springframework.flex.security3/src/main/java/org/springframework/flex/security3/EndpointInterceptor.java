@@ -16,15 +16,16 @@
 
 package org.springframework.flex.security3;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
+import java.util.Arrays;
+
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
-import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
 
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.CommandMessage;
@@ -37,18 +38,16 @@ import flex.messaging.messages.Message;
  * @author Jeremy Grelle
  */
 @SuppressWarnings("unchecked")
-public class EndpointInterceptor extends AbstractSecurityInterceptor implements MessageInterceptor, BeanFactoryAware {
+public class EndpointInterceptor extends AbstractSecurityInterceptor implements MessageInterceptor {
 
     private static final String STATUS_TOKEN = "_enpointInterceptorStatusToken";
 
     private EndpointSecurityMetadataSource securityMetadataSource;
     
-    private BeanFactory beanFactory;
-    
     @Override
     public void afterPropertiesSet() throws Exception {
         if (getAccessDecisionManager() == null) {
-            setAccessDecisionManager(beanFactory.getBean(AccessDecisionManager.class));
+            configureDefaultAccessDecisionManager();
         }
         super.afterPropertiesSet();
     }
@@ -99,14 +98,6 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
         }
         return inputMessage;
     }
-    
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;        
-    }
 
     /**
      * Sets the {@link EndpointSecurityMetadataSource} for the endpoint being secured
@@ -117,6 +108,12 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
         this.securityMetadataSource = newSource;
     }
 
+    private void configureDefaultAccessDecisionManager() {
+        AffirmativeBased adm = new AffirmativeBased();
+        adm.setDecisionVoters(Arrays.asList(new RoleVoter(), new AuthenticatedVoter()));
+        setAccessDecisionManager(adm);
+    }
+    
     private boolean isPassThroughCommand(Message message) {
         if (message instanceof CommandMessage) {
             CommandMessage command = (CommandMessage) message;
