@@ -91,14 +91,10 @@
 			<attribute name="owner.project.facets" value="jst.utility"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6.0 (MacOS X Default)">
-		<attributes>
-			<attribute name="owner.project.facets" value="jst.java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.apache.activemq/com.springsource.org.apache.activemq/5.3.0/com.springsource.org.apache.activemq-5.3.0.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.apache.geronimo.specs/com.springsource.javax.management.j2ee/1.0.1/com.springsource.javax.management.j2ee-1.0.1.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-2.0.4.A.jar" sourcepath="/FLEX_MAINT_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-sources-2.0.4.A.jar"/>
 	<classpathentry kind="var" path="FLEX_MAINT_IVY_CACHE/org.mockito/com.springsource.org.mockito/1.8.0/com.springsource.org.mockito-1.8.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
