@@ -50,31 +50,33 @@ public class MessageInterceptionAdvice implements MethodInterceptor {
     public Object invoke(MethodInvocation mi) throws Throwable {
         MessageProcessingContext context = new MessageProcessingContext(mi.getThis());
         Message inputMessage = (Message) mi.getArguments()[0];
+        Message outputMessage = null;
         Stack<ResourceHandlingMessageInterceptor> resourceHandlerStack = new Stack<ResourceHandlingMessageInterceptor>();
 
-        for (MessageInterceptor interceptor : this.messageInterceptors) {
-            if (interceptor instanceof ResourceHandlingMessageInterceptor) {
-                resourceHandlerStack.add((ResourceHandlingMessageInterceptor) interceptor);
-            }
-            inputMessage = interceptor.preProcess(context, inputMessage);
-        }
-        mi.getArguments()[0] = inputMessage;
-
-        Message outputMessage = null;
         try {
+
+            for (MessageInterceptor interceptor : this.messageInterceptors) {
+                if (interceptor instanceof ResourceHandlingMessageInterceptor) {
+                    resourceHandlerStack.add((ResourceHandlingMessageInterceptor) interceptor);
+                }
+                inputMessage = interceptor.preProcess(context, inputMessage);
+            }
+            mi.getArguments()[0] = inputMessage;
+
             outputMessage = (Message) mi.proceed();
+
+            if (outputMessage != null) {
+                Stack<MessageInterceptor> postProcessStack = new Stack<MessageInterceptor>();
+                postProcessStack.addAll(this.messageInterceptors);
+                while (!postProcessStack.empty()) {
+                    MessageInterceptor interceptor = postProcessStack.pop();
+                    outputMessage = interceptor.postProcess(context, inputMessage, outputMessage);
+                }
+            }
+
         } catch (Exception ex) {
             doAfterComplete(resourceHandlerStack, context, inputMessage, outputMessage, ex);
             throw ex;
-        }
-
-        if (outputMessage != null) {
-            Stack<MessageInterceptor> postProcessStack = new Stack<MessageInterceptor>();
-            postProcessStack.addAll(this.messageInterceptors);
-            while (!postProcessStack.empty()) {
-                MessageInterceptor interceptor = postProcessStack.pop();
-                outputMessage = interceptor.postProcess(context, inputMessage, outputMessage);
-            }
         }
         
         doAfterComplete(resourceHandlerStack, context, inputMessage, outputMessage, null);

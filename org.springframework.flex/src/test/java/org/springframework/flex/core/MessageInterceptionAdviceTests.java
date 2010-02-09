@@ -97,16 +97,45 @@ public class MessageInterceptionAdviceTests extends TestCase {
 
     }
     
-    public final void testResourceHandlingInterceptorOnException() {
-        ResourceHandlingInterceptor interceptor = new ResourceHandlingInterceptor();
+    public final void testResourceHandlingInterceptorOnPreprocessException() {
+        PreProcessExceptionInterceptor interceptor = new PreProcessExceptionInterceptor();
         setupInterceptor(interceptor);
-        when(this.endpoint.serviceMessage(this.inMessage)).thenThrow(new TestException());
-        
+        TestException result = null;
         try {
             this.advisedEndpoint.serviceMessage(this.inMessage);
         } catch(TestException ex) {
-            //Expected
+            result = ex;
         }
+        assertNotNull("Exception not re-thrown", result);
+        assertTrue("Interceptor not completed", interceptor.completed);
+    }
+    
+    public final void testResourceHandlingInterceptorOnInvocationException() {
+        ResourceHandlingInterceptor interceptor = new ResourceHandlingInterceptor();
+        setupInterceptor(interceptor);
+        when(this.endpoint.serviceMessage(this.inMessage)).thenThrow(new TestException());
+        TestException result = null;
+        try {
+            this.advisedEndpoint.serviceMessage(this.inMessage);
+        } catch(TestException ex) {
+            result = ex;        
+        }
+        assertNotNull("Exception not re-thrown", result);
+        assertTrue("Interceptor not completed", interceptor.completed);
+    }
+    
+    public final void testResourceHandlingInterceptorOnPostprocessException() {
+        PostProcessExceptionInterceptor interceptor = new PostProcessExceptionInterceptor();
+        setupInterceptor(interceptor);
+        when(this.endpoint.serviceMessage(this.inMessage)).thenThrow(new TestException());
+        TestException result = null;
+        try {
+            this.advisedEndpoint.serviceMessage(this.inMessage);
+        } catch(TestException ex) {
+            result = ex;        
+        }
+        assertNotNull("Exception not re-thrown", result);
+        assertNotNull("Preprocess not called", interceptor.preInvoked);
         assertTrue("Interceptor not completed", interceptor.completed);
     }
     
@@ -180,6 +209,41 @@ public class MessageInterceptionAdviceTests extends TestCase {
         public Message preProcess(MessageProcessingContext context, Message inputMessage) {
             return inputMessage;
         }        
+    }
+    
+    public class PreProcessExceptionInterceptor implements ResourceHandlingMessageInterceptor {
+        protected boolean completed = false;
+        
+        public void afterCompletion(MessageProcessingContext context, Message inputMessage, Message outputMessage, Exception ex) {
+            completed = true;
+        }
+
+        public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
+            return outputMessage;
+        }
+
+        public Message preProcess(MessageProcessingContext context, Message inputMessage) {
+            throw new TestException();
+        }       
+    }
+    
+    public class PostProcessExceptionInterceptor implements ResourceHandlingMessageInterceptor {
+        protected boolean completed = false;
+        
+        protected boolean preInvoked = false;
+        
+        public void afterCompletion(MessageProcessingContext context, Message inputMessage, Message outputMessage, Exception ex) {
+            completed = true;
+        }
+
+        public Message postProcess(MessageProcessingContext context, Message inputMessage, Message outputMessage) {
+            throw new TestException();
+        }
+
+        public Message preProcess(MessageProcessingContext context, Message inputMessage) {
+            preInvoked = true;
+            return inputMessage;
+        }       
     }
     
     @SuppressWarnings("serial")
