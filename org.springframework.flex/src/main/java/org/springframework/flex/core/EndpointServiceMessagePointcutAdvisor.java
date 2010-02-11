@@ -17,10 +17,10 @@
 package org.springframework.flex.core;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
-import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.Message;
@@ -42,7 +42,7 @@ public class EndpointServiceMessagePointcutAdvisor extends StaticMethodMatcherPo
 
     private static final String SERVICE_MESSAGE_METHOD_NAME = "serviceMessage";
 
-    private final Class[] SERVICE_MESSAGE_ARGS = new Class[] { Message.class };
+    private final Class<?>[] SERVICE_MESSAGE_ARGS = new Class<?>[] { Message.class };
 
     public EndpointServiceMessagePointcutAdvisor(Advice advice) {
         super(advice);
@@ -53,7 +53,15 @@ public class EndpointServiceMessagePointcutAdvisor extends StaticMethodMatcherPo
      * {@inheritDoc}
      */
     public boolean matches(Method m, Class c) {
-        return AbstractEndpoint.class.isAssignableFrom(c)
-            && m.equals(ReflectionUtils.findMethod(AbstractEndpoint.class, SERVICE_MESSAGE_METHOD_NAME, this.SERVICE_MESSAGE_ARGS));
+        
+        if (!AbstractEndpoint.class.isAssignableFrom(c)) {
+            return false;
+        }
+        
+        if (!SERVICE_MESSAGE_METHOD_NAME.equals(m.getName())) {
+            return false;
+        }
+        
+        return m.getParameterTypes().length == 1 && Arrays.equals(SERVICE_MESSAGE_ARGS, m.getParameterTypes());
     }
 }

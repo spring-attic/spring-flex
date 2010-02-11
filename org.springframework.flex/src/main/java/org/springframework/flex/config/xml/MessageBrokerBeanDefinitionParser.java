@@ -34,12 +34,6 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.config.FlexConfigurationManager;
-import org.springframework.flex.security.LoginMessageInterceptor;
-import org.springframework.flex.security.PerClientAuthenticationInterceptor;
-import org.springframework.flex.security.SecurityExceptionTranslator;
-import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.intercept.web.RequestKey;
-import org.springframework.security.util.AntUrlPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
@@ -60,25 +54,17 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     private static final String DEFAULT_HANDLER_MAPPING_CLASS_NAME = "org.springframework.web.servlet.handler.SimpleUrlHandlerMapping";
 
-    private static final String LOGIN_COMMAND_CLASS_NAME = "org.springframework.flex.security.SpringSecurityLoginCommand";
-
     private static final String ENDPOINT_PROCESSOR_CLASS_NAME = "org.springframework.flex.core.EndpointConfigProcessor";
 
     private static final String EXCEPTION_TRANSLATION_CLASS_NAME = "org.springframework.flex.core.ExceptionTranslationAdvice";
 
     private static final String MESSAGE_INTERCEPTION_CLASS_NAME = "org.springframework.flex.core.MessageInterceptionAdvice";
 
-    private static final String ENDPOINT_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.security.EndpointInterceptor";
-
     private static final String SERVICE_MESSAGE_ADVISOR_CLASS_NAME = "org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor";
-
-    private static final String ENDPOINT_DEFINITION_SOURCE_CLASS_NAME = "org.springframework.flex.security.EndpointDefinitionSource";
 
     private static final String REMOTING_PROCESSOR_CLASS_NAME = "org.springframework.flex.remoting.RemotingServiceConfigProcessor";
 
     private static final String MESSAGING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.MessageServiceConfigProcessor";
-
-    private static final String SESSION_FIXATION_CONFIGURER_CLASS_NAME = "org.springframework.flex.config.SessionFixationProtectionConfigurer";
 
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
 
@@ -153,6 +139,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     // --------------------------- Default Values ----------------------------//
     private static final String DEFAULT_MAPPING_PATH = "/*";
+    
+    private final SpringSecurityConfigHelper securityHelper = SpringSecurityConfigResolver.resolve();
 
     @Override
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
@@ -275,12 +263,12 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         String authManager = securedElement.getAttribute(AUTH_MANAGER_ATTR);
         if (!StringUtils.hasText(authManager)) {
-            authManager = org.springframework.security.config.BeanIds.AUTHENTICATION_MANAGER;
+            authManager = securityHelper.getAuthenticationManagerId(); 
         }
 
         String accessManager = securedElement.getAttribute(ACCESS_MANAGER_ATTR);
         if (!StringUtils.hasText(accessManager)) {
-            accessManager = org.springframework.security.config.BeanIds.ACCESS_MANAGER;
+            accessManager = securityHelper.getAccessManagerId();
         }
 
         registerAuthenticationListenerIfNecessary(securedElement, parserContext);
@@ -288,27 +276,19 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         String brokerId = parent.getAttribute(ID_ATTRIBUTE);
         registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, perClientAuthentication);
 
-        translators.add(new SecurityExceptionTranslator());
+        translators.add(securityHelper.getSecurityExceptionTranslator());
         if (perClientAuthentication) {
-            interceptors.add(new PerClientAuthenticationInterceptor());
+            interceptors.add(securityHelper.getPerClientAuthenticationInterceptor());
         }
-        interceptors.add(new LoginMessageInterceptor());
+        interceptors.add(securityHelper.getLoginMessageInterceptor());
 
         registerEndpointInterceptorIfNecessary(securedElement, parserContext, interceptors, authManager, accessManager);
-    }
-
-    private Object parseConfigAttributeDefinition(String access) {
-        if (StringUtils.hasText(access)) {
-            return new ConfigAttributeDefinition(StringUtils.commaDelimitedListToStringArray(access));
-        } else {
-            return null;
-        }
     }
 
     private void registerAuthenticationListenerIfNecessary(Element securedElement, ParserContext parserContext) {
 
         if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.SESSION_FIXATION_PROTECTION_CONFIGURER)) {
-            BeanDefinitionBuilder configurerBuilder = BeanDefinitionBuilder.genericBeanDefinition(SESSION_FIXATION_CONFIGURER_CLASS_NAME);
+            BeanDefinitionBuilder configurerBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getSessionFixationPostProcessorClassName());
             ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, configurerBuilder,
                 BeanIds.SESSION_FIXATION_PROTECTION_CONFIGURER);
         }
@@ -341,11 +321,13 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private void registerEndpointInterceptorIfNecessary(Element securedElement, ParserContext parserContext, ManagedSet interceptors,
         String authManager, String accessManager) {
         if (securedElement.hasChildNodes()) {
-            BeanDefinitionBuilder interceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(ENDPOINT_INTERCEPTOR_CLASS_NAME);
+            BeanDefinitionBuilder interceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getEndpointInterceptorClassName());
             interceptorBuilder.addPropertyReference(AUTH_MANAGER_PROPERTY, authManager);
-            interceptorBuilder.addPropertyReference(ACCESS_MANAGER_PROPERTY, accessManager);
-
-            BeanDefinitionBuilder endpointDefSourceBuilder = BeanDefinitionBuilder.genericBeanDefinition(ENDPOINT_DEFINITION_SOURCE_CLASS_NAME);
+            if (StringUtils.hasText(accessManager)) {
+                interceptorBuilder.addPropertyReference(ACCESS_MANAGER_PROPERTY, accessManager);
+            }
+            
+            BeanDefinitionBuilder endpointDefSourceBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getEndpointDefinitionSourceClassName());
 
             HashMap endpointMap = new HashMap();
             List securedChannelElements = DomUtils.getChildElementsByTagName(securedElement, SECURED_CHANNEL_ELEMENT);
@@ -355,7 +337,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
                     Element securedChannel = (Element) i.next();
                     String access = securedChannel.getAttribute(ACCESS_ATTR);
                     String channel = securedChannel.getAttribute(CHANNEL_ATTR);
-                    Object attributeDefinition = parseConfigAttributeDefinition(access);
+                    Object attributeDefinition = securityHelper.parseConfigAttributes(access);
                     endpointMap.put(channel, attributeDefinition);
                 }
             }
@@ -366,14 +348,12 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
                 Iterator i = securedEndpointPathElements.iterator();
                 while (i.hasNext()) {
                     Element securedPath = (Element) i.next();
-                    String access = securedPath.getAttribute(ACCESS_ATTR);
-                    RequestKey pattern = new RequestKey(securedPath.getAttribute(PATTERN_ATTR));
-                    Object attributeDefinition = parseConfigAttributeDefinition(access);
-                    requestMap.put(pattern, attributeDefinition);
+                    requestMap.put(securityHelper.parseRequestKey(securedPath.getAttribute(PATTERN_ATTR)), 
+                        securityHelper.parseConfigAttributes(securedPath.getAttribute(ACCESS_ATTR)));
                 }
             }
 
-            endpointDefSourceBuilder.addConstructorArgValue(new AntUrlPathMatcher());
+            endpointDefSourceBuilder.addConstructorArgValue(securityHelper.getPathMatcher());
             endpointDefSourceBuilder.addConstructorArgValue(requestMap);
             endpointDefSourceBuilder.addConstructorArgValue(endpointMap);
 
@@ -461,7 +441,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         String loginCommandId = brokerId + BeanIds.LOGIN_COMMAND_SUFFIX;
 
-        BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder.genericBeanDefinition(LOGIN_COMMAND_CLASS_NAME);
+        BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginCommandClassName());
         loginCommandBuilder.addConstructorArgReference(authManager);
         loginCommandBuilder.addPropertyValue(PER_CLIENT_AUTHENTICATION_PROPERTY, perClientAuthentication);
 

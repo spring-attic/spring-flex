@@ -1,7 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.springframework.flex">
+<project name="org.springframework.flex" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<property file="${basedir}/../build.properties"/>
 	<property file="${basedir}/../build.versions"/>
 	<import file="${basedir}/../build-spring-flex/package-bundle.xml"/>
 	<import file="${basedir}/../spring-build/standard/default.xml"/>
+
+	<path id="security3">
+		<pathelement location="../org.springframework.flex.security3"/>
+	</path>
+
+	<target name="jar" depends="ivy.init, resolve.compile, compile.init, jar.init"
+	            description="Creates a JAR file containing the output of a compilation of the source tree.">
+		<delete quiet="true" file="${ivy.output.file}"/>
+		<mkdir dir="${ivy.output.dir}"/>
+		<delete quiet="true" file="${jar.output.file}"/>
+		<mkdir dir="${jar.output.dir}"/>
+		<delete quiet="true" file="${source-jar.output.file}"/>
+		<mkdir dir="${source-jar.output.dir}"/>
+		<mkdir dir="${source-jar.output.dir}/tmp-src"/>
+
+		<compile classpath.id="compile.classpath" input.dir="${main.java.dir}" output.dir="${main.output.dir}"
+	                resources.dir="${main.resources.dir}"/>
+		<ivy:retrieve resolveId="additional.classpath" conf="additional" type="jar" transitive="false"
+	                pattern="${main.output.dir}/[artifact]-[revision].[ext]" log="download-only"/>
+		<antcall target="bundlor"/>
+		<jar destfile="${jar.output.file}" basedir="${main.output.dir}" index="true" filesetmanifest="merge">
+			<manifest>
+				<attribute name="Bundle-ManifestVersion" value="2"/>
+				<attribute name="Bundle-Version" value="${bundle.version}"/>
+				<attribute name="Bundle-Creator" value="${user.name}"/>
+				<attribute name="Implementation-Title" value="${implementation.title}"/>
+				<attribute name="Implementation-Version" value="${implementation.version}"/>
+			</manifest>
+		</jar>
+		<copy todir="${source-jar.output.dir}/tmp-src">
+			<fileset dir="${main.java.dir}" />
+	        <fileset dir="${basedir}/../org.springframework.flex.security3/src/main/java" />
+		</copy>
+		<jar destfile="${source-jar.output.file}" basedir="${source-jar.output.dir}/tmp-src" index="true"/>
+		<delete quiet="true" dir="${source-jar.output.dir}/tmp-src"/>
+		<ivy:publish resolver="integration" pubdate="${timestamp}" status="${release.type}">
+			<artifacts pattern="${ivy.output.dir}/[artifact].[ext]"/>
+			<artifacts pattern="${jar.output.dir}/[artifact].[ext]"/>
+			<artifacts pattern="${source-jar.output.dir}/[artifact].[ext]"/>
+		</ivy:publish>
+	</target>
+
+	<macrodef name="post-compile">
+		<attribute name="classpath.id"/>
+		<attribute name="input.dir"/>
+		<attribute name="output.dir"/>
+		<attribute name="resources.dir"/>
+		<sequential>
+			<subant target="compile-and-merge" verbose="true" buildpathRef="security3" />
+		</sequential>
+	</macrodef>
 </project>

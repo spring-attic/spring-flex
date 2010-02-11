@@ -22,6 +22,11 @@
 
 	<!-- Expose the securedProductService bean for BlazeDS remoting -->
 	<flex:remoting-destination ref="securedProductService" />
+	
+	<!-- Helper for getting the currently authenticated user -->
+    <bean id="securityHelper" class="org.springframework.flex.samples.secured.SecurityHelper">
+        <flex:remoting-destination/>
+    </bean>
 
 	<!-- Messaging destinations -->
 	<flex:message-destination id="chat" />

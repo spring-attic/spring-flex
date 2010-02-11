@@ -2,10 +2,7 @@
 <project-modules id="moduleCoreId" project-version="1.5.0">
 <wb-module deploy-name="testdrive">
 <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
-<wb-resource deploy-path="/WEB-INF/lib" source-path="/target/testdrive/WEB-INF/lib"/>
-<wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-<wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-<property name="java-output-path" value="/target/classes"/>
+<property name="java-output-path" value="/src/main/webapp/WEB-INF/classes"/>
 <property name="context-root" value="/testdrive"/>
 </wb-module>
 </project-modules>

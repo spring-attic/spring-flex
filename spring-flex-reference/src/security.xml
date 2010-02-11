@@ -10,10 +10,18 @@
         	different combinations here, we'll leave most of that to the Spring Security documentation.  
         </para>
         <para>
-        	Here is a simple Spring Security starting configuration for use in conjunction with the explicit integration features 
-        	provided by Spring BlazeDS Integration that should be a solid starting point for securing a typical Flex application:   
+            As of version 1.0.2, Spring BlazeDS Integration also supports both Spring Security versions 2 and 3.  The Spring Security version being
+            used will be detected at startup time and the proper integration support automatically installed.  Note that if you were previously customizing/extending 
+            any of the classes in the org.springframework.flex.security package, you will need to switch to the versions in the org.springframework.flex.security3 
+            package in order to be compatible with Spring Security 3.
         </para>
-        <programlisting language="xml"><![CDATA[
+        <sect2 id="spring-security-config">
+            <title>A simple Spring Security 2 configuration</title>
+	        <para>
+	        	Here is a simple Spring Security starting configuration for use in conjunction with the explicit integration features 
+	        	provided by Spring BlazeDS Integration that should be a solid starting point for securing a typical Flex application:   
+	        </para>
+            <programlisting language="xml"><![CDATA[
 <beans:beans xmlns="http://www.springframework.org/schema/security"
   xmlns:beans="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -35,17 +43,68 @@
 	</authentication-provider>
     
 </beans:beans>]]>
-		</programlisting>
-		<para>
-			With a typical Flex application, this approach is preferred to using Spring Security's auto-config setup.  Auto-config sets up a number of 
-			features that typically are not needed with a Flex application.  For instance, auto-config sets up a default <code>intercept-url</code> entry that
-			requires authentication for all URL paths within the application.  This does not work well for the needs of a typical BlazeDS setup as it would result in
-			the server returning a 403 response code for un-authenticated calls to BlazeDS endpoints which the Flex client does not handle gracefully.  (See <link linkend="secured-endpoint-path">
-			Securing BlazeDS Channels by Endpoint URL Path</link> for an alternative to <code>intercept-url</code> that generates proper AMF responses for the Flex client.) 
-			It is recommended to start simple as in this example, and add the additional features as needed.  
-		</para>
+		    </programlisting>
+			<para>
+				With a typical Flex application, this approach is preferred to using Spring Security's auto-config setup.  Auto-config sets up a number of 
+				features that typically are not needed with a Flex application.  For instance, auto-config sets up a default <code>intercept-url</code> entry that
+				requires authentication for all URL paths within the application.  This does not work well for the needs of a typical BlazeDS setup as it would result in
+				the server returning a 403 response code for un-authenticated calls to BlazeDS endpoints which the Flex client does not handle gracefully.  (See <link linkend="secured-endpoint-path">
+				Securing BlazeDS Channels by Endpoint URL Path</link> for an alternative to <code>intercept-url</code> that generates proper AMF responses for the Flex client.) 
+				It is recommended to start simple as in this example, and add the additional features as needed.  
+			</para>
+		</sect2>
+		<sect2 id="spring-security-3-config">
+            <title>A simple Spring Security 3 configuration</title>
+            <para>
+                Here is an equivalent starting configuration using the Spring Security 3 schema:
+            </para>
+            <programlisting language="xml"><![CDATA[
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+    <http entry-point-ref="entryPoint">
+        <anonymous enabled="false"/>
+    </http>
+    
+    <beans:bean id="entryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+    
+    <authentication-manager>
+       <authentication-provider>
+           <user-service>
+            <user name="john" password="john" authorities="ROLE_USER" />
+            <user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN" />
+            <user name="guest" password="guest" authorities="ROLE_GUEST" />
+           </user-service>
+       </authentication-provider>
+    </authentication-manager>
+
+</beans:beans>]]>
+        </programlisting>
+        </sect2>
+		<sect2 id="security-filter-config">
+		    <title>Enabling the Spring Security filter chain in web.xml</title>
+		    <para>
+		        For a typical setup with Spring Security, it is critical to remember to enable 
+		        the Spring Security filter chain by adding the appropriate entry to web.xml:
+		    </para>
+		    <programlisting language="xml"><![CDATA[
+<filter> 
+    <filter-name>springSecurityFilterChain</filter-name> 
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> 
+</filter> 
+
+<filter-mapping> 
+    <filter-name>springSecurityFilterChain</filter-name> 
+    <url-pattern>/*</url-pattern> 
+</filter-mapping> 		    
+]]>
+            </programlisting>
+		</sect2>
         <para>
-        	We will assume the above configuration is in place for the remainder of the examples in this chapter.
+        	We will assume the above configuration is in place for the remainder of the examples in this chapter.  For additional details on the many options available in 
+        	configuring and using Spring Security, please refer to that project's <ulink url="http://static.springsource.org/spring-security/site/reference.html">documentation</ulink>.
         </para>
     </sect1>
     <sect1 id="configuring-security">

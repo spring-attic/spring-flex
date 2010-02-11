@@ -68,6 +68,8 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     private String[] includeMethods;
 
     private String[] excludeMethods;
+    
+    private Class<?> sourceClass = null;
 
     /**
      * 
@@ -108,7 +110,11 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     }
 
     /**
-     * Sets the bean being exported
+     * Sets the bean being exported.
+     * 
+     * Supports setting either a direct bean instance reference, or the String identifier of the bean, to be looked up
+     * from the BeanFactory. The latter is preferred, as it allows more accurate calculation of the "source" property of
+     * the destination, required for tooling introspection of the destination.
      * 
      * @param service the bean being exported
      */
@@ -123,6 +129,24 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     @Override
     protected Destination createDestination(String destinationId, MessageBroker broker) {
         Assert.notNull(this.service, "The 'service' property is required.");
+        String source = null;
+        if (this.service instanceof String) {
+            String beanId = (String) service;
+            this.service = getBeanFactory().getBean(beanId);
+            this.sourceClass = AopUtils.getTargetClass(this.service);
+            if (this.sourceClass == null) {
+                this.sourceClass = getBeanFactory().getType(beanId);
+            }
+        } else {
+            this.sourceClass = AopUtils.getTargetClass(this.service);
+        }
+        if (this.sourceClass != null) {
+            source = this.sourceClass.getName();
+        } else {
+            if (log.isWarnEnabled()) {
+                log.warn("The source class being exported as RemotingDestination with id '"+destinationId+"' cannot be calculated.");
+            }
+        }
 
         // Look up the remoting service
         RemotingService remotingService = (RemotingService) broker.getServiceByType(RemotingService.class.getName());
@@ -132,7 +156,7 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
         RemotingDestination destination = (RemotingDestination) remotingService.createDestination(destinationId);
 
         destination.setFactory(this);
-        destination.setSource(AopUtils.getTargetClass(service).getName());
+        destination.setSource(source);
 
         if (log.isInfoEnabled()) {
             log.info("Created remoting destination with id '" + destinationId + "'");
@@ -215,8 +239,9 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
     private List<RemotingMethod> getRemotingMethods(String[] methodNames) {
         List<RemotingMethod> remotingMethods = new ArrayList<RemotingMethod>();
         for (String name : methodNames) {
-            Assert.isTrue(ClassUtils.hasAtLeastOneMethodWithName(this.service.getClass(), name), "Could not find method with name '" + name
-                + "' on the exported service of type " + this.service.getClass());
+            Class<?> classToCheck = this.sourceClass != null ? this.sourceClass : this.service.getClass();
+            Assert.isTrue(ClassUtils.hasAtLeastOneMethodWithName(classToCheck, name), "Could not find method with name '" + name
+                + "' on the exported service of type " + classToCheck);
             RemotingMethod method = new RemotingMethod();
             method.setName(name);
             remotingMethods.add(method);

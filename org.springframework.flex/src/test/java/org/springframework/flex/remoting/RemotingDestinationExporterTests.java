@@ -22,10 +22,15 @@ import java.util.Iterator;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
+import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.support.StaticWebApplicationContext;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
 import flex.messaging.services.ServiceAdapter;
@@ -39,7 +44,7 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 
     RemotingDestinationExporter exporter;
 
-    Object testService = new StubService();
+    Object testService = new StubServiceImpl();
 
     private @Mock
     BeanFactory beanFactory;
@@ -107,7 +112,6 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
     }
 
     public void testDestinationConfiguredWithNullService() throws Exception {
-
         this.exporter.setService(null);
         try {
             this.exporter.afterPropertiesSet();
@@ -224,6 +228,82 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 
         assertNotNull("RemotingDestination not registered", remotingService.getDestination(destinationId));
     }
+    
+    public void testDestinationConfiguredWithSourceClassForProxiedInterface() throws Exception {
+        StaticWebApplicationContext context = new StaticWebApplicationContext();
+        
+        MutablePropertyValues props = new MutablePropertyValues();
+        props.addPropertyValue("serviceUrl", "/foo/bar");
+        props.addPropertyValue("serviceInterface", StubService.class);
+        context.registerSingleton("proxiedBean", HttpInvokerProxyFactoryBean.class, props);
+        context.refresh();
+        exporter.setBeanFactory(context);
+        exporter.setService("proxiedBean");
+        exporter.setDestinationId("proxiedBean");
+        exporter.afterPropertiesSet();
+        
+        RemotingService remotingService = getRemotingService();
+        RemotingDestination remotingDestination = (RemotingDestination) remotingService.getDestination("proxiedBean");
+        assertEquals("Source not set correctly", StubService.class.getName(), remotingDestination.getSource());
+    }
+    
+    public void testDestinationConfiguredWithValidExcludeMethodsOnProxiedBean() throws Exception {
+
+        RemotingService remotingService = getRemotingService();
+
+        String[] methodNames = new String[] { "retreiveStringValue", "nonInterfaceMethod"};
+        
+        StaticWebApplicationContext context = new StaticWebApplicationContext();
+        
+        context.registerSingleton("myService", StubServiceImpl.class);
+        MutablePropertyValues proxyProps = new MutablePropertyValues();
+        proxyProps.addPropertyValue("targetName","myService");
+        context.registerSingleton("proxiedBean", ProxyFactoryBean.class, proxyProps);
+        context.refresh();
+        exporter.setBeanFactory(context);
+        exporter.setService("proxiedBean");
+        exporter.setDestinationId("proxiedBean");
+        this.exporter.setExcludeMethods(methodNames);
+        this.exporter.afterPropertiesSet();
+
+        assertTrue("The remoting destination was not configured with a JavaAdapter",
+            remotingService.getDestination("proxiedBean").getAdapter() instanceof JavaAdapter);
+        JavaAdapter adapter = (JavaAdapter) remotingService.getDestination("proxiedBean").getAdapter();
+        Iterator<?> i = adapter.getExcludeMethodIterator();
+        while(i.hasNext()) {
+            RemotingMethod method = (RemotingMethod) i.next();
+            assertTrue("Exclude method not properly configured", Arrays.asList(methodNames).contains(method.getName()));
+        }
+    }
+
+    public void testDestinationConfiguredWithValidIncludeMethodsOnProxiedBean() throws Exception {
+
+        RemotingService remotingService = getRemotingService();
+
+        String[] methodNames = new String[] { "retreiveStringValue", "nonInterfaceMethod"};
+        
+        StaticWebApplicationContext context = new StaticWebApplicationContext();
+        
+        context.registerSingleton("myService", StubServiceImpl.class);
+        MutablePropertyValues proxyProps = new MutablePropertyValues();
+        proxyProps.addPropertyValue("targetName","myService");
+        context.registerSingleton("proxiedBean", ProxyFactoryBean.class, proxyProps);
+        context.refresh();
+        exporter.setBeanFactory(context);
+        exporter.setService("proxiedBean");
+        exporter.setDestinationId("proxiedBean");
+        this.exporter.setIncludeMethods(methodNames);
+        this.exporter.afterPropertiesSet();
+
+        assertTrue("The remoting destination was not configured with a JavaAdapter",
+            remotingService.getDestination("proxiedBean").getAdapter() instanceof JavaAdapter);
+        JavaAdapter adapter = (JavaAdapter) remotingService.getDestination("proxiedBean").getAdapter();
+        Iterator<?> i = adapter.getIncludeMethodIterator();
+        while(i.hasNext()) {
+            RemotingMethod method = (RemotingMethod) i.next();
+            assertTrue("Exclude method not properly configured", Arrays.asList(methodNames).contains(method.getName()));
+        }
+    }
 
     private void configureExporter() throws Exception {
 
@@ -239,13 +319,21 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         return (RemotingService) broker.getServiceByType(RemotingService.class.getName());
     }
 
-    private static final class StubService {
+    public static interface StubService {
+        public String retreiveStringValue();
+    }
+    
+    public static class StubServiceImpl implements StubService {
 
         public String retreiveStringValue() {
             return "foo";
         }
+        
+        public void nonInterfaceMethod() {
+            
+        }
     }
 
-    private static final class TestAdapter extends JavaAdapter {
+    public static class TestAdapter extends JavaAdapter {
     }
 }

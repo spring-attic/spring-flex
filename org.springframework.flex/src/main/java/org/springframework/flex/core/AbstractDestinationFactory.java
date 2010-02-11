@@ -169,6 +169,15 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
     protected abstract void destroyDestination(String destinationId, MessageBroker broker) throws Exception;
 
     /**
+     * Expose the BeanFactory to subclasses
+     * 
+     * @return the BeanFactory
+     */
+    protected BeanFactory getBeanFactory() {
+        return this.beanFactory;
+    }
+    
+    /**
      * Returns the id for the destination created by this factory
      * 
      * @return the destination id

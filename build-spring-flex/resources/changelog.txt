@@ -2,11 +2,42 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
+Changes in version 1.0.2.RELEASE (02.08.2010)
+-----------------------------------------
+General
+* Spring Security 3 support has been added and the bundled Test Drive sample now has an additional Maven build 
+profile for building the sample to use Spring 3 and Spring Security 3.  See the docs at 
+http://static.springsource.org/spring-flex/docs/1.0.x/reference/html/ch06.html for instructions on how to enable
+this optional profile.
+
+Enhancements
+* FLEX-86 - Add an afterCompletion style callback to the MessageInterceptor API
+* FLEX-98 - Post-processing in MessageInterceptor even when an exception was thrown
+* FLEX-65 - Ensure compatibility with Spring Security 3.0
+* FLEX-100 - Automate publishing of Maven central compatible snapshots to maven.springframework.org repository
+* FLEX-103 - Document the configuration differences for using Spring Security 3.
+* FLEX-104 - Document the ResourceHandlingMessageInterceptor
+* FLEX-105 - Provide an optional Spring 3 + Spring Security 3 profile in the Maven build for the Test Drive
+* FLEX-106 - Document the new Maven build options for the Test Drive
+
+Bug Fixes
+* FLEX-78 - Intermittent Security Exception
+* FLEX-84 - NPE in RemotingDestinationExporter
+* FLEX-85 - <flex:remoting-destination> exclude-methods not working with dynamic proxies
+* FLEX-87 - JmsAdapter doesn't properly clean up resources at shutdown
+* FLEX-88 - Default adapters don't get overridden correctly when using Spring 3
+* FLEX-94 - JmsAdapter should shut down MessageListenerContainer when all clients have unsubscribed
+* FLEX-95 - RemotingAnnotationPostProcessor ignores lazy-init="true"
+* FLEX-96 - @RemotingDestination does not work correctly in conjunction with @Scope
+* FLEX-97 - Overriding serviceMessage in custom Endpoint breaks Spring's interceptors
+* FLEX-99 - RemotingAnnotationPostProcessor should ignore abstract bean definitions
+* FLEX-101 - documentation: section 5.6 fix
+
 Changes in version 1.0.1.RELEASE (09.23.2009)
 -----------------------------------------
 General
 * The bundled Test Drive sample has undergone a good bit of general cleanup.  Most notably, it has been configured
-to no longer run as the root web application, the naming conventions of the Spring configuration files has changed to
+to no longer run as the root web application, the naming conventions of the Spring configuration files have changed to
 align with the conventions used in SpringSource Tool Suite project templates, and the Spring Security example has been
 expanded to show how to take advantage of the extended functionality that the Spring Security integration provides over
 the traditional BlazeDS security mechanisms.  See the specific Jira issues referenced below for further details.

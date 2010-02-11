@@ -98,7 +98,8 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
                 : remotingDestinationConfig.getBeanName();
 
             exporterBuilder.addPropertyReference(MESSAGE_BROKER_PROPERTY, messageBrokerId);
-            exporterBuilder.addPropertyReference(SERVICE_PROPERTY, remotingDestinationConfig.getBeanName());
+            exporterBuilder.addPropertyValue(SERVICE_PROPERTY, remotingDestinationConfig.getBeanName());
+            exporterBuilder.addDependsOn(remotingDestinationConfig.getBeanName());
             exporterBuilder.addPropertyValue(DESTINATION_ID_PROPERTY, destinationId);
             exporterBuilder.addPropertyValue(CHANNELS_PROPERTY, remotingDestination.channels());
             exporterBuilder.addPropertyValue(INCLUDE_METHODS_PROPERTY, remotingDestinationConfig.getIncludeMethods());
@@ -112,7 +113,7 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
 
     /**
      * Helper that searches the BeanFactory for beans annotated with @RemotingDestination, being careful not to force
-     * eager creation of the beans.
+     * eager creation of the beans if it can be avoided.
      * 
      * @param beanFactory the BeanFactory to search
      * @return a set of collected RemotingDestinationMetadata
@@ -125,8 +126,26 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
             beanNames.addAll(Arrays.asList(((ListableBeanFactory)beanFactory.getParentBeanFactory()).getBeanDefinitionNames()));
         }
         for (String beanName : beanNames) {
-            Class<?> handlerType = beanFactory.getType(beanName);
+            if (beanName.startsWith("scopedTarget.")) {
+                continue;
+            }
             RemotingDestination remotingDestination = null;
+            BeanDefinition bd = beanFactory.getMergedBeanDefinition(beanName);
+            if (bd.isAbstract() || bd.isLazyInit()) {
+                continue;
+            }
+            if (bd instanceof AbstractBeanDefinition) {
+                AbstractBeanDefinition abd = (AbstractBeanDefinition) bd;
+                if (abd.hasBeanClass()) {
+                    Class<?> beanClass = abd.getBeanClass();
+                    remotingDestination = AnnotationUtils.findAnnotation(beanClass, RemotingDestination.class);
+                    if (remotingDestination != null) {
+                        remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, beanClass));
+                        continue;
+                    }
+                }
+            }
+            Class<?> handlerType = beanFactory.getType(beanName);
             if (handlerType != null) {
                 remotingDestination = AnnotationUtils.findAnnotation(handlerType, RemotingDestination.class);
             } else {
@@ -136,19 +155,7 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
             }
             if (remotingDestination != null) {
                 remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, handlerType));
-            } else {
-                BeanDefinition bd = beanFactory.getMergedBeanDefinition(beanName);
-                if (bd instanceof AbstractBeanDefinition) {
-                    AbstractBeanDefinition abd = (AbstractBeanDefinition) bd;
-                    if (abd.hasBeanClass()) {
-                        Class<?> beanClass = abd.getBeanClass();
-                        remotingDestination = AnnotationUtils.findAnnotation(beanClass, RemotingDestination.class);
-                        if (remotingDestination != null) {
-                            remotingDestinations.add(new RemotingDestinationMetadata(remotingDestination, beanName, beanClass));
-                        }
-                    }
-                }
-            }
+            } 
         }
         return remotingDestinations;
     }

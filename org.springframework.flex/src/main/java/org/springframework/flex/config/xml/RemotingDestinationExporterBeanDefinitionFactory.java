@@ -74,7 +74,8 @@ abstract class RemotingDestinationExporterBeanDefinitionFactory {
         String destinationId = element.getAttribute(DESTINATION_ID_ATTR);
         String brokerId = element.getAttribute(MESSAGE_BROKER_ATTR);
 
-        builder.addPropertyReference(SERVICE_PROPERTY, exportedBeanReference);
+        builder.addPropertyValue(SERVICE_PROPERTY, exportedBeanReference);
+        builder.addDependsOn(exportedBeanReference);
 
         destinationId = StringUtils.hasText(destinationId) ? destinationId : exportedBeanReference;
         builder.addPropertyValue(DESTINATION_ID_PROPERTY, destinationId);

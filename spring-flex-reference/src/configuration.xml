@@ -241,7 +241,7 @@
     	<para>
     		Explicit channel definition is a requirement when using dynamic destinations (meaning any destination that is added programmatically and not defined in the BlazeDS 
     		services-config.xml, i.e. the destinations created by the <code>remoting-destination</code> tag and the various <code>*-message-destination</code> tags).  See 
-    		Adobe's documentation here for more detail: http://livedocs.adobe.com/blazeds/1/blazeds_devguide/runtimeconfig_5.html#194376
+    		<ulink url="http://livedocs.adobe.com/blazeds/1/blazeds_devguide/runtimeconfig_5.html#194376">Adobe's documentation</ulink> for more detail.
     	</para>
 		<para>
 			The only way you don't have to explicitly define the ChannelSet on the client is if
@@ -368,6 +368,15 @@ public class MyDestinationCountingConfigProcessor implements MessageBrokerConfig
 	<flex:message-interceptor ref="myMessageInterceptor"/>
 </flex:message-broker>]]>    		
     	</programlisting>
+    	<sect2 id="resource-handling-message-interceptors">
+    	   <para>
+    	       As of release 1.0.2 of Spring BlazeDS Integration, an additional <code>org.springframework.flex.core.ResourceHandlingMessageInterceptor</code> interface
+    	       is available to use.  Interceptors that implement this extended interface receive an additional guaranteed callback after message processing is completed,
+    	       whether processing was successful or failed due to an exception being thrown by the Endpoint.  This allows the interceptor to clean up any resources that 
+    	       it may have been using.  This interface extends the basic <code>MessageInterceptor</code> interface, thus it is configured the same way using the 
+    	       <code>message-interceptor</code> tag.
+    	   </para>
+    	</sect2>
 	</sect1>
 	<sect1 id="service-adapters">
 		<title>Providing Custom Service Adapters</title>

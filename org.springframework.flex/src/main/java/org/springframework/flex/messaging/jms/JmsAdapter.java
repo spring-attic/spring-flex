@@ -43,6 +43,7 @@ import flex.messaging.services.messaging.adapters.MessagingAdapter;
  * A {@link MessagingAdapter} implementation that enables sending and receiving messages via JMS.
  * 
  * @author Mark Fisher
+ * @author Jeremy Grelle
  */
 public class JmsAdapter extends MessagingAdapter implements InitializingBean, BeanNameAware {
 
@@ -131,6 +132,9 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
         if (commandMessage.getOperation() == CommandMessage.SUBSCRIBE_OPERATION) {
             this.subscriberIds.add(clientId);
             synchronized (this.messageListenerContainer) {
+                if (!this.messageListenerContainer.isActive()) {
+                    this.messageListenerContainer.initialize();
+                }
                 if (!this.messageListenerContainer.isRunning()) {
                     this.messageListenerContainer.start();
                 }
@@ -141,8 +145,8 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
         } else if (commandMessage.getOperation() == CommandMessage.UNSUBSCRIBE_OPERATION) {
             this.subscriberIds.remove(clientId);
             synchronized (this.messageListenerContainer) {
-                if (this.subscriberIds.isEmpty() && this.messageListenerContainer.isRunning()) {
-                    this.messageListenerContainer.stop();
+                if (this.subscriberIds.isEmpty() && this.messageListenerContainer.isActive()){ 
+                    this.messageListenerContainer.shutdown();
                 }
             }
             if (this.logger.isInfoEnabled()) {
@@ -233,7 +237,24 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
      */
     @Override
     public void start() {
+        if (!this.messageListenerContainer.isActive()) {
+            this.messageListenerContainer.initialize();
+        }
         super.start();
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        this.messageListenerContainer.shutdown();
+        super.stop();
+    }
+
+    DefaultMessageListenerContainer getMessageListenerContainer() {
+        return this.messageListenerContainer;
     }
 
     /**
