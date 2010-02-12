@@ -28,10 +28,10 @@
 		<dependency org="org.springframework" name="org.springframework.core" rev="${org.springframework.security3}" conf="compile->runtime"/>
         <dependency org="org.springframework" name="org.springframework.web" rev="${org.springframework.security3}" conf="compile->runtime"/>
         <dependency org="org.springframework" name="org.springframework.web.servlet" rev="${org.springframework.security3}" conf="compile->runtime"/>
-        <dependency org="com.adobe.flex" name="com.springsource.flex.messaging" rev="3.2.0.3978" conf="compile->runtime"/>
-        <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.common" rev="3.2.0.3978" conf="compile->runtime"/>
-        <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.http" rev="3.2.0.3978" conf="compile->runtime"/>
-        <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.remoting" rev="3.2.0.3978" conf="compile->runtime"/>
+        <dependency org="com.adobe.flex" name="com.springsource.flex.messaging" rev="${blazeds}" conf="compile->runtime"/>
+        <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.common" rev="${blazeds}" conf="compile->runtime"/>
+        <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.http" rev="${blazeds}" conf="compile->runtime"/>
+        <dependency org="com.adobe.flex" name="com.springsource.flex.messaging.services.remoting" rev="${blazeds}" conf="compile->runtime"/>
 
 		<!-- Optional runtime dependencies -->
 		<dependency org="javax.jms" name="com.springsource.javax.jms" rev="1.1.0" conf="provided->runtime"/>
