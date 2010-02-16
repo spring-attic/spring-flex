@@ -5,7 +5,7 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/3.2.0.3978/com.springsource.flex.messaging-3.2.0.3978.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/3.2.0.3978/com.springsource.flex.messaging-3.2.0.3978.jar" sourcepath="/FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/3.2.0.3978/com.springsource.flex.messaging-sources-3.2.0.3978.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.common/3.2.0.3978/com.springsource.flex.messaging.common-3.2.0.3978.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.http/3.2.0.3978/com.springsource.flex.messaging.services.http-3.2.0.3978.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.remoting/3.2.0.3978/com.springsource.flex.messaging.services.remoting-3.2.0.3978.jar"/>

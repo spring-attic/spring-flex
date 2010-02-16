@@ -33,6 +33,11 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.web/3.0.0.RELEASE/org.springframework.web-3.0.0.RELEASE.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.web/3.0.0.RELEASE/org.springframework.web-sources-3.0.0.RELEASE.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.web.servlet/3.0.0.RELEASE/org.springframework.web.servlet-3.0.0.RELEASE.jar" sourcepath="FLEX_IVY_CACHE/org.springframework/org.springframework.web.servlet/3.0.0.RELEASE/org.springframework.web.servlet-sources-3.0.0.RELEASE.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
@@ -69,13 +74,13 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="../"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="FLEX_DEV_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/4.0.0.7548/com.springsource.flex.messaging-4.0.0.7548.jar" sourcepath="/FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/4.0.0.7548/com.springsource.flex.messaging-sources-4.0.0.7548.jar"/>
-	<classpathentry kind="var" path="FLEX_DEV_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.common/4.0.0.7548/com.springsource.flex.messaging.common-4.0.0.7548.jar"/>
-	<classpathentry kind="var" path="FLEX_DEV_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.http/4.0.0.7548/com.springsource.flex.messaging.services.http-4.0.0.7548.jar"/>
-	<classpathentry kind="var" path="FLEX_DEV_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.remoting/4.0.0.7548/com.springsource.flex.messaging.services.remoting-4.0.0.7548.jar"/>
+	<classpathentry kind="var" path="FLEX_DEV_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/4.0.0.10153/com.springsource.flex.messaging-4.0.0.10153.jar" sourcepath="/FLEX_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging/4.0.0.10153/com.springsource.flex.messaging-sources-4.0.0.10153.jar"/>
+	<classpathentry kind="var" path="FLEX_DEV_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.common/4.0.0.10153/com.springsource.flex.messaging.common-4.0.0.10153.jar"/>
+	<classpathentry kind="var" path="FLEX_DEV_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.http/4.0.0.10153/com.springsource.flex.messaging.services.http-4.0.0.10153.jar"/>
+	<classpathentry kind="var" path="FLEX_DEV_IVY_CACHE/com.adobe.flex/com.springsource.flex.messaging.services.remoting/4.0.0.10153/com.springsource.flex.messaging.services.remoting-4.0.0.10153.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework.integration/org.springframework.integration/1.0.2.RELEASE/org.springframework.integration-1.0.2.RELEASE.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework.integration/org.springframework.integration/1.0.2.RELEASE/org.springframework.integration-sources-1.0.2.RELEASE.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-2.0.4.A.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework.security/org.springframework.security/2.0.4.A/org.springframework.security-sources-2.0.4.A.jar"/>
-	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.mockito/com.springsource.org.mockito/1.8.0/com.springsource.org.mockito-1.8.0.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.mockito/com.springsource.org.mockito/1.6.0/com.springsource.org.mockito-1.6.0.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.hamcrest/com.springsource.org.hamcrest.core/1.1.0/com.springsource.org.hamcrest.core-1.1.0.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.objenesis/com.springsource.org.objenesis/1.0.0/com.springsource.org.objenesis-1.0.0.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.aopalliance/com.springsource.org.aopalliance/1.0.0/com.springsource.org.aopalliance-1.0.0.jar"/>
@@ -84,9 +89,11 @@
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.transaction/3.0.0.RELEASE/org.springframework.transaction-3.0.0.RELEASE.jar" sourcepath="/FLEX_IVY_CACHE/org.springframework/org.springframework.transaction/3.0.0.RELEASE/org.springframework.transaction-sources-3.0.0.RELEASE.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.codehaus.jackson/com.springsource.org.codehaus.jackson/1.0.0/com.springsource.org.codehaus.jackson-1.0.0.jar"/>
 	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.asm/3.0.0.RELEASE/org.springframework.asm-3.0.0.RELEASE.jar"/>
-	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.expression/3.0.0.RELEASE/org.springframework.expression-3.0.0.RELEASE.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.web/3.0.0.RELEASE/org.springframework.web-3.0.0.RELEASE.jar"/>
-	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.apache.activemq/com.springsource.org.apache.activemq/5.3.0/com.springsource.org.apache.activemq-5.3.0.jar"/>
+	<classpathentry kind="var" path="FLEX_IVY_CACHE/org.springframework/org.springframework.expression/3.0.0.RELEASE/org.springframework.expression-3.0.0.RELEASE.jar" sourcepath="/FLEX_MAINT_IVY_CACHE/org.springframework/org.springframework.expression/3.0.0.RELEASE/org.springframework.expression-sources-3.0.0.RELEASE.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6.0 (MacOS X Default)">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.java"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
