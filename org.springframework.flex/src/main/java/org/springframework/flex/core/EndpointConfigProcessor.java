@@ -60,7 +60,7 @@ public class EndpointConfigProcessor implements MessageBrokerConfigProcessor, Be
         Iterator i = broker.getEndpoints().keySet().iterator();
         while (i.hasNext()) {
             String key = (String) i.next();
-            Endpoint endpoint = broker.getEndpoints().get(key);
+            Endpoint endpoint = (Endpoint) broker.getEndpoints().get(key);
             ProxyFactory factory = new ProxyFactory();
             factory.setProxyTargetClass(true);
             factory.addAllAdvisors(this.advisors);
