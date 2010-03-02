@@ -126,9 +126,9 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         assertEquals(1, destination.getNetworkSettings().getSubscriptionTimeoutMinutes());
         assertEquals("/", destination.getServerSettings().getSubtopicSeparator());
         assertEquals(500, destination.getNetworkSettings().getThrottleSettings().getIncomingDestinationFrequency());
-        assertEquals(ThrottleSettings.POLICY_ERROR, destination.getNetworkSettings().getThrottleSettings().getInboundPolicy());
+        assertEquals(ThrottleSettings.parsePolicy("ERROR"), destination.getNetworkSettings().getThrottleSettings().getInboundPolicy());
         assertEquals(500, destination.getNetworkSettings().getThrottleSettings().getOutgoingDestinationFrequency());
-        assertEquals(ThrottleSettings.POLICY_IGNORE, destination.getNetworkSettings().getThrottleSettings().getOutboundPolicy());
+        assertEquals(ThrottleSettings.parsePolicy("IGNORE"), destination.getNetworkSettings().getThrottleSettings().getOutboundPolicy());
 
     }
 
@@ -158,9 +158,9 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         assertEquals(1, destination.getNetworkSettings().getSubscriptionTimeoutMinutes());
         assertEquals("/", destination.getServerSettings().getSubtopicSeparator());
         assertEquals(500, destination.getNetworkSettings().getThrottleSettings().getIncomingDestinationFrequency());
-        assertEquals(ThrottleSettings.POLICY_ERROR, destination.getNetworkSettings().getThrottleSettings().getInboundPolicy());
+        assertEquals(ThrottleSettings.parsePolicy("ERROR"), destination.getNetworkSettings().getThrottleSettings().getInboundPolicy());
         assertEquals(500, destination.getNetworkSettings().getThrottleSettings().getOutgoingDestinationFrequency());
-        assertEquals(ThrottleSettings.POLICY_IGNORE, destination.getNetworkSettings().getThrottleSettings().getOutboundPolicy());
+        assertEquals(ThrottleSettings.parsePolicy("IGNORE"), destination.getNetworkSettings().getThrottleSettings().getOutboundPolicy());
 
     }
 

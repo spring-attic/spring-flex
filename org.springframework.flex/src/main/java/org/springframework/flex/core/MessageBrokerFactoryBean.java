@@ -308,6 +308,9 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
         // This is undesirable but necessary at the moment for LCDS to be able to load its license configuration.
         // Hopefully we can get the BlazeDS/LCDS team to give us a better option in the future.
         Method initMethod = ReflectionUtils.findMethod(MessageBroker.class, "setInitServletContext", new Class[] { ServletContext.class });
+        if (initMethod == null) {
+            initMethod = ReflectionUtils.findMethod(MessageBroker.class, "setInitServletContext", new Class[] { ServletContext.class });
+        }
         ReflectionUtils.makeAccessible(initMethod);
         ReflectionUtils.invokeMethod(initMethod, this.messageBroker, new Object[] { this.servletContext });
     }
