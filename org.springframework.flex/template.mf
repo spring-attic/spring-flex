@@ -6,7 +6,7 @@ Excluded-Imports: org.springframework.flex.config.xml.RemotingDestinationBeanDef
  org.springframework.util.ReflectionUtils,
  org.springframework.flex.config.RemotingAnnotationPostProcessorTests
 Import-Template: 
- Import-Package: edu.emory.mathcs.backport.java.util.concurrent;version="[2.2.0,3.0.0)",
+Import-Package: edu.emory.mathcs.backport.java.util.concurrent;version="[2.2.0,3.0.0)",
  flex.management;version="[3.2.0,4.1.0)",
  flex.messaging;version="[3.2.0,4.1.0)",
  flex.messaging.client;version="[3.2.0,4.1.0)",
