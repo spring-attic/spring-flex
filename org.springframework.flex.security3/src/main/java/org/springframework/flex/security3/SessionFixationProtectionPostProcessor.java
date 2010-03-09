@@ -16,6 +16,9 @@
 
 package org.springframework.flex.security3;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.servlet.Filter;
 
 import org.apache.commons.logging.Log;
@@ -47,14 +50,15 @@ import org.springframework.web.filter.RequestContextFilter;
  * 
  * @author Jeremy Grelle
  */
-public class SessionFixationProtectionPostProcessor implements BeanFactoryPostProcessor, ApplicationEventPublisherAware, ApplicationListener<ContextRefreshedEvent> {
+public class SessionFixationProtectionPostProcessor implements BeanFactoryPostProcessor, ApplicationEventPublisherAware,
+    ApplicationListener<ContextRefreshedEvent> {
 
     private static final Log log = LogFactory.getLog(SessionFixationProtectionPostProcessor.class);
 
     private boolean processed = false;
 
     private ApplicationEventPublisher applicationEventPublisher = null;
-    
+
     private final String filterChainProxyId = "org.springframework.security.filterChainProxy";
 
     /**
@@ -82,19 +86,25 @@ public class SessionFixationProtectionPostProcessor implements BeanFactoryPostPr
 
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (!this.processed) {
-            String[] authFilterBeans = event.getApplicationContext().getBeanNamesForType(UsernamePasswordAuthenticationFilter.class);
-            for (int i=0; i<authFilterBeans.length; i++) {
-                UsernamePasswordAuthenticationFilter filter = (UsernamePasswordAuthenticationFilter) event.getApplicationContext().getBean(authFilterBeans[i]);
+            Collection<UsernamePasswordAuthenticationFilter> authFilterBeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+                event.getApplicationContext(), UsernamePasswordAuthenticationFilter.class, false, false).values();
+            for (UsernamePasswordAuthenticationFilter filter : authFilterBeans) {
                 filter.setApplicationEventPublisher(this.applicationEventPublisher);
             }
-            
+
             if (event.getApplicationContext().containsBean(filterChainProxyId)) {
-                FilterChainProxy proxy = (FilterChainProxy) event.getApplicationContext().getBean(
-                    filterChainProxyId, FilterChainProxy.class);
+                FilterChainProxy proxy = (FilterChainProxy) event.getApplicationContext().getBean(filterChainProxyId, FilterChainProxy.class);
                 UrlMatcher matcher = proxy.getMatcher();
                 Object compiledPath = matcher.compile(matcher.getUniversalMatchPattern());
                 if (proxy.getFilterChainMap().containsKey(compiledPath)) {
                     proxy.getFilterChainMap().get(compiledPath).add(0, (Filter) event.getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER));
+                }
+                for (List<Filter> filters : proxy.getFilterChainMap().values()) {
+                    for (Filter filter : filters) {
+                        if (filter instanceof UsernamePasswordAuthenticationFilter) {
+                            ((UsernamePasswordAuthenticationFilter) filter).setApplicationEventPublisher(this.applicationEventPublisher);
+                        }
+                    }
                 }
                 this.processed = true;
             } else {
@@ -104,7 +114,7 @@ public class SessionFixationProtectionPostProcessor implements BeanFactoryPostPr
             }
         }
     }
-    
+
     /**
      * Filter to ensure the request context gets stored before the Spring Security filter chain is invoked so that the
      * {@link FlexSessionInvalidatingAuthenticationListener} has access to the request attributes.

@@ -38,14 +38,14 @@
 		<dependency org="org.springframework" name="org.springframework.jms" rev="${org.springframework.security3}" conf="optional->runtime"/>
 		<dependency org="org.springframework" name="org.springframework.transaction" rev="${org.springframework.security3}" conf="optional->runtime" />
 		<dependency org="org.springframework.integration" name="org.springframework.integration" rev="1.0.2.RELEASE" conf="optional->runtime" />
-		<dependency org="org.springframework.security" name="org.springframework.security.web" rev="3.0.0.RELEASE" conf="optional->runtime" />
+		<dependency org="org.springframework.security" name="org.springframework.security.web" rev="3.0.2.RELEASE" conf="optional->runtime" />
 			
 		<!-- test time only dependencies -->
 		<dependency org="org.apache.log4j" name="com.springsource.org.apache.log4j" rev="1.2.15" conf="test->runtime"/>
 		<dependency org="org.junit" name="com.springsource.org.junit" rev="4.4.0" conf="test->runtime" />
 		<dependency org="org.mockito" name="com.springsource.org.mockito" rev="1.8.0" conf="test->runtime" />
 		<dependency org="org.springframework" name="org.springframework.test" rev="${org.springframework.security3}" conf="test->runtime" />
-		<dependency org="org.springframework.security" name="org.springframework.security.config" rev="3.0.0.RELEASE" conf="test->runtime" />
+		<dependency org="org.springframework.security" name="org.springframework.security.config" rev="3.0.2.RELEASE" conf="test->runtime" />
 		<dependency org="org.springframework.flex" name="org.springframework.flex" rev="latest.integration" conf="test->runtime" />
 		
 	</dependencies>
