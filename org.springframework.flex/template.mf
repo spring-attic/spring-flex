@@ -5,8 +5,7 @@ Bundle-ManifestVersion: 2
 Excluded-Imports: org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests,
  org.springframework.util.ReflectionUtils,
  org.springframework.flex.config.RemotingAnnotationPostProcessorTests
-Import-Template: 
-Import-Package: edu.emory.mathcs.backport.java.util.concurrent;version="[2.2.0,3.0.0)",
+Import-Template: edu.emory.mathcs.backport.java.util.concurrent;version="[2.2.0,3.0.0)",
  flex.management;version="[3.2.0,4.1.0)",
  flex.messaging;version="[3.2.0,4.1.0)",
  flex.messaging.client;version="[3.2.0,4.1.0)",
@@ -29,7 +28,7 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent;version="[2.2.0,3
  org.aopalliance.aop;version="[1.0.0,1.0.0]",
  org.aopalliance.intercept;version="[1.0.0,1.0.0]",
  org.apache.commons.logging;version="[1.1.1,2.0.0)",
- org.codehaus.jackson;version="[1.0.0,2.0.0)",
+ org.codehaus.jackson;version="[1.0.0,2.0.0)";resolution:=optional,
  org.springframework.aop;version="[2.5.6.A,3.1.0)",
  org.springframework.aop.framework;version="[2.5.6.A,3.1.0)",
  org.springframework.aop.support;version="[2.5.6.A,3.1.0)",
@@ -57,6 +56,7 @@ Import-Package: edu.emory.mathcs.backport.java.util.concurrent;version="[2.2.0,3
  org.springframework.security;version="[2.0.4.A,3.1.0)";resolution:=optional,
  org.springframework.security.access;version="[2.0.4.A,3.1.0)";resolution:=optional,
  org.springframework.security.access.intercept;version="[2.0.4.A,3.1.0)";resolution:=optional,
+ org.springframework.security.access.vote;version="[2.0.4.A,3.1.0)";resolution:=optional,
  org.springframework.security.authentication;version="[2.0.4.A,3.1.0)";resolution:=optional,
  org.springframework.security.authentication.event;version="[2.0.4.A,3.1.0)";resolution:=optional,
  org.springframework.security.context;version="[2.0.4.A,3.1.0)";resolution:=optional,
