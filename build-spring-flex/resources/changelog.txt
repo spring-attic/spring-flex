@@ -4,7 +4,6 @@ http://www.springsource.org/spring-flex
 
 Changes in version 1.0.3.RELEASE (03.10.2010)
 -----------------------------------------
-
 Enhancements
 * FLEX-124 - Add official support for BlazeDS 4
 * FLEX-127 - Make the Jackson JSON parser an optional dependency.
