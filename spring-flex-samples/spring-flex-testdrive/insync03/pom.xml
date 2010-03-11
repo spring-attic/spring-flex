@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.flex.samples</groupId>
 		<artifactId>spring-flex-testdrive</artifactId>
-		<version>1.0.3.BUILD-SNAPSHOT</version>
+		<version>1.0.3.RELEASE</version>
 	</parent>
 
 	<artifactId>insync03</artifactId>
