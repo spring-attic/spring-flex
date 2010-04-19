@@ -30,10 +30,10 @@
 			Adobe BlazeDS 3.2 or higher **
 		</para>
 		<para>
-		    * Spring BlazeDS Integration is forward-compatible with Spring 3.0.x
+		    * As of the 1.0.2.RELEASE version, Spring BlazeDS Integration is forward-compatible with Spring 3.0.x
 		</para>
 		<para>
-		    ** Spring BlazeDS Integration 1.0.x is incompatible with BlazeDS 4.  BlazeDS 4 support will be available in Spring BlazeDS Integration 1.5.
+		    ** As of the 1.0.3.RELEASE version, Spring BlazeDS Integration is forward-compatible with BlazeDS 4.
 		</para>
 	</sect1>
 	<sect1 id="support">
