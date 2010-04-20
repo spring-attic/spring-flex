@@ -2,6 +2,18 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
+Changes in version 1.0.3.RELEASE (03.10.2010)
+-----------------------------------------
+Enhancements
+* FLEX-124 - Add official support for BlazeDS 4
+* FLEX-127 - Make the Jackson JSON parser an optional dependency.
+
+Bug Fixes
+* FLEX-109 - Automatically configure a unique AccessDecisionManager instance for use by the security integration internals
+* FLEX-110 - ResourceHandlingMessageInterceptor.afterCompletion not called when other interceptor throws an exception
+* FLEX-111 - Invalid FlexSession with Spring Security
+* FLEX-113 - OSGi manifest needs to be updated to work with Spring Security 3
+
 Changes in version 1.0.2.RELEASE (02.08.2010)
 -----------------------------------------
 General

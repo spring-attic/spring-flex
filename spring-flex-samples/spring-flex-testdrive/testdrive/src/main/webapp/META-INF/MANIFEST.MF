@@ -1,3 +1,37 @@
 Manifest-Version: 1.0
-Class-Path: 
+Export-Package: chat,chat.history,collaboration,collaboration.history,
+ companymgr,companymgr.history,feedstarter,feedstarter.history,insync0
+ 1,insync01.history,insync02,insync02.history,insync03,insync03.histor
+ y,insync04,insync04.history,insync05,insync05.history,insync06,insync
+ 06.history,insync07,insync07.assets,insync07.history,jmschat,jmschat.
+ history,org.springframework.flex.samples.company;uses:="javax.sql,org
+ .springframework.flex.remoting,org.springframework.flex.samples.dao,o
+ rg.springframework.flex.samples.industry",org.springframework.flex.sa
+ mples.contact;uses:="javax.sql,org.springframework.flex.samples.dao",
+ org.springframework.flex.samples.dao,org.springframework.flex.samples
+ .industry;uses:="javax.sql,org.springframework.flex.remoting,org.spri
+ ngframework.flex.samples.dao",org.springframework.flex.samples.integr
+ ation,org.springframework.flex.samples.marketfeed;uses:="org.springfr
+ amework.flex.messaging",org.springframework.flex.samples.product;uses
+ :="javax.sql,org.springframework.flex.samples.dao",org.springframewor
+ k.flex.samples.secured,org.springframework.flex.samples.simplefeed;us
+ es:="org.springframework.flex.messaging",org.springframework.flex.sam
+ ples.util;uses:="javax.sql",secured,secured.history,simplepush,simple
+ push.history,traderdesktop,traderdesktop.history
+Tool: Bundlor 1.0.0.BUILD-20091207202403
+Bundle-SymbolicName: org.springframework.flex.testdrive
+Bundle-Version: 1.0.3
+Bundle-Name: Spring BlazeDS Integration Test Drive
+Import-Bundle: com.springsource.flex.messaging;version="[3.2.0.3978,3.2.0.3978]",
+ com.springsource.flex.messaging.common;version="[3.2.0.3978,3.2.0.3978]",
+ com.springsource.flex.messaging.services.remoting;version="[3.2.0.3978,3.2.0.3978]",
+ org.springframework.security.config;version="[3.0.0.RELEASE,3.0.0.RELEASE]",
+ org.springframework.security.core;version="[3.0.0.RELEASE,3.0.0.RELEASE]",
+ org.springframework.security.web;version="[3.0.0.RELEASE,3.0.0.RELEASE]",
+ org.springframework.flex;version="[1.0.3,1.0.3.RELEASE]",
+ org.springframework.integration;version="[1.0.3.RELEASE,1.0.3.RELEASE]",
+ com.springsource.org.h2;version="[1.0.71,1.0.71]",
+ com.springsource.net.sf.cglib;version="[2.1.3,2.1.3]"
+Import-Library: org.springframework.spring;version="[3.0.1.RELEASE-A,3.0.1.RELEASE-A]"
+Import-Package: org.apache.commons.logging;version="[1.1.1,1.1.1]"
 
