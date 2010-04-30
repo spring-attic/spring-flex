@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.springframework.flex</groupId>
+	<artifactId>spring-flex-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>Spring BlazeDS Integration Parent POM</name>
+	<version>1.5.0.BUILD-SNAPSHOT</version>
+
+	<modules>
+		<module>org.springframework.flex</module>
+	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Tests.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<properties>
+		<spring.version>3.0.2.RELEASE</spring.version>
+		<security.version>3.0.</security.version>
+		<blazeds.version>4.0.0.14931</blazeds.version>
+	</properties>
+</project>
