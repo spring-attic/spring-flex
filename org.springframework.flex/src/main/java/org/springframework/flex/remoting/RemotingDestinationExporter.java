@@ -16,6 +16,7 @@
 
 package org.springframework.flex.remoting;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,7 +135,8 @@ public class RemotingDestinationExporter extends AbstractDestinationFactory impl
             String beanId = (String) service;
             this.service = getBeanFactory().getBean(beanId);
             this.sourceClass = AopUtils.getTargetClass(this.service);
-            if (this.sourceClass == null) {
+            //As of Spring 3.0.2, AopUtils is guaranteed not to return null
+            if (this.sourceClass == null || Proxy.isProxyClass(this.sourceClass)) {
                 this.sourceClass = getBeanFactory().getType(beanId);
             }
         } else {

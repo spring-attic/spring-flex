@@ -12,6 +12,13 @@
 		<module>org.springframework.flex</module>
 	</modules>
 
+	<repositories>
+		<repository>
+			<id>Local File Repository</id>
+			<url>file:./local-repo</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -31,11 +38,20 @@
 					</includes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
 	<properties>
-		<spring.version>3.0.2.RELEASE</spring.version>
+		<spring.version>3.0.3.BUILD-SNAPSHOT</spring.version>
 		<security.version>3.0.</security.version>
 		<blazeds.version>4.0.0.14931</blazeds.version>
 	</properties>
