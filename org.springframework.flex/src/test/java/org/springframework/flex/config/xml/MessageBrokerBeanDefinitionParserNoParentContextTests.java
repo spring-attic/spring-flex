@@ -12,10 +12,10 @@ import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.config.TestWebInfResourceLoader;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.core.MessageInterceptionAdvice;
-import org.springframework.flex.security.FlexSessionInvalidatingAuthenticationListener;
-import org.springframework.flex.security.SpringSecurityLoginCommand;
+import org.springframework.flex.security3.FlexSessionInvalidatingAuthenticationListener;
+import org.springframework.flex.security3.SpringSecurityLoginCommand;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.security.util.FilterChainProxy;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.filter.RequestContextFilter;
 
@@ -45,7 +45,7 @@ public class MessageBrokerBeanDefinitionParserNoParentContextTests extends Abstr
         }
         getApplicationContext().getBean(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, FlexSessionInvalidatingAuthenticationListener.class);
         RequestContextFilter filter = (RequestContextFilter) getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER, RequestContextFilter.class);
-        FilterChainProxy filterChain = (FilterChainProxy) getApplicationContext().getBean(org.springframework.security.config.BeanIds.FILTER_CHAIN_PROXY, FilterChainProxy.class);
+        FilterChainProxy filterChain = (FilterChainProxy) getApplicationContext().getBean("org.springframework.security.filterChainProxy", FilterChainProxy.class);
         assertTrue(((List)filterChain.getFilterChainMap().get("/**")).contains(filter));
     }
     

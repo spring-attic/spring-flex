@@ -27,7 +27,12 @@ import javax.servlet.ServletConfig;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.flex.config.AbstractFlexConfigurationTests;
@@ -40,13 +45,14 @@ import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
-import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
-import org.springframework.flex.security.EndpointInterceptor;
-import org.springframework.flex.security.FlexSessionInvalidatingAuthenticationListener;
-import org.springframework.flex.security.SpringSecurityLoginCommand;
+import org.springframework.flex.security3.EndpointInterceptor;
+import org.springframework.flex.security3.FlexSessionInvalidatingAuthenticationListener;
+import org.springframework.flex.security3.SpringSecurityLoginCommand;
 import org.springframework.flex.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.security.util.FilterChainProxy;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
@@ -203,7 +209,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         }
         getApplicationContext().getBean(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, FlexSessionInvalidatingAuthenticationListener.class);
         RequestContextFilter filter = (RequestContextFilter) getApplicationContext().getBean(BeanIds.REQUEST_CONTEXT_FILTER, RequestContextFilter.class);
-        FilterChainProxy filterChain = (FilterChainProxy) getApplicationContext().getParent().getBean(org.springframework.security.config.BeanIds.FILTER_CHAIN_PROXY, FilterChainProxy.class);
+        FilterChainProxy filterChain = (FilterChainProxy) getApplicationContext().getParent().getBean("org.springframework.security.filterChainProxy", FilterChainProxy.class);
         assertTrue(((List)filterChain.getFilterChainMap().get("/**")).contains(filter));
     }
 
@@ -228,7 +234,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             while (m.hasNext()) {
                 MessageInterceptor interceptor = m.next();
                 if (interceptor instanceof EndpointInterceptor) {
-                    Collection definitions = ((EndpointInterceptor) interceptor).getObjectDefinitionSource().getConfigAttributeDefinitions();
+                    Collection definitions = ((EndpointInterceptor) interceptor).getObjectDefinitionSource().getAllConfigAttributes();
                     assertEquals("Incorrect number of EnpointDefinitionSource instances", 3, definitions.size());
                 }
             }
@@ -353,6 +359,20 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         public Message preProcess(MessageProcessingContext context, Message inputMessage) {
             return null;
         }   
+    }
+    
+    public static final class AccessDecisionManagerLogger implements BeanFactoryAware, InitializingBean {
+        
+        DefaultListableBeanFactory beanFactory;
+        
+        public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+            this.beanFactory = (DefaultListableBeanFactory) beanFactory;            
+        }
+
+        public void afterPropertiesSet() throws Exception {
+            System.out.println(StringUtils.arrayToCommaDelimitedString(beanFactory.getBeanNamesForType(AccessDecisionManager.class)));            
+        }
+        
     }
 
     @Override
