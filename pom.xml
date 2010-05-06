@@ -3,13 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.springframework.flex</groupId>
-	<artifactId>spring-flex-parent</artifactId>
+	<artifactId>spring-flex</artifactId>
 	<packaging>pom</packaging>
-	<name>Spring BlazeDS Integration Parent POM</name>
+	<name>Spring BlazeDS Integration Distribution</name>
 	<version>1.5.0.BUILD-SNAPSHOT</version>
 
 	<modules>
-		<module>org.springframework.flex</module>
+		<module>parent</module>
+		<module>spring-flex-core</module>
 	</modules>
 
 	<distributionManagement>
@@ -43,159 +44,31 @@
 		</profile>
 		<profile>
 			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.2-beta-5</version>
+						<inherited>false</inherited>
+						<executions>
+							<execution>
+								<id>with-dependencies</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<descriptors>
+										<descriptor>assembly/with-dependencies.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.4</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-				<version>1.1.1</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-httpclient</groupId>
-				<artifactId>commons-httpclient</artifactId>
-				<version>3.1</version>
-			</dependency>
-			<dependency>
-				<groupId>cglib</groupId>
-				<artifactId>cglib-nodep</artifactId>
-				<version>2.1_3</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-beans</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context-support</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-web</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-webmvc</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.adobe.blazeds</groupId>
-				<artifactId>blazeds-core</artifactId>
-				<version>${blazeds.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.adobe.blazeds</groupId>
-				<artifactId>blazeds-common</artifactId>
-				<version>${blazeds.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.adobe.blazeds</groupId>
-				<artifactId>blazeds-proxy</artifactId>
-				<version>${blazeds.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.adobe.blazeds</groupId>
-				<artifactId>blazeds-remoting</artifactId>
-				<version>${blazeds.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.jms</groupId>
-				<artifactId>jms</artifactId>
-				<version>1.1</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jms</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-tx</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.integration</groupId>
-				<artifactId>spring-integration-core</artifactId>
-				<version>${integration.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-web</artifactId>
-				<version>${security.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-config</artifactId>
-				<version>${security.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-core-asl</artifactId>
-				<version>1.0.0</version>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.7</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-all</artifactId>
-				<version>1.8.2</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>${spring.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>xalan</groupId>
-				<artifactId>xalan</artifactId>
-				<version>2.7.1</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-core</artifactId>
-				<version>5.1.0</version>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging-api</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.camel</groupId>
-						<artifactId>camel-core</artifactId>
-					</exclusion>
-				</exclusions>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<build>
 		<extensions>
@@ -205,96 +78,6 @@
 				<version>3.0.0.RELEASE</version>
 			</extension>
 		</extensions>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.4.2</version>
-				<configuration>
-					<includes>
-						<include>**/*Tests.class</include>
-					</includes>
-					<excludes>
-						<exclude>**/Abstract*</exclude>
-					</excludes>
-					<forkMode>once</forkMode>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-					<fork>true</fork>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.0.3</version>
-				<configuration>
-					<attach>true</attach>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.2</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.3</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.0-beta-9</version>
-				<configuration>
-					<tagBase>
-						https://src.springsource.org/svn/spring-flex/tags
-                    </tagBase>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 	<properties>

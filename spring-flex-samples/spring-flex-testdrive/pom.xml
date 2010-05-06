@@ -2,9 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.flex</groupId>
+		<artifactId>spring-flex-parent</artifactId>
+		<version>1.5.0.BUILD-SNAPSHOT</version>
+	</parent>
 	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>spring-flex-testdrive</artifactId>
-	<version>1.5.0.BUILD-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Spring BlazeDS Integration Test Drive Samples</name>
@@ -31,16 +35,6 @@
 		<module>testdrive</module>
 	</modules>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-reactor-plugin</artifactId>
-				<version>1.0</version>
-			</plugin>
-		</plugins>
-	</build>
-	
 	<repositories>
 		<repository>
 			<id>flex-mojos-repository</id>

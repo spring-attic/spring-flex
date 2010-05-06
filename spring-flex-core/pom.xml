@@ -7,9 +7,22 @@
 		<artifactId>spring-flex-parent</artifactId>
 		<version>1.5.0.BUILD-SNAPSHOT</version>
 	</parent>
-	<artifactId>spring-flex</artifactId>
+	<artifactId>spring-flex-core</artifactId>
 	<packaging>jar</packaging>
 	<name>Spring BlazeDS Integration Core</name>
+	
+	<profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 	<dependencies>
 		<dependency>

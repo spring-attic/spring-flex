@@ -45,6 +45,7 @@ import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
+import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
 import org.springframework.flex.security3.EndpointInterceptor;
 import org.springframework.flex.security3.FlexSessionInvalidatingAuthenticationListener;
 import org.springframework.flex.security3.SpringSecurityLoginCommand;

@@ -1,0 +1,172 @@
+SPRING BLAZEDS INTEGRATION CHANGELOG
+=========================
+http://www.springsource.org/spring-flex
+
+Changes in version 1.0.3.RELEASE (03.10.2010)
+-----------------------------------------
+Enhancements
+* FLEX-124 - Add official support for BlazeDS 4
+* FLEX-127 - Make the Jackson JSON parser an optional dependency.
+
+Bug Fixes
+* FLEX-109 - Automatically configure a unique AccessDecisionManager instance for use by the security integration internals
+* FLEX-110 - ResourceHandlingMessageInterceptor.afterCompletion not called when other interceptor throws an exception
+* FLEX-111 - Invalid FlexSession with Spring Security
+* FLEX-113 - OSGi manifest needs to be updated to work with Spring Security 3
+
+Changes in version 1.0.2.RELEASE (02.08.2010)
+-----------------------------------------
+General
+* Spring Security 3 support has been added and the bundled Test Drive sample now has an additional Maven build 
+profile for building the sample to use Spring 3 and Spring Security 3.  See the docs at 
+http://static.springsource.org/spring-flex/docs/1.0.x/reference/html/ch06.html for instructions on how to enable
+this optional profile.
+
+Enhancements
+* FLEX-86 - Add an afterCompletion style callback to the MessageInterceptor API
+* FLEX-98 - Post-processing in MessageInterceptor even when an exception was thrown
+* FLEX-65 - Ensure compatibility with Spring Security 3.0
+* FLEX-100 - Automate publishing of Maven central compatible snapshots to maven.springframework.org repository
+* FLEX-103 - Document the configuration differences for using Spring Security 3.
+* FLEX-104 - Document the ResourceHandlingMessageInterceptor
+* FLEX-105 - Provide an optional Spring 3 + Spring Security 3 profile in the Maven build for the Test Drive
+* FLEX-106 - Document the new Maven build options for the Test Drive
+
+Bug Fixes
+* FLEX-78 - Intermittent Security Exception
+* FLEX-84 - NPE in RemotingDestinationExporter
+* FLEX-85 - <flex:remoting-destination> exclude-methods not working with dynamic proxies
+* FLEX-87 - JmsAdapter doesn't properly clean up resources at shutdown
+* FLEX-88 - Default adapters don't get overridden correctly when using Spring 3
+* FLEX-94 - JmsAdapter should shut down MessageListenerContainer when all clients have unsubscribed
+* FLEX-95 - RemotingAnnotationPostProcessor ignores lazy-init="true"
+* FLEX-96 - @RemotingDestination does not work correctly in conjunction with @Scope
+* FLEX-97 - Overriding serviceMessage in custom Endpoint breaks Spring's interceptors
+* FLEX-99 - RemotingAnnotationPostProcessor should ignore abstract bean definitions
+* FLEX-101 - documentation: section 5.6 fix
+
+Changes in version 1.0.1.RELEASE (09.23.2009)
+-----------------------------------------
+General
+* The bundled Test Drive sample has undergone a good bit of general cleanup.  Most notably, it has been configured
+to no longer run as the root web application, the naming conventions of the Spring configuration files have changed to
+align with the conventions used in SpringSource Tool Suite project templates, and the Spring Security example has been
+expanded to show how to take advantage of the extended functionality that the Spring Security integration provides over
+the traditional BlazeDS security mechanisms.  See the specific Jira issues referenced below for further details.
+
+Enhancements
+* FLEX-59 - Set the 'source' property on RemotingDestinations to better support Adobe tooling
+* FLEX-62 - Configure the testdrive sample to not be deployed as the root web application.
+* FLEX-67 - Provide bundles that can wire to Spring 3
+* FLEX-72 - Enhance the Spring Security demo to show more typical use cases
+* FLEX-73 - Update the naming conventions used in the Test Drive sample to be consistent with STS project templates
+* FLEX-74 - Refactor the Authentication translation logic from LoginMessageInterceptor into a re-usable utils class
+* FLEX-75 - Add HttpFlexSession configuration to the sample app's web.xml to reduce confusion
+* FLEX-76 - Add some further detail to the Security integration docs on configuration recommendations
+
+Bug Fixes
+* FLEX-60 - Direct dependence on xalan API causes unnecessary configuration problems
+* FLEX-61 - Handle resource cleanup after MessageBroker startup failure.
+* FLEX-64 - Flex bundle has a mandatory import for a spring integration package but declares the dependency as optional in its ivy.xml and pom.xml
+* FLEX-69 - Exceptions thrown by java back to flex are not handled correctly by Spring BlazeDS integration
+* FLEX-70 - Problems with message-broker services-config-path
+* FLEX-77 - Spring Security session fixation protection integration not working when security is defined in a parent context
+
+Changes in version 1.0.0.RELEASE (06.09.2009)
+-----------------------------------------
+General
+* Maven central compatible POMs will be mirrored to http://repo1.maven.org
+* Marked Jackson and CGLib dependencies as required in ivy and pom configurations since they are almost always needed in practice
+* Added documentation about using Spring MVC controllers alongside Spring BlazeDS Integration in the same application.
+
+Enhancements
+* FLEX-51 - Extract FlexMessage body for Spring Integration Message payload by default
+* FLEX-55 - Map Flex Message id, timestamp, and timeToLive directly into Spring Integration Message
+* FLEX-57 - Add tooling metadata to the XML config schema.
+* FLEX-58 - Refactor the XML parsing subsystem to always use the ErrorReporter API to report configuration problems
+
+Changes in version 1.0.0.RC2 (05.19.2009)
+-----------------------------------------
+General
+* The Test Drive samples are now included in the distribution and configured for use with Eclipse WTP
+* Maven central compatible POMs have been published to the repository at http://maven.springframework.org/milestone/
+* Minor revisions to the documentation including a new chapter on working with the test drive sample 
+
+Enhancements
+* FLEX-49 - @RemotingDestination should be able to be used on beans in the parent application context
+
+Bug Fixes
+* FLEX-37 - Flex schema missing from SpringFramework.org
+* FLEX-46 - Spring Security's filter chain not being detected correctly
+* FLEX-47 - Jackson is getting set as optional in the auto-generated pom.xml
+* FLEX-48 - Multiple consumers created per JmsAdapter instance
+
+Changes in version 1.0.0.RC1 (04.24.2009)
+-----------------------------------------
+General
+* Refactored destination management code to provide a common foundation for Remoting and Message destinations
+* Complete messaging support for AMF, JMS, and Spring Integration messaging protocols.
+* Annotation-based configuration support for remoting destinations
+* Changed remote-service tag name to remoting-destination to be more consistent with BlazeDS nomenclature
+* Integration tests now use Fluint instead of FlexUnit (with an eye towards running these tests in CI in the near future)
+* Docs updated to cover all new features and reflect changes to existing features
+
+New Features
+* FLEX-12 - Allow MessageService destinations to be configured in a Spring WebApplicationContext
+* FLEX-13 - Provide a JMSTemplate-based MessagingAdapter
+* FLEX-17 - Exporting Beans as Flex Remoting Destination using annotations
+* FLEX-18 - BlazeDS commons-logging integration
+* FLEX-20 - Add messaging support based on Spring Integration
+* FLEX-27 - Add support for messaging features to the flex configuration namespace
+* FLEX-30 - Generic hook for catching exceptions and translating them into BlazeDS MessageExceptions
+* FLEX-35 - Add GrantedAuthority[] from UserDetails on successful login result message
+* FLEX-42 - Configure MessageService on demand if none exists
+
+Enhancements
+* FLEX-28 - Support for LiveCycle Data Services ES
+* FLEX-33 - Add log to the FlexRemotingServiceExporter in order to see the destinations created in the messageBroker
+* FLEX-37 - Allow order to be specified on the default handler mapping installed when using the namespace config
+* FLEX-40 - Programmatic Configuration of MessageDestinationFactory
+* FLEX-41 - Ensure proper integration with Spring Security when using Flex per-client authentication setting
+
+Bug Fixes
+* FLEX-22 - Session invalidation on login broken with BlazeDS in use
+* FLEX-26 - JavaAdapters initialize method is not called
+* FLEX-32 - SpringSecurityExceptions not always getting properly translated
+* FLEX-38 - Ensure that @RemotingDestination annotation works with a bean with an @Autowired constructor.
+
+Changes in version 1.0.0.M2 (03.04.2009)
+----------------------------------------
+General
+* Updated reference manual to cover the new xml config namespace and security integration
+* Added an xml config schema with complete documentation of all elements and attributes 
+* Added an integration test module (only distributed in source form with the release) that uses FlexUnit
+
+New Features
+* FLEX-8 - Configure RemotingService on demand if none exists (i.e., there is no remoting-config.xml) 
+* FLEX-10 - Add a <flex:> spring configuration namespace to further simplify configuration
+* FLEX-11 - Integration with Spring Security
+* FLEX-23 - Create a Spring Security based BlazeDS LoginCommand
+* FLEX-24 - Provide an automatic SpringSecurityException to BlazeDS SecurityException translation mechanism 
+* FLEX-25 - Add a mechanism for securing BlazeDS Endpoints similar to Spring Security's URL-based security
+
+Enhancements
+* FLEX-15 - Add a channel property to FlexRemotingServiceExporter
+
+Bug Fixes
+* FLEX-19 - FlexConfigurationManager should be configurable as a Spring bean
+* FLEX-21 - FlexConfigurationManager.configurationPath shouldn't require slash (/)
+
+Changes in version 1.0.0.M1 (12.15.2008)
+----------------------------------------
+General
+* Performed an initial code drop at http://src.springframework.org/svn/spring-flex
+* Organized project structure to use spring-build and create OSGi-ready build artifacts
+* Added an initial draft of the reference manual
+
+New Features
+* Configure and bootstrap the BlazeDS MessageBroker as a Spring-managed object
+* Allow Flex remoting messages to be routed to a Spring-managed MessageBroker through the DispatcherServlet
+* Use Spring's ResourceLoader abstraction to load BlazeDS xml configuration files
+* Support for exporting Spring beans for Flex remoting
+* Specify included and excluded methods when exporting Spring beans for Flex remoting

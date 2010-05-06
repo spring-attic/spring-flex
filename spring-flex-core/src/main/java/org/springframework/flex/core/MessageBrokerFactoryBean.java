@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -45,7 +46,6 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 import flex.management.MBeanLifecycleManager;
 import flex.messaging.FlexContext;
 import flex.messaging.HttpFlexSession;
