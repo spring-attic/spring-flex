@@ -15,8 +15,6 @@
 	<name>Integration Tests Web Application</name>
 
 	<build>
-		<finalName>testdrive</finalName>
-
 		<plugins>
 			<plugin>
 
@@ -113,7 +111,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>

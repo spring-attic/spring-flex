@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:flex="http://www.springframework.org/schema/flex"
-	   xmlns:security="http://www.springframework.org/schema/security"
-	   xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
+	xmlns:flex="http://www.springframework.org/schema/flex" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
            http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/flex 
@@ -15,31 +14,37 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<context:component-scan base-package="org.springframework.flex.integration.service" />
-	
+
 	<flex:message-broker>
 		<flex:secured>
-			<flex:secured-channel access="ROLE_USER" channel="my-protected-by-id-amf"/>	
-			<flex:secured-endpoint-path access="ROLE_USER" pattern="**/protected/messagebroker/**"/>		
+			<flex:secured-channel access="ROLE_USER"
+				channel="my-protected-by-id-amf" />
+			<flex:secured-endpoint-path access="ROLE_USER"
+				pattern="**/protected/messagebroker/**" />
 		</flex:secured>
-	</flex:message-broker>	
-	
-	<bean id="pingService" class="org.springframework.flex.integration.service.PingService">
-		<property name="taskExecutor" ref="taskExecutor"/>
-		<property name="template" ref="messageTemplate"/>
-		<flex:remoting-destination  channels="my-amf, my-polling-amf, my-protected-amf, my-protected-by-id-amf" exclude-methods="foo"/>
+	</flex:message-broker>
+
+	<bean id="pingService"
+		class="org.springframework.flex.integration.service.PingService">
+		<property name="taskExecutor" ref="taskExecutor" />
+		<property name="template" ref="messageTemplate" />
+		<flex:remoting-destination
+			channels="my-amf, my-polling-amf, my-protected-amf, my-protected-by-id-amf"
+			exclude-methods="foo" />
 	</bean>
-	
-	<bean id="pingSecureService" class="org.springframework.flex.integration.service.PingService">
-		<flex:remoting-destination channels="my-amf"/>
+
+	<bean id="pingSecureService"
+		class="org.springframework.flex.integration.service.PingService">
+		<flex:remoting-destination channels="my-amf" />
 		<security:intercept-methods>
-			<security:protect access="ROLE_ADMIN" method="*"/>
+			<security:protect access="ROLE_ADMIN" method="*" />
 		</security:intercept-methods>
 	</bean>
-	
-	<flex:message-destination id="event-bus"/>
-	
+
+	<flex:message-destination id="event-bus" />
+
 	<bean id="messageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />
-	
-	<bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor"/>
-	    
+
+	<bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+
 </beans>
