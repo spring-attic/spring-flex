@@ -27,12 +27,17 @@ package {
   			fooService = new RemoteObject();
   			
   			cs.addChannel(new AMFChannel("myAmf", 
-    		"http://{server.name}:{server.port}/flex-integration/spring/messagebroker/amf"));
+    		"http://localhost:8080/flex-integration/spring/messagebroker/amf"));
 			pingService.channelSet = cs;
 			fooService.channelSet = cs;
 			
 			responseChecker = new ResponseChecker();
   		}
+		
+		[Test]
+		public function dummy():void {
+		
+		}
   	
   		public function testCallService():void {
  

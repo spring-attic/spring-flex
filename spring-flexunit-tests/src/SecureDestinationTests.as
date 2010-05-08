@@ -35,18 +35,23 @@ package {
   			protectedByChannelIdCs = new ChannelSet();
 			
 			protectedCs.addChannel(new AMFChannel("myAmf", 
-    		"http://{server.name}:{server.port}/flex-integration/spring/protected/messagebroker/amf"));
+    		"http://localhost:8080/flex-integration/spring/protected/messagebroker/amf"));
 			
 			protectedPingService.channelSet = protectedCs;
 			
 			protectedByChannelIdCs.addChannel(new AMFChannel("myAmf", 
-    		"http://{server.name}:{server.port}/flex-integration/spring/protected2/messagebroker/amf"));
+    		"http://localhost:8080/flex-integration/spring/protected2/messagebroker/amf"));
 			
 			protectedByChannelIdPingService.channelSet = protectedByChannelIdCs;
 			
 			
 			responseChecker = new ResponseChecker();
   		}
+		
+		[Test]
+		public function dummy():void {
+		
+		}
   		
   		public function testSpringManagedSecureChannelUrl_NotAuthenticated():void {
   			

@@ -6,9 +6,9 @@ package {
 		
 		public function IntegrationTestSuite() {
 			addTestCase(new RemoteServiceTests());
-			addTestCase(new SecureDestinationTests());
-			addTestCase(new SecureRemoteObjectTests());
-			addTestCase(new MessageServiceTests());
+			//addTestCase(new SecureDestinationTests());
+			//addTestCase(new SecureRemoteObjectTests());
+			//addTestCase(new MessageServiceTests());
 		}
 	}
 }

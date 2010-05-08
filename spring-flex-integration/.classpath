@@ -12,6 +12,8 @@
 	<classpathentry kind="var" path="M2_REPO/org/apache/activemq/activemq-core/5.1.0/activemq-core-5.1.0.jar" sourcepath="M2_REPO/org/apache/activemq/activemq-core/5.1.0/activemq-core-5.1.0-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6.jar" sourcepath="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" sourcepath="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/aspectj/aspectjrt/1.6.3/aspectjrt-1.6.3.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/aspectj/aspectjweaver/1.6.8/aspectjweaver-1.6.8.jar" sourcepath="M2_REPO/org/aspectj/aspectjweaver/1.6.8/aspectjweaver-1.6.8-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/backport-util-concurrent/backport-util-concurrent/2.1/backport-util-concurrent-2.1.jar" sourcepath="M2_REPO/backport-util-concurrent/backport-util-concurrent/2.1/backport-util-concurrent-2.1-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-common/4.0.0.14931/blazeds-common-4.0.0.14931.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-core/4.0.0.14931/blazeds-core-4.0.0.14931.jar"/>
@@ -40,7 +42,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-context-support/3.0.3.BUILD-SNAPSHOT/spring-context-support-3.0.3.BUILD-SNAPSHOT.jar" sourcepath="M2_REPO/org/springframework/spring-context-support/3.0.3.BUILD-SNAPSHOT/spring-context-support-3.0.3.BUILD-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/3.0.3.BUILD-SNAPSHOT/spring-core-3.0.3.BUILD-SNAPSHOT.jar" sourcepath="M2_REPO/org/springframework/spring-core/3.0.3.BUILD-SNAPSHOT/spring-core-3.0.3.BUILD-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-expression/3.0.3.BUILD-SNAPSHOT/spring-expression-3.0.3.BUILD-SNAPSHOT.jar" sourcepath="M2_REPO/org/springframework/spring-expression/3.0.3.BUILD-SNAPSHOT/spring-expression-3.0.3.BUILD-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/springframework/flex/spring-flex-core/1.5.0.BUILD-SNAPSHOT/spring-flex-core-1.5.0.BUILD-SNAPSHOT.jar" sourcepath="M2_REPO/org/springframework/flex/spring-flex-core/1.5.0.BUILD-SNAPSHOT/spring-flex-core-1.5.0.BUILD-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="src" path="/spring-flex-core"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/integration/spring-integration-core/1.0.4.RELEASE/spring-integration-core-1.0.4.RELEASE.jar" sourcepath="M2_REPO/org/springframework/integration/spring-integration-core/1.0.4.RELEASE/spring-integration-core-1.0.4.RELEASE-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-jdbc/3.0.3.BUILD-SNAPSHOT/spring-jdbc-3.0.3.BUILD-SNAPSHOT.jar" sourcepath="M2_REPO/org/springframework/spring-jdbc/3.0.3.BUILD-SNAPSHOT/spring-jdbc-3.0.3.BUILD-SNAPSHOT-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-jms/3.0.3.BUILD-SNAPSHOT/spring-jms-3.0.3.BUILD-SNAPSHOT.jar" sourcepath="M2_REPO/org/springframework/spring-jms/3.0.3.BUILD-SNAPSHOT/spring-jms-3.0.3.BUILD-SNAPSHOT-sources.jar"/>

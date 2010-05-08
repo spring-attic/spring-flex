@@ -1,20 +1,23 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
-  xmlns:beans="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd"> 
-    
-    <http entry-point-ref="preAuthenticatedEntryPoint">
-    	<logout/>
-    </http>
-    
-    <beans:bean id="preAuthenticatedEntryPoint" class="org.springframework.security.ui.preauth.PreAuthenticatedProcessingFilterEntryPoint" />
-    
-    <authentication-provider>
-		<user-service>
-	    	<user name="jeremy" password="atlanta" authorities="ROLE_USER, ROLE_ADMIN" />
-	      	<user name="keith" password="melbourne" authorities="ROLE_USER" />
-		</user-service>
-	</authentication-provider>
-    
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+	<http entry-point-ref="preAuthenticatedEntryPoint">
+	    <anonymous enabled="false"/>
+		<logout />
+	</http>
+
+	<beans:bean id="preAuthenticatedEntryPoint"
+		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>
+				<user name="jeremy" password="atlanta" authorities="ROLE_USER, ROLE_ADMIN" />
+				<user name="keith" password="melbourne" authorities="ROLE_USER" />
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+
 </beans:beans>
