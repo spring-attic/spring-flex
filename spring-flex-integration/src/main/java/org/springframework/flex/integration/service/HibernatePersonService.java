@@ -2,6 +2,7 @@ package org.springframework.flex.integration.service;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.integration.domain.Person;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Repository;
@@ -9,11 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RemotingDestination
 @Repository
-public class PersonServiceImpl implements PersonService {
+public class HibernatePersonService implements PersonService {
 
 	private final SessionFactory sessionFactory;
 	
-	public PersonServiceImpl(SessionFactory sessionFactory) {
+	@Autowired
+	public HibernatePersonService(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
