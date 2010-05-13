@@ -4,23 +4,39 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
+import org.hibernate.collection.PersistentCollection;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.ConfigurablePropertyAccessor;
-import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 import flex.messaging.io.BeanProxy;
 
 
 public class SpringPropertyProxy extends BeanProxy {
 
+    private static final Log log = LogFactory.getLog(SpringPropertyProxy.class);
+    
     private static final long serialVersionUID = 5374027421774405789L;
     
-    private ConversionService conversionService;
+    private ConversionService conversionService = new GenericConversionService();
+    
+    private Class<?> beanType;
 
-    protected SpringPropertyProxy(Object defaultInstance) {
+    public SpringPropertyProxy(Class<?> beanType) {
+        super(null);
+        this.beanType = beanType;
+    }
+    
+    public SpringPropertyProxy(Object defaultInstance) {
         super(defaultInstance);
+        Assert.notNull(defaultInstance, "Default instance cannot be null");
+        this.beanType = defaultInstance.getClass();
     }
 
     public List getPropertyNames(Object instance) {
@@ -29,11 +45,27 @@ public class SpringPropertyProxy extends BeanProxy {
     }
 
     public Class getType(Object instance, String propertyName) {
-        return getBeanPropertyAccessor(instance).getPropertyType(propertyName);
+        Class<?> type = getBeanPropertyAccessor(instance).getPropertyType(propertyName);
+        if(log.isDebugEnabled()){
+            log.debug("Introspected type of property '"+propertyName+"' on instance "+instance+" is "+type);
+        }
+        return type;
     }
 
     public Object getValue(Object instance, String propertyName) {
-        return getBeanPropertyAccessor(instance).getPropertyValue(propertyName);
+        Object value = getBeanPropertyAccessor(instance).getPropertyValue(propertyName);
+        if(log.isDebugEnabled()) {
+            getType(instance, propertyName);
+            log.debug("Actual type of value for property '"+propertyName+"' on instance "+instance+" is "+(value != null ? value.getClass() : null));
+        }
+        if(value == null) {
+            return null;
+        }
+        Class<?> targetType = getType(instance, propertyName);
+        if (value.getClass() != targetType && this.conversionService.canConvert(value.getClass(), targetType)) {
+            value = this.conversionService.convert(value, targetType);
+        }
+        return value;
     }
 
     public void setValue(Object instance, String propertyName, Object value) {
@@ -47,7 +79,12 @@ public class SpringPropertyProxy extends BeanProxy {
     private List<String> getBeanPropertyNames(Object instance) {
         List<String> names = new ArrayList<String>(); 
         for (PropertyDescriptor pd : getBeanPropertyAccessor(instance).getPropertyDescriptors()) {
-             names.add(pd.getName());
+            if (!pd.getName().equals("class")) {
+                names.add(pd.getName());
+            }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Property names for "+instance+" : "+names);
         }
         return names;
     }
@@ -58,14 +95,17 @@ public class SpringPropertyProxy extends BeanProxy {
         return accessor;
     }
     
-    private PropertyAccessor getFieldAccessor(Object instance) {
+    /*private PropertyAccessor getFieldAccessor(Object instance) {
         ConfigurablePropertyAccessor accessor = PropertyAccessorFactory.forDirectFieldAccess(instance);
         accessor.setConversionService(this.conversionService);
         return accessor;
-    }
+    }*/
 
-    //This is likely a good place to plug in various strategies for handling Hibernate lazy initialization
     public Object getInstanceToSerialize(Object instance) {
-        return instance;
+        if (this.conversionService.canConvert(instance.getClass(), this.beanType)) {
+            return this.conversionService.convert(instance, this.beanType);
+        } else {
+            return instance;
+        }
     }
 }
