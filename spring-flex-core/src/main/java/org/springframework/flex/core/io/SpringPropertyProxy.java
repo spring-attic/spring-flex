@@ -6,14 +6,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
-import org.hibernate.collection.PersistentCollection;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 
 import flex.messaging.io.BeanProxy;
 
@@ -39,12 +37,15 @@ public class SpringPropertyProxy extends BeanProxy {
         this.beanType = defaultInstance.getClass();
     }
 
-    public List getPropertyNames(Object instance) {
+    @Override
+    public List<String> getPropertyNames(Object instance) {
         //TODO - Support direct field access
+        //TODO - Consider an option hear to leave out uninitialized properties altogether instead of just returning null
         return getBeanPropertyNames(instance);
     }
 
-    public Class getType(Object instance, String propertyName) {
+    @Override
+    public Class<?> getType(Object instance, String propertyName) {
         Class<?> type = getBeanPropertyAccessor(instance).getPropertyType(propertyName);
         if(log.isDebugEnabled()){
             log.debug("Introspected type of property '"+propertyName+"' on instance "+instance+" is "+type);
@@ -52,7 +53,9 @@ public class SpringPropertyProxy extends BeanProxy {
         return type;
     }
 
+    @Override
     public Object getValue(Object instance, String propertyName) {
+        BeanWrapper wrapper = getBeanPropertyAccessor(instance);
         Object value = getBeanPropertyAccessor(instance).getPropertyValue(propertyName);
         if(log.isDebugEnabled()) {
             getType(instance, propertyName);
@@ -61,13 +64,15 @@ public class SpringPropertyProxy extends BeanProxy {
         if(value == null) {
             return null;
         }
-        Class<?> targetType = getType(instance, propertyName);
-        if (value.getClass() != targetType && this.conversionService.canConvert(value.getClass(), targetType)) {
-            value = this.conversionService.convert(value, targetType);
+        TypeDescriptor targetType = wrapper.getPropertyTypeDescriptor(propertyName);
+        TypeDescriptor sourceType = TypeDescriptor.valueOf(value.getClass());
+        if (!sourceType.equals(targetType) && this.conversionService.canConvert(sourceType, targetType)) {
+            value = this.conversionService.convert(value, sourceType, targetType);
         }
         return value;
     }
 
+    @Override
     public void setValue(Object instance, String propertyName, Object value) {
         getBeanPropertyAccessor(instance).setPropertyValue(propertyName, value);
     }
@@ -107,5 +112,10 @@ public class SpringPropertyProxy extends BeanProxy {
         } else {
             return instance;
         }
+    }
+
+    
+    public Class<?> getBeanType() {
+        return beanType;
     }
 }
