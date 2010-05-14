@@ -27,14 +27,6 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>local-repo</id>
-			<name>Local Filesystem Maven Repo for Unpublished Dependencies</name>
-			<url>file:./local-repo</url>
-		</repository>
-	</repositories>
-
 	<profiles>
 		<profile>
 			<id>samples</id>
