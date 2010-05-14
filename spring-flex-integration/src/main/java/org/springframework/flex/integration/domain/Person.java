@@ -3,6 +3,7 @@ package org.springframework.flex.integration.domain;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,8 +19,11 @@ public class Person {
 	
 	private String name;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	private Person spouse;
+	
+	@OneToOne
+    private Address address;
 	
 	@ManyToMany
 	private Set<Person> children;
@@ -48,7 +52,17 @@ public class Person {
 		this.spouse = spouse;
 	}
 
-	public Set<Person> getChildren() {
+	
+    public Address getAddress() {
+        return address;
+    }
+
+    
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Set<Person> getChildren() {
 		return children;
 	}
 

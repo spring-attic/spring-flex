@@ -22,7 +22,15 @@ public class HibernatePersonService implements PersonService {
 	@Transactional
 	public Person loadPerson(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
-		return (Person) session.load(Person.class, id);
+		return (Person) session.get(Person.class, id);
+	}
+	
+	@Transactional
+	public Person loadPersonAndChildren(Integer id) {
+		Session session = sessionFactory.getCurrentSession();
+		Person person = (Person) session.get(Person.class, id);
+		person.getChildren().iterator();
+		return person;
 	}
 
 }

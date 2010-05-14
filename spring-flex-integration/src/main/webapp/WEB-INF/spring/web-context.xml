@@ -17,6 +17,7 @@
 	<context:component-scan base-package="org.springframework.flex.integration" />
 
 	<flex:message-broker>
+		<flex:config-processor ref="hibernateConfigProcessor"/>
 		<flex:secured>
 			<flex:secured-channel access="ROLE_USER"
 				channel="my-protected-by-id-amf" />
@@ -24,6 +25,10 @@
 				pattern="**/protected/messagebroker/**" />
 		</flex:secured>
 	</flex:message-broker>
+	
+	<bean id="hibernateConfigProcessor" class="org.springframework.flex.core.io.HibernateConfigProcessor">
+		<constructor-arg ref="sessionFactory"/>
+	</bean>
 
 	<bean id="pingService"
 		class="org.springframework.flex.integration.service.PingService">
