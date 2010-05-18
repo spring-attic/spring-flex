@@ -41,10 +41,10 @@ import flex.messaging.io.amf.MessageBody;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "hibernate-context.xml")
 @TestExecutionListeners( { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class,
-    SpringPropertyProxyTests.InternalDbTestExecutionListener.class })
-public class SpringPropertyProxyTests {
+    SpringPropertyProxyHibernateNativeTests.InternalDbTestExecutionListener.class })
+public class SpringPropertyProxyHibernateNativeTests {
 
-    private static final Log log = LogFactory.getLog(SpringPropertyProxyTests.class);
+    private static final Log log = LogFactory.getLog(SpringPropertyProxyHibernateNativeTests.class);
 
     @Autowired
     SessionFactory sessionFactory;
