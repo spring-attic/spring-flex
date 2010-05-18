@@ -14,12 +14,12 @@ public class SpringSecurityConfigResolver {
     
     static SpringSecurityConfigHelper resolve() {
 
-        try {
-            ClassUtils.forName(SECURITY3_AUTHENTICATION_CLASSNAME);
+        //try {
+            //ClassUtils.forName(SECURITY3_AUTHENTICATION_CLASSNAME);
             return createConfigHelper(SECURITY3_CONFIG_HELPER_CLASSNAME);
-        } catch (ClassNotFoundException ex) {
-            return createConfigHelper(SECURITY2_CONFIG_HELPER_CLASSNAME);
-        }
+        //} catch (ClassNotFoundException ex) {
+            //return createConfigHelper(SECURITY2_CONFIG_HELPER_CLASSNAME);
+        //}
 
     }
     
