@@ -1,6 +1,7 @@
 
 package org.springframework.flex.core.io;
 
+import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import javax.persistence.EntityManagerFactory;
@@ -12,7 +13,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.MessageBroker;
@@ -29,10 +29,9 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor {
     }
 
     public HibernateConfigProcessor(EntityManagerFactory entityManagerFactory, ConversionService conversionService) {
-        Assert.isTrue(ClassUtils.hasMethod(entityManagerFactory.getClass(), "getSessionFactory"),
-            "Could not retrieve the underlying Hibernate SessionFactory from the provided EntityManagerFactory");
-        SessionFactory sessionFactory = (SessionFactory) ReflectionUtils.invokeMethod(ClassUtils.getMethodIfAvailable(
-            entityManagerFactory.getClass(), "getSessionFactory"), entityManagerFactory);
+        Method gsfMethod = ReflectionUtils.findMethod(entityManagerFactory.getClass(), "getSessionFactory");
+        Assert.notNull(gsfMethod, "Could not retrieve the underlying Hibernate SessionFactory from the provided EntityManagerFactory");
+        SessionFactory sessionFactory = (SessionFactory) ReflectionUtils.invokeMethod(gsfMethod, entityManagerFactory);
         init(sessionFactory, conversionService);
     }
 
@@ -45,6 +44,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor {
     }
 
     private void init(SessionFactory sessionFactory, ConversionService conversionService) {
+        Assert.notNull(sessionFactory, "The Hibernate SessionFactory must not be null.");
         this.sessionFactory = sessionFactory;
         this.conversionService = conversionService != null ? conversionService : getDefaultConversionService();
     }
