@@ -62,8 +62,11 @@ public class SpringPropertyProxyHibernateNativeTests {
     MockHttpServletRequest request;
 
     @Before
-    public void init() {
-        new HibernateConfigProcessor(this.sessionFactory).processAfterStartup(null);
+    public void init() throws Exception {
+        HibernateConfigProcessor processor = new HibernateConfigProcessor();
+        processor.setSessionFactory(this.sessionFactory);
+        processor.afterPropertiesSet();
+        processor.processAfterStartup(null);
         this.serializer = new AmfMessageSerializer();
         this.serializerTrace = new AmfTrace();
         this.response = new MockHttpServletResponse();

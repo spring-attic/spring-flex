@@ -46,6 +46,8 @@ import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
 import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
+import org.springframework.flex.core.io.Person;
+import org.springframework.flex.core.io.SpringPropertyProxy;
 import org.springframework.flex.security3.EndpointInterceptor;
 import org.springframework.flex.security3.FlexSessionInvalidatingAuthenticationListener;
 import org.springframework.flex.security3.SpringSecurityLoginCommand;
@@ -62,6 +64,7 @@ import flex.messaging.MessageBroker;
 import flex.messaging.MessageException;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.MessagingConfiguration;
+import flex.messaging.io.PropertyProxyRegistry;
 import flex.messaging.messages.Message;
 import flex.messaging.security.LoginCommand;
 import flex.messaging.services.MessageService;
@@ -77,7 +80,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
     protected ConfigurableApplicationContext createParentContext() {
         GenericWebApplicationContext context = new GenericWebApplicationContext();
         context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
-        createBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml" });
+        createBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml", "classpath:org/springframework/flex/core/io/hibernate-jpa-context.xml" });
         context.refresh();
         return context;
     }
@@ -99,6 +102,10 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         TestConfigProcessor processor2 = (TestConfigProcessor) getApplicationContext().getBean("processor2", TestConfigProcessor.class);
         assertTrue("Processor1 not invoked", processor1.beforeProcessed && processor1.afterProcessed);
         assertTrue("Processor2 not invoked", processor2.beforeProcessed && processor2.afterProcessed);
+    }
+    
+    public void testMessageBroker_HibernateAutoConfigured() {
+        assertTrue(PropertyProxyRegistry.getRegistry().getProxy(Person.class) instanceof SpringPropertyProxy);
     }
 
     @SuppressWarnings("unchecked")

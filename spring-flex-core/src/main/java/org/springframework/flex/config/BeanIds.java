@@ -33,6 +33,8 @@ public abstract class BeanIds {
     public static final String SESSION_FIXATION_PROTECTION_CONFIGURER = "_sessionFixationProtectionConfigurer";
 
     public static final String REMOTING_ANNOTATION_PROCESSOR = "_flexRemotingAnnotationPostProcessor";
+    
+    public static final String HIBERNATE_SERIALIZATION_PROCESSOR = "_hibernateSerializationConfigPostProcessor";
 
     public static final String MESSAGE_BROKER_HANDLER_ADAPTER = "_messageBrokerHandlerAdapter";
 

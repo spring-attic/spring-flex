@@ -1,0 +1,133 @@
+package org.springframework.flex.config;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.ManagedSet;
+import org.springframework.flex.core.io.HibernateConfigProcessor;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+
+/**
+ * {@link BeanFactoryPostProcessor} that will automatically configure Hibernate AMF serialization support if:
+ * <ol>
+ *     <li>Hibernate is detected on the classpath</li>
+ *     <li>An instance of {@link HibernateConfigProcessor} has not been manually configured.
+ * </ol>
+ *
+ * @author Jeremy Grelle
+ */
+public class HibernateSerializationConfigPostProcessor implements BeanFactoryPostProcessor {
+
+    private static final Log log = LogFactory.getLog(HibernateSerializationConfigPostProcessor.class);
+    
+    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.core.io.HibernateConfigProcessor";
+    
+    private static final String JPA_HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.core.io.JpaHibernateConfigProcessor";
+    
+    private static final String MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME = "org.springframework.flex.core.MessageBrokerFactoryBean";
+    
+    private static final String CONFIG_PROCESSORS_PROPERTY = "configProcessors";
+    
+    @SuppressWarnings("unchecked")
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        
+        if (isHibernateDetected(beanFactory.getBeanClassLoader())) {
+            
+            //Abort if HibernateConfigProcessor is already present
+            if (isHibernateConfigProcessorConfigured(beanFactory)) {
+                return;
+            }
+            
+            if (!ClassUtils.isAssignableValue(BeanDefinitionRegistry.class, beanFactory)) {
+                if (log.isWarnEnabled()) {
+                    log.warn("Hibernate AMF serialization support could not be auto-configured because the current BeanFactory does not implement " +
+                    		"BeanDefinitionRegistry.  In order for this support to be enabled, you must manually configure an instance of "+
+                    		HIBERNATE_CONFIG_PROCESSOR_CLASS);
+                }
+            }            
+
+            BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+            
+            //Make sure there is a MessageBrokerFactoryBean present
+            BeanDefinition messageBrokerBeanDef = findMessageBrokerFactoryBeanDefinition(registry);
+            Assert.notNull("Could not find an appropriate bean definition for MessageBrokerBeanDefinitionFactoryBean.");
+            
+            //Add the appropriate HibernateConfigProcessor bean definition
+            BeanDefinitionBuilder processorBuilder;
+            if (isJpaDetected(beanFactory.getBeanClassLoader())) {
+                processorBuilder = BeanDefinitionBuilder.rootBeanDefinition(JPA_HIBERNATE_CONFIG_PROCESSOR_CLASS);
+            } else {
+                processorBuilder = BeanDefinitionBuilder.rootBeanDefinition(HIBERNATE_CONFIG_PROCESSOR_CLASS);
+            }
+            
+            String processorId = BeanDefinitionReaderUtils.registerWithGeneratedName(processorBuilder.getBeanDefinition(), registry);
+            
+            MutablePropertyValues brokerProps = messageBrokerBeanDef.getPropertyValues();
+            ManagedSet<RuntimeBeanReference> configProcessors;
+            if(brokerProps.getPropertyValue(CONFIG_PROCESSORS_PROPERTY) != null) {
+                configProcessors = (ManagedSet<RuntimeBeanReference>) brokerProps.getPropertyValue(CONFIG_PROCESSORS_PROPERTY).getValue();
+            } else {
+                configProcessors = new ManagedSet<RuntimeBeanReference>();
+            }
+            configProcessors.add(new RuntimeBeanReference(processorId));
+        }
+    }
+
+    private boolean isHibernateConfigProcessorConfigured(ConfigurableListableBeanFactory beanFactory) {
+        Set<String> beanNames = new HashSet<String>();
+        beanNames.addAll(Arrays.asList(beanFactory.getBeanDefinitionNames()));
+        if (beanFactory.getParentBeanFactory() instanceof ListableBeanFactory) {
+            beanNames.addAll(Arrays.asList(((ListableBeanFactory)beanFactory.getParentBeanFactory()).getBeanDefinitionNames()));
+        }
+        
+        for (String beanName : beanNames) {
+            BeanDefinition bd = beanFactory.getMergedBeanDefinition(beanName);
+            if (bd instanceof AbstractBeanDefinition) {
+                AbstractBeanDefinition abd = (AbstractBeanDefinition) bd;
+                if (abd.hasBeanClass()) {
+                    if (HibernateConfigProcessor.class.isAssignableFrom(abd.getBeanClass())) {
+                        return true;
+                    }                    
+                }
+            }
+        }
+        return false;
+    }
+    
+    private BeanDefinition findMessageBrokerFactoryBeanDefinition(BeanDefinitionRegistry registry) {
+        if (registry.containsBeanDefinition(BeanIds.MESSAGE_BROKER)) {
+            return registry.getBeanDefinition(BeanIds.MESSAGE_BROKER);
+        } else {
+            for (String beanDefName : registry.getBeanDefinitionNames()) {
+                BeanDefinition beanDef = registry.getBeanDefinition(beanDefName);
+                if (beanDef.getBeanClassName().equals(MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME)) {
+                    return beanDef;
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isHibernateDetected(ClassLoader classLoader) {
+        return ClassUtils.isPresent("org.hibernate.SessionFactory", classLoader);
+    }
+    
+    private boolean isJpaDetected(ClassLoader classLoader) {
+        return ClassUtils.isPresent("javax.persistence.EntityManagerFactory", classLoader);
+    }
+}

@@ -67,6 +67,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private static final String MESSAGING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.MessageServiceConfigProcessor";
 
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
+    
+    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.HibernateSerializationConfigPostProcessor";
 
     private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
 
@@ -229,8 +231,6 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         ParsingUtils.registerInfrastructureComponent(source, parserContext, messagingProcessorBuilder, brokerId + BeanIds.MESSAGING_PROCESSOR_SUFFIX);
         configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.MESSAGING_PROCESSOR_SUFFIX));
-
-        registerFlexRemotingAnnotationPostProcessorIfNecessary(source, parserContext);
     }
 
     @SuppressWarnings("unchecked")
@@ -249,6 +249,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.REMOTING_PROCESSOR_SUFFIX));
 
         registerFlexRemotingAnnotationPostProcessorIfNecessary(source, parserContext);
+        
+        registerHibernateSerializationConfigPostProcessorIfNecessary(source, parserContext);
     }
 
     @SuppressWarnings("unchecked")
@@ -399,6 +401,13 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.REMOTING_ANNOTATION_PROCESSOR)) {
             BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME);
             ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.REMOTING_ANNOTATION_PROCESSOR);
+        }
+    }
+    
+    private void registerHibernateSerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
+        if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
+            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME);
+            ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
         }
     }
 

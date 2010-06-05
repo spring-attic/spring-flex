@@ -81,8 +81,11 @@ public class SpringPropertyProxyHibernateJPATests {
 
 
     @Before
-    public void init() {
-        new HibernateConfigProcessor(this.emf).processAfterStartup(null);
+    public void init() throws Exception {
+        JpaHibernateConfigProcessor processor = new JpaHibernateConfigProcessor();
+        processor.setEntityManagerFactory(this.emf);
+        processor.afterPropertiesSet();
+        processor.processAfterStartup(null);
         this.serializer = new AmfMessageSerializer();
         this.serializerTrace = new AmfTrace();
         this.response = new MockHttpServletResponse();
