@@ -3,6 +3,8 @@ package org.springframework.flex.core.io;
 
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.EntityMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
@@ -22,6 +24,8 @@ import flex.messaging.io.PropertyProxyRegistry;
 
 public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, BeanFactoryAware, InitializingBean {
 
+    private Log log = LogFactory.getLog(HibernateConfigProcessor.class);
+    
     private SessionFactory sessionFactory;
 
     private ConversionService conversionService;
@@ -51,6 +55,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
                 proxy.setConversionService(this.conversionService);
                 PropertyProxyRegistry.getRegistry().register(proxy.getBeanType(), proxy);
             }
+            log.info("Hibernate detected and AMF serialization support automatically installed successfully.");
         }
         return broker;
     }
