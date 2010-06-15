@@ -85,7 +85,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
         return beanFactory;
     }
 
-    private ConversionService getDefaultConversionService() {
+    protected ConversionService getDefaultConversionService() {
         GenericConversionService conversionService = new GenericConversionService();
         conversionService.addConverter(new HibernateProxyConverter());
         conversionService.addConverterFactory(new PersistentCollectionConverterFactory());

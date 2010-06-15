@@ -66,7 +66,7 @@ public class SpringPropertyProxy extends BeanProxy {
         }
         TypeDescriptor targetType = wrapper.getPropertyTypeDescriptor(propertyName);
         TypeDescriptor sourceType = TypeDescriptor.valueOf(value.getClass());
-        if (!sourceType.equals(targetType) && this.conversionService.canConvert(sourceType, targetType)) {
+        if (!sourceType.getType().equals(targetType.getType()) && this.conversionService.canConvert(sourceType, targetType)) {
             value = this.conversionService.convert(value, sourceType, targetType);
         }
         return value;
