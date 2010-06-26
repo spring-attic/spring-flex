@@ -71,11 +71,4 @@
 			</extension>
 		</extensions>
 	</build>
-
-	<properties>
-		<spring.version>3.0.3.BUILD-SNAPSHOT</spring.version>
-		<integration.version>1.0.4.RELEASE</integration.version>
-		<security.version>3.0.2.RELEASE</security.version>
-		<blazeds.version>4.0.0.14931</blazeds.version>
-	</properties>
 </project>
