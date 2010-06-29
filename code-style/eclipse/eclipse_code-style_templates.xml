@@ -38,7 +38,7 @@
  */</template><template autoinsert="true" context="fieldcomment_context" deleted="false" description="Comment for vars" enabled="true" id="org.eclipse.wst.jsdt.ui.text.codetemplates.fieldcomment" name="fieldcomment">/**
  * 
  */</template><template autoinsert="false" context="filecomment_context" deleted="false" description="Comment for created Java files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.filecomment" name="filecomment">/*
- * Copyright 2002-2009 the original author or authors.
+ * Copyright 2002-2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
