@@ -297,8 +297,8 @@ public class FlexUIMetadataProvider implements MetadataProvider, MetadataNotific
         listViewTemplate.setAttribute("flexScaffoldMetadata", flexScaffoldMetadata);
         listViewTemplate.setAttribute("fields", elegibleFields);
 
-        ByteArrayInputStream stream = new ByteArrayInputStream(listViewTemplate.toString().getBytes(Charset.forName("UTF-8")));
         try {
+            ByteArrayInputStream stream = new ByteArrayInputStream(listViewTemplate.toString().getBytes("UTF-8"));
             return XmlUtils.getDocumentBuilder().parse(stream);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to build list view document", e);
@@ -314,8 +314,8 @@ public class FlexUIMetadataProvider implements MetadataProvider, MetadataNotific
         Set<RelatedTypeWrapper> relatedTypes = findRelatedTypes(flexScaffoldMetadata, elegibleFields);
         listViewTemplate.setAttribute("relatedTypes", relatedTypes);
         listViewTemplate.setAttribute("labelFields", calculateLabelFields(relatedTypes));
-        ByteArrayInputStream stream = new ByteArrayInputStream(listViewTemplate.toString().getBytes(Charset.forName("UTF-8")));
         try {
+            ByteArrayInputStream stream = new ByteArrayInputStream(listViewTemplate.toString().getBytes("UTF-8"));
             return XmlUtils.getDocumentBuilder().parse(stream);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to build list view document", e);

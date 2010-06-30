@@ -87,7 +87,7 @@ public class FormTemplateTests {
 		assertFalse(result.contains("mx:StringValidator"));
 		assertTrue(result.contains("s:TextInput"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 	
@@ -111,7 +111,7 @@ public class FormTemplateTests {
 		assertTrue(result.contains("mx:StringValidator"));
 		assertTrue(result.contains("s:TextInput"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 	
@@ -141,7 +141,7 @@ public class FormTemplateTests {
 		assertTrue(result.contains("mx:StringValidator"));
 		assertTrue(result.contains("s:TextInput"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 	
@@ -163,7 +163,7 @@ public class FormTemplateTests {
 		assertFalse(result.contains("mx:NumberValidator"));
 		assertTrue(result.contains("s:TextInput"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 	
@@ -187,7 +187,7 @@ public class FormTemplateTests {
 		assertTrue(result.contains("mx:NumberValidator"));
 		assertTrue(result.contains("s:TextInput"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 	
@@ -217,7 +217,7 @@ public class FormTemplateTests {
 		assertTrue(result.contains("mx:NumberValidator"));
 		assertTrue(result.contains("s:TextInput"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 	
@@ -239,7 +239,7 @@ public class FormTemplateTests {
 		assertFalse(result.contains("mx:DateValidator"));
 		assertTrue(result.contains("mx:DateField"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 	
@@ -263,7 +263,7 @@ public class FormTemplateTests {
 		assertTrue(result.contains("mx:DateValidator"));
 		assertTrue(result.contains("mx:DateField"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 	
@@ -292,7 +292,7 @@ public class FormTemplateTests {
 		assertTrue(result.contains("import com.foo.Address;"));
 		assertTrue(result.contains("person.currentAddress = currentAddressInput.selectedItem;"));
 		
-		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes(Charset.forName("UTF-8")));
+		ByteArrayInputStream stream = new ByteArrayInputStream(result.getBytes("UTF-8"));
 		XmlUtils.getDocumentBuilder().parse(stream);
 	}
 }
