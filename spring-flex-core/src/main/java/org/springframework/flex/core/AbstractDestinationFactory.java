@@ -16,6 +16,9 @@
 
 package org.springframework.flex.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -23,7 +26,6 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -176,7 +178,7 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
     protected BeanFactory getBeanFactory() {
         return this.beanFactory;
     }
-    
+
     /**
      * Returns the id for the destination created by this factory
      * 
@@ -210,7 +212,11 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
             Assert.isTrue(this.broker.getChannelIds().contains(channelId), "The channel " + channelId + " is not known to the MessageBroker "
                 + this.broker.getId() + " and cannot be set on the destination " + getDestinationId());
         }
-        destination.setChannels(CollectionUtils.arrayToList(this.channels));
+        List<String> channelsList = new ArrayList<String>();
+        for (String channel : this.channels) {
+            channelsList.add(channel);
+        }
+        destination.setChannels(channelsList);
     }
 
 }

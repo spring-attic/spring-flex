@@ -33,6 +33,8 @@ import org.springframework.flex.config.json.JsonConfigMapPropertyEditor;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import flex.messaging.FlexContext;
+import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.SecurityConstraint;
@@ -165,7 +167,6 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
     }
 
     public void testDestinationWithSecurityConstraints() throws Exception {
-
         this.factory = new MessageDestinationFactory();
         this.factory.setBeanName("foo3");
         this.factory.setSendSecurityConstraint("spring-security-users");

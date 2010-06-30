@@ -25,11 +25,16 @@ import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
+import flex.management.MBeanServerLocatorFactory;
 import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
+import flex.messaging.io.SerializationContext;
+import flex.messaging.io.TypeMarshallingContext;
 
 public abstract class AbstractMessageBrokerTests extends TestCase {
 
+    private static final String ID = AbstractMessageBrokerTests.class.getSimpleName() + "MessageBroker";
+    
     private final StaticWebApplicationContext context = new StaticWebApplicationContext();
 
     private MessageBrokerFactoryBean mbfb;
@@ -47,14 +52,16 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
         this.mbfb = new MessageBrokerFactoryBean();
         this.mbfb.setServletContext(this.context.getServletContext());
         this.mbfb.setResourceLoader(this.context);
-        this.mbfb.setBeanName(super.getName() + "MessageBroker");
+        this.mbfb.setBeanName(ID);
         this.mbfb.setBeanClassLoader(this.context.getClassLoader());
         this.currentConfigPath = getServicesConfigPath();
         this.mbfb.setServicesConfigPath(this.currentConfigPath);
         this.mbfb.setConfigProcessors(this.startupProcessors);
         this.mbfb.afterPropertiesSet();
 
-        return (MessageBroker) this.mbfb.getObject();
+        MessageBroker broker = this.mbfb.getObject();
+        FlexContext.setThreadLocalObjects(null, null, broker);
+        return broker;
     }
 
     protected String getCurrentConfigPath() {
@@ -62,8 +69,8 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
     }
 
     protected final MessageBroker getMessageBroker() throws Exception {
-        if (FlexContext.getMessageBroker() != null) {
-            return FlexContext.getMessageBroker();
+        if (lookupMessageBroker() != null) {
+            return lookupMessageBroker();
         } else {
             return createMessageBroker();
         }
@@ -74,15 +81,21 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
     }
 
     protected final void setDirty() {
-        if (FlexContext.getMessageBroker() != null) {
-            FlexContext.getMessageBroker().stop();
+        if (lookupMessageBroker() != null) {
+            lookupMessageBroker().stop();
             FlexContext.setThreadLocalObjects(null, null, null, null, null, null);
         }
         clearProcessors();
     }
     
+    private MessageBroker lookupMessageBroker() {
+        if (MessageBroker.getMessageBroker(ID) != null) {
+            return MessageBroker.getMessageBroker(ID);
+        }
+        return null;
+    }
+    
     protected final void clearProcessors() {
         this.startupProcessors.clear();
     }
-
 }

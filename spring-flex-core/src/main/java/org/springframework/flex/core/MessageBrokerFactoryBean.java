@@ -47,12 +47,16 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import flex.management.MBeanLifecycleManager;
+import flex.management.MBeanServerLocatorFactory;
 import flex.messaging.FlexContext;
 import flex.messaging.HttpFlexSession;
+import flex.messaging.HttpFlexSessionProvider;
 import flex.messaging.MessageBroker;
 import flex.messaging.VersionInfo;
 import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.MessagingConfiguration;
+import flex.messaging.io.SerializationContext;
+import flex.messaging.io.TypeMarshallingContext;
 
 /**
  * {@link FactoryBean} that creates a local {@link MessageBroker} instance within a Spring web application context. The
@@ -84,8 +88,8 @@ import flex.messaging.config.MessagingConfiguration;
  * 
  * @author Jeremy Grelle
  */
-public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAware, BeanNameAware, ResourceLoaderAware, InitializingBean,
-    DisposableBean, ServletContextAware {
+public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, BeanClassLoaderAware, BeanNameAware, ResourceLoaderAware,
+    InitializingBean, DisposableBean, ServletContextAware {
 
     private static String FLEXDIR = "/WEB-INF/flex/";
 
@@ -106,81 +110,93 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
     private ServletContext servletContext;
 
     private Set<MessageBrokerConfigProcessor> configProcessors = new HashSet<MessageBrokerConfigProcessor>();
-
+    
     /**
      * 
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     public void afterPropertiesSet() throws Exception {
 
         try {
             ServletConfig servletConfig = new DelegatingServletConfig();
-    
+
+            // allocate thread local variables
+            initThreadLocals();
+
             // Set the servlet config as thread local
             FlexContext.setThreadLocalObjects(null, null, null, null, null, servletConfig);
-    
+
             // Get the configuration manager
             if (this.configurationManager == null) {
                 this.configurationManager = new FlexConfigurationManager(this.resourceLoader, this.servicesConfigPath);
             }
-    
+
             // Load configuration
             MessagingConfiguration messagingConfig = this.configurationManager.getMessagingConfiguration(servletConfig);
-    
+
             // Set up logging system ahead of everything else.
             messagingConfig.createLogAndTargets();
-    
+
             // Create broker.
             this.messageBroker = messagingConfig.createBroker(this.name, this.beanClassLoader);
-    
+
             // Set the servlet config as thread local
             FlexContext.setThreadLocalObjects(null, null, this.messageBroker, null, null, servletConfig);
-    
+
             setupInternalPathResolver();
-    
+
             setInitServletContext();
-    
+
             if (logger.isInfoEnabled()) {
                 logger.info(VersionInfo.buildMessage());
             }
-    
+
             // Create endpoints, services, security, and logger on the broker based
             // on configuration
             messagingConfig.configureBroker(this.messageBroker);
-    
+
             long timeBeforeStartup = 0;
             if (logger.isInfoEnabled()) {
                 timeBeforeStartup = System.currentTimeMillis();
                 logger.info("MessageBroker with id '" + this.messageBroker.getId() + "' is starting.");
             }
-    
+
             // initialize the httpSessionToFlexSessionMap
             synchronized (HttpFlexSession.mapLock) {
                 if (servletConfig.getServletContext().getAttribute(HttpFlexSession.SESSION_MAP) == null) {
                     servletConfig.getServletContext().setAttribute(HttpFlexSession.SESSION_MAP, new ConcurrentHashMap());
                 }
             }
-    
+
             this.messageBroker = processBeforeStart(this.messageBroker);
-    
+
             this.messageBroker.start();
-    
+
             this.messageBroker = processAfterStart(this.messageBroker);
-    
+
             if (logger.isInfoEnabled()) {
                 long timeAfterStartup = System.currentTimeMillis();
                 Long diffMillis = new Long(timeAfterStartup - timeBeforeStartup);
                 logger.info("MessageBroker with id '" + this.messageBroker.getId() + "' is ready (startup time: '" + diffMillis + "' ms)");
             }
-    
+
             // Report replaced tokens
             this.configurationManager.reportTokens();
-    
+
             // Report any unused properties.
             messagingConfig.reportUnusedProperties();
-        
+            
+            // Setup provider for FlexSessions that wrap underlying J2EE HttpSessions.
+            this.messageBroker.getFlexSessionManager().registerFlexSessionProvider(HttpFlexSession.class, new HttpFlexSessionProvider());
+            // clear the broker and servlet config as this thread is done
+            FlexContext.clearThreadLocalObjects();
+
         } catch (Throwable error) {
-            //Ensure the broker gets cleaned up properly, then re-throw
+            // Ensure the broker gets cleaned up properly, then re-throw
+            if (logger.isErrorEnabled()) {
+                logger.error("Error thrown during MessageBroker initialization", error);
+            }
             destroy();
             throw new BeanInitializationException("MessageBroker initialization failed", error);
         }
@@ -191,13 +207,16 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
      * {@inheritDoc}
      */
     public void destroy() throws Exception {
-        FlexContext.clearThreadLocalObjects();
         if (this.messageBroker != null) {
-            this.messageBroker.stop();
+            if (this.messageBroker.isStarted()) {
+                this.messageBroker.stop();
+            }
             if (this.messageBroker.isManaged()) {
                 MBeanLifecycleManager.unregisterRuntimeMBeans(this.messageBroker);
             }
         }
+        //release static thread locals
+        destroyThreadLocals();
     }
 
     /**
@@ -213,7 +232,7 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
      * 
      * {@inheritDoc}
      */
-    public Object getObject() throws Exception {
+    public MessageBroker getObject() throws Exception {
         return this.messageBroker;
     }
 
@@ -328,6 +347,25 @@ public class MessageBrokerFactoryBean implements FactoryBean, BeanClassLoaderAwa
 
             }
         });
+    }
+
+    private void initThreadLocals() {
+        // allocate static thread local objects
+        MessageBroker.createThreadLocalObjects();
+        FlexContext.createThreadLocalObjects();
+        SerializationContext.createThreadLocalObjects();
+        TypeMarshallingContext.createThreadLocalObjects();
+    }
+
+    private void destroyThreadLocals() {
+        // clear static member variables
+        MBeanServerLocatorFactory.clear();
+
+        // Destroy static thread local objects
+        MessageBroker.releaseThreadLocalObjects();
+        FlexContext.releaseThreadLocalObjects();
+        SerializationContext.releaseThreadLocalObjects();
+        TypeMarshallingContext.releaseThreadLocalObjects();
     }
 
     /**

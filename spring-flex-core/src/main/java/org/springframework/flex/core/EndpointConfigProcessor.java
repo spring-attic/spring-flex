@@ -55,15 +55,14 @@ public class EndpointConfigProcessor implements MessageBrokerConfigProcessor, Be
      * 
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public MessageBroker processAfterStartup(MessageBroker broker) {
-        Iterator i = broker.getEndpoints().keySet().iterator();
+        Iterator<String> i = broker.getEndpoints().keySet().iterator();
         while (i.hasNext()) {
-            String key = (String) i.next();
+            String key = i.next();
             Endpoint endpoint = (Endpoint) broker.getEndpoints().get(key);
             ProxyFactory factory = new ProxyFactory();
             factory.setProxyTargetClass(true);
-            factory.addAllAdvisors(this.advisors);
+            factory.addAdvisors(this.advisors);
             factory.setTarget(endpoint);
             factory.setFrozen(true);
             Endpoint proxy = (Endpoint) factory.getProxy(this.proxyClassLoader);

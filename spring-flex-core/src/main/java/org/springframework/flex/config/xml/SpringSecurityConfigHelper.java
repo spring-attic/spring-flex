@@ -1,7 +1,5 @@
 package org.springframework.flex.config.xml;
 
-import org.springframework.flex.core.ExceptionTranslator;
-import org.springframework.flex.core.MessageInterceptor;
 
 
 interface SpringSecurityConfigHelper {
@@ -10,11 +8,11 @@ interface SpringSecurityConfigHelper {
 
     String getAccessManagerId();
     
-    ExceptionTranslator getSecurityExceptionTranslator();
+    String getSecurityExceptionTranslatorClassName();
     
-    MessageInterceptor getPerClientAuthenticationInterceptor();
+    String getPerClientAuthenticationInterceptorClassName();
     
-    MessageInterceptor getLoginMessageInterceptor();
+    String getLoginMessageInterceptorClassName();
     
     Object parseConfigAttributes(String access);
     

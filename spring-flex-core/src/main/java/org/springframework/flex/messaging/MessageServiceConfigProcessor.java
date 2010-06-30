@@ -61,15 +61,14 @@ public class MessageServiceConfigProcessor extends AbstractServiceConfigProcesso
      * @param service
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void findDefaultChannel(MessageBroker broker, Service service) {
         if (!CollectionUtils.isEmpty(broker.getDefaultChannels())) {
             return;
         }
 
-        Iterator channels = broker.getChannelIds().iterator();
+        Iterator<String> channels = broker.getChannelIds().iterator();
         while (channels.hasNext()) {
-            Endpoint endpoint = broker.getEndpoint((String) channels.next());
+            Endpoint endpoint = broker.getEndpoint(channels.next());
             if (endpoint instanceof AMFEndpoint && isPollingEnabled(endpoint)) {
                 service.addDefaultChannel(endpoint.getId());
                 return;

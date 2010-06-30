@@ -37,7 +37,7 @@ import flex.messaging.services.Service;
  * 
  * @author Jeremy Grelle
  */
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings( { "serial" })
 public class EndpointServiceMessagePointcutAdvisor extends StaticMethodMatcherPointcutAdvisor implements EndpointAdvisor {
 
     private static final String SERVICE_MESSAGE_METHOD_NAME = "serviceMessage";
@@ -52,7 +52,7 @@ public class EndpointServiceMessagePointcutAdvisor extends StaticMethodMatcherPo
      * 
      * {@inheritDoc}
      */
-    public boolean matches(Method m, Class c) {
+    public boolean matches(Method m, Class<?> c) {
         
         if (!AbstractEndpoint.class.isAssignableFrom(c)) {
             return false;

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.HandlerMapping;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import flex.messaging.FlexContext;
 import flex.messaging.HttpFlexSession;
+import flex.messaging.HttpFlexSessionProvider;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageException;
 import flex.messaging.endpoints.Endpoint;
@@ -69,9 +71,14 @@ public class MessageBrokerHandlerAdapter implements HandlerAdapter, ServletConfi
         try {
             // Update thread locals
             broker.initThreadLocals();
+            
             // Set this first so it is in place for the session creation event.
             FlexContext.setThreadLocalObjects(null, null, broker, req, res, this.servletConfig);
-            HttpFlexSession.getFlexSession(req);
+            
+            Object providerToCheck = broker.getFlexSessionManager().getFlexSessionProvider(HttpFlexSession.class);
+            Assert.isInstanceOf(HttpFlexSessionProvider.class, providerToCheck, "MessageBrokerHandlerAdapter requires an instance of "+HttpFlexSessionProvider.class.getName()+ " to have been registered with the MessageBroker.");
+            HttpFlexSessionProvider provider = (HttpFlexSessionProvider) providerToCheck;
+            provider.getOrCreateSession(req);
 
             String contextPath = req.getContextPath();
             String pathInfo = req.getPathInfo();

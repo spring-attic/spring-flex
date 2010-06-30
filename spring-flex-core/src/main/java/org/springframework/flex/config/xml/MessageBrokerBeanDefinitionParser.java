@@ -67,7 +67,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private static final String MESSAGING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.MessageServiceConfigProcessor";
 
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
-    
+
     private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.HibernateSerializationConfigPostProcessor";
 
     private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
@@ -141,7 +141,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     // --------------------------- Default Values ----------------------------//
     private static final String DEFAULT_MAPPING_PATH = "/*";
-    
+
     private final SpringSecurityConfigHelper securityHelper = SpringSecurityConfigResolver.resolve();
 
     @Override
@@ -154,19 +154,19 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         Object source = parserContext.extractSource(element);
 
         // Initialize the config processors set
-        ManagedSet configProcessors = new ManagedSet();
+        ManagedSet<RuntimeBeanReference> configProcessors = new ManagedSet<RuntimeBeanReference>();
         configProcessors.setSource(source);
 
         // Initialize the AOP advisors list
-        ManagedList advisors = new ManagedList();
+        ManagedList<RuntimeBeanReference> advisors = new ManagedList<RuntimeBeanReference>();
         advisors.setSource(source);
 
         // Initialize the exception translators set
-        ManagedSet translators = new ManagedSet();
+        ManagedSet<RuntimeBeanReference> translators = new ManagedSet<RuntimeBeanReference>();
         translators.setSource(source);
 
         // Initialize the message interceptors set
-        ManagedSet interceptors = new ManagedSet();
+        ManagedSet<RuntimeBeanReference> interceptors = new ManagedSet<RuntimeBeanReference>();
         interceptors.setSource(source);
 
         // Set the default ID if necessary
@@ -217,8 +217,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         return MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME;
     }
 
-    @SuppressWarnings("unchecked")
-    private void configureMessageService(Element parent, ParserContext parserContext, ManagedSet configProcessors, Element messageServiceElement) {
+    private void configureMessageService(Element parent, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors,
+        Element messageServiceElement) {
         Element source = messageServiceElement != null ? messageServiceElement : parent;
 
         BeanDefinitionBuilder messagingProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(MESSAGING_PROCESSOR_CLASS_NAME);
@@ -233,8 +233,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.MESSAGING_PROCESSOR_SUFFIX));
     }
 
-    @SuppressWarnings("unchecked")
-    private void configureRemotingService(Element parent, ParserContext parserContext, ManagedSet configProcessors, Element remotingServiceElement) {
+    private void configureRemotingService(Element parent, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, Element remotingServiceElement) {
         Element source = remotingServiceElement != null ? remotingServiceElement : parent;
 
         BeanDefinitionBuilder remotingProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(REMOTING_PROCESSOR_CLASS_NAME);
@@ -249,13 +248,12 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.REMOTING_PROCESSOR_SUFFIX));
 
         registerFlexRemotingAnnotationPostProcessorIfNecessary(source, parserContext);
-        
+
         registerHibernateSerializationConfigPostProcessorIfNecessary(source, parserContext);
     }
 
-    @SuppressWarnings("unchecked")
-    private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet configProcessors, ManagedList advisors,
-        ManagedSet translators, ManagedSet interceptors, Element securedElement) {
+    private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, ManagedList<RuntimeBeanReference> advisors,
+        ManagedSet<RuntimeBeanReference> translators, ManagedSet<RuntimeBeanReference> interceptors, Element securedElement) {
 
         if (securedElement == null) {
             return;
@@ -265,7 +263,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         String authManager = securedElement.getAttribute(AUTH_MANAGER_ATTR);
         if (!StringUtils.hasText(authManager)) {
-            authManager = securityHelper.getAuthenticationManagerId(); 
+            authManager = securityHelper.getAuthenticationManagerId();
         }
 
         String accessManager = securedElement.getAttribute(ACCESS_MANAGER_ATTR);
@@ -278,11 +276,19 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         String brokerId = parent.getAttribute(ID_ATTRIBUTE);
         registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, perClientAuthentication);
 
-        translators.add(securityHelper.getSecurityExceptionTranslator());
+        BeanDefinitionBuilder exceptionTranslatorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getSecurityExceptionTranslatorClassName());
+        String exceptionTranslatorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, exceptionTranslatorBuilder);
+        translators.add(new RuntimeBeanReference(exceptionTranslatorBeanId));
+        
         if (perClientAuthentication) {
-            interceptors.add(securityHelper.getPerClientAuthenticationInterceptor());
+            BeanDefinitionBuilder perClientInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getPerClientAuthenticationInterceptorClassName());
+            String perClientInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, perClientInterceptorBuilder);
+            interceptors.add(new RuntimeBeanReference(perClientInterceptorBeanId));
         }
-        interceptors.add(securityHelper.getLoginMessageInterceptor());
+        
+        BeanDefinitionBuilder loginInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginMessageInterceptorClassName());
+        String loginInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginInterceptorBuilder);
+        interceptors.add(new RuntimeBeanReference(loginInterceptorBeanId));
 
         registerEndpointInterceptorIfNecessary(securedElement, parserContext, interceptors, authManager, accessManager);
     }
@@ -296,11 +302,10 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void registerConfigMapEditorIfNecessary(Element source, ParserContext parserContext) {
         if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.JSON_CONFIG_MAP_EDITOR_CONFIGURER)) {
             BeanDefinitionBuilder configurerBuilder = BeanDefinitionBuilder.genericBeanDefinition(CUSTOM_EDITOR_CONFIGURER_CLASS_NAME);
-            ManagedMap editors = new ManagedMap();
+            ManagedMap<String, String> editors = new ManagedMap<String, String>();
             editors.put(CONFIG_MAP_CLASS_NAME, JSON_CONFIG_MAP_EDITOR_CLASS_NAME);
             configurerBuilder.addPropertyValue(CUSTOM_EDITORS_PROPERTY, editors);
             ParsingUtils.registerInfrastructureComponent(source, parserContext, configurerBuilder, BeanIds.JSON_CONFIG_MAP_EDITOR_CONFIGURER);
@@ -308,19 +313,17 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerCustomConfigProcessors(ParserContext parserContext, Set configProcessors, List configProcessorElements) {
+    private void registerCustomConfigProcessors(ParserContext parserContext, Set<RuntimeBeanReference> configProcessors, List<Element> configProcessorElements) {
         if (!CollectionUtils.isEmpty(configProcessorElements)) {
-            Iterator i = configProcessorElements.iterator();
+            Iterator<Element> i = configProcessorElements.iterator();
             while (i.hasNext()) {
-                Element configProcessorElement = (Element) i.next();
+                Element configProcessorElement = i.next();
                 configProcessors.add(new RuntimeBeanReference(configProcessorElement.getAttribute(REF_ATTR)));
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerEndpointInterceptorIfNecessary(Element securedElement, ParserContext parserContext, ManagedSet interceptors,
+    private void registerEndpointInterceptorIfNecessary(Element securedElement, ParserContext parserContext, ManagedSet<RuntimeBeanReference> interceptors,
         String authManager, String accessManager) {
         if (securedElement.hasChildNodes()) {
             BeanDefinitionBuilder interceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getEndpointInterceptorClassName());
@@ -328,15 +331,15 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             if (StringUtils.hasText(accessManager)) {
                 interceptorBuilder.addPropertyReference(ACCESS_MANAGER_PROPERTY, accessManager);
             }
-            
+
             BeanDefinitionBuilder endpointDefSourceBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getEndpointDefinitionSourceClassName());
 
-            HashMap endpointMap = new HashMap();
-            List securedChannelElements = DomUtils.getChildElementsByTagName(securedElement, SECURED_CHANNEL_ELEMENT);
+            HashMap<String, Object> endpointMap = new HashMap<String, Object>();
+            List<Element> securedChannelElements = DomUtils.getChildElementsByTagName(securedElement, SECURED_CHANNEL_ELEMENT);
             if (!CollectionUtils.isEmpty(securedChannelElements)) {
-                Iterator i = securedChannelElements.iterator();
+                Iterator<Element> i = securedChannelElements.iterator();
                 while (i.hasNext()) {
-                    Element securedChannel = (Element) i.next();
+                    Element securedChannel = i.next();
                     String access = securedChannel.getAttribute(ACCESS_ATTR);
                     String channel = securedChannel.getAttribute(CHANNEL_ATTR);
                     Object attributeDefinition = securityHelper.parseConfigAttributes(access);
@@ -344,13 +347,13 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
                 }
             }
 
-            LinkedHashMap requestMap = new LinkedHashMap();
-            List securedEndpointPathElements = DomUtils.getChildElementsByTagName(securedElement, SECURED_ENDPOINT_PATH_ELEMENT);
+            LinkedHashMap<Object, Object> requestMap = new LinkedHashMap<Object, Object>();
+            List<Element> securedEndpointPathElements = DomUtils.getChildElementsByTagName(securedElement, SECURED_ENDPOINT_PATH_ELEMENT);
             if (!CollectionUtils.isEmpty(securedEndpointPathElements)) {
-                Iterator i = securedEndpointPathElements.iterator();
+                Iterator<Element> i = securedEndpointPathElements.iterator();
                 while (i.hasNext()) {
-                    Element securedPath = (Element) i.next();
-                    requestMap.put(securityHelper.parseRequestKey(securedPath.getAttribute(PATTERN_ATTR)), 
+                    Element securedPath = i.next();
+                    requestMap.put(securityHelper.parseRequestKey(securedPath.getAttribute(PATTERN_ATTR)),
                         securityHelper.parseConfigAttributes(securedPath.getAttribute(ACCESS_ATTR)));
                 }
             }
@@ -366,8 +369,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerEndpointProcessor(ParserContext parserContext, ManagedSet configProcessors, ManagedList advisors, Element securedElement,
+    private void registerEndpointProcessor(ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, ManagedList<RuntimeBeanReference> advisors, Element securedElement,
         String brokerId) {
         BeanDefinitionBuilder endpointProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(ENDPOINT_PROCESSOR_CLASS_NAME);
         endpointProcessorBuilder.addConstructorArgValue(advisors);
@@ -376,14 +378,13 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.ENDPOINT_PROCESSOR_SUFFIX));
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerExceptionTranslation(Element element, ParserContext parserContext, ManagedList advisors, ManagedSet translators,
-        List exceptionTranslatorElements) {
+    private void registerExceptionTranslation(Element element, ParserContext parserContext, ManagedList<RuntimeBeanReference> advisors, ManagedSet<RuntimeBeanReference> translators,
+        List<Element> exceptionTranslatorElements) {
 
         if (!CollectionUtils.isEmpty(exceptionTranslatorElements)) {
-            Iterator i = exceptionTranslatorElements.iterator();
+            Iterator<Element> i = exceptionTranslatorElements.iterator();
             while (i.hasNext()) {
-                Element exceptionTranslatorElement = (Element) i.next();
+                Element exceptionTranslatorElement = i.next();
                 translators.add(new RuntimeBeanReference(exceptionTranslatorElement.getAttribute(REF_ATTR)));
             }
         }
@@ -403,7 +404,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.REMOTING_ANNOTATION_PROCESSOR);
         }
     }
-    
+
     private void registerHibernateSerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
         if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
             BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME);
@@ -420,21 +421,20 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerHandlerMappings(Element parent, ParserContext parserContext, List mappingPatternElements) {
+    private void registerHandlerMappings(Element parent, ParserContext parserContext, List<Element> mappingPatternElements) {
         BeanDefinitionBuilder handlerMappingBuilder = BeanDefinitionBuilder.genericBeanDefinition(DEFAULT_HANDLER_MAPPING_CLASS_NAME);
 
         if (StringUtils.hasText(parent.getAttribute(MAPPING_ORDER_ATTR))) {
             handlerMappingBuilder.addPropertyValue(ORDER_PROPERTY, Integer.parseInt(parent.getAttribute(MAPPING_ORDER_ATTR)));
         }
 
-        Map mappings = new HashMap();
+        Map<String, String> mappings = new HashMap<String, String>();
         if (CollectionUtils.isEmpty(mappingPatternElements)) {
             mappings.put(DEFAULT_MAPPING_PATH, parent.getAttribute(ID_ATTRIBUTE));
         } else {
-            Iterator i = mappingPatternElements.iterator();
+            Iterator<Element> i = mappingPatternElements.iterator();
             while (i.hasNext()) {
-                Element mappingElement = (Element) i.next();
+                Element mappingElement = i.next();
                 mappings.put(mappingElement.getAttribute(PATTERN_ATTR), parent.getAttribute(ID_ATTRIBUTE));
             }
         }
@@ -444,8 +444,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             + BeanIds.HANDLER_MAPPING_SUFFIX);
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerLoginCommand(String brokerId, ParserContext parserContext, ManagedSet configProcessors, Element securedElement,
+    private void registerLoginCommand(String brokerId, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, Element securedElement,
         String authManager, boolean perClientAuthentication) {
 
         String loginCommandId = brokerId + BeanIds.LOGIN_COMMAND_SUFFIX;
@@ -458,14 +457,13 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         configProcessors.add(new RuntimeBeanReference(loginCommandId));
     }
 
-    @SuppressWarnings("unchecked")
-    private void registerMessageInterception(Element element, ParserContext parserContext, ManagedList advisors, ManagedSet interceptors,
-        List messageInterceptorElements) {
+    private void registerMessageInterception(Element element, ParserContext parserContext, ManagedList<RuntimeBeanReference> advisors, ManagedSet<RuntimeBeanReference> interceptors,
+        List<Element> messageInterceptorElements) {
 
         if (!CollectionUtils.isEmpty(messageInterceptorElements)) {
-            Iterator i = messageInterceptorElements.iterator();
+            Iterator<Element> i = messageInterceptorElements.iterator();
             while (i.hasNext()) {
-                Element messageProcessorElement = (Element) i.next();
+                Element messageProcessorElement = i.next();
                 interceptors.add(new RuntimeBeanReference(messageProcessorElement.getAttribute(REF_ATTR)));
             }
         }

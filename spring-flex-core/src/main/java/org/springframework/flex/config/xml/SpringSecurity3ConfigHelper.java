@@ -4,11 +4,6 @@ package org.springframework.flex.config.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.flex.core.ExceptionTranslator;
-import org.springframework.flex.core.MessageInterceptor;
-import org.springframework.flex.security3.LoginMessageInterceptor;
-import org.springframework.flex.security3.PerClientAuthenticationInterceptor;
-import org.springframework.flex.security3.SecurityExceptionTranslator;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.access.intercept.RequestKey;
@@ -25,6 +20,12 @@ public class SpringSecurity3ConfigHelper implements SpringSecurityConfigHelper {
 
     private static final String SESSION_FIXATION_POST_PROCESSOR_CLASS_NAME = "org.springframework.flex.security3.SessionFixationProtectionPostProcessor";
 
+    private static final String LOGIN_MESSAGE_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.security3.LoginMessageInterceptor";
+    
+    private static final String PER_CLIENT_AUTHENTICATION_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.security3.PerClientAuthenticationInterceptor";
+    
+    private static final String SECURITY_EXCEPTION_TRANSLATOR_CLASS_NAME = "org.springframework.flex.security3.SecurityExceptionTranslator";
+    
     public String getAccessManagerId() {
         // In Spring Security 3, the AccessDecisionManager no longer gets assigned a well-known default ID
         return null;
@@ -34,16 +35,16 @@ public class SpringSecurity3ConfigHelper implements SpringSecurityConfigHelper {
         return "org.springframework.security.authenticationManager";
     }
 
-    public MessageInterceptor getLoginMessageInterceptor() {
-        return new LoginMessageInterceptor();
+    public String getLoginMessageInterceptorClassName() {
+        return LOGIN_MESSAGE_INTERCEPTOR_CLASS_NAME;
     }
 
-    public MessageInterceptor getPerClientAuthenticationInterceptor() {
-        return new PerClientAuthenticationInterceptor();
+    public String getPerClientAuthenticationInterceptorClassName() {
+        return PER_CLIENT_AUTHENTICATION_INTERCEPTOR_CLASS_NAME;
     }
 
-    public ExceptionTranslator getSecurityExceptionTranslator() {
-        return new SecurityExceptionTranslator();
+    public String getSecurityExceptionTranslatorClassName() {
+        return SECURITY_EXCEPTION_TRANSLATOR_CLASS_NAME;
     }
 
     public Object parseConfigAttributes(String access) {

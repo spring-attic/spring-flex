@@ -37,7 +37,6 @@ import flex.messaging.messages.Message;
  * 
  * @author Jeremy Grelle
  */
-@SuppressWarnings("unchecked")
 public class EndpointInterceptor extends AbstractSecurityInterceptor implements MessageInterceptor {
 
     private static final String STATUS_TOKEN = "_enpointInterceptorStatusToken";
@@ -61,7 +60,7 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
      * {@inheritDoc}
      */
     @Override
-    public Class getSecureObjectClass() {
+    public Class<?> getSecureObjectClass() {
         return AbstractEndpoint.class;
     }
 

@@ -91,7 +91,7 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
      * @param servletConfig the servlet config for the web application
      */
     public MessagingConfiguration getMessagingConfiguration(ServletConfig servletConfig) {
-        Assert.isTrue(JdkVersion.isAtLeastJava15(), "Spring BlazeDS Integration requires a minimum of Java 1.5");
+        Assert.isTrue(JdkVersion.getMajorJavaVersion() >= JdkVersion.JAVA_15, "Spring BlazeDS Integration requires a minimum of Java 1.5");
         Assert.notNull(servletConfig, "FlexConfigurationManager requires a non-null ServletConfig - "
             + "Is it being used outside a WebApplicationContext?");
 

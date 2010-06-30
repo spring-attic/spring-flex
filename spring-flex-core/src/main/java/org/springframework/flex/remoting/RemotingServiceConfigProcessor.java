@@ -60,15 +60,14 @@ public class RemotingServiceConfigProcessor extends AbstractServiceConfigProcess
      * @param service
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void findDefaultChannel(MessageBroker broker, Service service) {
         if (!CollectionUtils.isEmpty(broker.getDefaultChannels())) {
             return;
         }
 
-        Iterator channels = broker.getChannelIds().iterator();
+        Iterator<String> channels = broker.getChannelIds().iterator();
         while (channels.hasNext()) {
-            Endpoint endpoint = broker.getEndpoint((String) channels.next());
+            Endpoint endpoint = broker.getEndpoint(channels.next());
             if (endpoint instanceof AMFEndpoint) {
                 service.addDefaultChannel(endpoint.getId());
                 return;

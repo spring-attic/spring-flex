@@ -31,7 +31,7 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
  * 
  * @author Jeremy Grelle
  */
-public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAware {
+public class ManageableComponentFactoryBean implements FactoryBean<ManageableComponent>, BeanNameAware {
 
     private ConfigMap properties = new ConfigMap();
 
@@ -52,7 +52,7 @@ public class ManageableComponentFactoryBean implements FactoryBean, BeanNameAwar
      * 
      * {@inheritDoc}
      */
-    public Object getObject() throws Exception {
+    public ManageableComponent getObject() throws Exception {
         ManageableComponent component = (ManageableComponent) BeanUtils.instantiateClass(this.componentClass);
         component.setId(this.beanName);
         component.initialize(this.beanName, this.properties);
