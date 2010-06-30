@@ -1,7 +1,7 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-    <id>dist-with-dependencies</id>
+    <id>dist</id>
     <formats>
         <format>zip</format>
     </formats>
@@ -13,6 +13,8 @@
         <moduleSet>
             <includes>
                 <include>org.springframework.flex:spring-flex-core</include>
+                <include>org.springframework.flex.roo.addon:org.springframework.flex.roo.addon</include>
+                <include>org.springframework.flex.roo.addon:org.springframework.flex.roo.annotations</include>
             </includes>
             <binaries>
                 <includeDependencies>false</includeDependencies>
@@ -45,11 +47,11 @@
             <outputDirectory>src</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>spring-flex-core/target/dependency</directory>
+            <directory>roo-addon/org.springframework.flex.roo.addon/target</directory>
             <includes>
-                <include>**/*.jar</include>
+                <include>**/*-sources.jar</include>
             </includes>
-            <outputDirectory>lib</outputDirectory>
+            <outputDirectory>src</outputDirectory>
         </fileSet>
         <!-- Documentation -->
         <fileSet>

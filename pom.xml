@@ -41,19 +41,120 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>com.agilejava.docbkx</groupId>
+						<artifactId>docbkx-maven-plugin</artifactId>
+						<version>2.0.6</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>generate-html</goal>
+									<!--  <goal>generate-pdf</goal> -->
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>org.docbook</groupId>
+								<artifactId>docbook-xml</artifactId>
+								<version>4.4</version>
+								<scope>runtime</scope>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<sourceDirectory>${project.basedir}/docbkx</sourceDirectory>
+							<includes>index.xml</includes>
+							<xincludeSupported>true</xincludeSupported>
+							<foCustomization>${project.basedir}/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+							<htmlStylesheet>css/html.css</htmlStylesheet>
+							<!-- produce single-page html output -->
+							<chunkedOutput>false</chunkedOutput>
+							<htmlCustomization>${project.basedir}/docbkx/resources/xsl/html.xsl</htmlCustomization>
+							<!--
+								produce multi-page html output
+								<chunkedOutput>false</chunkedOutput>
+								<htmlCustomization>${project.basedir}/src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
+							-->
+							<entities>
+								<entity>
+									<name>version</name>
+									<value>${pom.version}</value>
+								</entity>
+							</entities>
+							<postProcess>
+								<copy todir="${project.basedir}/target/site/reference">
+									<fileset dir="${project.basedir}/target/docbkx">
+										<include name="**/*.html" />
+										<include name="**/*.pdf" />
+									</fileset>
+								</copy>
+								<copy todir="${project.basedir}/target/site/reference/html">
+									<fileset dir="${project.basedir}/docbkx/resources">
+										<include name="**/*.css" />
+										<include name="**/*.png" />
+										<include name="**/*.gif" />
+										<include name="**/*.jpg" />
+									</fileset>
+								</copy>
+								<!--
+									<move
+									file="${project.basedir}/target/site/reference/pdf/index.pdf"
+									tofile="${project.basedir}/target/site/reference/pdf/spring-integration-reference.pdf"
+									failonerror="false" />
+								-->
+							</postProcess>
+						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.5</version>
+						<executions>
+							<execution>
+								<id>aggregate</id>
+								<goals>
+									<goal>aggregate</goal>
+								</goals>
+								<phase>package</phase>
+								<configuration>
+									<javadoc:aggregate>true</javadoc:aggregate>
+									<breakiterator>true</breakiterator>
+									<header>Spring BlazeDS Integration</header>
+									<source>1.5</source>
+									<quiet>true</quiet>
+									<javadocDirectory>${project.basedir}/javadoc</javadocDirectory>
+									<overview>${project.basedir}/javadoc/overview.html</overview>
+									<stylesheetfile>${project.basedir}/javadoc/spring-javadoc.css</stylesheetfile>
+									<!-- copies doc-files subdirectory which contains image resources -->
+									<docfilessubdirs>true</docfilessubdirs>
+									<groups>
+										<group>
+											<title>Spring BlazeDS Integration</title>
+											<packages>org.springframework.flex</packages>
+										</group>
+									</groups>
+									<excludePackageNames>org.springframework.flex.roo.addon:org.springframework.flex.samples</excludePackageNames>
+									<links>
+										<link>http://static.springframework.org/spring/docs/3.0.3.RELEASE/javadoc-api</link>
+										<link>http://java.sun.com/javase/6/docs/api</link>
+									</links>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<version>2.2-beta-5</version>
 						<inherited>false</inherited>
 						<executions>
 							<execution>
-								<id>with-dependencies</id>
+								<id>no-dependencies</id>
 								<phase>package</phase>
 								<goals>
 									<goal>single</goal>
 								</goals>
 								<configuration>
 									<descriptors>
-										<descriptor>assembly/with-dependencies.xml</descriptor>
+										<descriptor>assembly/no-dependencies.xml</descriptor>
 									</descriptors>
 								</configuration>
 							</execution>
