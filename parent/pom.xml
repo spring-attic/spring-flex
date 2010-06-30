@@ -21,14 +21,6 @@
 			<url>s3://maven.springframework.org/snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
-	<repositories>
-		<repository>
-			<id>local-repo</id>
-			<name>Local Filesystem Maven Repo for Unpublished Dependencies</name>
-			<url>file:${basedir}/../local-repo</url>
-		</repository>
-	</repositories>
 
 	<dependencyManagement>
 		<dependencies>

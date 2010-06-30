@@ -37,6 +37,18 @@
 
 	<repositories>
 		<repository>
+			<id>spring-external</id>
+			<name>Spring External Repository</name>
+			<url>http://maven.springframework.org/external</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
 			<id>flex-mojos-repository</id>
 			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
 			<releases>

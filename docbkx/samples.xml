@@ -7,18 +7,21 @@
         	Included in the project distribution is a collection of samples called the Spring BlazeDS Integration Test Drive.  This samples project is set up 
         	to be built with Maven and then imported into Eclipse for running the application via WTP.
         </para>
-        <sect2 id="samples-build">
-	        <title>Building the Test Drive</title>
-	        <para>
-	            The sample build requires Maven 2.0.9 or greater.  Because the build compiles several seperate Flex and AIR projects, it can require setting the MAVEN_OPTS 
+        <sect2 id="building-with-maven">
+        	<title>Maven Setup</title>
+        	<para>
+	            The sample build requires Maven 2.2.0 or greater.  Because the build compiles several seperate Flex and AIR projects, it can require setting the MAVEN_OPTS 
 	            variable for your environment to allocate more memory than the default.  The setting we find works well is:
 	        </para>
 	        <programlisting><![CDATA[
 MAVEN_OPTS="-Xms256m -Xmx512m -XX:PermSize=128m -XX:MaxPermSize=256m"
 ]]>
 	        </programlisting>
+        </sect2>
+        <sect2 id="samples-build">
+	        <title>Building the Test Drive</title>
 	        <para>
-	            Once your Maven environment is set up correctly, cd to {project distribution root}/spring-flex-samples/spring-flex-testdrive and execute:
+	            Once your Maven environment is set up correctly, cd to {project distribution root}/samples/spring-flex-testdrive and execute:
 	        </para>
 	        <programlisting><![CDATA[
 mvn clean install
@@ -28,17 +31,29 @@ mvn clean install
 	            This will first build all of the individual Flex projects and then finally assemble the 'testdrive' WAR project.
 	        </para>
 	    </sect2>
-	    <sect2 id="samples-spring3-build">
-	        <title>Building the Test Drive to use Spring 3 and Spring Security 3</title>
-	        <para>
-	            As of release 1.0.2 of Spring BlazeDS Integration, the Test Drive's Maven build includes an additional profile for building the samples 
-	            to use Spring 3 and Spring Security 3.  To build the samples using this profile, execute:
-	        </para>
-	        <programlisting><![CDATA[
-mvn clean install -P spring_3_0
+	    <sect2 id="blazeds-4-maven">
+        	<title>Using BlazeDS 4 with Maven</title>
+        	<para>
+        		Spring BlazeDS Integration 1.5 requires BlazeDS 4, but as of this writing the BlazeDS 4 artifacts have not yet been published to Maven central.  
+        		The artifacts have been published to the Spring External maven repository (as required for the Spring BlazeDS Integration automated builds).  The 
+        		Test Drive is already configured to use this repository, but to use BlazeDS 4 in your own Maven projects, add the following repository entry 
+        		(either to settings.xml or to your project's pom.xml):
+        	</para>
+        	<programlisting language="xml"><![CDATA[
+<repository>
+    <id>spring-external</id>
+    <name>Spring External Repository</name>
+    <url>http://maven.springframework.org/external</url>
+    <releases>
+        <enabled>true</enabled>
+	</releases>
+    <snapshots>
+        <enabled>false</enabled>
+    </snapshots>
+</repository>
 ]]>
-            </programlisting>
-	    </sect2>
+	        </programlisting>
+        </sect2>
 	    <sect2 id="pre-built-samples">
 	        <title>Download the Pre-packaged Test Drive</title>
 	        <para>
@@ -46,11 +61,8 @@ mvn clean install -P spring_3_0
 	            of the Test Drive can be downloaded directly via the following links:
 	        </para>
 	        <itemizedlist>
-			    <listitem> 
-			        <para><ulink url="http://static.springsource.org/spring-flex/docs/1.0.x/samples/spring-flex-testdrive.zip">Spring BlazeDS Integration Test Drive with Spring 2.5.6</ulink></para>
-			    </listitem>
 			    <listitem>
-			        <para><ulink url="http://static.springsource.org/spring-flex/docs/1.0.x/samples/spring-flex-testdrive-spring3.zip">Spring BlazeDS Integration Test Drive with Spring 3.0</ulink></para>
+			        <para><ulink url="http://static.springsource.org/spring-flex/docs/1.5.x/samples/spring-flex-testdrive-spring3.zip">Spring BlazeDS Integration Test Drive with Spring 3.0</ulink></para>
 			    </listitem>
 			</itemizedlist>
 	        <para>
