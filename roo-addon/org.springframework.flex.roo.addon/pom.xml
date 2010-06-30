@@ -5,7 +5,7 @@
 	<groupId>org.springframework.flex.roo.addon</groupId>
 	<artifactId>org.springframework.flex.roo.addon</artifactId>
 	<packaging>bundle</packaging>
-	<name>org.springframework.flex.roo.addon</name>
+	<name>Spring Flex Roo Addon</name>
 
 	<repositories>
 		<repository>
