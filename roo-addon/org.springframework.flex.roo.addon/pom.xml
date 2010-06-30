@@ -6,6 +6,20 @@
 	<artifactId>org.springframework.flex.roo.addon</artifactId>
 	<packaging>bundle</packaging>
 	<name>Spring Flex Roo Addon</name>
+	
+	<distributionManagement>
+		<repository>
+			<id>spring-milestone</id>
+			<name>Spring Milestone Repository</name>
+			<url>s3://maven.springframework.org/milestone</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>spring-snapshot</id>
+			<name>Spring Snapshot Repository</name>
+			<url>s3://maven.springframework.org/snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<repositories>
 		<repository>
