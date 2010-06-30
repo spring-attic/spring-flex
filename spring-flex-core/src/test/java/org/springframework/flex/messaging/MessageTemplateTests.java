@@ -65,6 +65,7 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
     public void testInvalidDestination() throws Exception {
 
         this.template = new MessageTemplate();
+        this.template.setMessageBroker(getMessageBroker());
 
         try {
             this.template.send("bogus", new Object());
@@ -77,6 +78,7 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
     public void testNoDestination() throws Exception {
 
         this.template = new MessageTemplate();
+        this.template.setMessageBroker(getMessageBroker());
 
         try {
             this.template.send(new Object());
@@ -86,10 +88,11 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         }
     }
 
-    public void testSendCustomMessage() {
+    public void testSendCustomMessage() throws Exception {
         final Object data = new Object();
 
         this.template = new MessageTemplate();
+        this.template.setMessageBroker(getMessageBroker());
         this.template.send(new AsyncMessageCreator() {
 
             public AsyncMessage createMessage() {
@@ -105,10 +108,11 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         assertSame(data, this.messageHolder.get().getBody());
     }
 
-    public void testSendCustomMessageForDestination() {
+    public void testSendCustomMessageForDestination() throws Exception {
         final Object data = new Object();
 
         this.template = new MessageTemplate();
+        this.template.setMessageBroker(getMessageBroker());
         this.template.send(new AsyncMessageCreator() {
 
             public AsyncMessage createMessage() {
@@ -123,10 +127,11 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         assertSame(data, this.messageHolder.get().getBody());
     }
 
-    public void testSendToDefaultDestination() {
+    public void testSendToDefaultDestination() throws Exception {
         Object data = new Object();
 
         this.template = new MessageTemplate();
+        this.template.setMessageBroker(getMessageBroker());
         this.template.setDefaultDestination("test-destination");
         this.template.send(data);
 
@@ -135,10 +140,11 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         assertSame(data, this.messageHolder.get().getBody());
     }
 
-    public void testSendToSpecifiedDestination() {
+    public void testSendToSpecifiedDestination() throws Exception {
         Object data = new Object();
 
         this.template = new MessageTemplate();
+        this.template.setMessageBroker(getMessageBroker());
         this.template.send("test-destination", data);
 
         assertNotNull(this.messageHolder.get());
