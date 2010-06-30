@@ -1,0 +1,29 @@
+<projectDescription>
+  <name>org.springframework.flex.roo.addon</name>
+  <comment/>
+  <projects>
+    <project>org.springframework.roo.addon.beaninfo</project>
+    <project>org.springframework.roo.addon.entity</project>
+    <project>org.springframework.roo.addon.finder</project>
+    <project>org.springframework.roo.addon.maven</project>
+    <project>org.springframework.roo.addon.web.controller</project>
+    <project>org.springframework.roo.addon.web.mvc.jsp</project>
+    <project>org.springframework.roo.classpath</project>
+    <project>org.springframework.roo.file.monitor</project>
+    <project>org.springframework.roo.file.undo</project>
+    <project>org.springframework.roo.metadata</project>
+    <project>org.springframework.roo.model</project>
+    <project>org.springframework.roo.process.manager</project>
+    <project>org.springframework.roo.project</project>
+    <project>org.springframework.roo.shell</project>
+    <project>org.springframework.roo.support</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

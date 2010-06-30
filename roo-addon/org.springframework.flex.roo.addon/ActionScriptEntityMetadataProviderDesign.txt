@@ -1,0 +1,33 @@
+ActionScriptEntityMetadataProvider:
+  - on activation, registers two-way metadata dependency
+    x ActionScriptEntityMetadata depends on PhysicalTypeMetadata and vice versa?  
+	x Use ActionScriptEntityMetadata or just ASPhysicalTypeMetadata? (leaning towards the former))
+	- Eureka!? ActionScriptEntityMetadata acts almost like a join table - depends on both PhysicalTypeMetadata 
+	  and ASPhysicalTypeMetadata
+	
+Creation:
+remoting scaffold 
+  |-> get ActionScriptEntityMetadata for the given entity JavaType 
+    |-> triggers initial creation of .as file if it does not yet exist
+	|-> if it does exist, add a @RooFlexMapped annotation to the Java class to trigger the Java class change 
+	    notification (M2)
+
+Update from Java class change
+ActionScriptEntityMetadataProvider notified of Java class change 
+  |-> checks if corresponding physical ActionScript type exists (just match on fully qualified name initially - consider 
+	  adding an annotation to indicate the Java class is sync'd to a specific Flex class) 
+    |-> if not, return
+    |-> if exists, get the ActionScript MutablePhysicalType
+      -> triggers update of .as file if necessary (i.e., properties added or removed)
+
+Update from ActionScript class change
+ActionScriptEntityMetadataProvider notified of ActionScript class change
+  |-> checks if corresponding physical Java type exists (just match on fully qualified name initially - consider relying
+	  on the presence of the RemoteClass meta-tag) 
+  	|-> if not, return
+    |-> if exists, get the Java MutablePhysicalType 
+      |-> update the Java class if necessary (i.e., properties added or removed)
+
+Potential future additions:
+  - way to ignore certain properties of the Java class 
+  - more general commands for mapping .as to .java classes (not necessarily exposed via scaffolding)
