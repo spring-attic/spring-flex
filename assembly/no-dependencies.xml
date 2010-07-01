@@ -75,6 +75,7 @@
             <directory>spring-flex-samples</directory>
             <outputDirectory>samples</outputDirectory>
             <includes>
+            	<include>rootunes.roo</include>
                 <include>spring-flex-testdrive/**</include>
             </includes>
             <excludes>

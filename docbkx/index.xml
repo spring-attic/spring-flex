@@ -30,8 +30,10 @@
 	<xi:include href="./overview.xml"/>
 	<xi:include href="./configuration.xml"/>
 	<xi:include href="./remoting.xml"/>
+	<xi:include href="./hibernate.xml"/>
 	<xi:include href="./security.xml"/>
 	<xi:include href="./messaging.xml"/>
 	<xi:include href="./samples.xml"/>
+	<xi:include href="./flexaddon.xml"/>
 	
 </book>

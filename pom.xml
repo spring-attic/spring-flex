@@ -80,6 +80,10 @@
 									<name>version</name>
 									<value>${pom.version}</value>
 								</entity>
+								<entity>
+									<name>addonversion</name>
+									<value>1.0.0.M1</value>
+								</entity>
 							</entities>
 							<postProcess>
 								<copy todir="${project.basedir}/target/site/reference">

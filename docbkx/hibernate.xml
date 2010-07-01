@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="hibernate">
+    <title>Working with Hibernate</title>
+    <sect1 id="hibernate-introduction">
+        <title>Introduction</title>
+        <para>
+        	Using Hibernate to handle persistence concerns is quite common in Spring applications.  A common problem arises, though, when attempting to 
+        	directly use Hibernate-loaded entities in AMF messages with BlazeDS.  In essence, the default BlazeDS serialization mechanism tries to walk 
+        	the entire object graph, forcing initialization of any lazily loaded associations that might be encountered.  This generally leads either to 
+        	LazyInitialization errors, or (if using a solution such as Spring's <code>OpenSessionInViewFilter</code>) the undesirable n+1 selects 
+        	scenario.  The other problem that arises is when associations are eagerly loaded, but still wrapped in a Hibernate-specific collection or proxy, 
+        	which can cause unexpected results in the way the association gets serialized.   
+        </para>
+        <para>
+        	Spring BlazeDS Integration 1.5+ provides a simple solution that will allow the direct use of Hibernate entities in AMF messages.  A special Spring-aware 
+        	<code>PropertyProxy</code> (a BlazeDS-specific interface for customizing serialization) is automatically installed that delegates to the Spring 3.0 
+        	<code>ConversionService</code> to allow for additional property conversion logic to be plugged in during the serialization/deserialization process.
+        </para>
+        <sect2 id="hibernate-io-config">
+            <title>Configuring Hibernate Entity Serialization/Deserialization Support</title>
+	        <para>
+	     		The Hibernate serialization/deserialization support will be automatically configured with a default <code>ConversionService</code> upon application 
+	     		startup if Hibernate is detected on the classpath.  This support is provided in the form of two different <code>MessageBrokerConfigProcessors</code> - 
+	     		one for "native" Hibernate and one for using Hibernate as a JPA provider.  The proper one will be configured based on the presence of the JPA api on 
+	     		the classpath.   
+	     	</para>
+	     	<para>
+	     		The default behavior of the <code>ConversionService</code> (in the case of both "native" Hibernate and JPA), is as follows:
+	     	</para>
+	     	<orderedlist>
+    			<listitem>
+    				<para>Check each property to see whether it is contains a Hibernate-specific Proxy or Collection</para>
+    			</listitem>
+    			<listitem>
+    				<para>If the Proxy/Collection is initialized, unwrap the underlying value for serialization</para>
+    			</listitem>
+    			<listitem>
+    				<para>If the Proxy/Collection is uninitialized, return <code>null</code> for the value to be serialized</para>
+    			</listitem>
+    		</orderedlist>
+    		<para>
+    			The default behavior may be extended/overridden by manually deploying either the <code>HibernateConfigProcessor</code> or 
+    			<code>JpaHibernateConfigProcessor</code> as a Spring bean and wiring it into the <code>MessageBroker</code> via the <code>config-processor</code> XML
+    			namespace tag.  For example, assuming you have a custom <code>ConversionService</code> provided as a bean named "myCustomConversionService", and you 
+    			are using JPA, you would configure the <code>JpaHibernateConfigProcessor</code> as follows:
+    		</para>
+    		<programlisting language="xml"><![CDATA[
+<flex:message-broker>
+	<flex:config-processor ref="myJpaConfigProcessor" />
+</flex:message-broker>
+
+<bean id="myJpaConfigProcessor" class="org.springframework.flex.core.io.JpaConfigProcessor">
+	<property name="conversionService" ref="myConversionService" />
+</bean>]]>
+		</programlisting>
+    	</sect2>
+    	<sect2 id="hibernate-io-custom-converters">
+    		<title>Providing Custom Converters for Hibernate Entity Serialization/Deserialization</title>
+    		<para>
+    			Customizing the way Hibernate entities are converted to/from AMF is a matter of writing your own Spring 3 <code>Converter</code>s and 
+    			configuring a <code>ConversionService</code> that uses them.
+    		</para>
+    		<para>TODO - Provide examples of custom converters to further control the serialization/deserialization process.</para>
+    	</sect2>
+    </sect1>
+</chapter>
