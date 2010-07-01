@@ -5,7 +5,7 @@
 	<artifactId>org.springframework.flex.roo.annotations</artifactId>
 	<packaging>jar</packaging>
 	<name>Spring Flex Roo Addon Annotations</name>
-	<version>1.0.0.BUILD-SNAPSHOT</version>
+	<version>1.0.0.M1</version>
 
 	<distributionManagement>
 		<repository>
