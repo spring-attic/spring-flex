@@ -11,7 +11,7 @@
     Learn more about Flex at http://flex.org 
     // -->
     <head>
-        <title></title>         
+        <title>$projectName$</title>         
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<!-- Include CSS to eliminate any default margins/padding and set the height of the html element and 
 		     the body element to 100%, because Firefox, or any Gecko based browser, interprets percentage as 
