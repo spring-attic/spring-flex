@@ -1,4 +1,4 @@
-SPRING BLAZEDS INTEGRATION 1.5.0.M1 (May 2010)
+SPRING BLAZEDS INTEGRATION 1.5.0.M1 (June 2010)
 ----------------------------------
 http://www.springsource.org/spring-flex
 
@@ -32,9 +32,17 @@ The following jar files are included in the distribution.
 The contents of each jar and its dependencies are noted.
 Dependencies in [brackets] are optional, and are just necessary for certain functionality.
 
-* org.springframework.flex-1.0.2.RELEASE.jar
+* org.springframework.flex-1.5.0.M1.jar
 - Contents: The Spring BlazeDS Integration library, containing Spring's integration for Adobe BlazeDS.
-- Runtime Dependencies: Spring Core, Spring MVC, BlazeDS, Jackson, Commons Logging and HttpClient, CGLib, Backport of javax.util.concurrent, 
-[Spring Security], [Spring Integration], [Spring JMS]    
+- Runtime Dependencies ([] indicates optional) : Spring Core, Spring MVC, BlazeDS, Commons Logging and HttpClient, CGLib, Backport of javax.util.concurrent, 
+[Spring Security], [Spring Integration], [Spring JMS], [Jackson]    
 
-For an exact list of project dependencies including version numbers, see each project's ivy file at "projects/${project_name}/ivy.xml" or pom file at "projects/${project_name}/pom.xml"
+* org.springframework.flex.roo.addon-1.0.0.M1.jar
+- Contents: The Flex Addon for Spring Roo, containing everything needed for the Spring Roo CLI to work with Flex projects.
+- Runtime Dependencies: Spring Roo
+
+* org.springframework.flex.roo.annotations-1.0.0.M1.jar
+- Contents: Annotations for the Flex Addon for Spring Roo, containing the addon's source-only retention annotations
+- Runtime Dependencies: none
+
+For an exact list of project dependencies including version numbers, see each project's pom file at "projects/${project_name}/pom.xml"
