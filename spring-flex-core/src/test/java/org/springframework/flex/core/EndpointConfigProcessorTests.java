@@ -37,6 +37,7 @@ import org.springframework.aop.framework.Advised;
 import flex.messaging.MessageBroker;
 import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.AbstractEndpoint;
+import flex.messaging.endpoints.BaseHTTPEndpoint;
 import flex.messaging.messages.Message;
 
 public class EndpointConfigProcessorTests extends TestCase {
@@ -47,7 +48,7 @@ public class EndpointConfigProcessorTests extends TestCase {
     AbstractEndpoint endpoint1;
 
     @Mock
-    AbstractEndpoint endpoint2;
+    BaseHTTPEndpoint endpoint2;
     
     CustomEndpoint endpoint3;
 
@@ -109,26 +110,34 @@ public class EndpointConfigProcessorTests extends TestCase {
         while (i.hasNext()) {
             AbstractEndpoint endpoint = (AbstractEndpoint) i.next();
 
-            assertTrue(endpoint instanceof Advised);
+            Object result;
+            if ("bar".equals(endpoint.getId())) {
+                // Only Servlet based endpoints (of type BaseHTTPEndpoint) are advised
+                assertFalse(endpoint instanceof Advised);
 
-            Advised advisedEndpoint = (Advised) endpoint;
+                result = endpoint.serviceMessage(this.testMessage);
+            } else {
+                assertTrue(endpoint instanceof Advised);
 
-            assertTrue(advisedEndpoint.getAdvisors().length == 2);
-            assertTrue(advisedEndpoint.isFrozen());
-            assertTrue(advisedEndpoint.isProxyTargetClass());
-            assertTrue(advisedEndpoint.indexOf(this.advisor1) == 0);
-            assertTrue(advisedEndpoint.indexOf(this.advisor2) == 1);
-            
-            counter++;
-            
-            endpoint.serviceMessage(this.testMessage);
-            
-            ArgumentCaptor<MethodInvocation> arg = ArgumentCaptor.forClass(MethodInvocation.class);
-            verify(advice1, times(counter)).invoke(arg.capture());
-            arg.getValue().proceed();
-            verify(advice2, times(counter)).invoke(arg.capture());
-            Object result = arg.getValue().proceed();
-            
+                Advised advisedEndpoint = (Advised) endpoint;
+
+                assertTrue(advisedEndpoint.getAdvisors().length == 2);
+                assertTrue(advisedEndpoint.isFrozen());
+                assertTrue(advisedEndpoint.isProxyTargetClass());
+                assertTrue(advisedEndpoint.indexOf(this.advisor1) == 0);
+                assertTrue(advisedEndpoint.indexOf(this.advisor2) == 1);
+
+                counter++;
+
+                endpoint.serviceMessage(this.testMessage);
+
+                ArgumentCaptor<MethodInvocation> arg = ArgumentCaptor.forClass(MethodInvocation.class);
+                verify(advice1, times(counter)).invoke(arg.capture());
+                arg.getValue().proceed();
+                verify(advice2, times(counter)).invoke(arg.capture());
+                result = arg.getValue().proceed();
+            }
+
             assertEquals(this.testMessage, result);
         }
     }

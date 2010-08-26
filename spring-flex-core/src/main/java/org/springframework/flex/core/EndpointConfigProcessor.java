@@ -28,17 +28,19 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import flex.messaging.MessageBroker;
+import flex.messaging.endpoints.BaseHTTPEndpoint;
 import flex.messaging.endpoints.Endpoint;
 import flex.messaging.endpoints.amf.AMFFilter;
 
 /**
- * Processor that applies advice to configured BlazeDS endpoints by wrapping them in Spring AOP proxies.
+ * Processor that applies advice to configured BlazeDS (Servlet based) endpoints by wrapping them in Spring AOP proxies.
  * 
  * <p>
  * This processor will be automatically configured through the <code>message-broker</code> xml configuration namespace
  * tag.
  * 
  * @author Jeremy Grelle
+ * @author Rohit Kumar
  */
 public class EndpointConfigProcessor implements MessageBrokerConfigProcessor, BeanClassLoaderAware {
 
@@ -60,14 +62,20 @@ public class EndpointConfigProcessor implements MessageBrokerConfigProcessor, Be
         while (i.hasNext()) {
             String key = i.next();
             Endpoint endpoint = (Endpoint) broker.getEndpoints().get(key);
-            ProxyFactory factory = new ProxyFactory();
-            factory.setProxyTargetClass(true);
-            factory.addAdvisors(this.advisors);
-            factory.setTarget(endpoint);
-            factory.setFrozen(true);
-            Endpoint proxy = (Endpoint) factory.getProxy(this.proxyClassLoader);
-            fixFilterChain(endpoint, proxy);
-            broker.getEndpoints().put(key, proxy);
+            
+            // Use proxy only in case of Servlet based Endpoints
+            if (endpoint instanceof BaseHTTPEndpoint) {
+                ProxyFactory factory = new ProxyFactory();
+                factory.setProxyTargetClass(true);
+                factory.addAdvisors(this.advisors);
+                factory.setTarget(endpoint);
+                factory.setFrozen(true);
+                Endpoint proxy = (Endpoint) factory.getProxy(this.proxyClassLoader);
+                fixFilterChain(endpoint, proxy);
+                broker.getEndpoints().put(key, proxy);
+            } else {
+                // No-op: Don't advise rest of Endpoints.
+            }
         }
         return broker;
     }
