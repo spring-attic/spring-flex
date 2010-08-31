@@ -16,42 +16,35 @@
 
 package org.springframework.flex.config;
 
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.AbstractSingleSpringContextTests;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.context.support.GenericWebApplicationContext;
+import org.springframework.test.annotation.ProfileValueSource;
+import org.springframework.test.annotation.ProfileValueSourceConfiguration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit38.AbstractJUnit38SpringContextTests;
+import org.springframework.util.Assert;
 
-import flex.messaging.FlexContext;
-import flex.messaging.MessageBroker;
+@ContextConfiguration(locations="classpath:org/springframework/flex/config/default-message-broker.xml", loader=MessageBrokerContextLoader.class)
+@ProfileValueSourceConfiguration(AbstractFlexConfigurationTests.RuntimeEnvironmentProfileValueSource.class)
+public abstract class AbstractFlexConfigurationTests extends AbstractJUnit38SpringContextTests {
+    
+    protected static final String ENVIRONMENT = "environment";
+    
+    protected static final String BLAZEDS = "blazeds";
+    
+    protected static final String LCDS = "lcds";
+    
+    public static final class RuntimeEnvironmentProfileValueSource implements ProfileValueSource {
 
-public abstract class AbstractFlexConfigurationTests extends AbstractSingleSpringContextTests {
-
-    @Override
-    protected ConfigurableApplicationContext createApplicationContext(String[] locations) {
-        ConfigurableApplicationContext parentContext = createParentContext();
-
-        GenericWebApplicationContext context = new GenericWebApplicationContext();
-        context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
-        prepareApplicationContext(context);
-        customizeBeanFactory(context.getDefaultListableBeanFactory());
-        
-        locations = (String[]) ObjectUtils.addObjectToArray(locations, "classpath:org/springframework/flex/config/default-message-broker.xml");
-        if (MessageBroker.getMessageBroker(BeanIds.MESSAGE_BROKER) != null) {
-            FlexContext.clearThreadLocalObjects();
-            MessageBroker.getMessageBroker(BeanIds.MESSAGE_BROKER).stop();
+        public String get(String key) {
+           Assert.notNull(key, "Profile key cannot be null");
+           if (RuntimeEnvironment.isBlazeDS()) {
+               return BLAZEDS;
+           } else if (RuntimeEnvironment.isLCDS()) {
+               return LCDS;
+           } else {
+               throw new IllegalStateException("Runtime data services environment is unknown.");
+           }
         }
         
-        createBeanDefinitionReader(context).loadBeanDefinitions(locations);
-        context.setParent(parentContext);
-        context.refresh();
-        return context;
     }
-
-    protected ConfigurableApplicationContext createParentContext() {
-        return null;
-    }
-
-    @Override
-    protected abstract String[] getConfigLocations();
+    
 }

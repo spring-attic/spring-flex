@@ -17,6 +17,7 @@
 package org.springframework.flex.config.xml;
 
 import org.springframework.flex.config.BeanIds;
+import org.springframework.test.context.ContextConfiguration;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
@@ -25,10 +26,11 @@ import flex.messaging.services.MessageService;
 import flex.messaging.services.messaging.adapters.ActionScriptAdapter;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
+@ContextConfiguration("classpath:org/springframework/flex/config/message-destination.xml")
 public class MessageDestinationBeanDefinitionParserTests extends AbstractMessageDestinationBeanDefinitionParserTests {
 
     public void testNativeDestination_CustomAdapter() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         MessageService ms = (MessageService) this.broker.getService("message-service");
         assertNotNull("Could not find the message service", ms);
@@ -39,7 +41,7 @@ public class MessageDestinationBeanDefinitionParserTests extends AbstractMessage
     }
 
     public void testNativeDestination_DefaultConfig() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         MessageService ms = (MessageService) this.broker.getService("message-service");
         assertNotNull("Could not find the message service", ms);
@@ -61,9 +63,5 @@ public class MessageDestinationBeanDefinitionParserTests extends AbstractMessage
             return null;
         }
     }
-
-    @Override
-    protected String[] getConfigLocations() {
-        return new String[] { "classpath:org/springframework/flex/config/message-destination.xml" };
-    }
+    
 }

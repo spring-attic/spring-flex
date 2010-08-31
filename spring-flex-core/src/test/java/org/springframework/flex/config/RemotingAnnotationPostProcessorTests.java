@@ -19,11 +19,13 @@ package org.springframework.flex.config;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.flex.remoting.RemotingExclude;
 import org.springframework.flex.remoting.RemotingInclude;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import flex.messaging.MessageBroker;
@@ -31,21 +33,13 @@ import flex.messaging.services.RemotingService;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
 
+@ContextConfiguration(locations="classpath:org/springframework/flex/config/remote-service-annotations.xml", loader=RemotingAnnotationPostProcessorTests.ParentContextLoader.class)
 public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurationTests {
 
     private MessageBroker broker;
 
-    @Override
-    protected ConfigurableApplicationContext createParentContext() {
-        GenericWebApplicationContext context = new GenericWebApplicationContext();
-        context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
-        createBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/annotated-remote-bean-context.xml" });
-        context.refresh();
-        return context;
-    }
-
     public void testExportAnnotatedBeanWithAutowiredConstructor() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -55,7 +49,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
     }
     
     public void testExportAnnotatedScopedProxyBeanWithAutowiredConstructor() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -65,7 +59,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
     }
 
     public void testExportAnnotatedBeanWithDefaults() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -75,7 +69,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
     }
     
     public void testExportAnnotatedBeanFromParentContextWithDefaults() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -85,7 +79,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
     }
 
     public void testExportAnnotatedXmlConfiguredBeanWithDefaults() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -96,7 +90,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
 
     @SuppressWarnings("unchecked")
     public void testExportBeanWithCustomSettings() {
-        this.broker = (MessageBroker) getApplicationContext().getBean("annotatedRemoteServiceBroker", MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean("annotatedRemoteServiceBroker", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -125,11 +119,6 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
             assertTrue(Arrays.asList(excludeNames).contains(exclude.getName()));
             assertFalse(Arrays.asList(includeNames).contains(exclude.getName()));
         }
-    }
-    
-    @Override
-    protected String[] getConfigLocations() {
-        return new String[] { "classpath:org/springframework/flex/config/remote-service-annotations.xml" };
     }
 
     public static class MyDependency {
@@ -160,5 +149,17 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
     }
     
     public static final class TestAdapter extends JavaAdapter {
+    }
+    
+    public static class ParentContextLoader extends MessageBrokerContextLoader {
+        
+        @Override
+        protected ConfigurableApplicationContext createParentContext() {
+            GenericWebApplicationContext context = new GenericWebApplicationContext();
+            context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
+            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/annotated-remote-bean-context.xml" });
+            context.refresh();
+            return context;
+        }
     }
 }

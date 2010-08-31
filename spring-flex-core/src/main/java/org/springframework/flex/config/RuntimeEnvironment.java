@@ -19,41 +19,43 @@ package org.springframework.flex.config;
 import org.springframework.util.ClassUtils;
 
 /**
- * Contains utility methods to determine the type of installation.
+ * Internal helper class to determine the type of runtime data services environment being used, to allow for
+ * automatically adapting to the available capabilities.
  * 
  * @author Rohit Kumar
+ * @author Jeremy Grelle
  */
-public class InstallationHelper {
-    
+public abstract class RuntimeEnvironment {
+
     private static final String ASYNC_MESSAGE_BROKER_CLASS_NAME = "flex.messaging.AsyncMessageBroker";
+
     private static final boolean IS_LCDS_ENVIRONMENT;
-    
-    static
-    {
+
+    static {
         boolean asyncMessageBrokerClassPresent;
-        
+
         try {
             ClassUtils.forName(ASYNC_MESSAGE_BROKER_CLASS_NAME, null);
             asyncMessageBrokerClassPresent = true;
-        } 
-        catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             asyncMessageBrokerClassPresent = false;
         }
-        
+
         IS_LCDS_ENVIRONMENT = asyncMessageBrokerClassPresent;
     }
-    
+
     /**
-     * Returns <code>true</code> if this is an LCDS installation.
+     * Returns <code>true</code> if the runtime data services environment is LCDS.
      */
     public static boolean isLCDS() {
         return IS_LCDS_ENVIRONMENT;
     }
-    
+
     /**
-     * Returns <code>true</code> if this is an BlazeDS installation.
+     * Returns <code>true</code> if the runtime data services environment is BlazeDS.
      */
     public static boolean isBlazeDS() {
         return !IS_LCDS_ENVIRONMENT;
     }
+
 }

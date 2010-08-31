@@ -20,7 +20,7 @@ package org.springframework.flex.config;
  * Default bean ids for beans configured with the XML namespace.
  * 
  * @author Jeremy Grelle
- * 
+ * @author Rohit Kumar
  */
 public abstract class BeanIds {
 
@@ -48,7 +48,9 @@ public abstract class BeanIds {
 
     public static final String MESSAGING_PROCESSOR_SUFFIX = "MessagingProcessor";
 
-    public static final String DATASERVICES_CONFIG_PROCESSOR_SUFFIX = "DataServicesConfigProcessor";
+    public static final String DATASERVICES_PROCESSOR_SUFFIX = "DataServicesProcessor";
+    
+    public static final String LOGIN_INTERCEPTOR_SUFFIX = "LoginInterceptor";
 
     public static final String JSON_CONFIG_MAP_EDITOR_CONFIGURER = "_jsonConfigMapEditorConfigurer";
 }

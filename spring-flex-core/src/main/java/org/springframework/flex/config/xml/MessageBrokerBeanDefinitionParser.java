@@ -34,7 +34,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.config.FlexConfigurationManager;
-import org.springframework.flex.config.InstallationHelper;
+import org.springframework.flex.config.RuntimeEnvironment;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
@@ -391,13 +391,13 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     private void registerDataServicesConfigProcessorIfRequired(ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, 
         ManagedSet<RuntimeBeanReference> translators, ManagedSet<RuntimeBeanReference> nioEndpointInterceptors, Element securedElement, String brokerId) {        
-        if (InstallationHelper.isLCDS() && (!nioEndpointInterceptors.isEmpty() || !translators.isEmpty())) {
+        if (RuntimeEnvironment.isLCDS() && (!nioEndpointInterceptors.isEmpty() || !translators.isEmpty())) {
             BeanDefinitionBuilder lcdsMessageInterceptionBuilder = BeanDefinitionBuilder.genericBeanDefinition(DATASERVICES_PROCESSOR_CLASS_NAME);
             lcdsMessageInterceptionBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);
             lcdsMessageInterceptionBuilder.addPropertyValue(MESSAGE_INTERCEPTORS_PROPERTY, nioEndpointInterceptors);
             ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, lcdsMessageInterceptionBuilder, brokerId
-                    + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX);
-            configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX));
+                    + BeanIds.DATASERVICES_PROCESSOR_SUFFIX);
+            configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.DATASERVICES_PROCESSOR_SUFFIX));
         }
     }
 

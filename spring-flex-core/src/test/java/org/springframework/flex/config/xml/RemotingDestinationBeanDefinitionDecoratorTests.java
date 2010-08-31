@@ -24,6 +24,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.flex.config.AbstractFlexConfigurationTests;
 import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.config.xml.RemotingDestinationBeanDefinitionParserTests.TestAdapter;
+import org.springframework.test.context.ContextConfiguration;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
@@ -31,13 +32,14 @@ import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
 
+@ContextConfiguration("classpath:org/springframework/flex/config/remote-service-decorator.xml")
 public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFlexConfigurationTests {
 
     private MessageBroker broker;
 
     @SuppressWarnings("unchecked")
     public void testExportBeanWithCustomSettings() {
-        this.broker = (MessageBroker) getApplicationContext().getBean("remoteServiceBroker2", MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean("remoteServiceBroker2", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -67,7 +69,7 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
     }
 
     public void testExportBeanWithDefaults() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
         assertNotNull("Could not find the remoting service", rs);
@@ -104,8 +106,4 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
         }
     }
 
-    @Override
-    protected String[] getConfigLocations() {
-        return new String[] { "classpath:org/springframework/flex/config/remote-service-decorator.xml" };
-    }
 }

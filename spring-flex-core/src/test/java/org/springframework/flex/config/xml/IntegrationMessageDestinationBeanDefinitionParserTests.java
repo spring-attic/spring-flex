@@ -20,15 +20,17 @@ import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.messaging.integration.IntegrationAdapter;
 import org.springframework.integration.core.Message;
 import org.springframework.integration.core.MessageChannel;
+import org.springframework.test.context.ContextConfiguration;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.services.MessageService;
 
+@ContextConfiguration("classpath:org/springframework/flex/config/message-destination.xml")
 public class IntegrationMessageDestinationBeanDefinitionParserTests extends AbstractMessageDestinationBeanDefinitionParserTests {
 
     public void testIntegrationDestination_SimpleConfig() {
-        this.broker = (MessageBroker) getApplicationContext().getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         MessageService ms = (MessageService) this.broker.getService("message-service");
         assertNotNull("Could not find the message service", ms);
@@ -58,10 +60,5 @@ public class IntegrationMessageDestinationBeanDefinitionParserTests extends Abst
         }
 
     }
-
-    @Override
-    protected String[] getConfigLocations() {
-        return new String[] { "classpath:org/springframework/flex/config/message-destination.xml" };
-    }
-
+    
 }

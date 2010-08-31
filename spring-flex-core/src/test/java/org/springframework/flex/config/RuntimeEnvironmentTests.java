@@ -18,26 +18,25 @@ package org.springframework.flex.config;
 
 import junit.framework.TestCase;
 
-
 /**
- * Tests the InstallationHelper class
- *
+ * Tests the RuntimeEnvironment class
+ * 
  * @author Rohit Kumar
  */
-public class InstallationHelperTests extends TestCase {
+public class RuntimeEnvironmentTests extends TestCase {
 
     /**
-     * Tests {@link org.springframework.flex.config.InstallationHelper#isLCDS()}.
+     * Tests {@link org.springframework.flex.config.RuntimeEnvironment#isLCDS()}.
      */
     public void testIsLCDSInBlazeDSEnvironment() {
-        assertFalse(InstallationHelper.isLCDS());
+        assertFalse(RuntimeEnvironment.isLCDS());
     }
 
     /**
-     * Tests {@link org.springframework.flex.config.InstallationHelper#isBlazeDS()}.
+     * Tests {@link org.springframework.flex.config.RuntimeEnvironment#isBlazeDS()}.
      */
     public void testIsBlazeDSInBlazeDSEnvironment() {
-        assertTrue(InstallationHelper.isBlazeDS());
+        assertTrue(RuntimeEnvironment.isBlazeDS());
     }
-
+    
 }

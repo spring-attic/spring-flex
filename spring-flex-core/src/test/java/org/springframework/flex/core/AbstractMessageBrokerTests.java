@@ -25,11 +25,8 @@ import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
-import flex.management.MBeanServerLocatorFactory;
 import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
-import flex.messaging.io.SerializationContext;
-import flex.messaging.io.TypeMarshallingContext;
 
 public abstract class AbstractMessageBrokerTests extends TestCase {
 
