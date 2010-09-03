@@ -36,6 +36,7 @@ public abstract class AbstractFlexConfigurationTests extends AbstractJUnit38Spri
 
         public String get(String key) {
            Assert.notNull(key, "Profile key cannot be null");
+           Assert.isTrue(key.equals(ENVIRONMENT), "Unknown profile key.");
            if (RuntimeEnvironment.isBlazeDS()) {
                return BLAZEDS;
            } else if (RuntimeEnvironment.isLCDS()) {
