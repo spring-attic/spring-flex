@@ -24,16 +24,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.integration.channel.PollableChannel;
-import org.springframework.integration.channel.SubscribableChannel;
-import org.springframework.integration.core.MessageChannel;
-import org.springframework.integration.core.MessageHeaders;
+import org.springframework.integration.Message;
+import org.springframework.integration.MessageChannel;
+import org.springframework.integration.MessageHeaders;
+import org.springframework.integration.core.MessageHandler;
+import org.springframework.integration.core.PollableChannel;
+import org.springframework.integration.core.SubscribableChannel;
 import org.springframework.integration.endpoint.AbstractEndpoint;
 import org.springframework.integration.endpoint.EventDrivenConsumer;
 import org.springframework.integration.endpoint.PollingConsumer;
 import org.springframework.integration.message.GenericMessage;
-import org.springframework.integration.message.MessageBuilder;
-import org.springframework.integration.message.MessageHandler;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.util.Assert;
 
 import flex.messaging.messages.AsyncMessage;
@@ -84,7 +85,7 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
     /**
      * Invoked when a Message is received from the Spring Integration channel.
      */
-    public void handleMessage(org.springframework.integration.core.Message<?> message) {
+    public void handleMessage(Message<?> message) {
         if (logger.isDebugEnabled()) {
             logger.debug("received Integration Message: " + message);
         }
@@ -127,7 +128,7 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
         if (logger.isDebugEnabled()) {
             logger.debug("received Flex Message: " + flexMessage);
         }
-        org.springframework.integration.core.Message<?> message = null;
+        Message<?> message = null;
         if (this.extractPayload) {
             Map headers = flexMessage.getHeaders();
             headers.put(FlexHeaders.CLIENT_ID, flexMessage.getClientId());

@@ -18,8 +18,8 @@ package org.springframework.flex.config.xml;
 
 import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.messaging.integration.IntegrationAdapter;
-import org.springframework.integration.core.Message;
-import org.springframework.integration.core.MessageChannel;
+import org.springframework.integration.Message;
+import org.springframework.integration.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 
 import flex.messaging.MessageBroker;
