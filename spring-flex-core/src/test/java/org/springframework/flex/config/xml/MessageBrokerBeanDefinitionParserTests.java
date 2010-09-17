@@ -16,6 +16,8 @@
 
 package org.springframework.flex.config.xml;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,6 +33,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.parsing.BeanDefinitionParsingException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -100,8 +103,27 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         TestConfigProcessor processor2 = (TestConfigProcessor) applicationContext.getBean("processor2", TestConfigProcessor.class);
         assertTrue("Processor1 not invoked", processor1.beforeProcessed && processor1.afterProcessed);
         assertTrue("Processor2 not invoked", processor2.beforeProcessed && processor2.afterProcessed);
+        
     }
-    
+
+    @IfProfileValue(name=ENVIRONMENT, value=LCDS)
+    public void testMessageBroker_CustomConfigProcessor_DataServices() {
+        this.broker = applicationContext.getBean("customConfigProcessors", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
+
+        try {
+            // This beans should not be found in application context.
+            applicationContext.getBean("customConfigProcessors" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, 
+                Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME));
+        } catch (NoSuchBeanDefinitionException e) {
+            return;            
+        } catch (Exception e) {
+            fail("Unexpected exception:" + e);
+        }
+
+        fail("No exception was thrown. Excepted 'org.springframework.beans.factory.NoSuchBeanDefinitionException' to be thrown");
+    }
+
     public void testMessageBroker_HibernateAutoConfigured() {
         assertTrue(PropertyProxyRegistry.getRegistry().getProxy(Person.class) instanceof SpringPropertyProxy);
     }
@@ -121,7 +143,28 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
                 TestExceptionTranslator.class)));
         }
     }
+    
+    @IfProfileValue(name=ENVIRONMENT, value=LCDS)
+    public void testMessageBroker_CustomExceptionTranslator_DataServices() {
+        this.broker = applicationContext.getBean("customExceptionTranslators", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
 
+        try {
+            Set<ExceptionTranslator> translators = getExceptionTranslators(getDataServicesConfigProcessor("customExceptionTranslators"));
+            assertEquals(2, translators.size());
+            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator1",
+                TestExceptionTranslator.class)));
+            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator2",
+                TestExceptionTranslator.class)));
+            return;
+            
+        } catch(NoSuchBeanDefinitionException e) {
+            fail("Expected " + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX + "to be registered");
+        } catch (Exception e) {
+            fail("Unexpected exception:" + e);
+        }
+    }
+    
     public void testMessageBroker_CustomMappings() {
         this.broker = applicationContext.getBean("customMappings", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
@@ -149,6 +192,28 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
                 TestMessageInterceptor.class)));
             assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor3",
                 TestResourceHandlingInterceptor.class)));
+        }
+    }
+    
+    @IfProfileValue(name=ENVIRONMENT, value=LCDS)
+    public void testMessageBroker_CustomMessageInterceptors_DataServices() {
+        this.broker = applicationContext.getBean("customMessageInterceptors", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
+
+        try {
+            Set<MessageInterceptor> interceptors = getMessageInterceptors(getDataServicesConfigProcessor("customMessageInterceptors"));
+            assertEquals(3, interceptors.size());
+            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor1",
+                TestMessageInterceptor.class)));
+            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor2",
+                TestMessageInterceptor.class)));
+            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor3",
+                TestResourceHandlingInterceptor.class)));
+            return;
+        } catch(NoSuchBeanDefinitionException e) {
+            fail("Expected " + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX + "to be registered");
+        } catch (Exception e) {
+            fail("Unexpected exception:" + e);
         }
     }
 
@@ -207,7 +272,34 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         FilterChainProxy filterChain = (FilterChainProxy) applicationContext.getParent().getBean("org.springframework.security.filterChainProxy", FilterChainProxy.class);
         assertTrue((filterChain.getFilterChainMap().get("/**")).contains(filter));
     }
+    
+    @IfProfileValue(name=ENVIRONMENT, value=LCDS)
+    public void testMessageBroker_DefaultSecured_DataServices() {
+        this.broker = applicationContext.getBean("defaultSecured", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
 
+        try {
+            Object dataServicesConfigProcessor = getDataServicesConfigProcessor("defaultSecured");
+            Set<MessageInterceptor> interceptors = getMessageInterceptors(dataServicesConfigProcessor);
+
+            // Should contain org.springframework.flex.security3.PerClientAuthenticationInterceptor and,
+            // org.springframework.flex.security3.LoginMessageInterceptor
+            assertEquals(2, interceptors.size());
+
+            // Should contain org.springframework.flex.security3.SecurityExceptionTranslator
+            Set<ExceptionTranslator> translators = getExceptionTranslators(dataServicesConfigProcessor);
+            assertEquals(1, translators.size());
+            assertEquals(SpringSecurityConfigResolver.resolve().getSecurityExceptionTranslatorClassName(),
+                translators.iterator().next().getClass().getName());
+
+            return;
+        } catch(NoSuchBeanDefinitionException e) {
+            fail("Expected " + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX + "to be registered");
+        } catch (Exception e) {
+            fail("Unexpected exception:" + e);
+        }
+    }
+    
     public void testMessageBroker_DisabledHandlerMapping() {
         this.broker = applicationContext.getBean("disabledHandlerMapping", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
@@ -270,11 +362,6 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertEquals("Default mapping not correct", BeanIds.MESSAGE_BROKER, defaultMapping.getUrlMap().get("/*"));
     }
     
-    @IfProfileValue(name=ENVIRONMENT, value=LCDS)
-    public void testMessageBroker_DataServicesConfigProcessor() {
-        fail("Not implemented.");
-    }
-
     public static final class TestConfigProcessor implements MessageBrokerConfigProcessor {
 
         protected boolean afterProcessed = false;
@@ -381,4 +468,36 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             return context;
         }
     }
+
+    /**
+     * Returns the Data Services Config processor associated with given message broker bean
+     */
+    private Object getDataServicesConfigProcessor(String messageBrokerId) throws ClassNotFoundException {
+        Object dataServicesConfigProcessor = applicationContext.getBean(
+            messageBrokerId + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, 
+            Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME));
+        return dataServicesConfigProcessor;
+    }
+
+    /**
+     * Returns the exception translators associated with the passed Services Config processor
+     */
+    @SuppressWarnings("unchecked")
+    private Set<ExceptionTranslator> getExceptionTranslators(Object dataServicesConfigProcessor) 
+    throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Class<?> clazz = Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME);
+        Method getExceptionTranslatorsMethod = clazz.getMethod("getExceptionTranslators", (Class<?>[])null);
+        return (Set<ExceptionTranslator>)getExceptionTranslatorsMethod.invoke(dataServicesConfigProcessor, (Object[])null);
+    }
+
+    /**
+     * Returns the message interceptors associated with the passed Services Config processor
+     */
+    @SuppressWarnings("unchecked")
+    private Set<MessageInterceptor> getMessageInterceptors(Object dataServicesConfigProcessor)
+    throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Class<?> clazz = Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME);
+        Method getMessageInterceptorsMethod = clazz.getMethod("getMessageInterceptors", (Class<?>[])null);
+        return (Set<MessageInterceptor>)getMessageInterceptorsMethod.invoke(dataServicesConfigProcessor, (Object[])null);
+    }    
 }

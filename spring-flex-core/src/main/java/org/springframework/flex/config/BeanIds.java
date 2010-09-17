@@ -48,7 +48,7 @@ public abstract class BeanIds {
 
     public static final String MESSAGING_PROCESSOR_SUFFIX = "MessagingProcessor";
 
-    public static final String DATASERVICES_PROCESSOR_SUFFIX = "DataServicesProcessor";
+    public static final String DATASERVICES_CONFIG_PROCESSOR_SUFFIX = "DataServicesConfigProcessor";
     
     public static final String LOGIN_INTERCEPTOR_SUFFIX = "LoginInterceptor";
 

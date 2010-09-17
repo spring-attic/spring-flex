@@ -68,7 +68,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     private static final String MESSAGING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.MessageServiceConfigProcessor";
 
-    private static final String DATASERVICES_PROCESSOR_CLASS_NAME = "flex.springintegration.core.DataServicesConfigProcessor";
+    public static final String DATASERVICES_PROCESSOR_CLASS_NAME = "flex.springintegration.core.DataServicesConfigProcessor";
 
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
 
@@ -392,12 +392,12 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private void registerDataServicesConfigProcessorIfRequired(ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, 
         ManagedSet<RuntimeBeanReference> translators, ManagedSet<RuntimeBeanReference> nioEndpointInterceptors, Element securedElement, String brokerId) {        
         if (RuntimeEnvironment.isLCDS() && (!nioEndpointInterceptors.isEmpty() || !translators.isEmpty())) {
-            BeanDefinitionBuilder lcdsMessageInterceptionBuilder = BeanDefinitionBuilder.genericBeanDefinition(DATASERVICES_PROCESSOR_CLASS_NAME);
-            lcdsMessageInterceptionBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);
-            lcdsMessageInterceptionBuilder.addPropertyValue(MESSAGE_INTERCEPTORS_PROPERTY, nioEndpointInterceptors);
-            ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, lcdsMessageInterceptionBuilder, brokerId
-                    + BeanIds.DATASERVICES_PROCESSOR_SUFFIX);
-            configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.DATASERVICES_PROCESSOR_SUFFIX));
+            BeanDefinitionBuilder lcdsConfigProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DATASERVICES_PROCESSOR_CLASS_NAME);
+            lcdsConfigProcessorBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);
+            lcdsConfigProcessorBuilder.addPropertyValue(MESSAGE_INTERCEPTORS_PROPERTY, nioEndpointInterceptors);
+            ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, lcdsConfigProcessorBuilder, brokerId
+                    + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX);
+            configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX));
         }
     }
 
