@@ -107,21 +107,36 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
     }
 
     @IfProfileValue(name=ENVIRONMENT, value=LCDS)
-    public void testMessageBroker_CustomConfigProcessor_DataServices() {
+    public void testMessageBroker_DataServicesConfigProcessor() {
         this.broker = applicationContext.getBean("customConfigProcessors", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
 
         try {
-            // This beans should not be found in application context.
-            applicationContext.getBean("customConfigProcessors" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, 
-                Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME));
-        } catch (NoSuchBeanDefinitionException e) {
-            return;            
+            Class<?> dsConfigProcessorClazz = Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME);
+
+            // The bean is only present when either a custom exception translator or message interceptor is present, 
+            // or in case when the message broker is secured.
+            // It should not be present in application context (in the following cases). 
+            // Positive cases handled in separate test cases 
+            try {
+                applicationContext.getBean("customServicesConfigPath" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
+            } catch (NoSuchBeanDefinitionException e) {}
+
+            try {
+                applicationContext.getBean("customConfigManager" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
+            } catch (NoSuchBeanDefinitionException e) {}
+
+            try {
+                applicationContext.getBean("customMappings" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
+            } catch (NoSuchBeanDefinitionException e) {}
+
+            try {
+                applicationContext.getBean("disabledHandlerMapping" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
+            } catch (NoSuchBeanDefinitionException e) {}
         } catch (Exception e) {
             fail("Unexpected exception:" + e);
+            return;
         }
-
-        fail("No exception was thrown. Excepted 'org.springframework.beans.factory.NoSuchBeanDefinitionException' to be thrown");
     }
 
     public void testMessageBroker_HibernateAutoConfigured() {
