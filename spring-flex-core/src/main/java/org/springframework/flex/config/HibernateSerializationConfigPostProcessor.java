@@ -1,14 +1,10 @@
 package org.springframework.flex.config;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.CannotLoadBeanClassException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -48,8 +44,20 @@ public class HibernateSerializationConfigPostProcessor implements BeanFactoryPos
         
         if (isHibernateDetected(beanFactory.getBeanClassLoader())) {
             
+            //Make sure there is a MessageBrokerFactoryBean present
+            BeanDefinition messageBrokerBeanDef = findMessageBrokerFactoryBeanDefinition(beanFactory);
+            Assert.notNull("Could not find an appropriate bean definition for MessageBrokerBeanDefinitionFactoryBean.");
+            
+            MutablePropertyValues brokerProps = messageBrokerBeanDef.getPropertyValues();
+            ManagedSet<RuntimeBeanReference> configProcessors;
+            if(brokerProps.getPropertyValue(CONFIG_PROCESSORS_PROPERTY) != null) {
+                configProcessors = (ManagedSet<RuntimeBeanReference>) brokerProps.getPropertyValue(CONFIG_PROCESSORS_PROPERTY).getValue();
+            } else {
+                configProcessors = new ManagedSet<RuntimeBeanReference>();
+            }
+            
             //Abort if HibernateConfigProcessor is already present
-            if (isHibernateConfigProcessorConfigured(beanFactory)) {
+            if (isHibernateConfigProcessorConfigured(beanFactory, configProcessors)) {
                 return;
             }
             
@@ -63,10 +71,6 @@ public class HibernateSerializationConfigPostProcessor implements BeanFactoryPos
 
             BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
             
-            //Make sure there is a MessageBrokerFactoryBean present
-            BeanDefinition messageBrokerBeanDef = findMessageBrokerFactoryBeanDefinition(registry);
-            Assert.notNull("Could not find an appropriate bean definition for MessageBrokerBeanDefinitionFactoryBean.");
-            
             //Add the appropriate HibernateConfigProcessor bean definition
             BeanDefinitionBuilder processorBuilder;
             if (isJpaDetected(beanFactory.getBeanClassLoader())) {
@@ -77,44 +81,36 @@ public class HibernateSerializationConfigPostProcessor implements BeanFactoryPos
             
             String processorId = BeanDefinitionReaderUtils.registerWithGeneratedName(processorBuilder.getBeanDefinition(), registry);
             
-            MutablePropertyValues brokerProps = messageBrokerBeanDef.getPropertyValues();
-            ManagedSet<RuntimeBeanReference> configProcessors;
-            if(brokerProps.getPropertyValue(CONFIG_PROCESSORS_PROPERTY) != null) {
-                configProcessors = (ManagedSet<RuntimeBeanReference>) brokerProps.getPropertyValue(CONFIG_PROCESSORS_PROPERTY).getValue();
-            } else {
-                configProcessors = new ManagedSet<RuntimeBeanReference>();
-            }
             configProcessors.add(new RuntimeBeanReference(processorId));
         }
     }
 
-    private boolean isHibernateConfigProcessorConfigured(ConfigurableListableBeanFactory beanFactory) {
-        Set<String> beanNames = new HashSet<String>();
-        beanNames.addAll(Arrays.asList(beanFactory.getBeanDefinitionNames()));
-        if (beanFactory.getParentBeanFactory() instanceof ListableBeanFactory) {
-            beanNames.addAll(Arrays.asList(((ListableBeanFactory)beanFactory.getParentBeanFactory()).getBeanDefinitionNames()));
-        }
-        
-        for (String beanName : beanNames) {
-            BeanDefinition bd = beanFactory.getMergedBeanDefinition(beanName);
+    private boolean isHibernateConfigProcessorConfigured(ConfigurableListableBeanFactory beanFactory, ManagedSet<RuntimeBeanReference> configProcessors) {
+        for (RuntimeBeanReference configProcessor: configProcessors) {
+            BeanDefinition bd = beanFactory.getMergedBeanDefinition(configProcessor.getBeanName());
             if (bd instanceof AbstractBeanDefinition) {
                 AbstractBeanDefinition abd = (AbstractBeanDefinition) bd;
-                if (abd.hasBeanClass()) {
-                    if (HibernateConfigProcessor.class.isAssignableFrom(abd.getBeanClass())) {
-                        return true;
-                    }                    
+                if (!abd.hasBeanClass()) {
+                    try {
+                        abd.resolveBeanClass(beanFactory.getBeanClassLoader());
+                    } catch (ClassNotFoundException ex) {
+                        throw new CannotLoadBeanClassException(abd.getResourceDescription(), configProcessor.getBeanName(), abd.getBeanClassName(), ex);
+                    }
                 }
+                if (HibernateConfigProcessor.class.isAssignableFrom(abd.getBeanClass())) {
+                    return true;
+                }                    
             }
         }
         return false;
     }
     
-    private BeanDefinition findMessageBrokerFactoryBeanDefinition(BeanDefinitionRegistry registry) {
-        if (registry.containsBeanDefinition(BeanIds.MESSAGE_BROKER)) {
-            return registry.getBeanDefinition(BeanIds.MESSAGE_BROKER);
+    private BeanDefinition findMessageBrokerFactoryBeanDefinition(ConfigurableListableBeanFactory beanFactory) {
+        if (beanFactory.containsBeanDefinition(BeanIds.MESSAGE_BROKER)) {
+            return beanFactory.getBeanDefinition(BeanIds.MESSAGE_BROKER);
         } else {
-            for (String beanDefName : registry.getBeanDefinitionNames()) {
-                BeanDefinition beanDef = registry.getBeanDefinition(beanDefName);
+            for (String beanDefName : beanFactory.getBeanDefinitionNames()) {
+                BeanDefinition beanDef = beanFactory.getBeanDefinition(beanDefName);
                 if (beanDef.getBeanClassName().equals(MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME)) {
                     return beanDef;
                 }
