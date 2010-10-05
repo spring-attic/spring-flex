@@ -18,7 +18,7 @@
   <classpathentry kind="src" path="/org.springframework.roo.addon.entity"/>
   <classpathentry kind="src" path="/org.springframework.roo.addon.finder"/>
   <classpathentry kind="src" path="/org.springframework.roo.addon.maven"/>
-  <classpathentry kind="src" path="/org.springframework.roo.addon.web.controller"/>
+  <classpathentry kind="src" path="/org.springframework.roo.addon.web.mvc.controller"/>
   <classpathentry kind="src" path="/org.springframework.roo.addon.web.mvc.jsp"/>
   <classpathentry kind="src" path="/org.springframework.roo.classpath"/>
   <classpathentry kind="src" path="/org.springframework.roo.file.monitor"/>
@@ -29,6 +29,7 @@
   <classpathentry kind="src" path="/org.springframework.roo.project"/>
   <classpathentry kind="src" path="/org.springframework.roo.shell"/>
   <classpathentry kind="src" path="/org.springframework.roo.support"/>
+  <classpathentry kind="src" path="/org.springframework.roo.support.osgi"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-asm/3.0.2.RELEASE/spring-asm-3.0.2.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-asm/3.0.2.RELEASE/spring-asm-3.0.2.RELEASE-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/3.0.2.RELEASE/spring-core-3.0.2.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-core/3.0.2.RELEASE/spring-core-3.0.2.RELEASE-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-test/3.0.2.RELEASE/spring-test-3.0.2.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-test/3.0.2.RELEASE/spring-test-3.0.2.RELEASE-sources.jar"/>

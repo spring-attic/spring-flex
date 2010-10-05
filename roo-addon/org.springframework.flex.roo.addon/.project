@@ -6,7 +6,7 @@
     <project>org.springframework.roo.addon.entity</project>
     <project>org.springframework.roo.addon.finder</project>
     <project>org.springframework.roo.addon.maven</project>
-    <project>org.springframework.roo.addon.web.controller</project>
+    <project>org.springframework.roo.addon.web.mvc.controller</project>
     <project>org.springframework.roo.addon.web.mvc.jsp</project>
     <project>org.springframework.roo.classpath</project>
     <project>org.springframework.roo.file.monitor</project>
@@ -17,6 +17,7 @@
     <project>org.springframework.roo.project</project>
     <project>org.springframework.roo.shell</project>
     <project>org.springframework.roo.support</project>
+    <project>org.springframework.roo.support.osgi</project>
   </projects>
   <buildSpec>
     <buildCommand>
