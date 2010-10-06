@@ -36,6 +36,7 @@ import org.springframework.roo.metadata.MetadataDependencyRegistry;
 import org.springframework.roo.metadata.MetadataIdentificationUtils;
 import org.springframework.roo.metadata.MetadataNotificationListener;
 import org.springframework.roo.metadata.MetadataService;
+import org.springframework.roo.process.manager.internal.UndoableMonitoringRequest;
 import org.springframework.roo.project.Path;
 import org.springframework.roo.project.ProjectMetadata;
 import org.springframework.roo.support.util.Assert;
@@ -45,7 +46,7 @@ import org.springframework.roo.support.util.Assert;
  *
  * @author Jeremy Grelle
  */
-@Component
+@Component(immediate=true)
 public class FlexProjectListener implements MetadataNotificationListener {
 
     // TODO - Is there a better way to achieve the monitoring of the necessary Flex directories?
@@ -113,16 +114,12 @@ public class FlexProjectListener implements MetadataNotificationListener {
                         new CreateDirectory(this.undoManager, filenameResolver, file);
                     }
                     MonitoringRequest request = new DirectoryMonitoringRequest(file, true, notifyOn);
-                    if (md.isValid()) {
-                        this.fileMonitorService.add(request);
-                    } else {
-                        this.fileMonitorService.remove(request);
-                    }
+                    new UndoableMonitoringRequest(undoManager, fileMonitorService, request, md.isValid());
                 }
             }
 
             // Explicitly perform a scan now that we've added all the directories we wish to monitor
-            this.fileMonitorService.scanAll();
+            //this.fileMonitorService.scanAll();
 
             // Avoid doing this operation again unless the validity changes
             this.pathsRegistered = md.isValid();
