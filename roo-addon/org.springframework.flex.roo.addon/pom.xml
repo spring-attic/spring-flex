@@ -449,7 +449,7 @@
 	</build>
 
 	<properties>
-		<roo.version>1.1.0.M3</roo.version>
+		<roo.version>1.1.0.RELEASE</roo.version>
 	</properties>
 
 </project>

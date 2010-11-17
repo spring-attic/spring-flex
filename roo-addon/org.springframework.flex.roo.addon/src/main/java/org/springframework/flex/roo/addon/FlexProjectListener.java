@@ -46,7 +46,7 @@ import org.springframework.roo.support.util.Assert;
  *
  * @author Jeremy Grelle
  */
-@Component(immediate=true)
+@Component
 public class FlexProjectListener implements MetadataNotificationListener {
 
     // TODO - Is there a better way to achieve the monitoring of the necessary Flex directories?

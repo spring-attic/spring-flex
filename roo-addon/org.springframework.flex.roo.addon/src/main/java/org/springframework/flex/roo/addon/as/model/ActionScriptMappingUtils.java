@@ -29,6 +29,7 @@ import org.springframework.flex.roo.addon.as.classpath.details.ASFieldMetadata;
 import org.springframework.flex.roo.addon.as.classpath.details.DefaultASFieldMetadata;
 import org.springframework.roo.classpath.details.DefaultFieldMetadata;
 import org.springframework.roo.classpath.details.FieldMetadata;
+import org.springframework.roo.classpath.details.FieldMetadataBuilder;
 import org.springframework.roo.classpath.details.annotations.AnnotationMetadata;
 import org.springframework.roo.model.DataType;
 import org.springframework.roo.model.JavaPackage;
@@ -187,8 +188,8 @@ public abstract class ActionScriptMappingUtils {
     }
 
     public static FieldMetadata toFieldMetadata(String javaEntityId, ASFieldMetadata asField, boolean makePrivate) {
-        return new DefaultFieldMetadata(javaEntityId, (makePrivate ? Modifier.PRIVATE : toJavaModifier(asField.getVisibility())),
-            toJavaSymbolName(asField.getFieldName()), toJavaType(asField.getFieldType()), null, null);
+        return new FieldMetadataBuilder(javaEntityId, (makePrivate ? Modifier.PRIVATE : toJavaModifier(asField.getVisibility())),
+            toJavaSymbolName(asField.getFieldName()), toJavaType(asField.getFieldType()), null).build();
     }
 
     public static boolean isMappableType(ActionScriptType fieldType) {

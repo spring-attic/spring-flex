@@ -48,11 +48,11 @@ import org.springframework.roo.classpath.PhysicalTypeIdentifier;
 import org.springframework.roo.classpath.PhysicalTypeMetadata;
 import org.springframework.roo.classpath.PhysicalTypeMetadataProvider;
 import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetails;
-import org.springframework.roo.classpath.details.DefaultClassOrInterfaceTypeDetails;
+import org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetailsBuilder;
 import org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue;
 import org.springframework.roo.classpath.details.annotations.AnnotationMetadata;
+import org.springframework.roo.classpath.details.annotations.AnnotationMetadataBuilder;
 import org.springframework.roo.classpath.details.annotations.ClassAttributeValue;
-import org.springframework.roo.classpath.details.annotations.DefaultAnnotationMetadata;
 import org.springframework.roo.classpath.itd.ItdMetadataScanner;
 import org.springframework.roo.classpath.operations.ClasspathOperations;
 import org.springframework.roo.file.monitor.event.FileDetails;
@@ -235,24 +235,24 @@ public class FlexOperationsImpl implements FlexOperations {
         // create annotation @RooFlexScaffold
         List<AnnotationAttributeValue<?>> rooFlexScaffoldAttributes = new ArrayList<AnnotationAttributeValue<?>>();
         rooFlexScaffoldAttributes.add(new ClassAttributeValue(new JavaSymbolName("entity"), entity));
-        AnnotationMetadata atRooFlexScaffold = new DefaultAnnotationMetadata(new JavaType(RooFlexScaffold.class.getName()), rooFlexScaffoldAttributes);
+        AnnotationMetadata atRooFlexScaffold = new AnnotationMetadataBuilder(new JavaType(RooFlexScaffold.class.getName()), rooFlexScaffoldAttributes).build();
 
         // create annotation @RemotingDestination
         List<AnnotationAttributeValue<?>> remotingDestinationAttributes = new ArrayList<AnnotationAttributeValue<?>>();
-        AnnotationMetadata atRemotingDestination = new DefaultAnnotationMetadata(
-            new JavaType("org.springframework.flex.remoting.RemotingDestination"), remotingDestinationAttributes);
+        AnnotationMetadata atRemotingDestination = new AnnotationMetadataBuilder(
+            new JavaType("org.springframework.flex.remoting.RemotingDestination"), remotingDestinationAttributes).build();
 
         // create annotation @Service
         List<AnnotationAttributeValue<?>> serviceAttributes = new ArrayList<AnnotationAttributeValue<?>>();
-        AnnotationMetadata atService = new DefaultAnnotationMetadata(new JavaType("org.springframework.stereotype.Service"), serviceAttributes);
+        AnnotationMetadata atService = new AnnotationMetadataBuilder(new JavaType("org.springframework.stereotype.Service"), serviceAttributes).build();
 
         String declaredByMetadataId = PhysicalTypeIdentifier.createIdentifier(service, getPathResolver().getPath(resourceIdentifier));
-        List<AnnotationMetadata> annotations = new ArrayList<AnnotationMetadata>();
-        annotations.add(atRooFlexScaffold);
-        annotations.add(atRemotingDestination);
-        annotations.add(atService);
-        ClassOrInterfaceTypeDetails details = new DefaultClassOrInterfaceTypeDetails(declaredByMetadataId, service, Modifier.PUBLIC,
-            PhysicalTypeCategory.CLASS, annotations);
+        ClassOrInterfaceTypeDetailsBuilder typeBuilder = new ClassOrInterfaceTypeDetailsBuilder(declaredByMetadataId, Modifier.PUBLIC, service,
+            PhysicalTypeCategory.CLASS); 
+        typeBuilder.addAnnotation(atRooFlexScaffold);
+        typeBuilder.addAnnotation(atRemotingDestination);
+        typeBuilder.addAnnotation(atService);
+        ClassOrInterfaceTypeDetails details = typeBuilder.build();
 
         this.classpathOperations.generateClassFile(details);
 
@@ -314,19 +314,6 @@ public class FlexOperationsImpl implements FlexOperations {
             importFlex.setAttribute("resource", "flex-config.xml");
             root.appendChild(importFlex);
             XmlUtils.writeXml(mvcContextMutableFile.getOutputStream(), mvcAppCtx);
-        }
-
-        // TODO - possible to do this without hardcoding the path?
-        // TODO - should really be updating the existing urlrewrite file, but it seems urlrewrite may go away so this is
-        // just temporary anyway
-        // modify URLRewrite config to allow simple static resources to be served properly
-        String urlRewriteFileId = getPathResolver().getIdentifier(Path.SRC_MAIN_WEBAPP, "/WEB-INF/urlrewrite.xml");
-        InputStreamReader templateReader = new InputStreamReader(TemplateUtils.getTemplate(getClass(), "urlrewrite-template.xml"));
-        Assert.notNull(templateReader, "Could not acquire urlrewrite-template.xml file");
-        try {
-            this.fileManager.createOrUpdateTextFileIfRequired(urlRewriteFileId, FileCopyUtils.copyToString(templateReader));
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
         }
     }
 

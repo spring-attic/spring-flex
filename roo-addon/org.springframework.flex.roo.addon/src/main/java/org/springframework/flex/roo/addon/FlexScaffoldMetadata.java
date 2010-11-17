@@ -25,8 +25,8 @@ import org.springframework.roo.addon.entity.EntityMetadata;
 import org.springframework.roo.addon.finder.FinderMetadata;
 import org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils;
 import org.springframework.roo.classpath.PhysicalTypeMetadata;
-import org.springframework.roo.classpath.details.DefaultMethodMetadata;
 import org.springframework.roo.classpath.details.MethodMetadata;
+import org.springframework.roo.classpath.details.MethodMetadataBuilder;
 import org.springframework.roo.classpath.details.annotations.AnnotatedJavaType;
 import org.springframework.roo.classpath.itd.AbstractItdTypeDetailsProvidingMetadataItem;
 import org.springframework.roo.classpath.itd.InvocableMemberBodyBuilder;
@@ -64,7 +64,6 @@ public class FlexScaffoldMetadata extends AbstractItdTypeDetailsProvidingMetadat
         Assert.isTrue(isValid(identifier), "Metadata identification string '" + identifier + "' does not appear to be a valid");
         Assert.notNull(beanInfoMetadata, "Bean info metadata required");
         Assert.notNull(entityMetadata, "Entity metadata required");
-        Assert.notNull(entityMetadata, "Finder metadata required");
 
         if (!isValid()) {
             return;
@@ -149,8 +148,7 @@ public class FlexScaffoldMetadata extends AbstractItdTypeDetailsProvidingMetadat
             + this.entityMetadata.getRemoveMethod().getMethodName()
             + "();");
 
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName, JavaType.VOID_PRIMITIVE, paramTypes, paramNames, null, null,
-            bodyBuilder.getOutput());
+        return new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName, JavaType.VOID_PRIMITIVE, paramTypes, paramNames, bodyBuilder).build();
     }
 
     private MethodMetadata getListMethod() {
@@ -169,7 +167,7 @@ public class FlexScaffoldMetadata extends AbstractItdTypeDetailsProvidingMetadat
         bodyBuilder.appendFormalLine("return "
             + this.beanInfoMetadata.getJavaBean().getNameIncludingTypeParameters(false, this.builder.getImportRegistrationResolver()) + "."
             + this.entityMetadata.getFindAllMethod().getMethodName() + "();");
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName, returnType, null, null, null, null, bodyBuilder.getOutput());
+        return new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName, returnType, null, null, bodyBuilder).build();
     }
 
     private MethodMetadata getListPagedMethod() {
@@ -206,8 +204,7 @@ public class FlexScaffoldMetadata extends AbstractItdTypeDetailsProvidingMetadat
         bodyBuilder.indentRemove();
         bodyBuilder.appendFormalLine("}");
 
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName, returnType, paramTypes, paramNames, null, null,
-            bodyBuilder.getOutput());
+        return new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName, returnType, paramTypes, paramNames, bodyBuilder).build();
     }
 
     private MethodMetadata getShowMethod() {
@@ -234,8 +231,7 @@ public class FlexScaffoldMetadata extends AbstractItdTypeDetailsProvidingMetadat
             + this.entityMetadata.getFindMethod().getMethodName() + "(" + this.entityMetadata.getIdentifierField().getFieldName().getSymbolName()
             + ");");
 
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName, this.beanInfoMetadata.getJavaBean(), paramTypes, paramNames, null,
-            null, bodyBuilder.getOutput());
+        return new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName, this.beanInfoMetadata.getJavaBean(), paramTypes, paramNames, bodyBuilder).build();
     }
 
     private MethodMetadata getCreateMethod() {
@@ -256,8 +252,7 @@ public class FlexScaffoldMetadata extends AbstractItdTypeDetailsProvidingMetadat
         bodyBuilder.appendFormalLine(this.entityReference + "." + this.entityMetadata.getPersistMethod().getMethodName() + "();");
         bodyBuilder.appendFormalLine("return " + this.entityReference + ";");
 
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName, this.beanInfoMetadata.getJavaBean(), paramTypes, paramNames, null,
-            null, bodyBuilder.getOutput());
+        return new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName, this.beanInfoMetadata.getJavaBean(), paramTypes, paramNames, bodyBuilder).build();
     }
 
     private MethodMetadata getUpdateMethod() {
@@ -280,8 +275,7 @@ public class FlexScaffoldMetadata extends AbstractItdTypeDetailsProvidingMetadat
         bodyBuilder.appendFormalLine(this.entityReference + "." + this.entityMetadata.getMergeMethod().getMethodName() + "();");
         bodyBuilder.appendFormalLine("return " + this.entityReference + ";");
 
-        return new DefaultMethodMetadata(getId(), Modifier.PUBLIC, methodName, this.beanInfoMetadata.getJavaBean(), paramTypes, paramNames, null,
-            null, bodyBuilder.getOutput());
+        return new MethodMetadataBuilder(getId(), Modifier.PUBLIC, methodName, this.beanInfoMetadata.getJavaBean(), paramTypes, paramNames, bodyBuilder).build();
     }
 
     private MethodMetadata methodExists(JavaSymbolName methodName) {
@@ -297,4 +291,8 @@ public class FlexScaffoldMetadata extends AbstractItdTypeDetailsProvidingMetadat
         return null;
     }
 
+    @Override
+    public int hashCode() {
+        return entityMetadata.hashCode() * beanInfoMetadata.hashCode();
+    }
 }
