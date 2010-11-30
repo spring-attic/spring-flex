@@ -37,6 +37,8 @@ import flex.messaging.io.amf.AmfMessageDeserializer;
 import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.AmfTrace;
 import flex.messaging.io.amf.MessageBody;
+import flex.messaging.log.Logger;
+import flex.messaging.util.ToStringPrettyPrinter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "hibernate-context.xml")
@@ -97,6 +99,15 @@ public class SpringPropertyProxyHibernateNativeTests {
         assertNotNull(result.getAddress());
         assertNull(result.getSpouse());
         assertNull(result.getChildren());
+    }
+    
+    @Test
+    public void testDebugLoggingOutsideTransactionAfterHibernateGet() throws IOException, ClassNotFoundException {
+        Session session = this.sessionFactory.openSession();
+        Person person = (Person) session.get(Person.class, 1);
+        session.close();
+        String result = log(person);
+        log.info("Result from Logger:\n"+result);
     }
 
     @Test
@@ -242,6 +253,13 @@ public class SpringPropertyProxyHibernateNativeTests {
         MessageBody body = new MessageBody();
         body.setData(data);
         serializer.writeBody(body);
+    }
+    
+    private String log(Object data) {
+        MessageBody body = new MessageBody();
+        body.setData(data);
+        ToStringPrettyPrinter printer = new ToStringPrettyPrinter();
+        return printer.prettify(body);
     }
 
     private Object deserialize() throws ClassNotFoundException, IOException {
