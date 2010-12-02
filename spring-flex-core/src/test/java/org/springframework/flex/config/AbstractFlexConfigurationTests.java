@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2009 the original author or authors.
+ * Copyright 2002-2010 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,9 @@
 
 package org.springframework.flex.config;
 
-import org.springframework.test.annotation.ProfileValueSource;
-import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit38.AbstractJUnit38SpringContextTests;
-import org.springframework.util.Assert;
 
 @ContextConfiguration(locations="classpath:org/springframework/flex/config/default-message-broker.xml", loader=MessageBrokerContextLoader.class)
-@ProfileValueSourceConfiguration(AbstractFlexConfigurationTests.RuntimeEnvironmentProfileValueSource.class)
-public abstract class AbstractFlexConfigurationTests extends AbstractJUnit38SpringContextTests {
-    
-    protected static final String ENVIRONMENT = "environment";
-    
-    protected static final String BLAZEDS = "blazeds";
-    
-    protected static final String LCDS = "lcds";
-    
-    public static final class RuntimeEnvironmentProfileValueSource implements ProfileValueSource {
-
-        public String get(String key) {
-           Assert.notNull(key, "Profile key cannot be null");
-           Assert.isTrue(key.equals(ENVIRONMENT), "Unknown profile key.");
-           if (RuntimeEnvironment.isBlazeDS()) {
-               return BLAZEDS;
-           } else if (RuntimeEnvironment.isLCDS()) {
-               return LCDS;
-           } else {
-               throw new IllegalStateException("Runtime data services environment is unknown.");
-           }
-        }
-        
-    }
+public abstract class AbstractFlexConfigurationTests extends AbstractRuntimeEnvironmentAwareTests {
     
 }

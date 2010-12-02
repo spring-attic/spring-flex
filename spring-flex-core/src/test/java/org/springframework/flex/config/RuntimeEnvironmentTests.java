@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2009 the original author or authors.
+ * Copyright 2002-2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,38 @@
 
 package org.springframework.flex.config;
 
-import junit.framework.TestCase;
+import org.springframework.test.annotation.IfProfileValue;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+
 
 /**
  * Tests the RuntimeEnvironment class
  * 
  * @author Rohit Kumar
+ * @author Jeremy Grelle
  */
-public class RuntimeEnvironmentTests extends TestCase {
+@ContextConfiguration
+@TestExecutionListeners(inheritListeners=false)
+public class RuntimeEnvironmentTests extends AbstractRuntimeEnvironmentAwareTests {
 
-    /**
-     * Tests {@link org.springframework.flex.config.RuntimeEnvironment#isLCDS()}.
-     */
+    @IfProfileValue(name=ENVIRONMENT, value=BLAZEDS)
     public void testIsLCDSInBlazeDSEnvironment() {
         assertFalse(RuntimeEnvironment.isLCDS());
     }
 
-    /**
-     * Tests {@link org.springframework.flex.config.RuntimeEnvironment#isBlazeDS()}.
-     */
+    @IfProfileValue(name=ENVIRONMENT, value=BLAZEDS)
     public void testIsBlazeDSInBlazeDSEnvironment() {
         assertTrue(RuntimeEnvironment.isBlazeDS());
     }
     
+    @IfProfileValue(name=ENVIRONMENT, value=LCDS)
+    public void testIsBlazeDSInLCDSEnvironment() {
+        assertFalse(RuntimeEnvironment.isBlazeDS());
+    }
+
+    @IfProfileValue(name=ENVIRONMENT, value=LCDS)
+    public void testIsLCDSInLCDSEnvironment() {
+        assertTrue(RuntimeEnvironment.isLCDS());
+    }
 }
