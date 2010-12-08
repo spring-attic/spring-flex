@@ -120,6 +120,39 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
             assertFalse(Arrays.asList(includeNames).contains(exclude.getName()));
         }
     }
+    
+    public void testExportBeanWithDynamicChannels() {
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for default ID", this.broker);
+        RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
+        assertNotNull("Could not find the remoting service", rs);
+        flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedDynamicRemoteBean1");
+        assertNotNull("Destination not found", rd);
+        String[] channels = new String[] {"my-amf"};
+        assertEquals("Channels not set", Arrays.asList(channels), rd.getChannels());
+    }
+    
+    public void testExportBeanWithMultipleDynamicChannels() {
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for default ID", this.broker);
+        RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
+        assertNotNull("Could not find the remoting service", rs);
+        flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedDynamicRemoteBean2");
+        assertNotNull("Destination not found", rd);
+        String[] channels = new String[] {"my-secure-amf", "my-amf"};
+        assertEquals("Channels not set", Arrays.asList(channels), rd.getChannels());
+    }
+    
+    public void testExportBeanWithMultipleDynamicCombinedChannels() {
+        this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for default ID", this.broker);
+        RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
+        assertNotNull("Could not find the remoting service", rs);
+        flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedDynamicRemoteBean3");
+        assertNotNull("Destination not found", rd);
+        String[] channels = new String[] {"my-amf", "my-secure-amf"};
+        assertEquals("Channels not set", Arrays.asList(channels), rd.getChannels());
+    }
 
     public static class MyDependency {
     }
@@ -146,6 +179,18 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         @RemotingExclude
         public void zoo() {
         }
+    }
+    
+    @RemotingDestination(channels="${com.foo.bar}")
+    public static class MyService3 {
+    }
+    
+    @RemotingDestination(channels="${com.foo.baz}")
+    public static class MyService4 {
+    }
+    
+    @RemotingDestination(channels={"${com.foo.bar}", "${com.foo.baz}"})
+    public static class MyService5 {
     }
     
     public static final class TestAdapter extends JavaAdapter {

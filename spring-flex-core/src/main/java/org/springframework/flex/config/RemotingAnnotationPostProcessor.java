@@ -96,12 +96,19 @@ public class RemotingAnnotationPostProcessor implements BeanFactoryPostProcessor
                 : BeanIds.MESSAGE_BROKER;
             String destinationId = StringUtils.hasText(remotingDestination.value()) ? remotingDestination.value()
                 : remotingDestinationConfig.getBeanName();
-
+            
+            String[] channels = null;
+            for (String channelValue : remotingDestination.channels()) {
+                channelValue = beanFactory.resolveEmbeddedValue(channelValue);
+                String[] parsedChannels = StringUtils.trimArrayElements(StringUtils.commaDelimitedListToStringArray(channelValue));
+                channels = StringUtils.mergeStringArrays(channels, parsedChannels);
+            }
+            
             exporterBuilder.addPropertyReference(MESSAGE_BROKER_PROPERTY, messageBrokerId);
             exporterBuilder.addPropertyValue(SERVICE_PROPERTY, remotingDestinationConfig.getBeanName());
             exporterBuilder.addDependsOn(remotingDestinationConfig.getBeanName());
             exporterBuilder.addPropertyValue(DESTINATION_ID_PROPERTY, destinationId);
-            exporterBuilder.addPropertyValue(CHANNELS_PROPERTY, remotingDestination.channels());
+            exporterBuilder.addPropertyValue(CHANNELS_PROPERTY, channels);
             exporterBuilder.addPropertyValue(INCLUDE_METHODS_PROPERTY, remotingDestinationConfig.getIncludeMethods());
             exporterBuilder.addPropertyValue(EXCLUDE_METHODS_PROPERTY, remotingDestinationConfig.getExcludeMethods());
             exporterBuilder.addPropertyValue(SERVICE_ADAPTER_PROPERTY, remotingDestination.serviceAdapter());

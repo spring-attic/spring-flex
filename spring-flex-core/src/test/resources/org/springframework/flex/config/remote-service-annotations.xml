@@ -15,6 +15,12 @@
 	<bean id="annotatedRemoteBean1" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService1"/>
         
     <bean id="annotatedRemoteBean2" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService2"/>
+    
+    <bean id="annotatedDynamicRemoteBean1" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService3"/>
+    
+    <bean id="annotatedDynamicRemoteBean2" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService4"/>
+    
+    <bean id="annotatedDynamicRemoteBean3" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyService5"/>
         
     <bean id="autowiredDependency" class="org.springframework.flex.config.RemotingAnnotationPostProcessorTests$MyDependency"/>
     
@@ -27,6 +33,15 @@
 	
 	<bean id="actualFactoryBean" parent="abstractFactoryBean">
 		<constructor-arg value="foo"/>
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="properties">
+			<props>
+				<prop key="com.foo.bar">my-amf</prop>
+				<prop key="com.foo.baz">my-secure-amf, my-amf</prop>
+			</props>
+		</property>
 	</bean>
     
 </beans>
