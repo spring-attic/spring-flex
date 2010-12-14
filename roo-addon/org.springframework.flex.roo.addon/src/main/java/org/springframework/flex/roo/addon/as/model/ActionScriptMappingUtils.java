@@ -168,18 +168,15 @@ public abstract class ActionScriptMappingUtils {
 
         ActionScriptType asType = toActionScriptType(javaField.getFieldType());
         if (asType.isNumeric()) {
-            boolean isId = false;
-            boolean isGenerated = false;
+            boolean isVersion = false;
 
             for (AnnotationMetadata annotation : javaField.getAnnotations()) {
-                if (annotation.getAnnotationType().getFullyQualifiedTypeName().equals("javax.persistence.Id")) {
-                    isId = true;
-                } else if (annotation.getAnnotationType().getFullyQualifiedTypeName().equals("javax.persistence.GeneratedValue")) {
-                    isGenerated = true;
+                if (annotation.getAnnotationType().getFullyQualifiedTypeName().equals("javax.persistence.Version")) {
+                    isVersion = true;
                 }
             }
 
-            if (isId && isGenerated) {
+            if (isVersion) {
                 return "-1";
             }
 
