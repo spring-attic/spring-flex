@@ -85,6 +85,24 @@ public abstract class ActionScriptMappingUtils {
         amfToJavaTypeMap.put(ActionScriptType.OBJECT_TYPE, new JavaType(Map.class.getName(), 0, DataType.TYPE, null, null));
     }
 
+    public static ActionScriptType toActionScriptType(FieldMetadata javaField) {
+        ActionScriptType asType = toActionScriptType(javaField.getFieldType());
+        if (asType.isNumeric()) {
+            boolean isVersion = false;
+
+            for (AnnotationMetadata annotation : javaField.getAnnotations()) {
+                if (annotation.getAnnotationType().getFullyQualifiedTypeName().equals("javax.persistence.Version")) {
+                    isVersion = true;
+                }
+            }
+
+            if (isVersion) {
+                return ActionScriptType.NUMBER_TYPE;
+            }
+        }
+        return asType;
+    }
+    
     public static ActionScriptType toActionScriptType(JavaType javaType) {
         if (javaToAmfTypeMap.containsKey(javaType)) {
             return javaToAmfTypeMap.get(javaType);
@@ -158,30 +176,9 @@ public abstract class ActionScriptMappingUtils {
     }
 
     public static ASFieldMetadata toASFieldMetadata(String asEntityId, FieldMetadata javaField, boolean makePublic) {
-
-        return new DefaultASFieldMetadata(asEntityId, toActionScriptType(javaField.getFieldType()),
+        return new DefaultASFieldMetadata(asEntityId, toActionScriptType(javaField),
             toActionScriptSymbolName(javaField.getFieldName()), (makePublic ? ASTypeVisibility.PUBLIC : toASTypeVisibility(javaField.getModifier())),
-            toASFieldInitialzer(javaField), null);
-    }
-
-    public static String toASFieldInitialzer(FieldMetadata javaField) {
-
-        ActionScriptType asType = toActionScriptType(javaField.getFieldType());
-        if (asType.isNumeric()) {
-            boolean isVersion = false;
-
-            for (AnnotationMetadata annotation : javaField.getAnnotations()) {
-                if (annotation.getAnnotationType().getFullyQualifiedTypeName().equals("javax.persistence.Version")) {
-                    isVersion = true;
-                }
-            }
-
-            if (isVersion) {
-                return "-1";
-            }
-
-        }
-        return null;
+            null, null);
     }
 
     public static FieldMetadata toFieldMetadata(String javaEntityId, ASFieldMetadata asField, boolean makePrivate) {
