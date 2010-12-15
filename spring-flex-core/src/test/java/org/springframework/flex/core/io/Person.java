@@ -93,5 +93,5 @@ public class Person {
 
     public void setChildren(Set<Person> children) {
         this.children = children;
-    }
+    }    
 }

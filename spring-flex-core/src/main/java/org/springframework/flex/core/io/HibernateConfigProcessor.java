@@ -51,7 +51,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
         if (hibernateConfigured) {
             Iterator<ClassMetadata> it = this.sessionFactory.getAllClassMetadata().values().iterator();
             while (it.hasNext()) {
-                SpringPropertyProxy proxy = new SpringPropertyProxy(it.next().getMappedClass(EntityMode.POJO));
+                SpringPropertyProxy proxy = new SpringPropertyProxy(it.next().getMappedClass(EntityMode.POJO), false);
                 proxy.setConversionService(this.conversionService);
                 PropertyProxyRegistry.getRegistry().register(proxy.getBeanType(), proxy);
             }
@@ -89,6 +89,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
         GenericConversionService conversionService = new GenericConversionService();
         conversionService.addConverter(new HibernateProxyConverter());
         conversionService.addConverterFactory(new PersistentCollectionConverterFactory());
+        conversionService.addConverter(new NumberConverter());
         return conversionService;
     }
 }

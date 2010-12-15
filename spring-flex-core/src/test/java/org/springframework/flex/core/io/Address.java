@@ -81,5 +81,5 @@ public class Address {
 
     public void setMoveInDate(Date moveInDate) {
         this.moveInDate = moveInDate;
-    }
+    }    
 }

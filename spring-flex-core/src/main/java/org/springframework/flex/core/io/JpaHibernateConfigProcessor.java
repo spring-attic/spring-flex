@@ -6,8 +6,6 @@ import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
@@ -28,12 +26,5 @@ public class JpaHibernateConfigProcessor extends HibernateConfigProcessor{
         Method gsfMethod = ReflectionUtils.findMethod(entityManagerFactory.getClass(), "getSessionFactory");
         Assert.notNull(gsfMethod, "Could not retrieve the underlying Hibernate SessionFactory from the provided EntityManagerFactory");
         setSessionFactory((SessionFactory) ReflectionUtils.invokeMethod(gsfMethod, entityManagerFactory));
-    }
-    
-    @Override
-    protected ConversionService getDefaultConversionService() {
-        GenericConversionService conversionService = (GenericConversionService) super.getDefaultConversionService();
-        conversionService.addConverter(new JpaNumericVersionConverter());
-        return conversionService;
     }
 }
