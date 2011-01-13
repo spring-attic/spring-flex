@@ -1,10 +1,7 @@
 
 package org.springframework.flex.core.io;
 
-import java.lang.reflect.Field;
 import java.util.Iterator;
-
-import javax.persistence.Embedded;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,9 +18,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.FieldCallback;
-import org.springframework.util.ReflectionUtils.FieldFilter;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.io.PropertyProxyRegistry;
@@ -59,13 +53,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
             while (it.hasNext()) {
                 SpringPropertyProxy proxy = new SpringPropertyProxy(it.next().getMappedClass(EntityMode.POJO), false);
                 proxy.setConversionService(this.conversionService);
-                PropertyProxyRegistry.getRegistry().register(proxy.getBeanType(), proxy);
-                ReflectionUtils.doWithFields(proxy.getBeanType(), new FieldCallback() {
-					public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-						if (PropertyProxyRegistry.getRegistry().getProxy(field.getType(), false, false) == null) {
-							PropertyProxyRegistry.getRegistry().register(field.getType(), new SpringPropertyProxy(field.getType(), false));
-						}
-					}}, new EmbeddedFieldFilter());
+                registerPropertyProxy(proxy);
             }
             log.info("Hibernate detected and AMF serialization support automatically installed successfully.");
         }
@@ -105,9 +93,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
         return conversionService;
     }
     
-    private static final class EmbeddedFieldFilter implements FieldFilter {
-		public boolean matches(Field field) {
-			return field.getAnnotation(Embedded.class) != null;
-		}
-	}
+    protected void registerPropertyProxy(SpringPropertyProxy proxy) {
+    	PropertyProxyRegistry.getRegistry().register(proxy.getBeanType(), proxy);
+    }
 }
