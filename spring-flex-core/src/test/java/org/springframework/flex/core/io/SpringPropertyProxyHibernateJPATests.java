@@ -40,6 +40,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import flex.messaging.io.PropertyProxy;
 import flex.messaging.io.PropertyProxyRegistry;
 import flex.messaging.io.SerializationContext;
 import flex.messaging.io.amf.AmfMessageDeserializer;
@@ -364,7 +365,7 @@ public class SpringPropertyProxyHibernateJPATests {
         assertTrue(person.getVersion() > 0);
     }
     
-    /*@Test
+    @Test
     @Transactional
     public void testPersistNewEntityWithPrimitiveVersion() throws IOException, ClassNotFoundException {
         assertTrue(isTransactional);
@@ -385,7 +386,14 @@ public class SpringPropertyProxyHibernateJPATests {
         deserializedContactInfo.setEmail("bob@foobar.com");
         em.flush();
         assertTrue(deserializedContactInfo.getVersion() > 0);
-    }*/
+    }
+    
+    @Test
+    public void testPropertyProxyRegisteredForEmbeddedClass() {
+    	PropertyProxy proxy = PropertyProxyRegistry.getRegistry().getProxy(EmbeddedAddress.class);
+    	assertNotNull(proxy);
+    	assertTrue(proxy instanceof SpringPropertyProxy);
+    }
     
     private EntityManager getEntityManager() {
         if (!isTransactional){
