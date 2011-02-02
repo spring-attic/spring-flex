@@ -53,8 +53,8 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
         assertEquals("The default adapter was not set", "actionscript", messageService.getDefaultAdapter());
     }
 
-    @SuppressWarnings("unchecked")
-    public void testMessageServiceAddedWithCustomDefaults() throws Exception {
+    @SuppressWarnings("rawtypes")
+	public void testMessageServiceAddedWithCustomDefaults() throws Exception {
         setDirty();
         MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
         processor.setBeanFactory(this.beanFactory);

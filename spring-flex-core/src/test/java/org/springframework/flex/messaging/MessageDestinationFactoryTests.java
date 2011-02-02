@@ -33,8 +33,6 @@ import org.springframework.flex.config.json.JsonConfigMapPropertyEditor;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import flex.messaging.FlexContext;
-import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.SecurityConstraint;
@@ -95,7 +93,6 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         assertTrue(destination.getAdapter().isStarted());
     }
 
-    @SuppressWarnings("unchecked")
     public void testDestinationWithExplicitProperties() throws Exception {
 
         this.factory = new MessageDestinationFactory();
@@ -134,7 +131,6 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
 
     }
 
-    @SuppressWarnings("unchecked")
     public void testDestinationWithJsonConfigMap() throws Exception {
 
         PropertyEditor editor = new JsonConfigMapPropertyEditor();

@@ -53,8 +53,8 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         assertEquals("The default adapter was not set", "java-object", remotingService.getDefaultAdapter());
     }
 
-    @SuppressWarnings("unchecked")
-    public void testRemotingServiceAddedWithCustomDefaults() throws Exception {
+    @SuppressWarnings("rawtypes")
+	public void testRemotingServiceAddedWithCustomDefaults() throws Exception {
         setDirty();
         RemotingServiceConfigProcessor processor = new RemotingServiceConfigProcessor();
         processor.setBeanFactory(this.beanFactory);

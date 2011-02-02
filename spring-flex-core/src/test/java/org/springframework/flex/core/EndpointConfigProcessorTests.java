@@ -92,8 +92,8 @@ public class EndpointConfigProcessorTests extends TestCase {
         this.broker.addEndpoint(this.endpoint3);
     }
 
-    @SuppressWarnings("unchecked")
-    public void testPostProcessAfterInit() throws Throwable {
+    @SuppressWarnings("rawtypes")
+	public void testPostProcessAfterInit() throws Throwable {
 
         List<EndpointAdvisor> advisors = new ArrayList<EndpointAdvisor>();
         advisors.add(this.advisor1);

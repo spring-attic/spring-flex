@@ -48,8 +48,8 @@ public class LoginMessageInterceptorTests extends TestCase {
         assertSame(this.outputMessage, this.interceptor.postProcess(null, this.inputMessage, this.outputMessage));
     }
 
-    @SuppressWarnings("unchecked")
-    public final void testPostProcessSuccessfulLogin() {
+    @SuppressWarnings("rawtypes")
+	public final void testPostProcessSuccessfulLogin() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);

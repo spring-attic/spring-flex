@@ -20,12 +20,12 @@ interface SpringSecurityConfigHelper {
 
     Object getPathMatcher();
 
-    String getSessionFixationPostProcessorClassName();
-
     String getEndpointInterceptorClassName();
 
     String getEndpointDefinitionSourceClassName();
 
     String getLoginCommandClassName();
+
+	String getSecurityConfigPostProcessorClassName();
 
 }

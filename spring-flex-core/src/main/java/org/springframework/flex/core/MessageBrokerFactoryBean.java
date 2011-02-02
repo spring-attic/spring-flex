@@ -115,8 +115,8 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
      * 
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    public void afterPropertiesSet() throws Exception {
+    @SuppressWarnings("rawtypes")
+	public void afterPropertiesSet() throws Exception {
 
         try {
             ServletConfig servletConfig = new DelegatingServletConfig();
@@ -388,8 +388,8 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
             return null;
         }
 
-        @SuppressWarnings("unchecked")
-        public Enumeration getInitParameterNames() {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+		public Enumeration getInitParameterNames() {
             return Collections.enumeration(Collections.EMPTY_SET);
         }
 

@@ -122,8 +122,8 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
     /**
      * Invoked when a Message is received from a Flex client.
      */
-    @SuppressWarnings("unchecked")
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public Object invoke(flex.messaging.messages.Message flexMessage) {
         if (logger.isDebugEnabled()) {
             logger.debug("received Flex Message: " + flexMessage);

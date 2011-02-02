@@ -47,9 +47,7 @@ public class AmfViewTests extends TestCase {
         AmfView view = new AmfView();
         view.render(model, request, response);
         
-        Object result = deserialize();
-        
-        //assertEquals(model, result);
+        deserialize();
     }
     
     private Object deserialize() throws ClassNotFoundException, IOException {

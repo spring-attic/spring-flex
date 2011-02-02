@@ -37,8 +37,8 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
 
     private MessageBroker broker;
 
-    @SuppressWarnings("unchecked")
-    public void testExportBeanWithCustomSettings() {
+    @SuppressWarnings("rawtypes")
+	public void testExportBeanWithCustomSettings() {
         this.broker = (MessageBroker) applicationContext.getBean("remoteServiceBroker2", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");

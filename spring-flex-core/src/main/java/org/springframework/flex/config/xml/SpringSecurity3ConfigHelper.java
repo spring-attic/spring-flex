@@ -13,12 +13,12 @@ import org.springframework.util.StringUtils;
 public class SpringSecurity3ConfigHelper implements SpringSecurityConfigHelper {
 
     private static final String LOGIN_COMMAND_CLASS_NAME = "org.springframework.flex.security3.SpringSecurityLoginCommand";
+    
+    private static final String SECURITY_CONFIG_POST_PROCESSOR_CLASS_NAME = "org.springframework.flex.security3.SecurityConfigurationPostProcessor";
 
     private static final String ENDPOINT_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.security3.EndpointInterceptor";
 
     private static final String ENDPOINT_DEFINITION_SOURCE_CLASS_NAME = "org.springframework.flex.security3.EndpointSecurityMetadataSource";
-
-    private static final String SESSION_FIXATION_POST_PROCESSOR_CLASS_NAME = "org.springframework.flex.security3.SessionFixationProtectionPostProcessor";
 
     private static final String LOGIN_MESSAGE_INTERCEPTOR_CLASS_NAME = "org.springframework.flex.security3.LoginMessageInterceptor";
     
@@ -80,7 +80,7 @@ public class SpringSecurity3ConfigHelper implements SpringSecurityConfigHelper {
         return LOGIN_COMMAND_CLASS_NAME;
     }
 
-    public String getSessionFixationPostProcessorClassName() {
-        return SESSION_FIXATION_POST_PROCESSOR_CLASS_NAME;
-    }
+	public String getSecurityConfigPostProcessorClassName() {
+		return SECURITY_CONFIG_POST_PROCESSOR_CLASS_NAME;
+	}
 }

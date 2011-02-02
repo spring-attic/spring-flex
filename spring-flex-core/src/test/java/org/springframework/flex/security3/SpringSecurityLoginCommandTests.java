@@ -17,6 +17,7 @@
 package org.springframework.flex.security3;
 
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.security.Principal;
@@ -26,6 +27,8 @@ import java.util.List;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,30 +38,59 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 import flex.messaging.FlexContext;
-import flex.messaging.FlexSession;
 import flex.messaging.security.LoginManager;
 
 public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests {
 
     @Mock
-    AuthenticationManager mgr;
+    private AuthenticationManager mgr;
     
-    SpringSecurityLoginCommand cmd;
+    @Mock
+    private SessionAuthenticationStrategy sas;
+    
+    @Mock
+    private RememberMeServices rms;
+    
+    private MockHttpServletRequest request;
+    
+    private MockHttpServletResponse response;
+    
+    private SpringSecurityLoginCommand cmd;
     
     @Override
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    	this.request = new MockHttpServletRequest();
+    	this.response = new MockHttpServletResponse();
+    	FlexContext.setThreadLocalHttpRequest(this.request);
+    	FlexContext.setThreadLocalHttpResponse(this.response);
+    	MockitoAnnotations.initMocks(this);
+    	
+    	List<LogoutHandler> logoutHandlers = new ArrayList<LogoutHandler>();
+    	logoutHandlers.add(new SecurityContextLogoutHandler());
+    	this.cmd = new SpringSecurityLoginCommand(mgr);
+    	this.cmd.setLogoutHandlers(logoutHandlers);
+    	this.cmd.setSessionAuthenticationStrategy(sas);
+    	this.cmd.setRememberMeServices(rms);
+    	this.cmd.afterPropertiesSet();
     }
 
-    public void testDoAuthentication_Failure() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
+		FlexContext.clearThreadLocalObjects();
+	}
+
+	public void testDoAuthentication_Failure() throws Exception {
 
         String username = "foo";
         String password = "bar";
 
         when(mgr.authenticate(isA(Authentication.class))).thenThrow(new UsernameNotFoundException("Authentication failed"));
-        this.cmd = new SpringSecurityLoginCommand(mgr);
 
         try {
             this.cmd.doAuthentication(username, password);
@@ -66,19 +98,22 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         } catch (AuthenticationException ex) {
             // expected
         }
+        verify(rms).loginFail(request, response);
     }
 
     public void testDoAuthentication_ValidLogin() throws Exception {
         String username = "foo";
         String password = "bar";
 
-        when(mgr.authenticate(isA(Authentication.class))).thenReturn(new UsernamePasswordAuthenticationToken(username, password));
-        this.cmd = new SpringSecurityLoginCommand(mgr);
+        Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
+        when(mgr.authenticate(isA(Authentication.class))).thenReturn(auth);
 
         Principal principal = this.cmd.doAuthentication(username, password);
 
         assertNotNull("A non-null Principal was not returned", principal);
         assertEquals(username, principal.getName());
+        verify(sas).onAuthentication(auth, this.request, this.response);
+        verify(rms).loginSuccess(request, response, auth);
     }
 
     public void testDoAuthorization_MatchingAuthority() throws Exception {
@@ -86,8 +121,6 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         authorities.add(new GrantedAuthorityImpl("ROLE_ABUSER"));
         Principal principal = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
-
-        this.cmd = new SpringSecurityLoginCommand(mgr);
 
         List<String> roles = new ArrayList<String>();
         roles.add("ROLE_ADMIN");
@@ -101,8 +134,6 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         authorities.add(new GrantedAuthorityImpl("ROLE_ABUSER"));
         Principal principal = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
 
-        this.cmd = new SpringSecurityLoginCommand(mgr);
-
         List<String> roles = new ArrayList<String>();
         roles.add("ROLE_ADMIN");
         assertFalse("Authorization should not pass", this.cmd.doAuthorization(principal, roles));
@@ -111,8 +142,6 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
     public void testLoginCommandRegisteredWithDefaultConfig() throws Exception {
 
         setDirty();
-
-        this.cmd = new SpringSecurityLoginCommand(mgr);
 
         addStartupProcessor(this.cmd);
 
@@ -127,7 +156,6 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
 
         setDirty();
 
-        this.cmd = new SpringSecurityLoginCommand(mgr);
         this.cmd.setPerClientAuthentication(true);
 
         addStartupProcessor(this.cmd);
@@ -143,43 +171,14 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         String username = "foo";
         String password = "bar";
 
-        MockFlexSession session = new MockFlexSession();
-        FlexContext.setThreadLocalSession(session);
-
-        this.cmd = new SpringSecurityLoginCommand(mgr);
-
         Principal principal = this.cmd.doAuthentication(username, password);
 
+        this.request.getSession();
         SecurityContext original = SecurityContextHolder.getContext();
 
         this.cmd.logout(principal);
 
         assertTrue("SecurityContext was not cleared", original != SecurityContextHolder.getContext());
+        assertNull(this.request.getSession(false));
     }
-
-    private static class MockFlexSession extends FlexSession {
-
-        private boolean valid = true;
-
-        @Override
-        public String getId() {
-            return "mockFlexSession";
-        }
-
-        @Override
-        public void invalidate() {
-            this.valid = false;
-        }
-
-        @Override
-        public boolean isPushSupported() {
-            return false;
-        }
-
-        @Override
-        public boolean isValid() {
-            return this.valid;
-        }
-    }
-
 }

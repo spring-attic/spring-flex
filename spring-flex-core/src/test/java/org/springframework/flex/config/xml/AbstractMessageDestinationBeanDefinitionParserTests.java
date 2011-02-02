@@ -28,7 +28,6 @@ public abstract class AbstractMessageDestinationBeanDefinitionParserTests extend
 
     protected MessageBroker broker;
 
-    @SuppressWarnings("unchecked")
     public void testDestination_CustomConfig() {
         this.broker = (MessageBroker) applicationContext.getBean("messageServiceBroker", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);

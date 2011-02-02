@@ -3,7 +3,7 @@ package org.springframework.flex.config;
 import org.springframework.beans.factory.FactoryBean;
 
 
-public class NoDefaultConstructorFactoryBean implements FactoryBean {
+public class NoDefaultConstructorFactoryBean implements FactoryBean<Object> {
 
     public NoDefaultConstructorFactoryBean(String foo) {
         

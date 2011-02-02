@@ -144,8 +144,8 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void testStartupProcessed() throws Exception {
+    @SuppressWarnings("rawtypes")
+	public void testStartupProcessed() throws Exception {
         MessageBroker broker = getMessageBroker();
         Iterator i = broker.getEndpoints().values().iterator();
         while (i.hasNext()) {

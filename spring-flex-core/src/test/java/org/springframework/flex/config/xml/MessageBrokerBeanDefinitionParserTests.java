@@ -55,18 +55,17 @@ import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
 import org.springframework.flex.core.io.Person;
 import org.springframework.flex.core.io.SpringPropertyProxy;
 import org.springframework.flex.security3.EndpointInterceptor;
-import org.springframework.flex.security3.FlexSessionInvalidatingAuthenticationListener;
+import org.springframework.flex.security3.SecurityConfigurationPostProcessor;
 import org.springframework.flex.security3.SpringSecurityLoginCommand;
 import org.springframework.flex.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.support.GenericWebApplicationContext;
-import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 import flex.messaging.MessageBroker;
@@ -282,10 +281,9 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             a = advisedEndpoint.getAdvisors()[1];
             assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
         }
-        applicationContext.getBean(BeanIds.FLEX_SESSION_AUTHENTICATION_LISTENER, FlexSessionInvalidatingAuthenticationListener.class);
-        RequestContextFilter filter = (RequestContextFilter) applicationContext.getBean(BeanIds.REQUEST_CONTEXT_FILTER, RequestContextFilter.class);
-        FilterChainProxy filterChain = (FilterChainProxy) applicationContext.getParent().getBean("org.springframework.security.filterChainProxy", FilterChainProxy.class);
-        assertTrue((filterChain.getFilterChainMap().get("/**")).contains(filter));
+        SecurityConfigurationPostProcessor processor = applicationContext.getBean(SecurityConfigurationPostProcessor.class);
+        assertNotNull("Security config processor not found", processor);
+        assertSame(ReflectionTestUtils.getField(processor, "sessionAuthenticationStrategy"), ReflectionTestUtils.getField(loginCommand, "sessionStrategy"));
     }
     
     @IfProfileValue(name=ENVIRONMENT, value=LCDS)

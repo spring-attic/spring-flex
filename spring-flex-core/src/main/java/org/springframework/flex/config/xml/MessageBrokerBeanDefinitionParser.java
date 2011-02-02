@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
@@ -285,7 +286,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             accessManager = securityHelper.getAccessManagerId();
         }
 
-        registerAuthenticationListenerIfNecessary(securedElement, parserContext);
+        registerSecurityConfigPostProcessorIfNecessary(parserContext, securedElement);
 
         String brokerId = parent.getAttribute(ID_ATTRIBUTE);
         registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, perClientAuthentication);
@@ -310,15 +311,6 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         nioEndpointInterceptors.add(new RuntimeBeanReference(loginInterceptorBeanId));
 
         registerEndpointInterceptorIfNecessary(securedElement, parserContext, interceptors, nioEndpointInterceptors, authManager, accessManager);
-    }
-
-    private void registerAuthenticationListenerIfNecessary(Element securedElement, ParserContext parserContext) {
-
-        if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.SESSION_FIXATION_PROTECTION_CONFIGURER)) {
-            BeanDefinitionBuilder configurerBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getSessionFixationPostProcessorClassName());
-            ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, configurerBuilder,
-                BeanIds.SESSION_FIXATION_PROTECTION_CONFIGURER);
-        }
     }
 
     private void registerConfigMapEditorIfNecessary(Element source, ParserContext parserContext) {
@@ -479,7 +471,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private void registerLoginCommand(String brokerId, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, Element securedElement,
         String authManager, boolean perClientAuthentication) {
 
-        String loginCommandId = brokerId + BeanIds.LOGIN_COMMAND_SUFFIX;
+    	String loginCommandId = brokerId + BeanIds.LOGIN_COMMAND_SUFFIX;
 
         BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginCommandClassName());
         loginCommandBuilder.addConstructorArgReference(authManager);
@@ -487,6 +479,15 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginCommandBuilder, loginCommandId);
         configProcessors.add(new RuntimeBeanReference(loginCommandId));
+    }
+    
+    private void registerSecurityConfigPostProcessorIfNecessary(ParserContext parserContext, Element securedElement) {
+    	if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.SECURITY_CONFIG_POST_PROCESSOR)) {
+	    	BeanDefinitionBuilder securityConfigPostProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getSecurityConfigPostProcessorClassName());
+	    	securityConfigPostProcessorBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+	    	securityConfigPostProcessorBuilder.setDependencyCheck(AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
+	    	ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, securityConfigPostProcessorBuilder, BeanIds.SECURITY_CONFIG_POST_PROCESSOR);
+    	}
     }
 
     private void registerMessageInterception(Element element, ParserContext parserContext, ManagedList<RuntimeBeanReference> advisors, ManagedSet<RuntimeBeanReference> interceptors,

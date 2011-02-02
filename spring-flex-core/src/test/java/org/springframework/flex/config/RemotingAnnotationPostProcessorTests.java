@@ -88,8 +88,8 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertEquals("Source not properly set", MyService1.class.getName(), rd.getSource());
     }
 
-    @SuppressWarnings("unchecked")
-    public void testExportBeanWithCustomSettings() {
+    @SuppressWarnings("rawtypes")
+	public void testExportBeanWithCustomSettings() {
         this.broker = (MessageBroker) applicationContext.getBean("annotatedRemoteServiceBroker", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");

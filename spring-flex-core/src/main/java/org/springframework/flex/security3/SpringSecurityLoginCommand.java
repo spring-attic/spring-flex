@@ -17,20 +17,32 @@
 package org.springframework.flex.security3;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.MessageBrokerFactoryBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.NullRememberMeServices;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
+import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
 import flex.messaging.io.MessageIOConstants;
 import flex.messaging.security.LoginCommand;
@@ -50,13 +62,19 @@ import flex.messaging.security.LoginManager;
  * 
  * @see org.springframework.flex.core.MessageBrokerFactoryBean
  */
-public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerConfigProcessor {
+public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerConfigProcessor, InitializingBean {
 
     private final AuthenticationManager authManager;
+    
+    private List<LogoutHandler> logoutHandlers;
+    
+    private RememberMeServices rememberMeServices;
 
+    private SessionAuthenticationStrategy sessionStrategy;
+    
     private boolean perClientAuthentication = false;
 
-    /**
+	/**
      * Creates a new SpringSecurityLoginCommand with the provided {@link AuthenticationManager}
      * 
      * @param authManager the authentication manager
@@ -65,24 +83,53 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
         Assert.notNull(authManager, "AuthenticationManager is required.");
         this.authManager = authManager;
     }
+    
+    public void afterPropertiesSet() throws Exception {		
+		if (this.sessionStrategy == null) {
+        	this.sessionStrategy = new NullAuthenticatedSessionStrategy();
+        }
+        if (this.rememberMeServices == null) {
+        	this.rememberMeServices = new NullRememberMeServices();
+        }
+        if (this.logoutHandlers == null) {
+        	this.logoutHandlers = new ArrayList<LogoutHandler>();
+        }
+        if (ClassUtils.isAssignableValue(LogoutHandler.class, this.rememberMeServices) && !this.logoutHandlers.contains(this.rememberMeServices)) {
+        	this.logoutHandlers.add((LogoutHandler) this.rememberMeServices);
+        }
+	}
 
     /**
      * 
      * {@inheritDoc}
      */
     public Principal doAuthentication(String username, Object credentials) {
-        Authentication authentication = this.authManager.authenticate(new UsernamePasswordAuthenticationToken(username, extractPassword(credentials)));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return authentication;
+    	HttpServletRequest request = FlexContext.getHttpRequest();
+    	HttpServletResponse response = FlexContext.getHttpResponse();
+    	try {
+	        Authentication authentication = this.authManager.authenticate(new UsernamePasswordAuthenticationToken(username, extractPassword(credentials)));
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        if (authentication != null && !isPerClientAuthentication()) {
+	        	if (request != null && response != null) {
+	        		this.sessionStrategy.onAuthentication(authentication, request, response);
+	        		this.rememberMeServices.loginSuccess(request, response, authentication);
+	        	}
+	        }
+	        return authentication;
+    	} catch (AuthenticationException ex) {
+    		if (request != null && response != null) {
+    			this.rememberMeServices.loginFail(request, response);
+    		}
+    		throw ex;
+    	}
     }
 
     /**
      * 
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    public boolean doAuthorization(Principal principal, List roles) {
+    @SuppressWarnings("rawtypes")
+	public boolean doAuthorization(Principal principal, List roles) {
         Assert.isInstanceOf(Authentication.class, principal, "This LoginCommand expects a Principal of type " + Authentication.class.getName());
         Authentication auth = (Authentication) principal;
         if (auth == null || auth.getPrincipal() == null || auth.getAuthorities() == null) {
@@ -120,7 +167,19 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
      * {@inheritDoc}
      */
     public boolean logout(Principal principal) {
-        SecurityContextHolder.clearContext();
+    	
+    	HttpServletRequest request = FlexContext.getHttpRequest();
+    	HttpServletResponse response = FlexContext.getHttpResponse();
+    	
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        
+    	if (request != null && response != null) {
+    		for (LogoutHandler handler : logoutHandlers) {
+                handler.logout(request, response, auth);
+            }
+    	} else {
+    		SecurityContextHolder.clearContext();
+    	}
         return true;
     }
 
@@ -143,7 +202,11 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
         return broker;
     }
 
-    /**
+    public void setLogoutHandlers(List<LogoutHandler> logoutHandlers) {
+		this.logoutHandlers = logoutHandlers;
+	}
+
+	/**
      * Configures the per-client authentication setting for the BlazeDS login manager
      * 
      * @param perClientAuthentication true if per-client authentication is enabled
@@ -151,6 +214,14 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
     public void setPerClientAuthentication(boolean perClientAuthentication) {
         this.perClientAuthentication = perClientAuthentication;
     }
+    
+    public void setRememberMeServices(RememberMeServices rememberMeServices) {
+		this.rememberMeServices = rememberMeServices;		
+	}
+    
+    public void setSessionAuthenticationStrategy(SessionAuthenticationStrategy sessionStrategy) {
+		this.sessionStrategy = sessionStrategy;
+	}
 
     /**
      * 
@@ -174,8 +245,8 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
      * @param credentials the Flex client credentials
      * @return the extracted password
      */
-    @SuppressWarnings("unchecked")
-    protected String extractPassword(Object credentials) {
+    @SuppressWarnings("rawtypes")
+	protected String extractPassword(Object credentials) {
         String password = null;
         if (credentials instanceof String) {
             password = (String) credentials;

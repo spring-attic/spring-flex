@@ -156,7 +156,6 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         assertSame(springAdapter, remotingDestination.getAdapter());
     }
 
-    @SuppressWarnings("unchecked")
     public void testDestinationConfiguredWithValidChannels() throws Exception {
         RemotingService remotingService = getRemotingService();
 
