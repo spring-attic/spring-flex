@@ -5,8 +5,7 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:tool="http://www.springframework.org/schema/tool"
 	targetNamespace="http://www.springframework.org/schema/flex"
-	elementFormDefault="qualified" attributeFormDefault="unqualified"
-	version="1.0">
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
 	
 	<xsd:annotation>
 		<xsd:documentation>
@@ -19,8 +18,8 @@ A XML-based DSL for configuring Spring BlazeDS Integration.
 		</xsd:documentation>
 	</xsd:annotation>
 	
-	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" />
-	<xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool-2.5.xsd" />
+	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" />
+	<xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool-3.0.xsd" />
 	
 	
 	<xsd:element name="message-broker">
@@ -713,6 +712,20 @@ the AccessDecisionManager.
 				<xsd:appinfo>
 					<tool:annotation kind="ref">
 						<tool:expected-type type="org.springframework.security.AccessDecisionManager"/>
+					</tool:annotation>
+				</xsd:appinfo>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="login-command" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+A bean reference to a custom Spring-managed BlazeDS LoginCommand implementation.  This will override the default SpringSecurityLoginCommand. 								
+]]>
+				</xsd:documentation>
+				<xsd:appinfo>
+					<tool:annotation kind="ref">
+						<tool:expected-type type="flex.messaging.security.LoginCommand"/>
 					</tool:annotation>
 				</xsd:appinfo>
 			</xsd:annotation>

@@ -18,6 +18,7 @@ package org.springframework.flex.config.xml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -286,6 +287,15 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertSame(ReflectionTestUtils.getField(processor, "sessionAuthenticationStrategy"), ReflectionTestUtils.getField(loginCommand, "sessionStrategy"));
     }
     
+    public void testMessageBroker_SecuredWithCustomLoginCommand() {
+        this.broker = applicationContext.getBean("customLoginCommand", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
+        LoginCommand loginCommand = this.broker.getLoginManager().getLoginCommand();
+        assertNotNull("LoginCommand not found", loginCommand);
+        assertTrue("LoginCommand of wrong type", loginCommand instanceof TestLoginCommand);
+        assertSame("LoginCommand not a managed spring bean", loginCommand, applicationContext.getBean("loginCommand"));
+    }
+    
     @IfProfileValue(name=ENVIRONMENT, value=LCDS)
     public void testMessageBroker_DefaultSecured_DataServices() {
         this.broker = applicationContext.getBean("defaultSecured", MessageBroker.class);
@@ -347,8 +357,8 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         }
     }
 
-    public void testMessageBroker_LoginCommandConfigured() {
-        this.broker = applicationContext.getBean("loginCommandConfigured", MessageBroker.class);
+    public void testMessageBroker_PerClientAuthentication() {
+        this.broker = applicationContext.getBean("perClientAuthentication", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         SpringSecurityLoginCommand loginCommand = (SpringSecurityLoginCommand) this.broker.getLoginManager().getLoginCommand();
         assertNotNull("LoginCommand not found", loginCommand);
@@ -480,6 +490,30 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             context.registerShutdownHook();
             return context;
         }
+    }
+    
+    public static final class TestLoginCommand implements LoginCommand {
+
+		public void start(ServletConfig config) {
+			
+		}
+
+		public void stop() {
+
+		}
+
+		public Principal doAuthentication(String username, Object credentials) {
+			return null;
+		}
+
+		@SuppressWarnings("rawtypes")
+		public boolean doAuthorization(Principal principal, List roles) {
+			return false;
+		}
+
+		public boolean logout(Principal principal) {
+			return false;
+		}
     }
 
     /**

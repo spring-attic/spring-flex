@@ -78,6 +78,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
 
     private static final String JSON_CONFIG_MAP_EDITOR_CLASS_NAME = "org.springframework.flex.config.json.JsonConfigMapPropertyEditor";
+    
+    private static final String LOGIN_COMMAND_PROCESSOR_CLASS_NAME = "org.springframework.flex.core.LoginCommandConfigProcessor";
 
     private static final String CONFIG_MAP_CLASS_NAME = "flex.messaging.config.ConfigMap";
 
@@ -97,6 +99,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private static final String AUTH_MANAGER_ATTR = "authentication-manager";
 
     private static final String ACCESS_MANAGER_ATTR = "access-decision-manager";
+    
+    private static final String LOGIN_COMMAND_ATTR = "login-command";
 
     private static final String PER_CLIENT_AUTHENTICATION_ATTR = "per-client-authentication";
 
@@ -471,14 +475,24 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private void registerLoginCommand(String brokerId, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, Element securedElement,
         String authManager, boolean perClientAuthentication) {
 
-    	String loginCommandId = brokerId + BeanIds.LOGIN_COMMAND_SUFFIX;
+    	String loginCommandId = securedElement.getAttribute(LOGIN_COMMAND_ATTR);
+    	if (!StringUtils.hasText(loginCommandId)) {
+    		loginCommandId = brokerId + BeanIds.LOGIN_COMMAND_SUFFIX;
 
-        BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginCommandClassName());
-        loginCommandBuilder.addConstructorArgReference(authManager);
-        loginCommandBuilder.addPropertyValue(PER_CLIENT_AUTHENTICATION_PROPERTY, perClientAuthentication);
+            BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginCommandClassName());
+            loginCommandBuilder.addConstructorArgReference(authManager);
+            loginCommandBuilder.addPropertyValue(PER_CLIENT_AUTHENTICATION_PROPERTY, perClientAuthentication);
 
-        ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginCommandBuilder, loginCommandId);
-        configProcessors.add(new RuntimeBeanReference(loginCommandId));
+            ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginCommandBuilder, loginCommandId);
+    	}
+    	
+        BeanDefinitionBuilder loginCommandProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(LOGIN_COMMAND_PROCESSOR_CLASS_NAME);
+        loginCommandProcessorBuilder.addConstructorArgReference(loginCommandId);
+        loginCommandProcessorBuilder.addPropertyValue(PER_CLIENT_AUTHENTICATION_PROPERTY, perClientAuthentication);
+        
+        String loginCommandProcessorId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginCommandProcessorBuilder);
+        
+        configProcessors.add(new RuntimeBeanReference(loginCommandProcessorId));
     }
     
     private void registerSecurityConfigPostProcessorIfNecessary(ParserContext parserContext, Element securedElement) {

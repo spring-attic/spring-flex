@@ -43,10 +43,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import flex.messaging.FlexContext;
-import flex.messaging.MessageBroker;
 import flex.messaging.io.MessageIOConstants;
 import flex.messaging.security.LoginCommand;
-import flex.messaging.security.LoginManager;
 
 /**
  * Custom BlazeDS {@link LoginCommand} that uses Spring Security for Authentication and Authorization.
@@ -62,7 +60,7 @@ import flex.messaging.security.LoginManager;
  * 
  * @see org.springframework.flex.core.MessageBrokerFactoryBean
  */
-public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerConfigProcessor, InitializingBean {
+public class SpringSecurityLoginCommand implements LoginCommand, InitializingBean {
 
     private final AuthenticationManager authManager;
     
@@ -117,7 +115,7 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
 	        }
 	        return authentication;
     	} catch (AuthenticationException ex) {
-    		if (request != null && response != null) {
+    		if (request != null && response != null && !isPerClientAuthentication()) {
     			this.rememberMeServices.loginFail(request, response);
     		}
     		throw ex;
@@ -183,37 +181,13 @@ public class SpringSecurityLoginCommand implements LoginCommand, MessageBrokerCo
         return true;
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public MessageBroker processAfterStartup(MessageBroker broker) {
-        return broker;
-    }
-
-    /**
-     * 
-     * {@inheritDoc}
-     */
-    public MessageBroker processBeforeStartup(MessageBroker broker) {
-        LoginManager loginManager = broker.getLoginManager();
-        loginManager.setLoginCommand(this);
-        loginManager.setPerClientAuthentication(this.perClientAuthentication);
-        return broker;
-    }
-
     public void setLogoutHandlers(List<LogoutHandler> logoutHandlers) {
 		this.logoutHandlers = logoutHandlers;
 	}
-
-	/**
-     * Configures the per-client authentication setting for the BlazeDS login manager
-     * 
-     * @param perClientAuthentication true if per-client authentication is enabled
-     */
-    public void setPerClientAuthentication(boolean perClientAuthentication) {
-        this.perClientAuthentication = perClientAuthentication;
-    }
+    
+	public void setPerClientAuthentication(boolean perClientAuthentication) {
+		this.perClientAuthentication = perClientAuthentication;
+	}
     
     public void setRememberMeServices(RememberMeServices rememberMeServices) {
 		this.rememberMeServices = rememberMeServices;		

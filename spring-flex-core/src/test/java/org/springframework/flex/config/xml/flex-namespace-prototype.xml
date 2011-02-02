@@ -1,15 +1,15 @@
 <beans:beans xmlns="http://www.springframework.org/schema/flex"
   xmlns:beans="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-              http://www.springframework.org/schema/flex http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+              http://www.springframework.org/schema/flex http://www.springframework.org/schema/flex/spring-flex-1.5.xsd">
               
     <!-- expanded version -->
     <message-broker id="customId" configuration-manager="" services-config-path="/WEB-INF/flex/services-config.xml">
     	<config-processor ref="myCustomConfigProcessorBean"/>
     	<exception-translator ref="myCustomExceptionTranslatorBean"/>
     	<mapping pattern="/*"/>
-    	<secured  authentication-manager="_authenticationManager" access-decision-manager="_accessManager" 
+    	<secured  authentication-manager="_authenticationManager" access-decision-manager="_accessManager" login-command="myLoginCommand"
     		per-client-authentication="false">
 	    	<secured-channel channel="my-secure-amf" access="ROLE_USER, ROLE_ADMIN"/>
 	    	<secured-endpoint-path pattern="**/messagebroker/*" access="ROLE_ANONYMOUS"/>

@@ -27,6 +27,7 @@ import java.util.List;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
+import org.springframework.flex.core.LoginCommandConfigProcessor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -143,7 +144,7 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
 
         setDirty();
 
-        addStartupProcessor(this.cmd);
+        addStartupProcessor(new LoginCommandConfigProcessor(this.cmd));
 
         LoginManager mgr = getMessageBroker().getLoginManager();
         assertTrue("LoginManager not started", mgr.isStarted());
@@ -158,13 +159,14 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
 
         this.cmd.setPerClientAuthentication(true);
 
-        addStartupProcessor(this.cmd);
+        LoginCommandConfigProcessor processor = new LoginCommandConfigProcessor(this.cmd);
+        processor.setPerClientAuthentication(true);
+        addStartupProcessor(processor);
 
         LoginManager mgr = getMessageBroker().getLoginManager();
         assertTrue("LoginManager not started", mgr.isStarted());
         assertSame("SpringSecurityLoginCommand not set on the LoginManager", this.cmd, mgr.getLoginCommand());
         assertTrue("Should be set to per client authentication", mgr.isPerClientAuthentication());
-
     }
 
     public void testLogoutWithDefaults() throws Exception {

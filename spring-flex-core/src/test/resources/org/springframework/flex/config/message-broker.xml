@@ -2,9 +2,9 @@
   xmlns:flex="http://www.springframework.org/schema/flex"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans 
-  			  http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  			  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
               http://www.springframework.org/schema/flex 
-              http://www.springframework.org/schema/flex/spring-flex-1.0.xsd"> 
+              http://www.springframework.org/schema/flex/spring-flex-1.5.xsd"> 
     	
 	<!-- Custom services-config.xml path -->
 	<flex:message-broker id="customServicesConfigPath" services-config-path="classpath:custom-services-config.xml"/>
@@ -40,8 +40,12 @@
 		<flex:secured/>
 	</flex:message-broker>
 	
-	<flex:message-broker id="loginCommandConfigured" >
+	<flex:message-broker id="perClientAuthentication" >
 		<flex:secured per-client-authentication="true"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customLoginCommand">
+		<flex:secured login-command="loginCommand"/>
 	</flex:message-broker>
 	
 	<flex:message-broker id="customRemotingService">
@@ -80,6 +84,8 @@
 	<bean id="interceptor2" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestMessageInterceptor"/>
 	
 	<bean id="interceptor3" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestResourceHandlingInterceptor"/>
+	
+	<bean id="loginCommand" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestLoginCommand"/>
 	
 	<bean id="my-default-adapter" class="org.springframework.flex.core.ManageableComponentFactoryBean" >
 		<constructor-arg value="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter"/>

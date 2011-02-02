@@ -18,7 +18,9 @@ package org.springframework.flex.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -38,6 +40,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -46,8 +49,10 @@ import flex.messaging.config.ConfigurationException;
 import flex.messaging.config.ConfigurationFileResolver;
 import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.ConfigurationParser;
+import flex.messaging.config.LoginCommandSettings;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.config.ServerConfigurationParser;
+import flex.messaging.security.LoginCommand;
 
 /**
  * Implementation of {@link ConfigurationManager} that uses Spring's {@link ResourceLoader} abstraction for resolving
@@ -90,7 +95,8 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
      * 
      * @param servletConfig the servlet config for the web application
      */
-    public MessagingConfiguration getMessagingConfiguration(ServletConfig servletConfig) {
+    @SuppressWarnings("unchecked")
+	public MessagingConfiguration getMessagingConfiguration(ServletConfig servletConfig) {
         Assert.isTrue(JdkVersion.getMajorJavaVersion() >= JdkVersion.JAVA_15, "Spring BlazeDS Integration requires a minimum of Java 1.5");
         Assert.notNull(servletConfig, "FlexConfigurationManager requires a non-null ServletConfig - "
             + "Is it being used outside a WebApplicationContext?");
@@ -98,6 +104,12 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
         MessagingConfiguration configuration = new MessagingConfiguration();
 
         configuration.getSecuritySettings().setServerInfo(servletConfig.getServletContext().getServerInfo());
+        
+        if (CollectionUtils.isEmpty(configuration.getSecuritySettings().getLoginCommands())) {
+        	LoginCommandSettings settings = new LoginCommandSettings();
+        	settings.setClassName(NoOpLoginCommand.class.getName());
+        	configuration.getSecuritySettings().getLoginCommands().put(LoginCommandSettings.SERVER_MATCH_OVERRIDE, settings);
+        }
 
         if (this.parser == null) {
             this.parser = getDefaultConfigurationParser();
@@ -148,6 +160,35 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 
     private ConfigurationParser getDefaultConfigurationParser() {
         return new CachingXPathServerConfigurationParser();
+    }
+    
+    /**
+     * This LoginCommand implementation serves as a temporary placeholder in the case where none is 
+     * defined in services-config.xml and a Spring-configured LoginCommand may be injected later.  This 
+     * serves to eliminate a potentially confusing warning message that would otherwise be logged by BlazeDS.
+     */
+    public static class NoOpLoginCommand implements LoginCommand {
+
+		public void start(ServletConfig config) {
+						
+		}
+
+		public void stop() {
+						
+		}
+
+		public Principal doAuthentication(String username, Object credentials) {
+			return null;
+		}
+
+		@SuppressWarnings("rawtypes")
+		public boolean doAuthorization(Principal principal, List roles) {
+			return false;
+		}
+
+		public boolean logout(Principal principal) {
+			return false;
+		}
     }
 
     /**
