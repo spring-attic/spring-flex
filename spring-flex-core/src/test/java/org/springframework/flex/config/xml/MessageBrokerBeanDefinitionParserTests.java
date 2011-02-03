@@ -200,13 +200,67 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advised advisedEndpoint = (Advised) endpoint;
             Advisor a = advisedEndpoint.getAdvisors()[1];
             assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
-            Set<MessageInterceptor> interceptors = ((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors();
-            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor1",
-                TestMessageInterceptor.class)));
-            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor2",
-                TestMessageInterceptor.class)));
-            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor3",
-                TestResourceHandlingInterceptor.class)));
+            List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>(((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors());
+            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor1",
+                TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor2",
+                TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor3",
+                TestResourceHandlingInterceptor.class));
+        }
+    }
+    
+    public void testMessageBroker_CustomMessageInterceptors_SpecifiedOrder() {
+    	this.broker = applicationContext.getBean("customMessageInterceptorsOrdered", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
+        for (Endpoint endpoint : this.broker.getEndpoints().values()) {
+            assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
+            Advised advisedEndpoint = (Advised) endpoint;
+            Advisor a = advisedEndpoint.getAdvisors()[1];
+            assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
+            List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>(((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors());
+            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor1",
+                TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor2",
+                TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor3",
+                TestResourceHandlingInterceptor.class));
+        }
+    }
+    
+    public void testMessageBroker_CustomMessageInterceptors_ReplaceDefault() {
+    	this.broker = applicationContext.getBean("customMessageInterceptorsReplaced", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
+        for (Endpoint endpoint : this.broker.getEndpoints().values()) {
+            assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
+            Advised advisedEndpoint = (Advised) endpoint;
+            Advisor a = advisedEndpoint.getAdvisors()[1];
+            assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
+            List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>(((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors());
+            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor1",
+                TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor2",
+                TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor3",
+                TestResourceHandlingInterceptor.class));
+        }
+    }
+    
+    public void testMessageBroker_CustomMessageInterceptors_BeforeAfter() {
+    	this.broker = applicationContext.getBean("customMessageInterceptorsBeforeAfter", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
+        for (Endpoint endpoint : this.broker.getEndpoints().values()) {
+            assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
+            Advised advisedEndpoint = (Advised) endpoint;
+            Advisor a = advisedEndpoint.getAdvisors()[1];
+            assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
+            List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>(((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors());
+            assertSame("Custom interceptor not found", interceptors.get(4), applicationContext.getBean("interceptor1",
+                TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor2",
+                TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor3",
+                TestResourceHandlingInterceptor.class));
         }
     }
     

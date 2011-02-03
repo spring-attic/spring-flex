@@ -653,7 +653,9 @@ A reference to a custom bean instance of org.springframework.flex.core.Exception
 			<xsd:annotation>
 				<xsd:documentation>
 					<![CDATA[
-A reference to a custom bean instance of org.springframework.flex.core.MessageInterceptor.								
+A reference to a custom bean instance of org.springframework.flex.core.MessageInterceptor.  You may optionally specify the exact order in the 
+message interceptor chain through use of the "order", "before", or "after" attributes.  If no order is specified, custom interceptors will 
+be placed first in the chain, in the order in which their tag appears. 								
 ]]>
 				</xsd:documentation>
 				<xsd:appinfo>
@@ -662,6 +664,21 @@ A reference to a custom bean instance of org.springframework.flex.core.MessageIn
 					</tool:annotation>
 				</xsd:appinfo>
 			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="after" type="named-message-interceptor"> 
+			<xsd:annotation> 
+				<xsd:documentation>The standard named interceptor immediately after which the message-interceptor should be placed in the chain. This feature will only be needed by advanced users who wish to mix their own interceptors into the message processing chain and have some knowledge of the standard Spring BlazeDS interceptors. The interceptor names map to specific Spring BlazeDS implementation interceptors.</xsd:documentation> 
+			</xsd:annotation> 
+		</xsd:attribute> 
+		<xsd:attribute name="before" type="named-message-interceptor"> 
+			<xsd:annotation> 
+				<xsd:documentation>The standard named interceptor immediately before which the message-interceptor should be placed in the chain. This feature will only be needed by advanced users who wish to mix their own interceptors into the message processing chain and have some knowledge of the standard Spring BlazeDS interceptors. The interceptor names map to specific Spring BlazeDS implementation interceptors.</xsd:documentation> 
+			</xsd:annotation> 
+		</xsd:attribute> 
+		<xsd:attribute name="position" type="named-message-interceptor"> 
+			<xsd:annotation> 
+				<xsd:documentation>The explicit position at which the message-interceptor should be placed in the chain. Use if you are replacing a standard interceptor, or if your interceptor needs to be explicitly placed in the FIRST or LAST position in the chain. This feature will only be needed by advanced users who wish to mix their own interceptors into the message processing chain and have some knowledge of the standard Spring BlazeDS interceptors. The interceptor names map to specific Spring BlazeDS implementation interceptors.</xsd:documentation> 
+			</xsd:annotation> 
 		</xsd:attribute>
 	</xsd:complexType>
 	
@@ -828,5 +845,15 @@ application-wide default channels are found, the first available AMF channel wit
 			</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
+	
+	<xsd:simpleType name="named-message-interceptor"> 
+		<xsd:restriction base="xsd:token"> 
+			<xsd:enumeration value="FIRST"/> 
+			<xsd:enumeration value="PER_CLIENT_AUTH_INTERCEPTOR"/> 
+			<xsd:enumeration value="LOGIN_MESSAGE_INTERCEPTOR"/> 
+			<xsd:enumeration value="ENDPOINT_INTERCEPTOR"/> 
+			<xsd:enumeration value="LAST"/> 
+		</xsd:restriction> 
+	</xsd:simpleType> 
 	
 </xsd:schema>

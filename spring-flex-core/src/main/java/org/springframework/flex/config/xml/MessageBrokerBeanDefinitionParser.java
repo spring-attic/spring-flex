@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2009 the original author or authors.
+ * Copyright 2002-2011 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
@@ -95,6 +96,12 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private static final String PATTERN_ATTR = "pattern";
 
     private static final String REF_ATTR = "ref";
+    
+    private static final String POSITION_ATTR = "position";
+    
+    private static final String BEFORE_ATTR = "before";
+    
+    private static final String AFTER_ATTR = "after";
 
     private static final String AUTH_MANAGER_ATTR = "authentication-manager";
 
@@ -174,13 +181,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         ManagedSet<RuntimeBeanReference> translators = new ManagedSet<RuntimeBeanReference>();
         translators.setSource(source);
 
-        // Initialize the message interceptors set
-        ManagedSet<RuntimeBeanReference> interceptors = new ManagedSet<RuntimeBeanReference>();
-        interceptors.setSource(source);
-
-        // Initialize the NIO Message interceptors set
-        ManagedSet<RuntimeBeanReference> nioEndpointInterceptors = new ManagedSet<RuntimeBeanReference>();
-        nioEndpointInterceptors.setSource(source);
+        // Initialize the message interceptors map
+        Map<Integer, RuntimeBeanReference> interceptors = new TreeMap<Integer, RuntimeBeanReference>();
 
         // Set the default ID if necessary
         if (!StringUtils.hasText(element.getAttribute(ID_ATTRIBUTE))) {
@@ -210,17 +212,19 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         registerExceptionTranslation(element, parserContext, advisors, translators, DomUtils.getChildElementsByTagName(element,
             EXCEPTION_TRANSLATOR_ELEMENT));
 
-        registerMessageInterception(element, parserContext, advisors, interceptors, DomUtils.getChildElementsByTagName(element,
+        configureCustomInterceptors(element, parserContext, advisors, interceptors, DomUtils.getChildElementsByTagName(element,
             MESSAGE_INTERCEPTOR_ELEMENT));
-
-        // Add all registered message interceptors to NIO Message Interceptors set
-        nioEndpointInterceptors.addAll(interceptors);    
         
-        configureSecurity(element, parserContext, configProcessors, advisors, translators, interceptors, nioEndpointInterceptors, DomUtils.getChildElementByTagName(element,
+        configureSecurity(element, parserContext, configProcessors, advisors, translators, interceptors, DomUtils.getChildElementByTagName(element,
             SECURED_ELEMENT));
 
         // Register Data Services specific Configuration processor
-        registerDataServicesConfigProcessorIfRequired(parserContext, configProcessors, translators, nioEndpointInterceptors, element, element.getAttribute(ID_ATTRIBUTE));
+        registerDataServicesConfigProcessorIfRequired(parserContext, configProcessors, translators, interceptors, element, element.getAttribute(ID_ATTRIBUTE));
+
+        ManagedSet<RuntimeBeanReference> managedInterceptors = new ManagedSet<RuntimeBeanReference>();
+        managedInterceptors.setSource(source);
+        managedInterceptors.addAll(interceptors.values());
+        registerMessageInterceptionAdvice(element, parserContext, advisors, managedInterceptors);
 
         registerEndpointProcessor(parserContext, configProcessors, advisors, element, element.getAttribute(ID_ATTRIBUTE));
 
@@ -272,7 +276,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     }
 
     private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, ManagedList<RuntimeBeanReference> advisors,
-        ManagedSet<RuntimeBeanReference> translators, ManagedSet<RuntimeBeanReference> interceptors, ManagedSet<RuntimeBeanReference> nioEndpointInterceptors, Element securedElement) {
+        ManagedSet<RuntimeBeanReference> translators, Map<Integer, RuntimeBeanReference> interceptors, Element securedElement) {
 
         if (securedElement == null) {
             return;
@@ -302,19 +306,18 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         // Register PerClientAuthenticationInterceptor as necessary
         BeanDefinitionBuilder perClientInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getPerClientAuthenticationInterceptorClassName());
         String perClientInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, perClientInterceptorBuilder);
-        if (perClientAuthentication) {
-            interceptors.add(new RuntimeBeanReference(perClientInterceptorBeanId));
+        if (perClientAuthentication && !interceptors.containsKey(MessageInterceptors.PER_CLIENT_AUTH_INTERCEPTOR.getOrder())) {
+            interceptors.put(MessageInterceptors.PER_CLIENT_AUTH_INTERCEPTOR.getOrder(), new RuntimeBeanReference(perClientInterceptorBeanId));
         }
-        // For NIO Endpoints we always need the 'PerClientAuthenticationInterceptor'
-        nioEndpointInterceptors.add(new RuntimeBeanReference(perClientInterceptorBeanId));
         
         // Register LoginMessageInterceptor
-        BeanDefinitionBuilder loginInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginMessageInterceptorClassName());
-        String loginInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginInterceptorBuilder);
-        interceptors.add(new RuntimeBeanReference(loginInterceptorBeanId));
-        nioEndpointInterceptors.add(new RuntimeBeanReference(loginInterceptorBeanId));
+        if (!interceptors.containsKey(MessageInterceptors.LOGIN_MESSAGE_INTERCEPTOR.getOrder())) {
+	        BeanDefinitionBuilder loginInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginMessageInterceptorClassName());
+	        String loginInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginInterceptorBuilder);
+	        interceptors.put(MessageInterceptors.LOGIN_MESSAGE_INTERCEPTOR.getOrder(), new RuntimeBeanReference(loginInterceptorBeanId));
+        }
 
-        registerEndpointInterceptorIfNecessary(securedElement, parserContext, interceptors, nioEndpointInterceptors, authManager, accessManager);
+        registerEndpointInterceptorIfNecessary(securedElement, parserContext, interceptors, authManager, accessManager);
     }
 
     private void registerConfigMapEditorIfNecessary(Element source, ParserContext parserContext) {
@@ -338,9 +341,9 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         }
     }
 
-    private void registerEndpointInterceptorIfNecessary(Element securedElement, ParserContext parserContext, ManagedSet<RuntimeBeanReference> interceptors,
-        ManagedSet<RuntimeBeanReference> nioEndpointInterceptors, String authManager, String accessManager) {
-        if (securedElement.hasChildNodes()) {
+    private void registerEndpointInterceptorIfNecessary(Element securedElement, ParserContext parserContext, Map<Integer, RuntimeBeanReference> interceptors,
+        String authManager, String accessManager) {
+        if (securedElement.hasChildNodes() && !interceptors.containsKey(MessageInterceptors.ENDPOINT_INTERCEPTOR.getOrder())) {
             BeanDefinitionBuilder interceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getEndpointInterceptorClassName());
             interceptorBuilder.addPropertyReference(AUTH_MANAGER_PROPERTY, authManager);
             if (StringUtils.hasText(accessManager)) {
@@ -380,17 +383,28 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             String endpointDefSourceId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, endpointDefSourceBuilder);
             interceptorBuilder.addPropertyReference(OBJECT_DEF_SOURCE_PROPERTY, endpointDefSourceId);
             String interceptorId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, interceptorBuilder);
-            interceptors.add(new RuntimeBeanReference(interceptorId));
-            nioEndpointInterceptors.add(new RuntimeBeanReference(interceptorId));
+            interceptors.put(MessageInterceptors.ENDPOINT_INTERCEPTOR.getOrder(), new RuntimeBeanReference(interceptorId));
         }
     }
 
     private void registerDataServicesConfigProcessorIfRequired(ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, 
-        ManagedSet<RuntimeBeanReference> translators, ManagedSet<RuntimeBeanReference> nioEndpointInterceptors, Element securedElement, String brokerId) {        
-        if (RuntimeEnvironment.isLCDS() && (!nioEndpointInterceptors.isEmpty() || !translators.isEmpty())) {
+        ManagedSet<RuntimeBeanReference> translators, Map<Integer, RuntimeBeanReference> interceptors, Element securedElement, String brokerId) {        
+        if (RuntimeEnvironment.isLCDS() && (!interceptors.isEmpty() || !translators.isEmpty())) {
             BeanDefinitionBuilder lcdsConfigProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DATASERVICES_PROCESSOR_CLASS_NAME);
             lcdsConfigProcessorBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);
-            lcdsConfigProcessorBuilder.addPropertyValue(MESSAGE_INTERCEPTORS_PROPERTY, nioEndpointInterceptors);
+            
+            //NIO Endpoints require the PerClientAuthenticationInterceptor
+            if (!interceptors.containsKey(MessageInterceptors.PER_CLIENT_AUTH_INTERCEPTOR.getOrder())) {
+            	BeanDefinitionBuilder perClientInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getPerClientAuthenticationInterceptorClassName());
+                String perClientInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, perClientInterceptorBuilder);
+                interceptors.put(MessageInterceptors.PER_CLIENT_AUTH_INTERCEPTOR.getOrder(), new RuntimeBeanReference(perClientInterceptorBeanId));
+            }
+            
+            ManagedSet<RuntimeBeanReference> managedInterceptors = new ManagedSet<RuntimeBeanReference>();
+            managedInterceptors.addAll(interceptors.values());
+            managedInterceptors.setSource(parserContext.extractSource(securedElement));
+            
+            lcdsConfigProcessorBuilder.addPropertyValue(MESSAGE_INTERCEPTORS_PROPERTY, managedInterceptors);
             ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, lcdsConfigProcessorBuilder, brokerId
                     + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX);
             configProcessors.add(new RuntimeBeanReference(brokerId + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX));
@@ -503,18 +517,30 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 	    	ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, securityConfigPostProcessorBuilder, BeanIds.SECURITY_CONFIG_POST_PROCESSOR);
     	}
     }
-
-    private void registerMessageInterception(Element element, ParserContext parserContext, ManagedList<RuntimeBeanReference> advisors, ManagedSet<RuntimeBeanReference> interceptors,
-        List<Element> messageInterceptorElements) {
-
-        if (!CollectionUtils.isEmpty(messageInterceptorElements)) {
+    
+    private void configureCustomInterceptors(Element element, ParserContext parserContext, ManagedList<RuntimeBeanReference> advisors, Map<Integer, RuntimeBeanReference> interceptors,
+            List<Element> messageInterceptorElements) {
+    	if (!CollectionUtils.isEmpty(messageInterceptorElements)) {
             Iterator<Element> i = messageInterceptorElements.iterator();
             while (i.hasNext()) {
-                Element messageProcessorElement = i.next();
-                interceptors.add(new RuntimeBeanReference(messageProcessorElement.getAttribute(REF_ATTR)));
+                Element messageInterceptorElement = i.next();
+                int key = MessageInterceptors.FIRST.getOrder();
+                if (messageInterceptorElement.hasAttribute(POSITION_ATTR)) {
+                	key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(POSITION_ATTR)).getOrder();
+                } else if (messageInterceptorElement.hasAttribute(AFTER_ATTR)) {
+                	key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(AFTER_ATTR)).getOrder() + 1;
+                } else if (messageInterceptorElement.hasAttribute(BEFORE_ATTR)) {
+                	key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(BEFORE_ATTR)).getOrder() - 50;
+                }
+                while (interceptors.get(key) != null) {
+            		key++;
+            	}
+                interceptors.put(key, new RuntimeBeanReference(messageInterceptorElement.getAttribute(REF_ATTR)));
             }
         }
+    }
 
+    private void registerMessageInterceptionAdvice(Element element, ParserContext parserContext, ManagedList<RuntimeBeanReference> advisors, ManagedSet<RuntimeBeanReference> interceptors) {
         BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(SERVICE_MESSAGE_ADVISOR_CLASS_NAME);
         BeanDefinitionBuilder messageInterceptionBuilder = BeanDefinitionBuilder.genericBeanDefinition(MESSAGE_INTERCEPTION_CLASS_NAME);
         messageInterceptionBuilder.addPropertyValue(MESSAGE_INTERCEPTORS_PROPERTY, interceptors);
@@ -534,5 +560,4 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         }
     }
-
 }

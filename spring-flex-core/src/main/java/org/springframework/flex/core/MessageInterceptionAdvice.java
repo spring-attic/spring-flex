@@ -16,7 +16,7 @@
 
 package org.springframework.flex.core;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Stack;
 
@@ -32,7 +32,7 @@ import flex.messaging.messages.Message;
  */
 public class MessageInterceptionAdvice implements MethodInterceptor {
 
-    private Set<MessageInterceptor> messageInterceptors = new HashSet<MessageInterceptor>();
+    private Set<MessageInterceptor> messageInterceptors = new LinkedHashSet<MessageInterceptor>();
 
     /**
      * Returns the chain of provided {@link MessageInterceptor}s
