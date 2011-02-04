@@ -39,6 +39,8 @@ public class ExceptionTranslationAdvice implements ThrowsAdvice {
     private static final String SERVER_PROCESSING_CODE = "Server.Processing";
 
     private Set<ExceptionTranslator> exceptionTranslators = new HashSet<ExceptionTranslator>();
+    
+    private ExceptionLogger exceptionLogger = new DefaultExceptionLogger();
 
     /**
      * Apply translation to the thrown exception.
@@ -63,14 +65,24 @@ public class ExceptionTranslationAdvice implements ThrowsAdvice {
             if (translator.handles(candidateType)) {
                 MessageException result = translator.translate(candidate);
                 if (result != null) {
+                	exceptionLogger.log(result);
                     throw result;
                 }
             }
         }
+        exceptionLogger.log(original);
         throw original;
     }
 
-    /**
+    public ExceptionLogger getExceptionLogger() {
+		return exceptionLogger;
+	}
+
+	public void setExceptionLogger(ExceptionLogger exceptionLogger) {
+		this.exceptionLogger = exceptionLogger;
+	}
+
+	/**
      * Returns the set of provided exception translators
      * 
      * @return the exception translators

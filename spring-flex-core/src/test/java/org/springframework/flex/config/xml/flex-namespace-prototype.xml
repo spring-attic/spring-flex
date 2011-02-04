@@ -5,7 +5,7 @@
               http://www.springframework.org/schema/flex http://www.springframework.org/schema/flex/spring-flex-1.5.xsd">
               
     <!-- expanded version -->
-    <message-broker id="customId" configuration-manager="" services-config-path="/WEB-INF/flex/services-config.xml">
+    <message-broker id="customId" configuration-manager="" services-config-path="/WEB-INF/flex/services-config.xml" exception-logger="">
     	<config-processor ref="myCustomConfigProcessorBean"/>
     	<message-interceptor ref="" position="PER_CLIENT_AUTH_INTERCEPTOR" />
     	<exception-translator ref="myCustomExceptionTranslatorBean"/>
@@ -15,7 +15,7 @@
 	    	<secured-channel channel="my-secure-amf" access="ROLE_USER, ROLE_ADMIN"/>
 	    	<secured-endpoint-path pattern="**/messagebroker/*" access="ROLE_ANONYMOUS"/>
 		</secured>
-		<!--  <remoting-adapter class="foo.bar.CustomAdapter"/> -->
+		<!-- <remoting-adapter class="foo.bar.CustomAdapter"/> -->
     </message-broker>
 
     <remoting-destination message-broker="customId" ref="ping" destination-id="pingRemote" exclude-methods="foo, bar" include-methods="baz"/>

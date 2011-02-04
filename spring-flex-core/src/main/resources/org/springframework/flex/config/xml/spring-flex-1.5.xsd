@@ -147,6 +147,24 @@ implementation.
 							</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:attribute>
+					<xsd:attribute name="exception-logger" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>
+								<![CDATA[
+Sets a reference to a custom org.springframework.flex.core.ExceptionLogger bean.  The default provided implementation is
+org.springframework.flex.core.DefaultExceptionLogger, which simply logs all exceptions thrown during the MessageBroker's 
+request handling process at the WARN level using Commons Logging.  The most common reason for providing a custom bean 
+instance of this class would be to provide a more fine-grained strategy for logging exceptions, perhaps logging different 
+types of exceptions at different levels, etc.						
+]]>
+							</xsd:documentation>
+							<xsd:appinfo>
+								<tool:annotation kind="ref" >
+									<tool:expected-type type="org.springframework.flex.core.ExceptionLogger"/>
+								</tool:annotation>
+							</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:attribute>
 					<xsd:attribute name="mapping-order" type="xsd:int">
 						<xsd:annotation>
 							<xsd:documentation>

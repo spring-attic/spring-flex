@@ -47,6 +47,7 @@ import org.springframework.flex.config.FlexConfigurationManager;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.config.MessageBrokerContextLoader;
 import org.springframework.flex.config.TestWebInfResourceLoader;
+import org.springframework.flex.core.ExceptionLogger;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.flex.core.MessageInterceptionAdvice;
@@ -143,6 +144,20 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertTrue(PropertyProxyRegistry.getRegistry().getProxy(Person.class) instanceof SpringPropertyProxy);
     }
 
+    public void testMessageBroker_CustomExceptionLogger() {
+        this.broker = applicationContext.getBean("customExceptionLogger", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
+        for (Endpoint endpoint : this.broker.getEndpoints().values()) {
+            assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
+            Advised advisedEndpoint = (Advised) endpoint;
+            Advisor a = advisedEndpoint.getAdvisors()[0];
+            assertTrue("Exception translation advice was not applied", a.getAdvice() instanceof ExceptionTranslationAdvice);
+            ExceptionLogger logger = ((ExceptionTranslationAdvice) a.getAdvice()).getExceptionLogger();
+            assertSame("Custom exception logger not found", logger, applicationContext.getBean("exceptionLogger",
+                TestExceptionLogger.class));
+        }
+    }
+    
     public void testMessageBroker_CustomExceptionTranslator() {
         this.broker = applicationContext.getBean("customExceptionTranslators", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
@@ -568,6 +583,13 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 		public boolean logout(Principal principal) {
 			return false;
 		}
+    }
+    
+    public static final class TestExceptionLogger implements ExceptionLogger {
+
+		public void log(Throwable throwable) {
+
+		}    	
     }
 
     /**

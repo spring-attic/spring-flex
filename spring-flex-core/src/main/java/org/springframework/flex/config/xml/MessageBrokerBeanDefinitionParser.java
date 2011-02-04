@@ -86,6 +86,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     // --------------------------- XML Config Attributes ---------------------//
     private static final String CONFIGURATION_MANAGER_ATTR = "configuration-manager";
+    
+    private static final String EXCEPTION_LOGGER_ATTR = "exception-logger";
 
     private static final String SERVICES_CONFIG_PATH_ATTR = "services-config-path";
 
@@ -434,6 +436,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(SERVICE_MESSAGE_ADVISOR_CLASS_NAME);
         BeanDefinitionBuilder exceptionTranslationBuilder = BeanDefinitionBuilder.genericBeanDefinition(EXCEPTION_TRANSLATION_CLASS_NAME);
         exceptionTranslationBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);
+        ParsingUtils.mapOptionalBeanRefAttributes(element, exceptionTranslationBuilder, parserContext, EXCEPTION_LOGGER_ATTR);
         String exceptionTranslationId = ParsingUtils.registerInfrastructureComponent(element, parserContext, exceptionTranslationBuilder);
         advisorBuilder.addConstructorArgReference(exceptionTranslationId);
         String advisorId = ParsingUtils.registerInfrastructureComponent(element, parserContext, advisorBuilder);
