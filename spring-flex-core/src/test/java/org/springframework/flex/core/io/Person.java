@@ -1,6 +1,8 @@
 
 package org.springframework.flex.core.io;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -93,5 +95,47 @@ public class Person {
 
     public void setChildren(Set<Person> children) {
         this.children = children;
-    }    
+    }
+    
+    public static Person stubPerson() {
+        Person father = new Person();
+        father.setName("Dad");
+        
+        Address address = new Address();
+        address.setStreet("777 Techwood Drive");
+        address.setCity("Atlanta");
+        address.setState("GA");
+        address.setZipcode("30022");
+        address.setRooms(5);
+        address.setMoveInDate(new Date());
+        
+        father.setAddress(address);         
+
+        Person mother = new Person();
+        mother.setName("Mom");
+        mother.setSpouse(father);
+
+        father.setSpouse(mother);
+
+        Person child1 = new Person();
+        child1.setName("Jack");
+
+        Person daughterInLaw = new Person();
+        daughterInLaw.setName("Lisa");
+        daughterInLaw.setSpouse(child1);
+
+        child1.setSpouse(daughterInLaw);
+
+        Person child2 = new Person();
+        child2.setName("Jill");
+
+        Set<Person> children = new HashSet<Person>();
+        children.add(child1);
+        children.add(child2);
+
+        father.setChildren(children);
+        mother.setChildren(children);
+        
+        return father;
+    }
 }
