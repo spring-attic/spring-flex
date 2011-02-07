@@ -11,7 +11,7 @@
 		<security:anonymous enabled="false"/>
 	</security:http>
 	
-	<bean id="testEntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+	<bean id="testEntryPoint" class="org.springframework.flex.security3.FlexAuthenticationEntryPoint"/>
 	
 	<security:authentication-manager>
 		<security:authentication-provider>

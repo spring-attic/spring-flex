@@ -18,6 +18,7 @@ package org.springframework.flex.security3;
 
 import java.beans.PropertyDescriptor;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.Filter;
@@ -33,12 +34,14 @@ import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcess
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
 
 import flex.messaging.FlexSession;
 
@@ -108,6 +111,16 @@ public class SecurityConfigurationPostProcessor implements MergedBeanDefinitionP
 	        		}
 	        	}
 	        }
+		}
+		
+		Map<String, ExceptionTranslator> exceptionTranslators = BeanFactoryUtils.beansOfTypeIncludingAncestors(context, ExceptionTranslator.class);
+		if (!CollectionUtils.isEmpty(exceptionTranslators)) {
+			Map<String, FlexAuthenticationEntryPoint> entryPoints = BeanFactoryUtils.beansOfTypeIncludingAncestors(context, FlexAuthenticationEntryPoint.class);
+			for (FlexAuthenticationEntryPoint entryPoint: entryPoints.values()) {
+				if (CollectionUtils.isEmpty(entryPoint.getExceptionTranslators())) {
+					entryPoint.setExceptionTranslators(new HashSet<ExceptionTranslator>(exceptionTranslators.values()));
+				}
+			}
 		}
 	}
 
