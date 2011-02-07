@@ -29,19 +29,32 @@ public abstract class RuntimeEnvironment {
 
     private static final String ASYNC_MESSAGE_BROKER_CLASS_NAME = "flex.messaging.AsyncMessageBroker";
 
+    private static final String SPRING_SUPPORT_CLASS_NAME = "flex.springintegration.core.DataServicesConfigProcessor";
+    
     private static final boolean IS_LCDS_ENVIRONMENT;
+    
+    private static final boolean IS_SPRING_SUPPORT_AVAILABLE;
 
     static {
         boolean asyncMessageBrokerClassPresent;
-
+        boolean springSupportClassPresent;
+        
         try {
             ClassUtils.forName(ASYNC_MESSAGE_BROKER_CLASS_NAME, null);
             asyncMessageBrokerClassPresent = true;
         } catch (ClassNotFoundException ex) {
             asyncMessageBrokerClassPresent = false;
         }
+        
+        try {
+        	ClassUtils.forName(SPRING_SUPPORT_CLASS_NAME, null);
+            springSupportClassPresent = true;
+        } catch (ClassNotFoundException ex) {
+        	springSupportClassPresent = false;
+        }
 
         IS_LCDS_ENVIRONMENT = asyncMessageBrokerClassPresent;
+        IS_SPRING_SUPPORT_AVAILABLE = springSupportClassPresent;
     }
 
     /**
@@ -57,5 +70,8 @@ public abstract class RuntimeEnvironment {
     public static boolean isBlazeDS() {
         return !IS_LCDS_ENVIRONMENT;
     }
-
+    
+    public static boolean isSpringSupportAvailable() {
+    	return IS_SPRING_SUPPORT_AVAILABLE;
+    }
 }

@@ -85,6 +85,9 @@ import flex.messaging.services.remoting.adapters.JavaAdapter;
 @ContextConfiguration(locations="classpath:org/springframework/flex/config/message-broker.xml", loader=MessageBrokerBeanDefinitionParserTests.ParentContextLoader.class)
 public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
 
+	private static final String DATA_SERVICES_PROCESSOR_CLASS_NAME = 
+		(String) ReflectionTestUtils.getField(new MessageBrokerBeanDefinitionParser(), "DATASERVICES_PROCESSOR_CLASS_NAME");
+	
     private MessageBroker broker;
 
     public void testMessageBroker_CustomConfigManager() {
@@ -113,7 +116,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
 
         try {
-            Class<?> dsConfigProcessorClazz = Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME);
+        	Class<?> dsConfigProcessorClazz = Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME);
 
             // The bean is only present when either a custom exception translator or message interceptor is present, 
             // or in case when the message broker is secured.
@@ -598,7 +601,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
     private Object getDataServicesConfigProcessor(String messageBrokerId) throws ClassNotFoundException {
         Object dataServicesConfigProcessor = applicationContext.getBean(
             messageBrokerId + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, 
-            Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME));
+            Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME));
         return dataServicesConfigProcessor;
     }
 
@@ -608,7 +611,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
     @SuppressWarnings("unchecked")
     private Set<ExceptionTranslator> getExceptionTranslators(Object dataServicesConfigProcessor) 
     throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Class<?> clazz = Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME);
+        Class<?> clazz = Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME);
         Method getExceptionTranslatorsMethod = clazz.getMethod("getExceptionTranslators", (Class<?>[])null);
         return (Set<ExceptionTranslator>)getExceptionTranslatorsMethod.invoke(dataServicesConfigProcessor, (Object[])null);
     }
@@ -619,7 +622,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
     @SuppressWarnings("unchecked")
     private Set<MessageInterceptor> getMessageInterceptors(Object dataServicesConfigProcessor)
     throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Class<?> clazz = Class.forName(MessageBrokerBeanDefinitionParser.DATASERVICES_PROCESSOR_CLASS_NAME);
+        Class<?> clazz = Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME);
         Method getMessageInterceptorsMethod = clazz.getMethod("getMessageInterceptors", (Class<?>[])null);
         return (Set<MessageInterceptor>)getMessageInterceptorsMethod.invoke(dataServicesConfigProcessor, (Object[])null);
     }    

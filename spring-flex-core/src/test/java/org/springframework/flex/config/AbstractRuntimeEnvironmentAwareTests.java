@@ -27,6 +27,7 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
     protected static final String ENVIRONMENT = "environment";
     protected static final String BLAZEDS = "blazeds";
     protected static final String LCDS = "lcds";
+    protected static final String LCDS_LEGACY = "lcdslegacy";
 
     public static final class RuntimeEnvironmentProfileValueSource implements ProfileValueSource {
     
@@ -35,8 +36,10 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
            Assert.isTrue(key.equals(ENVIRONMENT), "Unknown profile key.");
            if (RuntimeEnvironment.isBlazeDS()) {
                return BLAZEDS;
-           } else if (RuntimeEnvironment.isLCDS()) {
+           } else if (RuntimeEnvironment.isLCDS() && RuntimeEnvironment.isSpringSupportAvailable()) {
                return LCDS;
+           } else if (RuntimeEnvironment.isLCDS()) {
+        	   return LCDS_LEGACY;
            } else {
                throw new IllegalStateException("Runtime data services environment is unknown.");
            }

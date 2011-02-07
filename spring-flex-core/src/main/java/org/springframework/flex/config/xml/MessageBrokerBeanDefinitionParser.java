@@ -70,7 +70,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     private static final String MESSAGING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.MessageServiceConfigProcessor";
 
-    public static final String DATASERVICES_PROCESSOR_CLASS_NAME = "flex.springintegration.core.DataServicesConfigProcessor";
+    private static final String DATASERVICES_PROCESSOR_CLASS_NAME = "flex.springintegration.core.DataServicesConfigProcessor";
 
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
 
