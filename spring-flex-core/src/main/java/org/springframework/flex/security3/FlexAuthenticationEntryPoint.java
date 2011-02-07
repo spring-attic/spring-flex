@@ -1,6 +1,7 @@
 package org.springframework.flex.security3;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -23,7 +24,6 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.util.CollectionUtils;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import flex.messaging.MessageException;
 import flex.messaging.io.MessageIOConstants;
 import flex.messaging.io.amf.ActionMessage;
@@ -57,6 +57,8 @@ public class FlexAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
 
 	private static final Log log = LogFactory.getLog(FlexAuthenticationEntryPoint.class);
 	
+	private static final ExceptionTranslator DEFAULT_TRANSLATOR = new SecurityExceptionTranslator(); 
+	
 	private final AmfHttpMessageConverter converter = new AmfHttpMessageConverter();
 	
 	private final MediaType amfMediaType = new MediaType("application", "x-amf");
@@ -72,12 +74,11 @@ public class FlexAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
 	 * <code>ActionMessage</code>, or if no appropriate <code>ExceptionTranslator</code> is found, will simply 
 	 * delegate to the parent class to return a 403 response.
 	 */
-	@SuppressWarnings("unchecked")
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
 			throws IOException, ServletException {
 		
 		if (CollectionUtils.isEmpty(this.exceptionTranslators)) {
-			exceptionTranslators = Collections.singleton(new SecurityExceptionTranslator());
+			exceptionTranslators = Collections.singleton(DEFAULT_TRANSLATOR);
 		}
 		
 		HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
