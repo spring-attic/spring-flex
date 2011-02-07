@@ -74,7 +74,7 @@ public class MessageServiceConfigProcessor extends AbstractServiceConfigProcesso
                 return;
             }
         }
-        log.warn("No appropriate default channels were detected for the RemotingService.  "
+        log.warn("No appropriate default channels were detected for the MessageService.  "
             + "The channels must be explicitly set on any exported service.");
     }
 
