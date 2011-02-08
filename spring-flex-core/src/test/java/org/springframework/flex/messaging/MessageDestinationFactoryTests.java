@@ -31,9 +31,11 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.flex.config.json.JsonConfigMapPropertyEditor;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import flex.messaging.MessageDestination;
+import flex.messaging.cluster.ClusterManager;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.SecurityConstraint;
 import flex.messaging.config.ThrottleSettings;
@@ -53,8 +55,13 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
 
     @Mock
     LoginManager loginManager;
+    
+    @Mock
+    ClusterManager clusterManager;
 
     LoginManager originalLoginManager;
+    
+    ClusterManager originalClusterManager;
 
     @Override
     public void setUp() throws Exception {
@@ -67,12 +74,15 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         this.service = (MessageService) getMessageBroker().getServiceByType(MessageService.class.getName());
 
         this.originalLoginManager = getMessageBroker().getLoginManager();
+        this.originalClusterManager = getMessageBroker().getClusterManager();
         getMessageBroker().setLoginManager(this.loginManager);
+        ReflectionTestUtils.setField(getMessageBroker(), "clusterManager", this.clusterManager);
     }
 
     @Override
     public void tearDown() throws Exception {
         getMessageBroker().setLoginManager(this.originalLoginManager);
+        ReflectionTestUtils.setField(getMessageBroker(), "clusterManager", this.originalClusterManager);
     }
 
     public void testDefaultDestinationCreated() throws Exception {
@@ -102,6 +112,7 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         this.factory.setChannels(channels);
         this.factory.setAllowSubtopics("true");
         this.factory.setClusterMessageRouting("broadcast");
+        this.factory.setClusterRef("default-cluster");
         this.factory.setMessageTimeToLive("1");
         this.factory.setSubscriptionTimeoutMinutes("1");
         this.factory.setSubtopicSeparator("/");
@@ -121,6 +132,7 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         assertTrue(destination.getChannels().containsAll(Arrays.asList(channels)));
         assertTrue(destination.getServerSettings().getAllowSubtopics());
         assertTrue(destination.getServerSettings().isBroadcastRoutingMode());
+        assertEquals("default-cluster", destination.getNetworkSettings().getClusterId());
         assertEquals(1, destination.getServerSettings().getMessageTTL());
         assertEquals(1, destination.getNetworkSettings().getSubscriptionTimeoutMinutes());
         assertEquals("/", destination.getServerSettings().getSubtopicSeparator());

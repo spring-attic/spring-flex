@@ -61,6 +61,8 @@ public abstract class AbstractMessageDestinationBeanDefinitionParser extends Abs
     private static final String ALLOW_SUBTOPICS_ATTR = "allow-subtopics";
 
     private static final String CLUSTER_ROUTING_ATTR = "cluster-message-routing";
+    
+    private static final String CLUSTER_REF_ATTR = "cluster-ref";
 
     private static final String MESSAGE_TTL_ATTR = "message-time-to-live";
 
@@ -96,7 +98,7 @@ public abstract class AbstractMessageDestinationBeanDefinitionParser extends Abs
 
         ParsingUtils.mapOptionalAttributes(element, parserContext, destinationBuilder, CHANNELS_ATTR, SUBSCRIPTION_TIMEOUT_ATTR,
             THROTTLE_INBOUND_FREQ_ATTR, THROTTLE_INBOUND_POLICY_ATTR, THROTTLE_OUTBOUND_FREQ_ATTR, THROTTLE_OUTBOUND_POLICY_ATTR, ALLOW_SUBTOPICS_ATTR,
-            CLUSTER_ROUTING_ATTR, MESSAGE_TTL_ATTR, SEND_CONSTRAINT_ATTR, SUBSCRIBE_CONSTRAINT_ATTR, SUBTOPIC_SEPARATOR_ATTR);
+            CLUSTER_ROUTING_ATTR, CLUSTER_REF_ATTR, MESSAGE_TTL_ATTR, SEND_CONSTRAINT_ATTR, SUBSCRIBE_CONSTRAINT_ATTR, SUBTOPIC_SEPARATOR_ATTR);
 
         parseAdapter(element, parserContext, destinationBuilder);
 

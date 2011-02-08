@@ -63,5 +63,4 @@ public class MessageDestinationBeanDefinitionParserTests extends AbstractMessage
             return null;
         }
     }
-    
 }

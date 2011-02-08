@@ -16,11 +16,16 @@
 
 package org.springframework.flex.config.xml;
 
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.flex.config.AbstractFlexConfigurationTests;
+import org.springframework.flex.config.MessageBrokerConfigProcessor;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
+import flex.messaging.cluster.ClusterManager;
 import flex.messaging.config.ThrottleSettings;
 import flex.messaging.services.MessageService;
 
@@ -42,6 +47,7 @@ public abstract class AbstractMessageDestinationBeanDefinitionParserTests extend
         assertTrue(destination.getChannels().containsAll(Arrays.asList(channels)));
         assertTrue(destination.getServerSettings().getAllowSubtopics());
         assertTrue(destination.getServerSettings().isBroadcastRoutingMode());
+        assertEquals("default-cluster", destination.getNetworkSettings().getClusterId());
         assertEquals(1, destination.getServerSettings().getMessageTTL());
         assertEquals(1, destination.getNetworkSettings().getSubscriptionTimeoutMinutes());
         assertEquals("/", destination.getServerSettings().getSubtopicSeparator());
@@ -53,6 +59,25 @@ public abstract class AbstractMessageDestinationBeanDefinitionParserTests extend
     }
 
     protected abstract String getCustomConfigDestination();
+    
+    public static final class ClusterManagerConfigProcessor implements MessageBrokerConfigProcessor {
+    	
+    	@Mock
+		private ClusterManager clusterManager;
+    	
+    	public ClusterManagerConfigProcessor() {
+    		MockitoAnnotations.initMocks(this);
+    	}
+
+		public MessageBroker processAfterStartup(MessageBroker broker) {
+			ReflectionTestUtils.setField(broker, "clusterManager", this.clusterManager);
+			return broker;
+		}
+
+		public MessageBroker processBeforeStartup(MessageBroker broker) {
+			return broker;
+		}
+	}
 
     /**
      * Uncomment this only for faster dev time testing

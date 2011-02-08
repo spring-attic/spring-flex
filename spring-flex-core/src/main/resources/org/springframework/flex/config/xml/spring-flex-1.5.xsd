@@ -572,6 +572,15 @@ across the cluster. For more information, see the “Clustering” section of th
 				</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
+		<xsd:attribute name="cluster-ref" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Sets the cluster id for the destination. For more information, see the “Clustering” section of the BlazeDS Development Guide.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
 		<xsd:attribute name="message-time-to-live" type="xsd:int">
 			<xsd:annotation>
 				<xsd:documentation>

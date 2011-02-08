@@ -78,6 +78,10 @@ public class MessageDestinationFactory extends AbstractDestinationFactory {
     public void setClusterMessageRouting(String routingType) {
         getServerMap().addProperty("cluster-message-routing", routingType);
     }
+    
+    public void setClusterRef(String clusterRef) {
+		getClusterMap().addProperty("ref", clusterRef);
+	}
 
     public void setMessageTimeToLive(String timeToLive) {
         getServerMap().addProperty("message-time-to-live", timeToLive);
@@ -181,6 +185,15 @@ public class MessageDestinationFactory extends AbstractDestinationFactory {
             getProperties().addProperty("server", server);
         }
         return server;
+    }
+    
+    private ConfigMap getClusterMap() {
+    	ConfigMap cluster = getNetworkMap().getPropertyAsMap("cluster", null);
+    	if (cluster == null) {
+    		cluster = new ConfigMap();
+    		getNetworkMap().addProperty("cluster", cluster);
+    	}
+    	return cluster;
     }
 
     private ConfigMap getThrottleInboundMap() {

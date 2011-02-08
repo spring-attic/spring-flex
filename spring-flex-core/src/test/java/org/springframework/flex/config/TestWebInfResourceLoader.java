@@ -23,9 +23,16 @@ import org.springframework.core.io.ResourceLoader;
 public class TestWebInfResourceLoader implements ResourceLoader {
 
     ApplicationContext context;
+    
+    String basePath;
 
     public TestWebInfResourceLoader(ApplicationContext context) {
+        this(context, "classpath:org/springframework/flex/config/");
+    }
+    
+    public TestWebInfResourceLoader(ApplicationContext context, String basePath) {
         this.context = context;
+        this.basePath = basePath;
     }
 
     public ClassLoader getClassLoader() {
@@ -34,7 +41,7 @@ public class TestWebInfResourceLoader implements ResourceLoader {
 
     public Resource getResource(String location) {
         if (location.startsWith("/WEB-INF/flex/")) {
-            location = location.replace("/WEB-INF/flex/", "classpath:org/springframework/flex/config/");
+            location = location.replace("/WEB-INF/flex/", this.basePath);
         }
         return this.context.getResource(location);
     }

@@ -22,6 +22,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
+import org.springframework.flex.config.TestWebInfResourceLoader;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
@@ -48,7 +49,7 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
         this.context.setServletContext(new MockServletContext());
         this.mbfb = new MessageBrokerFactoryBean();
         this.mbfb.setServletContext(this.context.getServletContext());
-        this.mbfb.setResourceLoader(this.context);
+        this.mbfb.setResourceLoader(new TestWebInfResourceLoader(this.context, getServicesConfigPath().substring(0, getServicesConfigPath().lastIndexOf("/")+1)));
         this.mbfb.setBeanName(ID);
         this.mbfb.setBeanClassLoader(this.context.getClassLoader());
         this.currentConfigPath = getServicesConfigPath();
