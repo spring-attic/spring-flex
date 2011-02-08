@@ -1,19 +1,25 @@
 package org.springframework.flex.core.io;
 
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 @Entity
-public class Building {
-	
-	@Id
+public class ContactInfoNP {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
-	
-	@Embedded
-	EmbeddedAddressNP address;
-	
+    int id;
+    
+    @Version
+    @Column(name = "version")
+    int version;
+    
+    String phone;
+    
+    String email;
+
 }

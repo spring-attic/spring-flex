@@ -46,12 +46,12 @@ import flex.messaging.io.amf.MessageBody;
 import flex.messaging.util.ToStringPrettyPrinter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "hibernate-np-context.xml")
+@ContextConfiguration(locations = "hibernate-context.xml")
 @TestExecutionListeners( { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class,
-    SpringPropertyProxyHibernateNativeTests.InternalDbTestExecutionListener.class })
-public class SpringPropertyProxyHibernateNativeTests {
+    SpringPropertyProxyHibernateNativeFieldAccessTests.InternalDbTestExecutionListener.class })
+public class SpringPropertyProxyHibernateNativeFieldAccessTests {
 
-    private static final Log log = LogFactory.getLog(SpringPropertyProxyHibernateNativeTests.class);
+    private static final Log log = LogFactory.getLog(SpringPropertyProxyHibernateNativeFieldAccessTests.class);
 
     @Autowired
     SessionFactory sessionFactory;
@@ -72,6 +72,7 @@ public class SpringPropertyProxyHibernateNativeTests {
     public void init() throws Exception {
         HibernateConfigProcessor processor = new HibernateConfigProcessor();
         processor.setSessionFactory(this.sessionFactory);
+        processor.setUseDirectFieldAccess(true);
         processor.afterPropertiesSet();
         processor.processAfterStartup(null);
         this.serializer = new AmfMessageSerializer();
@@ -92,24 +93,25 @@ public class SpringPropertyProxyHibernateNativeTests {
     @Test
     public void testSerializationOutsideTransactionAfterHibernateGet() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.openSession();
-        Person person = (Person) session.get(Person.class, 1);
+        PersonNP person = (PersonNP) session.get(PersonNP.class, 1);
         session.close();
         serialize(person);
 
-        Person result = (Person) deserialize();
+        PersonNP result = (PersonNP) deserialize();
 
         assertNotSame(person, result);
-        assertEquals(new Integer(1), result.getId());
-        assertEquals("Dad", result.getName());
-        assertNotNull(result.getAddress());
-        assertNull(result.getSpouse());
-        assertNull(result.getChildren());
+        assertEquals(new Integer(1), result.id);
+        assertEquals("Dad", result.name);
+        assertNotNull(result.address);
+        assertNull(result.spouse);
+        assertNull(result.children);
     }
+    
     
     @Test
     public void testDebugLoggingOutsideTransactionAfterHibernateGet() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.openSession();
-        Person person = (Person) session.get(Person.class, 1);
+        PersonNP person = (PersonNP) session.get(PersonNP.class, 1);
         session.close();
         String result = log(person);
         log.info("Result from Logger:\n"+result);
@@ -119,41 +121,41 @@ public class SpringPropertyProxyHibernateNativeTests {
     @Transactional
     public void testSerializationInsideTransactionAfterHibernateGet() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.getCurrentSession();
-        Person person = (Person) session.get(Person.class, 1);
+        PersonNP person = (PersonNP) session.get(PersonNP.class, 1);
         serialize(person);
 
-        Person result = (Person) deserialize();
+        PersonNP result = (PersonNP) deserialize();
 
         assertNotSame(person, result);
-        assertEquals(new Integer(1), result.getId());
-        assertEquals("Dad", result.getName());
-        assertNotNull(result.getAddress());
-        assertNull(result.getSpouse());
-        assertNull(result.getChildren());
+        assertEquals(new Integer(1), result.id);
+        assertEquals("Dad", result.name);
+        assertNotNull(result.address);
+        assertNull(result.spouse);
+        assertNull(result.children);
     }
 
     @Test
     public void testSerializationOutsideTransactionAfterHibernateGetAndInitializedCollection() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.openSession();
-        Person person = (Person) session.get(Person.class, 1);
-        person.getChildren().iterator();
+        PersonNP person = (PersonNP) session.get(PersonNP.class, 1);
+        person.children.iterator();
         session.close();
         serialize(person);
 
-        Person result = (Person) deserialize();
+        PersonNP result = (PersonNP) deserialize();
 
         assertNotSame(person, result);
-        assertEquals(new Integer(1), result.getId());
-        assertEquals("Dad", result.getName());
-        assertNotNull(result.getAddress());
-        assertNull(result.getSpouse());
-        assertNotNull(result.getChildren());
-        assertEquals(2, result.getChildren().size());
-        for (Person childResult : result.getChildren()) {
-            assertNotNull(childResult.getId());
-            assertTrue(StringUtils.hasText(childResult.getName()));
-            assertNull(childResult.getSpouse());
-            assertNull(childResult.getChildren());
+        assertEquals(new Integer(1), result.id);
+        assertEquals("Dad", result.name);
+        assertNotNull(result.address);
+        assertNull(result.spouse);
+        assertNotNull(result.children);
+        assertEquals(2, result.children.size());
+        for (PersonNP childResult : result.children) {
+            assertNotNull(childResult.id);
+            assertTrue(StringUtils.hasText(childResult.name));
+            assertNull(childResult.spouse);
+            assertNull(childResult.children);
         }
     }
 
@@ -161,31 +163,31 @@ public class SpringPropertyProxyHibernateNativeTests {
     @Transactional
     public void testSerializationInsideTransactionAfterHibernateGetAndInitializedCollection() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.getCurrentSession();
-        Person person = (Person) session.get(Person.class, 1);
-        person.getChildren().iterator();
+        PersonNP person = (PersonNP) session.get(PersonNP.class, 1);
+        person.children.iterator();
         serialize(person);
         
-        Person result = (Person) deserialize();
+        PersonNP result = (PersonNP) deserialize();
 
         assertNotSame(person, result);
-        assertEquals(new Integer(1), result.getId());
-        assertEquals("Dad", result.getName());
-        assertNotNull(result.getAddress());
-        assertNull(result.getSpouse());
-        assertNotNull(result.getChildren());
-        assertEquals(2, result.getChildren().size());
-        for (Person childResult : result.getChildren()) {
-            assertNotNull(childResult.getId());
-            assertTrue(StringUtils.hasText(childResult.getName()));
-            assertNull(childResult.getSpouse());
-            assertNull(childResult.getChildren());
+        assertEquals(new Integer(1), result.id);
+        assertEquals("Dad", result.name);
+        assertNotNull(result.address);
+        assertNull(result.spouse);
+        assertNotNull(result.children);
+        assertEquals(2, result.children.size());
+        for (PersonNP childResult : result.children) {
+            assertNotNull(childResult.id);
+            assertTrue(StringUtils.hasText(childResult.name));
+            assertNull(childResult.spouse);
+            assertNull(childResult.children);
         }
     }
 
     @Test
     public void testSerializationOutsideTransactionAfterHibernateLoad() throws IOException {
         Session session = this.sessionFactory.openSession();
-        Person person = (Person) session.load(Person.class, 1);
+        PersonNP person = (PersonNP) session.load(PersonNP.class, 1);
         session.close();
 
         try {
@@ -200,172 +202,175 @@ public class SpringPropertyProxyHibernateNativeTests {
     @Transactional
     public void testSerializationInsideTransactionAfterHibernateLoad() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.getCurrentSession();
-        Person person = (Person) session.load(Person.class, 1);
+        PersonNP person = (PersonNP) session.load(PersonNP.class, 1);
         serialize(person);
         
-        Person result = (Person) deserialize();
+        PersonNP result = (PersonNP) deserialize();
 
         assertNotSame(person, result);
-        assertEquals(new Integer(1), result.getId());
-        assertEquals("Dad", result.getName());
-        assertNotNull(result.getAddress());
-        assertNull(result.getSpouse());
-        assertNull(result.getChildren());
+        assertEquals(new Integer(1), result.id);
+        assertEquals("Dad", result.name);
+        assertNotNull(result.address);
+        assertNull(result.spouse);
+        assertNull(result.children);
     }
-
+    
     @SuppressWarnings("unchecked")
     @Test
     public void testSerializationOutsideTransactionAfterHibernateQuery() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.openSession();
-        List<Person> people = session.createQuery("from Person").list();
+        List<PersonNP> people = session.createQuery("from Person").list();
         session.close();
         
         serialize(people);
         
-        List<Person> results = (List<Person>) deserialize();
+        List<PersonNP> results = (List<PersonNP>) deserialize();
         
-        for (Person result : results) {
-            assertNotNull(result.getId());
-            assertTrue(StringUtils.hasText(result.getName()));
-            if(result.getSpouse() != null) {
-                assertTrue(results.contains(result.getSpouse()));
+        for (PersonNP result : results) {
+            assertNotNull(result.id);
+            assertTrue(StringUtils.hasText(result.name));
+            if(result.spouse != null) {
+                assertTrue(results.contains(result.spouse));
             }
-            assertNull(result.getChildren());
+            assertNull(result.children);
         }
     }
+    
     
     @SuppressWarnings("unchecked")
     @Test
     @Transactional
     public void testSerializationInsideTransactionAfterHibernateQuery() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.getCurrentSession();
-        List<Person> people = session.createQuery("from Person").list();
+        List<PersonNP> people = session.createQuery("from Person").list();
         serialize(people);
         
-        List<Person> results = (List<Person>) deserialize();
+        List<PersonNP> results = (List<PersonNP>) deserialize();
         
-        for (Person result : results) {
-            assertNotNull(result.getId());
-            assertTrue(StringUtils.hasText(result.getName()));
-            if(result.getSpouse() != null) {
-                assertTrue(results.contains(result.getSpouse()));
+        for (PersonNP result : results) {
+            assertNotNull(result.id);
+            assertTrue(StringUtils.hasText(result.name));
+            if(result.spouse != null) {
+                assertTrue(results.contains(result.spouse));
             }
-            assertNull(result.getChildren());
+            assertNull(result.children);
         }
     }
     
     @Test
     @Transactional
     public void testDeserializeAndPersistNewEntityWithNumericAutogeneratedId() throws IOException, ClassNotFoundException {
-        SpringPropertyProxy proxy = (SpringPropertyProxy) PropertyProxyRegistry.getRegistry().getProxy(Person.class);
-        Person person = new Person();
+        SpringPropertyProxy proxy = (SpringPropertyProxy) PropertyProxyRegistry.getRegistry().getProxy(PersonNP.class);
+        PersonNP person = new PersonNP();
         proxy.setValue(person, "id", Double.NaN);
         proxy.setValue(person, "name", "Bob");
         
-        assertEquals(null, person.getId());
+        assertEquals(null, person.id);
         Session session = this.sessionFactory.getCurrentSession();
         session.save(person);
-        assertNotNull(person.getId());
-        assertTrue(person.getId() > 0);
+        assertNotNull(person.id);
+        assertTrue(person.id > 0);
     }
+    
     
     @Test
     @Transactional
     public void testDeserializeAndPersistNewEntityWithPrimitiveNumericAutogeneratedId() throws IOException, ClassNotFoundException {
         SpringPropertyProxy proxy = (SpringPropertyProxy) PropertyProxyRegistry.getRegistry().getProxy(ContactInfo.class);
-        ContactInfo contactInfo = new ContactInfo();
+        ContactInfoNP contactInfo = new ContactInfoNP();
         proxy.setValue(contactInfo, "id", 0);
         proxy.setValue(contactInfo, "email", "bob@foo.com");
         proxy.setValue(contactInfo, "phone", "5555551234");
         
-        assertEquals(0, contactInfo.getId());
+        assertEquals(0, contactInfo.id);
         Session session = this.sessionFactory.getCurrentSession();
         session.save(contactInfo);
-        assertNotNull(contactInfo.getId());
-        assertTrue(contactInfo.getId() > 0);
+        assertNotNull(contactInfo.id);
+        assertTrue(contactInfo.id > 0);
     }
+    
     
     @Test
     @Transactional
     public void testDeserializeAndPersistNewEntityWithVersion() throws IOException, ClassNotFoundException {
-        SpringPropertyProxy proxy = (SpringPropertyProxy) PropertyProxyRegistry.getRegistry().getProxy(Person.class);
-        Person person = new Person();
+        SpringPropertyProxy proxy = (SpringPropertyProxy) PropertyProxyRegistry.getRegistry().getProxy(PersonNP.class);
+        PersonNP person = new PersonNP();
         proxy.setValue(person, "id", Double.NaN);
         proxy.setValue(person, "version", Double.NaN);
         proxy.setValue(person, "name", "Bob");
         
-        assertNull(person.getVersion());
+        assertNull(person.version);
         Session session = this.sessionFactory.getCurrentSession();
         session.save(person);
-        assertNotNull(person.getId());
-        assertTrue(person.getId() > 0);
-        assertNotNull(person.getVersion());
-        assertTrue(person.getVersion() == 0);
-        person.setName("Robert");
+        assertNotNull(person.id);
+        assertTrue(person.id > 0);
+        assertNotNull(person.version);
+        assertTrue(person.version == 0);
+        person.name = "Robert";
         session.flush();
-        assertTrue(person.getVersion() > 0);
+        assertTrue(person.version > 0);
     }
     
     @Test
     @Transactional
     public void testDeserializeAndPersistNewEntityWithPrimitiveVersion() throws IOException, ClassNotFoundException {
         SpringPropertyProxy proxy = (SpringPropertyProxy) PropertyProxyRegistry.getRegistry().getProxy(ContactInfo.class);
-        ContactInfo contactInfo = new ContactInfo();
+        ContactInfoNP contactInfo = new ContactInfoNP();
         proxy.setValue(contactInfo, "id", 0);
         proxy.setValue(contactInfo, "version", 0);
         proxy.setValue(contactInfo, "email", "bob@foo.com");
         proxy.setValue(contactInfo, "phone", "5555551234");
         
-        assertEquals(0, contactInfo.getId());
+        assertEquals(0, contactInfo.id);
         Session session = this.sessionFactory.getCurrentSession();
         session.save(contactInfo);
-        assertNotNull(contactInfo.getId());
-        assertTrue(contactInfo.getId() > 0);
-        assertTrue(contactInfo.getVersion() == 0);
-        contactInfo.setEmail("bob@foobar.com");
+        assertNotNull(contactInfo.id);
+        assertTrue(contactInfo.id > 0);
+        assertTrue(contactInfo.version == 0);
+        contactInfo.email = "bob@foobar.com";
         session.flush();
-        assertTrue(contactInfo.getVersion() > 0);
+        assertTrue(contactInfo.version > 0);
     }
     
     @Test
     @Transactional
     public void testDeserializeAndPersistNewXMLMappedEntityWithVersion() throws IOException, ClassNotFoundException {
         SpringPropertyProxy proxy = (SpringPropertyProxy) PropertyProxyRegistry.getRegistry().getProxy(Company.class);
-        Company company = new Company();
+        CompanyNP company = new CompanyNP();
         proxy.setValue(company, "id", Double.NaN);
         proxy.setValue(company, "version", Double.NaN);
         proxy.setValue(company, "name", "SpringSource");
         
-        assertNull(company.getVersion());
+        assertNull(company.version);
         Session session = this.sessionFactory.getCurrentSession();
         session.save(company);
-        assertNotNull(company.getId());
-        assertTrue(company.getId() > 0);
-        assertNotNull(company.getVersion());
-        assertTrue(company.getVersion() == 0);
-        company.setName("VMware");
+        assertNotNull(company.id);
+        assertTrue(company.id > 0);
+        assertNotNull(company.version);
+        assertTrue(company.version == 0);
+        company.name = "VMware";
         session.flush();
-        assertTrue(company.getVersion() > 0);
+        assertTrue(company.version > 0);
     }
     
     @Test
     @Transactional
     public void testDeserializeAndPersistNewXMLMappedEntityWithPrimitiveVersion() throws IOException, ClassNotFoundException {
         SpringPropertyProxy proxy = (SpringPropertyProxy) PropertyProxyRegistry.getRegistry().getProxy(PrimitiveCompany.class);
-        PrimitiveCompany company = new PrimitiveCompany();
+        PrimitiveCompanyNP company = new PrimitiveCompanyNP();
         proxy.setValue(company, "id", 0);
         proxy.setValue(company, "version", 0);
         proxy.setValue(company, "name", "SpringSource");
         
-        assertEquals(0, company.getId());
+        assertEquals(0, company.id);
         Session session = this.sessionFactory.getCurrentSession();
         session.save(company);
-        assertNotNull(company.getId());
-        assertTrue(company.getId() > 0);
-        assertTrue(company.getVersion() == 0);
-        company.setName("VMware");
+        assertNotNull(company.id);
+        assertTrue(company.id > 0);
+        assertTrue(company.version == 0);
+        company.name = "VMware";
         session.flush();
-        assertTrue(company.getVersion() > 0);
+        assertTrue(company.version > 0);
     }
     
     private void serialize(Object data) throws IOException {
@@ -395,52 +400,52 @@ public class SpringPropertyProxyHibernateNativeTests {
             SessionFactory sessionFactory = testContext.getApplicationContext().getBean(SessionFactory.class);
             Session session = sessionFactory.openSession();
 
-            Person father = new Person();
-            father.setName("Dad");
+            PersonNP father = new PersonNP();
+            father.name = "Dad";
             session.save(father);
             
-            Address address = new Address();
-            address.setStreet("777 Techwood Drive");
-            address.setCity("Atlanta");
-            address.setState("GA");
-            address.setZipcode("30022");
-            address.setRooms(5);
-            address.setMoveInDate(new Date());
+            AddressNP address = new AddressNP();
+            address.street = "777 Techwood Drive";
+            address.city = "Atlanta";
+            address.state = "GA";
+            address.zipcode = "30022";
+            address.rooms = 5;
+            address.moveInDate = new Date();
             session.save(address);
             
-            father.setAddress(address);
+            father.address = address;
             session.update(father);
 
-            Person mother = new Person();
-            mother.setName("Mom");
-            mother.setSpouse(father);
+            PersonNP mother = new PersonNP();
+            mother.name = "Mom";
+            mother.spouse = father;
             session.save(mother);
 
-            father.setSpouse(mother);
+            father.spouse = mother;
             session.update(father);
 
-            Person child1 = new Person();
-            child1.setName("Jack");
+            PersonNP child1 = new PersonNP();
+            child1.name = "Jack";
             session.save(child1);
 
-            Person daughterInLaw = new Person();
-            daughterInLaw.setName("Lisa");
-            daughterInLaw.setSpouse(child1);
+            PersonNP daughterInLaw = new PersonNP();
+            daughterInLaw.name = "Lisa";
+            daughterInLaw.spouse = child1;
             session.save(daughterInLaw);
 
-            child1.setSpouse(daughterInLaw);
+            child1.spouse = daughterInLaw;
             session.update(child1);
 
-            Person child2 = new Person();
-            child2.setName("Jill");
+            PersonNP child2 = new PersonNP();
+            child2.name = "Jill";
             session.save(child2);
 
-            Set<Person> children = new HashSet<Person>();
+            Set<PersonNP> children = new HashSet<PersonNP>();
             children.add(child1);
             children.add(child2);
 
-            father.setChildren(children);
-            mother.setChildren(children);
+            father.children = children;
+            mother.children = children;
 
             session.update(father);
             session.update(mother);

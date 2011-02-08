@@ -17,9 +17,7 @@ public class HibernateProxyConverter implements GenericConverter {
         Assert.isInstanceOf(HibernateProxy.class, source, "Expected an instance of HibernateProxy to convert");
         Assert.isAssignable(HibernateProxy.class, sourceType.getType(), "Expected a subclass of HibernateProxy for the source type");
         HibernateProxy proxy = (HibernateProxy) source;
-        if (targetType instanceof PropertyTypeDescriptor) {
-            //Could do an additional check here for specific Hibernate/JPA annotations, 
-            //but just taking this action no matter what if it's a property is good enough for now
+        if (targetType instanceof PropertyTypeDescriptor || targetType.getField() != null) {
             if (!Hibernate.isInitialized(proxy)) {
                 return null;
             }

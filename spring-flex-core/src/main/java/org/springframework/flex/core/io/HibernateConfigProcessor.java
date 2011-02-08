@@ -33,6 +33,8 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
     private ListableBeanFactory beanFactory;
     
     private boolean hibernateConfigured = false;
+    
+    private boolean useDirectFieldAccess = false;
 
     public void afterPropertiesSet() throws Exception {
         if (this.sessionFactory == null) {
@@ -51,7 +53,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
         if (hibernateConfigured) {
             Iterator<ClassMetadata> it = this.sessionFactory.getAllClassMetadata().values().iterator();
             while (it.hasNext()) {
-                SpringPropertyProxy proxy = new SpringPropertyProxy(it.next().getMappedClass(EntityMode.POJO), false);
+                SpringPropertyProxy proxy = new SpringPropertyProxy(it.next().getMappedClass(EntityMode.POJO), this.useDirectFieldAccess);
                 proxy.setConversionService(this.conversionService);
                 registerPropertyProxy(proxy);
             }
@@ -77,7 +79,11 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
         this.conversionService = conversionService;
     }
 
-    protected SessionFactory getSessionFactory() {
+    public void setUseDirectFieldAccess(boolean useDirectFieldAccess) {
+		this.useDirectFieldAccess = useDirectFieldAccess;
+	}
+
+	protected SessionFactory getSessionFactory() {
         return sessionFactory;
     }
    
