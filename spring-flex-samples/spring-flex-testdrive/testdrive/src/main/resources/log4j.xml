@@ -12,7 +12,7 @@
 	</appender>
 	
 	<logger name="org.springframework.flex">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 	
 	<!-- Root Logger -->

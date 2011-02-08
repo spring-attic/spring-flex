@@ -12,6 +12,10 @@
         <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
         </channel-definition>
+        
+        <channel-definition id="my-private-amf" class="mx.messaging.channels.AMFChannel">
+            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amfprivate" class="flex.messaging.endpoints.AMFEndpoint"/>
+        </channel-definition>
 
         <channel-definition id="my-secure-amf" class="mx.messaging.channels.SecureAMFChannel">
             <endpoint url="https://{server.name}:{server.port}/{context.root}/messagebroker/amfsecure" class="flex.messaging.endpoints.SecureAMFEndpoint"/>
@@ -55,7 +59,7 @@
     </security>
 
     <logging>
-        <target class="flex.messaging.log.ConsoleTarget" level="Warn">
+        <target class="flex.messaging.log.ConsoleTarget" level="Debug">
             <properties>
                 <prefix>[BlazeDS] </prefix>
                 <includeDate>false</includeDate>
@@ -70,6 +74,14 @@
             </filters>
         </target>
     </logging>
+    
+    <!--  <logging>
+      <target class="org.springframework.flex.core.CommonsLoggingTarget" level="All">
+      	<properties>
+      		<categoryPrefix>blazeds</categoryPrefix>
+      	</properties>
+      </target>
+  	</logging> -->
 
     <system>
         <redeploy>

@@ -4,27 +4,27 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/flex 
-		http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+		http://www.springframework.org/schema/flex/spring-flex-1.5.xsd">
  
 	<flex:message-broker>
 		<flex:message-service
 			default-channels="my-streaming-amf,my-longpolling-amf,my-polling-amf" />
 		<flex:secured />
 	</flex:message-broker>
-
+	
 	<!-- Expose the productService bean for BlazeDS remoting -->
 	<flex:remoting-destination ref="productService" />
 
 	<!-- Expose the contactService bean for BlazeDS remoting -->
-	<flex:remoting-destination ref="contactService" />
+	<flex:remoting-destination ref="contactService" channels="my-secure-amf"/>
 
 	<!-- Expose the securedProductService bean for BlazeDS remoting -->
 	<flex:remoting-destination ref="securedProductService" />
 	
 	<!-- Helper for getting the currently authenticated user -->
-    <bean id="securityHelper" class="org.springframework.flex.samples.secured.SecurityHelper">
+    <bean id="securityHelper" class="org.springframework.flex.samples.secured.Security3Helper">
         <flex:remoting-destination/>
     </bean>
 

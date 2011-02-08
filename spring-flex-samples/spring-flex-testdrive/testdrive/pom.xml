@@ -19,56 +19,16 @@
 
 		<plugins>
 			<plugin>
-
-				<artifactId>maven-compiler-plugin</artifactId>
-
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.0.2</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>inplace</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<webResources>
-						<resource>
-							<directory>${basedir}/src/main/spring_3_0_resources</directory>
-							<targetPath>WEB-INF</targetPath>
-						</resource>
-					</webResources>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+					<wtpversion>2.0</wtpversion>
 				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>src/main/webapp/WEB-INF/classes</directory>
-						</fileset>
-						<fileset>
-							<directory>src/main/webapp/WEB-INF/lib</directory>
-						</fileset>
-						<fileset>
-							<directory>src/main/webapp/WEB-INF/spring</directory>
-						</fileset>
-						<fileset>
-							<directory>src/main/webapp/WEB-INF</directory>
-							<includes>
-								<include>flex-servlet.xml</include>
-							</includes>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-		</plugins>
-
+            </plugin>
+        </plugins>
 	</build>
 
 	<dependencies>
@@ -125,6 +85,14 @@
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 	</dependencies>
 
