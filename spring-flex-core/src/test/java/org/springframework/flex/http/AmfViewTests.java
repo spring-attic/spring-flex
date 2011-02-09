@@ -11,7 +11,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import flex.messaging.io.SerializationContext;
-import flex.messaging.io.amf.AmfMessageDeserializer;
+import flex.messaging.io.amf.Amf3Input;
 
 
 public class AmfViewTests extends TestCase {
@@ -64,9 +64,9 @@ public class AmfViewTests extends TestCase {
     }
     
     private Object deserialize() throws ClassNotFoundException, IOException {
-        AmfMessageDeserializer deserializer = new AmfMessageDeserializer();
+        Amf3Input deserializer = new Amf3Input(new SerializationContext());
         this.request.setContent(this.response.getContentAsByteArray());
-        deserializer.initialize(new SerializationContext(), this.request.getInputStream(), null);
+        deserializer.setInputStream(this.request.getInputStream());
         return deserializer.readObject();
     }
 }

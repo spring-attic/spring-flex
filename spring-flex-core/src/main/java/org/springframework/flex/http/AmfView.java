@@ -1,5 +1,6 @@
 package org.springframework.flex.http;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.view.AbstractView;
 
 import flex.messaging.io.SerializationContext;
-import flex.messaging.io.amf.AmfMessageSerializer;
+import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfTrace;
 
 
@@ -59,6 +60,7 @@ public class AmfView extends AbstractView {
     @Override
     protected void prepareResponse(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType(getContentType());
+        response.setCharacterEncoding("UTF-8");
         if (disableCaching) {
             response.addHeader("Pragma", "no-cache");
             response.addHeader("Cache-Control", "no-cache, no-store, max-age=0");
@@ -70,15 +72,25 @@ public class AmfView extends AbstractView {
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Object value = filterModel(model);
         
-        AmfMessageSerializer serializer = new AmfMessageSerializer();
-
         AmfTrace trace = null;
         if (log.isDebugEnabled()) {
             trace = new AmfTrace();
         }
         
-        serializer.initialize(new SerializationContext(), response.getOutputStream(), trace);
-        serializer.writeObject(value);
+        ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
+        SerializationContext context = new SerializationContext();
+        Amf3Output out = new Amf3Output(context);
+        if (trace != null) {
+        	out.setDebugTrace(trace);
+        }
+        out.setOutputStream(outBuffer);
+        out.writeObject(value);
+        out.flush();
+        
+        outBuffer.flush();
+        
+        response.setContentLength(outBuffer.size());
+        outBuffer.writeTo(response.getOutputStream());
         
         if (log.isDebugEnabled()) {
             log.debug("Wrote AMF message:\n" + trace);

@@ -18,6 +18,8 @@ import flex.messaging.io.SerializationContext;
 import flex.messaging.io.SerializationException;
 import flex.messaging.io.amf.ActionContext;
 import flex.messaging.io.amf.ActionMessage;
+import flex.messaging.io.amf.Amf3Input;
+import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfMessageDeserializer;
 import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.AmfTrace;
@@ -84,14 +86,14 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
     }
     
     private Object readObject(HttpInputMessage inputMessage, AmfTrace trace) throws IOException {
-    	AmfMessageDeserializer deserializer = new AmfMessageDeserializer();
-    	deserializer.initialize(new SerializationContext(), inputMessage.getBody(), trace);
-    	
+    	Amf3Input deserializer = new Amf3Input(new SerializationContext());
+    	deserializer.setInputStream(inputMessage.getBody());
+    	deserializer.setDebugTrace(trace);
     	try {
             return deserializer.readObject();
         } catch (ClassNotFoundException cnfe) {
         	throw new HttpMessageNotReadableException(AMF_ERROR, cnfe);
-        } catch (SerializationException se) {
+        } catch (MessageException se) {
         	throw new HttpMessageNotReadableException(AMF_ERROR, se);
         }
 	}
@@ -136,11 +138,10 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
     
     private void writeObject(Object data, HttpOutputMessage outputMessage,
 			AmfTrace trace) throws IOException {
-    	AmfMessageSerializer serializer = new AmfMessageSerializer();
-    	serializer.setVersion(MessageIOConstants.AMF3);
     	ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
-    	serializer.initialize(new SerializationContext(), outBuffer, trace);
-        
+    	Amf3Output serializer = new Amf3Output(new SerializationContext());
+    	serializer.setOutputStream(outBuffer);
+    	serializer.setDebugTrace(trace);
         try {
         	serializer.writeObject(data);
         	outBuffer.flush();

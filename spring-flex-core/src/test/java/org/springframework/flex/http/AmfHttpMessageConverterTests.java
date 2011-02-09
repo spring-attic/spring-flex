@@ -19,8 +19,9 @@ import flex.messaging.io.MessageIOConstants;
 import flex.messaging.io.SerializationContext;
 import flex.messaging.io.amf.ActionContext;
 import flex.messaging.io.amf.ActionMessage;
+import flex.messaging.io.amf.Amf3Input;
+import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfMessageDeserializer;
-import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.MessageBody;
 
 public class AmfHttpMessageConverterTests extends TestCase {
@@ -121,8 +122,8 @@ public class AmfHttpMessageConverterTests extends TestCase {
 	
 	private byte[] serializeToByteArray(Object data) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		AmfMessageSerializer serializer = new AmfMessageSerializer();
-		serializer.initialize(new SerializationContext(), out, null);
+		Amf3Output serializer = new Amf3Output(new SerializationContext());
+		serializer.setOutputStream(out);
 		serializer.writeObject(data);
 		try {
 			return out.toByteArray();
@@ -132,9 +133,9 @@ public class AmfHttpMessageConverterTests extends TestCase {
     }
 
     private Object deserializeResponse() throws ClassNotFoundException, IOException {
-    	AmfMessageDeserializer deserializer = new AmfMessageDeserializer();
+    	Amf3Input deserializer = new Amf3Input(new SerializationContext());
         this.request.setContent(this.response.getContentAsByteArray());
-        deserializer.initialize(new SerializationContext(), this.request.getInputStream(), null);
+        deserializer.setInputStream(this.request.getInputStream());
         return deserializer.readObject();
     }
     
