@@ -19,8 +19,8 @@
 <div class="highlight">
 <h2>Spring Architecture</h2>
 <p>This version of the Test Drive uses a layered Spring configuration, with the core domain services and supporting infrastructure loaded in a root application context via the <a href="http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/web/context/ContextLoaderListener.html">ContextLoaderListener</a>, 
-and the Flex integration configured separately via the <a href="http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/web/servlet/DispatcherServlet.html">DispatcherServlet's</a> child application context.  This layered approach with explicit separation of concerns is by no means required, but 
-it does have some benefits over a non-layered approach such as opening up the option of writing out-of-container <a href="http://static.springframework.org/spring/docs/2.5.x/reference/testing.html#testcontext-framework">integration tests</a> for the core domain services without having to load the BlazeDS 
+and  both the Flex integration  and the Spring MVC RESTful  @Controllers configured separately via the <a href="http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/web/servlet/DispatcherServlet.html">DispatcherServlet's</a> child application context.  This layered approach with explicit separation of concerns is by no means required, but 
+it does have some benefits over a non-layered approach such as opening up the option of writing out-of-container <a href="http://static.springframework.org/spring/docs/2.5.x/reference/testing.html#testcontext-framework">integration tests</a> for the core domain services without having to load the web 
 infrastructure.</p>
 
 <h2>Samples Index</h2>
