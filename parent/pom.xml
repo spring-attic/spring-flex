@@ -34,18 +34,6 @@
 				<artifactId>hibernate-core</artifactId>
 				<version>3.3.1.GA</version>
 			</dependency>
-			<!-- <dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-cglib-repack</artifactId>
-				<version>2.1_3</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>cglib</groupId>
-				<artifactId>cglib-nodep</artifactId>
-				<version>2.2</version>
-				<scope>test</scope>
-			</dependency>-->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
@@ -69,12 +57,13 @@
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
-				<version>2.4</version>
+				<version>2.5</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>jstl</artifactId>
-				<version>1.1.2</version>
+				<version>1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>taglibs</groupId>
@@ -367,9 +356,9 @@
 	</build>
 
 	<properties>
-		<spring.version>3.0.3.RELEASE</spring.version>
-		<integration.version>2.0.0.M7</integration.version>
-		<security.version>3.0.2.RELEASE</security.version>
+		<spring.version>3.0.5.RELEASE</spring.version>
+		<integration.version>2.0.2.RELEASE</integration.version>
+		<security.version>3.0.5.RELEASE</security.version>
 		<blazeds.version>4.0.0.14931</blazeds.version>
 	</properties>
 </project>

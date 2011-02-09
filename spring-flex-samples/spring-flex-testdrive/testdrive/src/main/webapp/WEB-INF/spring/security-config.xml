@@ -7,9 +7,6 @@
 	<http>
 	    <form-login default-target-url="/secured/secured.html" login-page="/login.jsp" />
 		<remember-me key="testdrive" services-ref="rememberMeServices"/>
-		<session-management>
-			<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
-		</session-management>
 	</http>
 	
 	<beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
@@ -18,13 +15,13 @@
 	</beans:bean>
 	
 	<authentication-manager>
-	   <authentication-provider>
-	       <user-service>
-	        <user name="john" password="john" authorities="ROLE_USER" />
-            <user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN" />
-            <user name="guest" password="guest" authorities="ROLE_GUEST" />
-	       </user-service>
-	   </authentication-provider>
+		<authentication-provider>
+			<user-service>
+				<user name="john" password="john" authorities="ROLE_USER" />
+				<user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN" />
+				<user name="guest" password="guest" authorities="ROLE_GUEST" />
+			</user-service>
+		</authentication-provider>
 	</authentication-manager>
 
 </beans:beans>

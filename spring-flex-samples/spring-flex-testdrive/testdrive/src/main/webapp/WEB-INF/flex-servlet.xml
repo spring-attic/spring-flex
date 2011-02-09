@@ -1,24 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:flex="http://www.springframework.org/schema/flex"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/flex 
-		http://www.springframework.org/schema/flex/spring-flex-1.5.xsd">
+		http://www.springframework.org/schema/flex/spring-flex-1.5.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
  
-	<flex:message-broker>
+ 	<!-- Supporting Spring MVC Infrastructure for RESTful @Controllers -->
+ 	<context:component-scan base-package="org.springframework.flex.samples" use-default-filters="false">
+		<context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+	</context:component-scan>
+	
+ 	<mvc:annotation-driven/>
+ 	
+ 	<mvc:default-servlet-handler/>
+ 
+ 	<!-- Flex-specific Configuration -->
+	<flex:message-broker mapping-order="1">
+		<flex:mapping pattern="/messagebroker/*"/>
 		<flex:message-service
 			default-channels="my-streaming-amf,my-longpolling-amf,my-polling-amf" />
 		<flex:secured />
 	</flex:message-broker>
 	
+	<!-- This BeanPostProcessor adds the AmfHttpMessageConverter to the list of registered HttpMessageConverters -->
+ 	<bean id="amfInstaller" class="org.springframework.flex.samples.rest.HandlerAdapterPostProcessor"/>
+ 	
+ 	<!-- Handles content negotiation for RESTful requests.  This is used in addition to the AmfHttpMessageConverter to 
+ 	     take advantage of it's ability to use the URL's file extension instead of relying on the Accept header.  Necessary 
+ 	     since the Accept header can't be manipulated by the Flash player. -->
+ 	<bean id="viewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+ 		<property name="mediaTypes">
+			<map>
+				<entry key="amf" value="application/x-amf"/>
+			</map>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean class="org.springframework.flex.http.AmfView" />
+			</list>
+		</property>
+ 	</bean>
+	
 	<!-- Expose the productService bean for BlazeDS remoting -->
 	<flex:remoting-destination ref="productService" />
 
 	<!-- Expose the contactService bean for BlazeDS remoting -->
-	<flex:remoting-destination ref="contactService" channels="my-secure-amf"/>
+	<flex:remoting-destination ref="contactService" />
 
 	<!-- Expose the securedProductService bean for BlazeDS remoting -->
 	<flex:remoting-destination ref="securedProductService" />

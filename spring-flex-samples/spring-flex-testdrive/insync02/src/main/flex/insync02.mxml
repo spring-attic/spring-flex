@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
-
-	<mx:Script>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	
+	<fx:Script>
 		<![CDATA[
 
 			import mx.rpc.events.ResultEvent;
@@ -10,29 +12,31 @@
 			import mx.collections.ArrayCollection;
 			
 			[Bindable] private var contacts:ArrayCollection;
-
+			
 			private function resultHandler(event:ResultEvent):void
 			{
 				contacts = event.result as ArrayCollection
 			}
-
+			
 			private function faultHandler(event:FaultEvent):void
 			{
 				Alert.show(event.fault.faultDetail);
 			}
 			
 		]]>
-	</mx:Script>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RemoteObject id="ro" destination="contactService" fault="faultHandler(event)" endpoint="http://localhost:8080/testdrive/messagebroker/amf">
+			<s:method name="findByName" result="resultHandler(event)"/>
+		</s:RemoteObject>
+	</fx:Declarations>
+	
+	<s:controlBarContent>
+		<s:TextInput id="searchStr"/>
+		<s:Button label="Search" click="ro.findByName(searchStr.text)"/>
+	</s:controlBarContent>
+	
+	<mx:DataGrid id="dg" dataProvider="{contacts}" top="8" left="8" right="8" bottom="8"/>
 
-	<mx:RemoteObject id="ro" destination="contactService" fault="faultHandler(event)">
-		<mx:method name="findByName" result="resultHandler(event)"/>
-	</mx:RemoteObject>
-
-	<mx:ApplicationControlBar width="100%">
-		<mx:TextInput id="searchStr"/>
-		<mx:Button label="Search" click="ro.findByName(searchStr.text)"/>
-	</mx:ApplicationControlBar>
-
-	<mx:DataGrid id="dg" dataProvider="{contacts}" width="100%" height="100%"/>
-
-</mx:Application>
+</s:Application>

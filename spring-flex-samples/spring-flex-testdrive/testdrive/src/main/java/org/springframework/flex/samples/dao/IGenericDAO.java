@@ -36,5 +36,7 @@ public interface IGenericDAO<T> {
     public boolean update(T item);
 
     public boolean remove(T item);
+    
+    public boolean removeById(int id);
 
 }

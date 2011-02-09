@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx">
 
-	<!-- "productService" is defined in Spring's configuration file WEB-INF/config/web-application-config.xml
-	and provides remote access to the org.springframework.flex.samples.product.ProductDAO class --> 
-	<mx:RemoteObject id="ro" destination="productService"/>
+	<fx:Declarations>
+		<!-- "productService" is defined in Spring's configuration file WEB-INF/config/web-application-config.xml
+		and provides remote access to the org.springframework.flex.samples.product.ProductDAO class --> 
+		<s:RemoteObject id="ro" destination="productService" endpoint="http://localhost:8080/testdrive/messagebroker/amf"/>
+	</fx:Declarations>
 
-	<mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
-
-	<!-- the findAll() method is defined in org.springframework.flex.samples.product.ProductDAO -->
-	<mx:Button label="Get Data" click="ro.findAll()"/>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
 	
-</mx:Application>
+	<mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
+	
+	<!-- the findAll() method is defined in org.springframework.flex.samples.product.ProductDAO -->
+	<s:Button label="Get Data" click="ro.findAll()"/>
+
+</s:Application>

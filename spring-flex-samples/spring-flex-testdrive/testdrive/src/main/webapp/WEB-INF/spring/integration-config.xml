@@ -5,16 +5,14 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 			http://www.springframework.org/schema/integration
-			http://www.springframework.org/schema/integration/spring-integration-1.0.xsd">
+			http://www.springframework.org/schema/integration/spring-integration-2.0.xsd">
 
 	<channel id="toFlex"/>
 
 	<channel id="fromFlex"/>
 
 	<inbound-channel-adapter ref="counter" method="next" channel="toFlex">
-		<poller max-messages-per-poll="1">
-			<interval-trigger interval="5000"/>
-		</poller>
+		<poller max-messages-per-poll="1" fixed-rate="5000" />
 	</inbound-channel-adapter>
 
 	<service-activator input-channel="fromFlex" ref="counter" method="handle"/>

@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
-	
-	<mx:ChannelSet id="cs">
-		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amf"/>
-	</mx:ChannelSet>
-	
-	<mx:RemoteObject id="simpleFeedStarter" destination="simpleFeedStarter" channelSet="{cs}"/>
-	<mx:RemoteObject id="marketFeedStarter" destination="marketFeedStarter" channelSet="{cs}"/>
-	
-	<mx:Panel title="Feed Administration" width="100%" height="100%" 
-		paddingTop="12" paddingLeft="12" verticalGap="12">
-	
-		<mx:HBox>
-			<mx:Label text="Simple Feed"/>
-			<mx:Button label="Start" click="simpleFeedStarter.start()"/>
-			<mx:Button label="Stop" click="simpleFeedStarter.stop()"/>
-		</mx:HBox>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx">
 
-		<mx:HBox>
-			<mx:Label text="Market Feed" y="67" x="22"/>
-			<mx:Button label="Start" click="marketFeedStarter.start()"/>
-			<mx:Button label="Stop" click="marketFeedStarter.stop()"/>
-		</mx:HBox>
-		
-	</mx:Panel>
+	<fx:Declarations>
+
+		<mx:ChannelSet id="cs">
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amf"/>
+		</mx:ChannelSet>
+
+		<mx:RemoteObject id="simpleFeedStarter" destination="simpleFeedStarter" channelSet="{cs}"/>
+		<mx:RemoteObject id="marketFeedStarter" destination="marketFeedStarter" channelSet="{cs}"/>
 	
-</mx:Application>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="20" paddingLeft="20" gap="20"/>
+	</s:layout>
+	
+	<s:Label text="Feed Administration" fontSize="18" fontWeight="bold"/>
+	
+	<s:HGroup verticalAlign="middle">
+		<s:Label text="Simple Feed" width="120"/>
+		<s:Button label="Start" click="simpleFeedStarter.start()"/>
+		<s:Button label="Stop" click="simpleFeedStarter.stop()"/>
+	</s:HGroup>
+	
+	<s:HGroup verticalAlign="middle">
+		<s:Label text="Market Feed" width="120"/>
+		<s:Button label="Start" click="marketFeedStarter.start()"/>
+		<s:Button label="Stop" click="marketFeedStarter.stop()"/>
+	</s:HGroup>
+		
+</s:Application>

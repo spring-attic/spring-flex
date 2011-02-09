@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*"
-	applicationComplete="init()">
-
-	<mx:Script>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   applicationComplete="init()" xmlns:local="*">
+	
+	<fx:Script>
 		<![CDATA[
-
+			
 			import mx.events.IndexChangedEvent;
 			import mx.messaging.messages.AsyncMessage;
 			import mx.utils.UIDUtil;
 			import mx.messaging.events.MessageEvent;
 			import mx.events.PropertyChangeEvent;
-
+			
 			private var userId:String; // Unique user id
-
+			
 			private function init():void
 			{
-				 userId = UIDUtil.createUID();	// Generate unique user id
-				 customer.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, propertyChangeHandler);
-				 consumer.subscribe();
+				userId = UIDUtil.createUID();	// Generate unique user id
+				customer.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, propertyChangeHandler);
+				consumer.subscribe();
 			}
 			
 			private function propertyChangeHandler(event:PropertyChangeEvent):void
 			{
 				sendMessage("propertyChange", {property: event.property, value: event.newValue});
 			}
-
+			
 			private function accordionChangeHandler(event:IndexChangedEvent):void
 			{
 				sendMessage("accordionChange", {selectedIndex: event.newIndex});
 			}
-
+			
 			private function messageHandler(event:MessageEvent):void
 			{
 				var remoteUserId:String = event.message.body.userId;
@@ -38,7 +40,7 @@
 				{
 					return;
 				}        	
-
+				
 				var data:Object = event.message.body.data
 				switch (event.message.body.action)
 				{
@@ -52,7 +54,7 @@
 						return;
 				}
 			}
-
+			
 			private function sendMessage(action:String, data:Object = null):void
 			{
 				var message:AsyncMessage = new AsyncMessage();
@@ -63,72 +65,65 @@
 			}		
 			
 		]]>
-	</mx:Script>
-
-	<local:Customer id="customer"/>
-
-	<mx:ChannelSet id="cs">
-		<!-- <mx:StreamingAMFChannel url="http://localhost:8080/testdrive/messagebroker/streamingamf"/> -->
-		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
-		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
-	</mx:ChannelSet>
+	</fx:Script>
 	
-	<mx:Producer id="producer" destination="chat" channelSet="{cs}"/>
-	<mx:Consumer id="consumer" destination="chat" channelSet="{cs}" message="messageHandler(event)"/>
-
-	<mx:Panel title="Customer Information" width="100%" height="100%">
-
+	<fx:Declarations>
+		<local:Customer id="customer"/>
+		
+		<mx:ChannelSet id="cs">
+			<mx:StreamingAMFChannel url="http://localhost:8080/testdrive/messagebroker/streamingamf"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
+		</mx:ChannelSet>
+		
+		<mx:Producer id="producer" destination="chat" channelSet="{cs}"/>
+		<mx:Consumer id="consumer" destination="chat" channelSet="{cs}" message="messageHandler(event)"/>
+	</fx:Declarations>
+	
+	
+	<s:Panel title="Customer Information" top="12" bottom="12" left="12" right="12">
+		
 		<mx:Accordion id="accordion" width="100%" height="100%" openDuration="0"
-			change="accordionChangeHandler(event)">
-
+					  change="accordionChangeHandler(event)">
+			
 			<mx:Form label="General">
 				<mx:FormItem label="First Name">
-					<mx:TextInput id="firstName" text="{customer.firstName}"/>
+					<s:TextInput id="firstName" text="@{customer.firstName}"/>
 				</mx:FormItem>
 				<mx:FormItem label="Last Name">
-					<mx:TextInput id="lastName" text="{customer.lastName}"/>
+					<s:TextInput id="lastName" text="@{customer.lastName}"/>
 				</mx:FormItem>
 				<mx:FormItem>
-					<mx:CheckBox id="usCitizen" selected="{customer.usCitizen}" label="US Citizen"/>
+					<s:CheckBox id="usCitizen" selected="@{customer.usCitizen}" label="US Citizen"/>
 				</mx:FormItem>
 			</mx:Form>
-	
+			
 			<mx:Form label="Address">
 				<mx:FormItem label="Address">
-					<mx:TextInput id="address" text="{customer.address}"/>
+					<s:TextInput id="address" text="@{customer.address}"/>
 				</mx:FormItem>
 				<mx:FormItem label="City">
-					<mx:TextInput id="city" text="{customer.city}"/>
+					<s:TextInput id="city" text="@{customer.city}"/>
 				</mx:FormItem>
 				<mx:FormItem label="State">
-					<mx:TextInput id="state" text="{customer.state}"/>
+					<s:TextInput id="state" text="@{customer.state}"/>
 				</mx:FormItem>
 				<mx:FormItem label="Zip">
-					<mx:TextInput id="zip" text="{customer.zip}"/>
+					<s:TextInput id="zip" text="@{customer.zip}"/>
 				</mx:FormItem>
 			</mx:Form>
-	
+			
 			<mx:Form label="Phone">
 				<mx:FormItem label="Office">
-					<mx:TextInput id="officePhone" text="{customer.officePhone}"/>
+					<s:TextInput id="officePhone" text="@{customer.officePhone}"/>
 				</mx:FormItem>
 				<mx:FormItem label="Cell">
-					<mx:TextInput id="cellPhone" text="{customer.cellPhone}"/>
+					<s:TextInput id="cellPhone" text="@{customer.cellPhone}"/>
 				</mx:FormItem>
 			</mx:Form>
 			
 		</mx:Accordion>
 		
-	</mx:Panel>
-
-	<mx:Binding source="firstName.text" destination="customer.firstName"/>
-	<mx:Binding source="lastName.text" destination="customer.lastName"/>
-	<mx:Binding source="usCitizen.selected" destination="customer.usCitizen"/>
-	<mx:Binding source="address.text" destination="customer.address"/>
-	<mx:Binding source="city.text" destination="customer.city"/>
-	<mx:Binding source="state.text" destination="customer.state"/>
-	<mx:Binding source="zip.text" destination="customer.zip"/>
-	<mx:Binding source="officePhone.text" destination="customer.officePhone"/>
-	<mx:Binding source="cellPhone.text" destination="customer.cellPhone"/>
+	</s:Panel>
 	
-</mx:Application>
+</s:Application>

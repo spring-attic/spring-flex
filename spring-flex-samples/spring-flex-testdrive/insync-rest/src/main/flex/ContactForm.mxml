@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		   label="{contact.id>0?contact.firstName+' '+contact.lastName:'New Contact'}">
+
+	<fx:Metadata>
+		[Event(name="contactCreated", type="ContactEvent")]
+		[Event(name="contactUpdated", type="ContactEvent")]
+		[Event(name="contactDeleted", type="ContactEvent")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable] public var contact:Contact;
+			
+			private var invoker:RestInvoker = new RestInvoker();
+			
+			private function save():void
+			{
+				contact.firstName = firstName.text;
+				contact.lastName = lastName.text;
+				contact.email = email.text;
+				contact.phone = phone.text;
+				contact.address = address.text;
+				contact.city = city.text;
+				contact.state = state.text;
+				contact.zip = zip.text;
+				if (contact.id == 0)
+				{
+					invoker.invoke("/contacts", createHandler, faultHandler, null, URLRequestMethod.POST, contact);
+				}
+				else
+				{
+					invoker.invoke("/contacts/"+contact.id, updateHandler, faultHandler, null, "PUT", contact);
+				}
+			}			
+			
+			private function deleteItem():void
+			{
+				invoker.invoke("/contacts/"+contact.id, removeHandler, faultHandler, null, "DELETE");
+			}
+			
+			private function createHandler(event:Event):void {
+				var contactStream:URLStream = URLStream(event.target);
+				contact = (contactStream.readObject() as Contact);
+				dispatchEvent(new ContactEvent(ContactEvent.CREATED, contact));
+			}
+			
+			private function updateHandler(event:Event):void
+			{
+				dispatchEvent(new ContactEvent(ContactEvent.UPDATED, contact));			
+			}
+			
+			private function removeHandler(event:Event):void
+			{
+				dispatchEvent(new ContactEvent(ContactEvent.DELETED, contact));			
+			}
+			
+			private function faultHandler(event:IOErrorEvent):void
+			{
+				Alert.show("Invocation failed: "+event.text);
+			}
+			
+		]]>
+	</fx:Script>
+
+	<mx:Form>
+		<mx:FormItem label="Id">
+			<mx:TextInput text="{contact.id}" enabled="false"/>
+		</mx:FormItem>
+		<mx:FormItem label="First Name">
+			<mx:TextInput id="firstName" text="{contact.firstName}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Last Name">
+			<mx:TextInput id="lastName" text="{contact.lastName}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Email">
+			<mx:TextInput id="email" text="{contact.email}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Phone">
+			<mx:TextInput id="phone" text="{contact.phone}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Address">
+			<mx:TextInput id="address" text="{contact.address}"/>
+		</mx:FormItem>
+		<mx:FormItem label="City">
+			<mx:TextInput id="city" text="{contact.city}"/>
+		</mx:FormItem>
+		<mx:FormItem label="State">
+			<mx:TextInput id="state" text="{contact.state}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Zip">
+			<mx:TextInput id="zip" text="{contact.zip}"/>
+		</mx:FormItem>
+	</mx:Form>
+	
+	<s:HGroup left="8" bottom="8">
+		<s:Button label="Close" click="parent.removeChild(this)"/>
+		<s:Button label="Save" click="save()"/>
+		<s:Button label="Delete" click="deleteItem()"/>
+	</s:HGroup>
+
+</mx:Canvas>

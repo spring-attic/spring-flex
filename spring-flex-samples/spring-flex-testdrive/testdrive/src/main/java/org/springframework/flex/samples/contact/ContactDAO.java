@@ -102,4 +102,9 @@ public class ContactDAO implements IContactDAO {
         return count == 1;
     }
 
+	public boolean removeById(int id) {
+		int count = this.template.update("DELETE FROM contact WHERE id=?", id);
+        return count == 1;
+	}
+
 }

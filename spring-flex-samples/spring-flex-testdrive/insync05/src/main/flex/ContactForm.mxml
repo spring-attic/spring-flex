@@ -1,65 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
-	backgroundColor="#FFFFFF"
-	label="{contact.id>0?contact.firstName+' '+contact.lastName:'New Contact'}">
-	
-	<mx:Script>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		   label="{contact.id>0?contact.firstName+' '+contact.lastName:'New Contact'}">
+
+	<fx:Script>
 		<![CDATA[
 
-		import mx.rpc.events.FaultEvent;
-		import mx.rpc.events.ResultEvent;
-		import mx.controls.Alert;
-		
-		[Bindable] public var contact:Contact;
-
-		private function save():void
-		{
-			contact.firstName = firstName.text;
-			contact.lastName = lastName.text;
-			contact.email = email.text;
-			contact.phone = phone.text;
-			contact.address = address.text;
-			contact.city = city.text;
-			contact.state = state.text;
-			contact.zip = zip.text;
-			if (contact.id == 0)
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.controls.Alert;
+			
+			[Bindable] public var contact:Contact;
+			
+			private function save():void
 			{
-				ro.create(contact);	
-			}
-			else
+				contact.firstName = firstName.text;
+				contact.lastName = lastName.text;
+				contact.email = email.text;
+				contact.phone = phone.text;
+				contact.address = address.text;
+				contact.city = city.text;
+				contact.state = state.text;
+				contact.zip = zip.text;
+				if (contact.id == 0)
+				{
+					ro.create(contact);	
+				}
+				else
+				{
+					ro.update(contact);
+				}
+			}			
+			
+			private function create_resultHandler(event:ResultEvent):void
 			{
-				ro.update(contact);
+				contact.id = event.result.id;
 			}
-		}
-
-		private function create_resultHandler(event:ResultEvent):void
-		{
-			contact.id = event.result.id;
-		}
-
-		private function deleteItem():void
-		{
-			ro.remove(contact);		
-		}
-
-		private function remove_resultHandler(event:ResultEvent):void
-		{
-			parent.removeChild(this);
-		}
-		
-		private function faultHandler(event:FaultEvent):void
-		{
-			Alert.show(event.fault.faultDetail);
-		}
+			
+			private function update_resultHandler(event:ResultEvent):void
+			{
+				// no specific action for now
+			}
+			
+			private function deleteItem():void
+			{
+				ro.remove(contact);		
+			}
+			
+			private function remove_resultHandler(event:ResultEvent):void
+			{
+				contact = null;
+			}
+			
+			private function faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultDetail);
+			}
+			
 			
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
-	<mx:RemoteObject id="ro" destination="contactService">
-		<mx:method name="create" result="create_resultHandler(event)"/>
-		<mx:method name="remove" result="remove_resultHandler(event)"/>
-	</mx:RemoteObject>
-	
+	<fx:Declarations>
+		<mx:RemoteObject id="ro" destination="contactService" fault="faultHandler(event)" endpoint="http://localhost:8080/testdrive/messagebroker/amf">
+			<mx:method name="create" result="create_resultHandler(event)"/>
+			<mx:method name="update" result="update_resultHandler(event)"/>
+			<mx:method name="remove" result="remove_resultHandler(event)"/>
+		</mx:RemoteObject>
+	</fx:Declarations>
+
 	<mx:Form>
 		<mx:FormItem label="Id">
 			<mx:TextInput text="{contact.id}" enabled="false"/>
@@ -89,11 +99,11 @@
 			<mx:TextInput id="zip" text="{contact.zip}"/>
 		</mx:FormItem>
 	</mx:Form>
-
-	<mx:HBox left="8" bottom="8">
-		<mx:Button label="Close" click="parent.removeChild(this)"/>
-		<mx:Button label="Save" click="save()"/>
-		<mx:Button label="Delete" click="deleteItem()"/>
-	</mx:HBox>
 	
+	<s:HGroup left="8" bottom="8">
+		<s:Button label="Close" click="parent.removeChild(this)"/>
+		<s:Button label="Save" click="save()"/>
+		<s:Button label="Delete" click="deleteItem()"/>
+	</s:HGroup>
+
 </mx:Canvas>

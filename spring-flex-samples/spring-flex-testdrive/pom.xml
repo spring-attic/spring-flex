@@ -24,6 +24,7 @@
 		<module>insync04</module>
 		<module>insync05</module>
 		<module>insync06</module>
+		<module>insync-rest</module>
 		<module>jmschat</module>
 		<module>secured</module>
 		<module>simplepush</module>

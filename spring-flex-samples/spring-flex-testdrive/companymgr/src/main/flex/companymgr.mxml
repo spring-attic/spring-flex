@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
-	creationComplete="creationCompleteHandler()">
-
-	<mx:Script>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   applicationComplete="init()">
+	
+	<fx:Script>
 		<![CDATA[
 
 			import mx.rpc.events.FaultEvent;
@@ -12,27 +14,27 @@
 			
 			[Bindable] private var companies:ArrayCollection;
 			[Bindable] private var industries:ArrayCollection;
-
-			private function creationCompleteHandler():void
+			
+			private function init():void
 			{
 				roIndustry.findAll();
 			}
-
+			
 			private function company_findByName_resultHandler(event:ResultEvent):void
 			{
 				companies = event.result as ArrayCollection
 			}
-
+			
 			private function industry_findAll_resultHandler(event:ResultEvent):void
 			{
 				industries = event.result as ArrayCollection
 			}
-
+			
 			private function faultHandler(event:FaultEvent):void
 			{
 				Alert.show(event.fault.faultDetail);
 			}
-
+			
 			public function openCompany(company:Company):void
 			{
 				var children:Array = tn.getChildren();
@@ -54,49 +56,51 @@
 				form.industries = industries;
 				tn.selectedChild = form;
 			}
-
+			
 			private function search():void
 			{
 				roCompany.findByName(searchStr.text);
 			}
-
+			
 			private function companyCreatedHandler(event:CompanyEvent):void
 			{
 				search();				
 			}
-
+			
 			private function companyUpdatedHandler(event:CompanyEvent):void
 			{
 				search();				
 			}
-
+			
 			private function companyDeletedHandler(event:CompanyEvent):void
 			{
 				tn.removeChild(event.target as CompanyForm);
 				search();				
 			}
-
+			
 		]]>
-	</mx:Script>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RemoteObject id="roCompany" destination="companyService" endpoint="http://localhost:8080/testdrive/messagebroker/amf">
+			<s:method name="findByName" result="company_findByName_resultHandler(event)"/>
+		</s:RemoteObject>
+		
+		<s:RemoteObject id="roIndustry" destination="industryService" endpoint="http://localhost:8080/testdrive/messagebroker/amf">
+			<s:method name="findAll" result="industry_findAll_resultHandler(event)"/>
+		</s:RemoteObject>
+	</fx:Declarations>
 
-	<mx:RemoteObject id="roCompany" destination="companyService">
-		<mx:method name="findByName" result="company_findByName_resultHandler(event)"/>
-	</mx:RemoteObject>
+	<s:controlBarContent>
+		<s:TextInput id="searchStr"/>
+		<s:Button label="Search" click="search()"/>
+		<s:Button label="New Company" click="openCompany(new Company())"/>
+	</s:controlBarContent>
 
-	<mx:RemoteObject id="roIndustry" destination="industryService">
-		<mx:method name="findAll" result="industry_findAll_resultHandler(event)"/>
-	</mx:RemoteObject>
-
-	<mx:ApplicationControlBar width="100%">
-		<mx:TextInput id="searchStr"/>
-		<mx:Button label="Search" click="search()"/>
-		<mx:Button label="New Company" click="openCompany(new Company())"/>
-	</mx:ApplicationControlBar>
-
-	<mx:HDividedBox width="100%" height="100%">
+	<mx:HDividedBox top="8" bottom="8" left="8" right="8">
 		<mx:DataGrid id="dg" dataProvider="{companies}" width="30%" height="100%"
-			doubleClickEnabled="true"
-			doubleClick="openCompany(dg.selectedItem as Company)">
+					 doubleClickEnabled="true"
+					 doubleClick="openCompany(dg.selectedItem as Company)">
 			<mx:columns>
 				<mx:DataGridColumn dataField="name" headerText="Name"/>
 				<mx:DataGridColumn dataField="city" headerText="City"/>
@@ -104,5 +108,5 @@
 		</mx:DataGrid>
 		<mx:TabNavigator id="tn" width="70%" height="100%"/>
 	</mx:HDividedBox>
-
-</mx:Application>
+	
+</s:Application>

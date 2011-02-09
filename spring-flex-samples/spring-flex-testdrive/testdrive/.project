@@ -1,9 +1,7 @@
 <projectDescription>
   <name>testdrive</name>
   <comment/>
-  <projects>
-    <project>spring-flex-core</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
@@ -14,8 +12,12 @@
     <buildCommand>
       <name>org.eclipse.wst.validation.validationbuilder</name>
     </buildCommand>
+    <buildCommand>
+      <name>org.springframework.ide.eclipse.core.springbuilder</name>
+    </buildCommand>
   </buildSpec>
   <natures>
+    <nature>org.springframework.ide.eclipse.core.springnature</nature>
     <nature>org.eclipse.wst.common.project.facet.core.nature</nature>
     <nature>org.eclipse.jdt.core.javanature</nature>
     <nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>

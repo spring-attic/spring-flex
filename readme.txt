@@ -32,8 +32,8 @@ The following jar files are included in the distribution.
 The contents of each jar and its dependencies are noted.
 Dependencies in [brackets] are optional, and are just necessary for certain functionality.
 
-* org.springframework.flex-1.5.0.M1.jar
-- Contents: The Spring BlazeDS Integration library, containing Spring's integration for Adobe BlazeDS.
+* spring-flex-core-1.5.0.M1.jar
+- Contents: The Spring BlazeDS Integration core library, containing Spring's integration for Adobe BlazeDS.
 - Runtime Dependencies ([] indicates optional) : Spring Core, Spring MVC, BlazeDS, Commons Logging and HttpClient, CGLib, Backport of javax.util.concurrent, 
 [Spring Security], [Spring Integration], [Spring JMS], [Jackson]    
 

@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
-	applicationComplete="consumer.subscribe()">
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   applicationComplete="init()">
 	
-	<mx:Script>
+	
+	<fx:Script>
 		<![CDATA[
-		
+			
 			import mx.messaging.messages.AsyncMessage;
 			import mx.messaging.messages.IMessage;
+			
+			private function init():void
+			{
+				consumer.subscribe();
+			}
 			
 			private function send():void
 			{
@@ -16,43 +24,45 @@
 				producer.send(message);
 				msg.text = "";
 			}
-							
+			
 			private function messageHandler(message:IMessage):void
 			{
 				log.text += message.body.userId + ": " + message.body.chatMessage + "\n";	
 			}
 			
 		]]>
-	</mx:Script>
+	</fx:Script>	
 	
-	<!-- The ChannelSet API allows you to dynamically define your endpoints *at runtime*. In the example below, 
+	<fx:Declarations>
+		<!-- The ChannelSet API allows you to dynamically define your endpoints *at runtime*. In the example below, 
 		we hardcode the endpoint URLs. In real life, the client application would typically load these parameters 
 		dynamically. For example, the client application could read these parameters from an XML file loaded using 
 		the HTTPService at startup. The first channel added to the channelSet, is the first channel that the system 
 		will use to try to communicate with the server. If the first channel fails, the system will try to communicate 
-        with the second channel defined in the channelSet. -->
-	<mx:ChannelSet id="cs">
-		<!-- <mx:StreamingAMFChannel url="http://localhost:8080/testdrive/messagebroker/streamingamf"/> -->
-		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
-		<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
-	</mx:ChannelSet>
+		with the second channel defined in the channelSet. -->
+		<mx:ChannelSet id="cs">
+			<mx:StreamingAMFChannel url="http://localhost:8080/testdrive/messagebroker/streamingamf"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
+		</mx:ChannelSet>
+		
+		<mx:Producer id="producer" destination="chat" channelSet="{cs}"/>
+		<mx:Consumer id="consumer" destination="chat" channelSet="{cs}" message="messageHandler(event.message)"/>
+	</fx:Declarations>
 	
-	<mx:Producer id="producer" destination="chat" channelSet="{cs}"/>
-	<mx:Consumer id="consumer" destination="chat" channelSet="{cs}" message="messageHandler(event.message)"/>
-	
-	<mx:Panel title="Chat" width="100%" height="100%">
-		<mx:TextArea id="log" width="100%" height="100%"/>
-		<mx:ControlBar>
+	<s:Panel title="Chat" top="12" bottom="12" left="12" right="12">
+		<s:TextArea id="log" width="100%" height="100%" borderVisible="false"/>
+		<s:controlBarContent>
 			<mx:Form width="100%" paddingTop="4" paddingBottom="4" paddingLeft="4" paddingRight="4">
 				<mx:FormItem label="User Id:">
-					<mx:TextInput id="userId" width="100" enter="send()"/>
+					<s:TextInput id="userId" width="100" enter="send()"/>
 				</mx:FormItem>				
 				<mx:FormItem label="Message:" width="100%" direction="horizontal">
-					<mx:TextInput id="msg" width="100%" enter="send()"/>
-					<mx:Button label="Send" click="send()"/> 
+					<s:TextInput id="msg" width="100%" enter="send()"/>
+					<s:Button label="Send" click="send()"/> 
 				</mx:FormItem>				
 			</mx:Form>
-		</mx:ControlBar>
-	</mx:Panel>
+		</s:controlBarContent>
+	</s:Panel>
 	
-</mx:Application>
+</s:Application>

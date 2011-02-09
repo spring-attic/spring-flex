@@ -162,4 +162,18 @@ public class ProductDAO implements IProductDAO {
         }
     }
 
+	public boolean removeById(int id) {
+		Connection c = null;
+        try {
+            c = this.dataSource.getConnection();
+            PreparedStatement ps = c.prepareStatement("DELETE FROM product WHERE id=?");
+            ps.setInt(1, id);
+            int count = ps.executeUpdate();
+            return count == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+	}
+
 }

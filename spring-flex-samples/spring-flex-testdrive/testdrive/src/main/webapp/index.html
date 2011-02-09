@@ -27,9 +27,9 @@ infrastructure.</p>
 <h4>Remoting</h4>
 <ul>
 <li><a href="#inventory">Spring BlazeDS Integration 101</a>: The basics</li>
-<li><a href="#insync">inSync Contact Management Application</a>: A simple CRUD application built in 8 steps</li>
-<li><a href="#air">inSync AIR version</a>: A desktop version of the inSync application</li>
-<li><a href="#company">Company Manager</a>: Similar to inSync, but using <strong>annotation-based configuration</strong> (new in RC1). Also demonstrates object associations.</li>
+<li><a href="#insync">inSync Contact Management Application</a>: A simple CRUD application built in 6 steps</li>
+<li><a href="#insyncrest">RESTful inSync Contact Management Application</a>: An alternate version of inSync app that uses RESTful AMF Spring MVC endpoints instead of BlazeDS Remoting.</li>
+<li><a href="#company">Company Manager</a>: Similar to inSync, but using <strong>annotation-based configuration</strong>. Also demonstrates object associations.</li>
 </ul>
 <h4>Messaging</h4>
 <ul>
@@ -184,33 +184,33 @@ infrastructure.</p>
 </div>
 <br />
 
+<a name="insyncrest"></a>
 <div class="item">
-  <h3>InSync07: Styling the Application</h3>
-  <h4>Run the sample:</h4>
+  <h3>RESTful inSync: Communicating with Spring MVC REST endpoints using AMF</h3>
+  <h4>Run the sample (functionally equivalent to inSync06):</h4>
 <ol>
-  <li>Click <a href="insync07/insync07.html">here</a> to run the application</li>
+  <li>Click <a href="insync-rest/rest.html">here</a> to run the application</li>
   <li>Click the Search button to retrieve all the contacts in the database</li>
   <li>Enter a few characters in the Search input field before clicking the Search button to search by name</li>
+  <li>Double-click a contact in the DataGrid to open it in a separate Tab </li>
+  <li>Modify the first name or last name of the contact and click &quot;Save&quot;. Notice that the DataGrid is updated to reflect your changes.</li>
+  <li>Add a new contact and click &quot;Save&quot; to create the contact. Notice that the contact appears in the DataGrid.</li>
+  <li>Delete a contact and notice that the contact is removed from the DataGrid.</li>
   </ol>
 <h4>Code walkthrough:</h4>
-<p>Open insync07.mxml and styles.css in the insync07/src/main/flex directory to look at the source code of the application.<br />
-</p>
-</div>
-<br />
-
-<a name="air"></a>
-<div class="item">
-  <h3>inSync AIR: Desktop Version and the Client-Side Channel API</h3>
-  <h4>Run the sample:</h4>
-<ol>
-  <li>Click <a href="insync-air-spring/insync-air-spring.air">here</a> to install the application</li>
-  <li>Click the Search button to retrieve all the contacts in the database</li>
-  <li>Enter a few characters in the Search input field before clicking the Search button to search by name</li>
-  </ol>
-<h4>Code walkthrough:</h4>
-<p>Open main.mxml in the insync-air-spring/src/main/flex directory  to look at the source code of the application.</p>
-<p>In this version we also use the client-side Channel API to programmatically provide the endpoint of the AMF channel. By default, the endpoint is read from services-config.xml at compile time. This means that the compiled application includes a hardcoded value for the AMF endpoint URL, which is not appropriate for real life applications. The client-side Channel API allows you to provide the endpoint URL at runtime. In this version, the URL is now hardcoded in the client code which is not a good solution either. The key, in a real life application, is to obtain that URL dynamically. One approach is to read a configuration file using the HTTPService.  Another option is to encapsulate such configuration with a client-side DI framework like Spring ActionScript.<br />
-</p>
+<p>Open rest.mxml, ContactForm.mxml, ContactEvent.as, and RestInvoker.as in the insync-rest/src/main/flex directory to look at the source code of the application.</p>
+<p>Open the following files to look at the source code for the server side of the application: </p>
+<ul>
+  <li>testdrive/src/main/webapp/WEB-INF/spring/app-config.xml</li>
+  <li>testdrive/src/main/webapp/WEB-INF/flex-servlet.xml</li>
+  <li>testdrive/src/main/java/flex/spring/samples/contact/ContactDAO.java</li>
+  <li>testdrive/src/main/java/flex/spring/samples/rest/ContactsController.java</li>
+  <li>testdrive/src/main/java/flex/spring/samples/rest/HandlerAdapterPostProcessor.java</li>
+</ul>
+<p>Just as in inSync06, ContactForm dispatches events when a contact has been created, updated, or deleted. Other components of the application can register as listeners to these events to perform a specific task when a contact is created, updated or deleted. The main application registers as a listener to these events and refreshes the contact DataGrid to make sure it reflects the changes made in ContactForm.</p>
+<p>The major difference in this version is that the server side interface consists of RESTful HTTP endpoints, rather than direct RPC interfaces.  The RestInvoker object abstracts away the details of communication.  It uses URLStream instead of RemoteObject for marshalling data to and from the REST URLs.  Note that there are several workarounds due to the Flash player's inability to set the Accept header or to use the PUT and DELETE HTTP methods.  These 
+workarounds take advantage of existing Spring MVC facilities such as HiddenHttpMethodFilter and ContentNegotiatingViewResolver.</p>
+<p>The RESTful HTTP calls are handled by ContactsController. The results of each request are written back as AMF thanks to the configuration of the AmfView, and the "create" and "update" methods are able to take a Contact as a method parameter thanks to the use of @RequestBody in conjunction with AmfHttpMessageConverter.</p>
 </div>
 <br />
 

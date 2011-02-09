@@ -90,4 +90,9 @@ public class IndustryDAO implements IIndustryDAO {
         return count == 1;
     }
 
+	public boolean removeById(int id) {
+		int count = this.template.update("DELETE FROM industry WHERE id=?", id);
+        return count == 1;
+	}
+
 }
