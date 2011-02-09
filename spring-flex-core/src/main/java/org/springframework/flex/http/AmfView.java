@@ -87,7 +87,8 @@ public class AmfView extends AbstractView {
     
     /**
      * Filters out undesired attributes from the given model. The return value can be either another {@link Map}, or a
-     * single value object.
+     * single value object.  If only a single attribute is present in the model map, that value will be returned instead 
+     * of the full map.
      *
      * <p>Default implementation removes {@link BindingResult} instances and entries not included in the {@link
      * #setRenderedAttributes(Set) renderedAttributes} property.
@@ -104,6 +105,10 @@ public class AmfView extends AbstractView {
                 result.put(entry.getKey(), entry.getValue());
             }
         }
-        return result;
+        if (result.size() == 1) {
+        	return result.values().iterator().next();
+        } else {
+        	return result;
+        }
     }
 }
