@@ -5,6 +5,7 @@
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
 	<http>
+		<anonymous enabled="false"/>
 	    <form-login default-target-url="/secured/secured.html" login-page="/login.jsp" />
 		<remember-me key="testdrive" services-ref="rememberMeServices"/>
 	</http>

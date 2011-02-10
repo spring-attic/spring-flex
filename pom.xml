@@ -11,8 +11,6 @@
 	<modules>
 		<module>parent</module>
 		<module>spring-flex-core</module>
-		<module>roo-addon/org.springframework.flex.roo.addon</module>
-		<module>roo-addon/org.springframework.flex.roo.annotations</module>
 	</modules>
 
 	<distributionManagement>

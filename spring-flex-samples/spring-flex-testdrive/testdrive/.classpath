@@ -3,7 +3,7 @@
   <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
   <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="var" path="M2_REPO/javax/servlet/jstl/1.1.2/jstl-1.1.2.jar" sourcepath="M2_REPO/javax/servlet/jstl/1.1.2/jstl-1.1.2-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/servlet/jstl/1.2/jstl-1.2.jar" sourcepath="M2_REPO/javax/servlet/jstl/1.2/jstl-1.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar" sourcepath="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/activemq/activeio-core/3.1.0/activeio-core-3.1.0.jar" sourcepath="M2_REPO/org/apache/activemq/activeio-core/3.1.0/activeio-core-3.1.0-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/activemq/activeio-core/3.1.0/activeio-core-3.1.0-tests.jar"/>
@@ -31,8 +31,8 @@
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-context-support/3.0.5.RELEASE/spring-context-support-3.0.5.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-context-support/3.0.5.RELEASE/spring-context-support-3.0.5.RELEASE-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-core/3.0.5.RELEASE/spring-core-3.0.5.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-core/3.0.5.RELEASE/spring-core-3.0.5.RELEASE-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-expression/3.0.5.RELEASE/spring-expression-3.0.5.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-expression/3.0.5.RELEASE/spring-expression-3.0.5.RELEASE-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/flex/spring-flex-core/1.5.0.BUILD-SNAPSHOT/spring-flex-core-1.5.0.BUILD-SNAPSHOT.jar" sourcepath="M2_REPO/org/springframework/flex/spring-flex-core/1.5.0.BUILD-SNAPSHOT/spring-flex-core-1.5.0.BUILD-SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/springframework/integration/spring-integration-core/2.0.2.RELEASE/spring-integration-core-2.0.2.RELEASE.jar" sourcepath="M2_REPO/org/springframework/integration/spring-integration-core/2.0.2.RELEASE/spring-integration-core-2.0.2.RELEASE-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/flex/spring-flex-core/1.5.0.M2/spring-flex-core-1.5.0.M2.jar" sourcepath="M2_REPO/org/springframework/flex/spring-flex-core/1.5.0.M2/spring-flex-core-1.5.0.M2-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/integration/spring-integration-core/2.0.3.RELEASE/spring-integration-core-2.0.3.RELEASE.jar" sourcepath="M2_REPO/org/springframework/integration/spring-integration-core/2.0.3.RELEASE/spring-integration-core-2.0.3.RELEASE-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-jdbc/3.0.5.RELEASE/spring-jdbc-3.0.5.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-jdbc/3.0.5.RELEASE/spring-jdbc-3.0.5.RELEASE-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-jms/3.0.5.RELEASE/spring-jms-3.0.5.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-jms/3.0.5.RELEASE/spring-jms-3.0.5.RELEASE-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/security/spring-security-config/3.0.5.RELEASE/spring-security-config-3.0.5.RELEASE.jar" sourcepath="M2_REPO/org/springframework/security/spring-security-config/3.0.5.RELEASE/spring-security-config-3.0.5.RELEASE-sources.jar"/>

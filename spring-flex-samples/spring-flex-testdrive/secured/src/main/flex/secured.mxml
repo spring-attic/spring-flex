@@ -99,7 +99,7 @@
 		</mx:FormItem>
 	</mx:Form>
 	
-	<s:Panel top="12" bottom="12" left="12" right="12">
+	<!--<s:Panel top="12" bottom="14" left="12" right="428">-->
 		
 		<mx:Accordion width="100%" visible="{user != null}">
 		
@@ -124,5 +124,5 @@
 			
 		</mx:Accordion>
 			
-	</s:Panel>
+	<!--</s:Panel>-->
 </s:Application>
