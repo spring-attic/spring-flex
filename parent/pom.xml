@@ -6,7 +6,7 @@
 	<artifactId>spring-flex-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Spring BlazeDS Integration Parent POM</name>
-	<version>1.5.0.BUILD-SNAPSHOT</version>
+	<version>1.5.0.M2</version>
 
 	<distributionManagement>
 		<repository>
