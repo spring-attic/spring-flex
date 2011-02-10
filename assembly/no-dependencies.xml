@@ -13,8 +13,6 @@
         <moduleSet>
             <includes>
                 <include>org.springframework.flex:spring-flex-core</include>
-                <include>org.springframework.flex.roo.addon:org.springframework.flex.roo.addon</include>
-                <include>org.springframework.flex.roo.addon:org.springframework.flex.roo.annotations</include>
             </includes>
             <binaries>
                 <includeDependencies>false</includeDependencies>
@@ -41,13 +39,6 @@
         <!-- Source Jars -->
         <fileSet>
             <directory>spring-flex-core/target</directory>
-            <includes>
-                <include>**/*-sources.jar</include>
-            </includes>
-            <outputDirectory>src</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>roo-addon/org.springframework.flex.roo.addon/target</directory>
             <includes>
                 <include>**/*-sources.jar</include>
             </includes>
