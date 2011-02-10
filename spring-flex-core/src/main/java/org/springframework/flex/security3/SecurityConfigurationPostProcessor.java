@@ -85,7 +85,7 @@ public class SecurityConfigurationPostProcessor implements MergedBeanDefinitionP
 				if (beanDefinition.hasAttribute("invalidateSession")) {
 					invalidateSession = (Boolean) beanDefinition.getMetadataAttribute("invalidateSession").getValue();
 				}
-				handlers.add(new SecurityContextLogoutHandler());
+				handlers.add(contextHandler);
 				contextHandler.setInvalidateHttpSession(invalidateSession);
 				if (this.rememberMeServices != null && !rememberMeServicesConfigured && ClassUtils.isAssignableValue(LogoutHandler.class, this.rememberMeServices)) {
 					handlers.add(this.rememberMeServices);
