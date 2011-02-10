@@ -225,6 +225,18 @@ token.addResponder(
     			alternate approach to securing destinations is needed.  This is where Spring Security comes in, as all of its existing authorization
     			mechanisms should "just work" when security integration is enabled using the <code>secured</code> tag.   
     		</para>
+	        <note>
+	        	<para>
+	        		When securing destinations as in the examples shown below, it is important to keep in mind that this feature of Spring Security is
+	        		using Spring AOP.  By default, Spring AOP uses JDK dynamic proxies.  As such, if you have need to secure methods on a class that are 
+	        		not part of an interface that the class implements, then you will need either factor those methods out into an interface, or configure 
+	        		Spring to use CGLIB-based proxies instead.  See the following Spring documentation references for futher guidance:
+	        		<orderedlist>
+    					<listitem><para><ulink url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/aop.html#aop-introduction-proxies">AOP Proxies</ulink></para></listitem>
+    					<listitem><para><ulink url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/aop.html#aop-proxying">Proxying Mechanisms</ulink></para></listitem>
+    				</orderedlist>
+	        	</para>
+	        </note>
     		<para>
     			One of the major strengths of Spring Security is the multiple levels of granularity it provides you when securing your Spring services.  You can
     			go from securing your entire service layer in one concise statement:
