@@ -46,9 +46,13 @@
         <sect2 id="flex-addon-setup">
         	<title>Installing the Flex Addon for Spring Roo</title>
         	<para>
-        		The current version of the Flex Addon for Spring Roo is 1.0.0.M1.  The addon is included in the Spring BlazeDS Integration 1.5.0.M1 distribution 
+        		The currently released version of the Flex Addon for Spring Roo is 1.0.0.M1.  The addon was included in the Spring BlazeDS Integration 1.5.0.M1 distribution 
         		and is also available from the Spring Milestones Maven Repository at <code>http://maven.springframework.org/milestone</code> under the group id 
-        		<code>org.springframework.flex.roo.addon</code> and artifact id <code>org.springframework.flex.roo.addon</code>.
+        		<code>org.springframework.flex.roo.addon</code> and artifact id <code>org.springframework.flex.roo.addon</code>.  
+        		<note><para>The addon is currently under heavy development and an updated 1.0.0.M2 release should be available in the near future.  
+        		This next release will be available via Addon Discovery feature of Spring Roo 1.1+.  1.5.0.M1 is known to be incompatible with Roo 1.1 and above.  See the 
+        		Spring Flex community support forums if you are interested in following along with development and trying out the nightly snapshot builds.</para></note>
+        		
         	</para>
         	<para>
         		First, ensure that you have Spring Roo 1.1.0.M1 set up correctly by following the <ulink url="http://static.springsource.org/spring-roo/reference/html-single/index.html#intro-installation">steps found here</ulink>.

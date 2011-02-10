@@ -158,5 +158,43 @@ public class ProductServiceImpl implements ProductService {
 	}
 }]]>
     	</programlisting>
+    	<sect2 id="dynamic-remoting-destination-channels">
+    		<title>Supplying Externalized Channel Ids</title>
+	    	<para>
+	    		One potential drawback of the <code>@RemotingDestination</code> approach is the potential need to hard-code AMF channel ids in multiple 
+	    		classes throughout your codebase.  The specification of the <code>channels</code> property is optional (if not specified, the defaults for 
+	    		the RemotingService will be used), but in cases where they do need to be specified, one shouldn't need to edit all instances of 
+	    		<code>@RemotingDestination</code> any time the channel identifiers change.  To support this need, the <code>channels</code> attribute is 
+	    		able to resolve values supplied in the <code>ApplicationContext</code> through a <code>PropertyPlaceholderConfigurer</code>.  For example, the 
+	    		previous hardcoded example could be replaced with:
+	    	</para>
+	    	<programlisting language="java"><![CDATA[
+package flex.samples.product;
+
+import org.springframework.flex.remoting.RemotingDestination;
+import org.springframework.flex.remoting.RemotingExclude;
+import org.springframework.flex.remoting.RemotingInclude;
+import org.springframework.stereotype.Service;
+
+@Service("productService")
+@RemotingDestination(channels={"${channel1}","${channel2}"})
+public class ProductServiceImpl implements ProductService {
+	...
+}]]>
+	    	</programlisting>
+	    	<para>
+	    		assuming you have a <code>PropertyPlaceholderConfigurer</code> provided along the lines of:
+	    	</para>
+	    	<programlisting language="xml"><![CDATA[
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="properties">
+		<props>
+			<prop key="channel1">my-amf</prop>
+			<prop key="channel2">my-secure-amf, my-amf</prop>
+		</props>
+	</property>
+</bean>]]>    	
+			</programlisting>
+    	</sect2>
     </sect1>
 </chapter>

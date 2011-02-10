@@ -54,6 +54,13 @@
 </bean>]]>
 		</programlisting>
     	</sect2>
+    	<sect2 id="field-mapping">
+    		<title>Using Direct Field Mapping</title>
+    		<para>
+    			TODO - More details will be provided with 1.5.0.RC1.  For now, you can experiment with this by setting the <code>useDirectFieldAccess</code> property on a 
+    			custom-configured <code>HibernateConfigProcessor</code> or <code>JpaHibernateConfigProcessor</code> instance.
+    		</para>
+    	</sect2>
     	<sect2 id="hibernate-io-custom-converters">
     		<title>Providing Custom Converters for Hibernate Entity Serialization/Deserialization</title>
     		<para>

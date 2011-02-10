@@ -7,7 +7,7 @@
 		<titleabbrev>Spring BlazeDS Integration</titleabbrev>
 		<productname>Spring BlazeDS Integration</productname>
 		<releaseinfo>Version &version;</releaseinfo>
-		<pubdate>June 2010</pubdate>
+		<pubdate>February 2011</pubdate>
 		<authorgroup>
 			<author>
 				<firstname>Jeremy</firstname>
@@ -30,6 +30,7 @@
 	<xi:include href="./overview.xml"/>
 	<xi:include href="./configuration.xml"/>
 	<xi:include href="./remoting.xml"/>
+	<xi:include href="./rest.xml"/>
 	<xi:include href="./hibernate.xml"/>
 	<xi:include href="./security.xml"/>
 	<xi:include href="./messaging.xml"/>

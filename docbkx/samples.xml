@@ -5,7 +5,7 @@
         <title>Introduction</title>
         <para>
         	Included in the project distribution is a collection of samples called the Spring BlazeDS Integration Test Drive.  This samples project is set up 
-        	to be built with Maven and then imported into Eclipse for running the application via WTP.
+        	to be built with Maven and either run via an embedded Tomcat instance using the Maven Tomcat plugin, or else imported into Eclipse for running via WTP.
         </para>
         <sect2 id="building-with-maven">
         	<title>Maven Setup</title>
@@ -19,7 +19,7 @@ MAVEN_OPTS="-Xms256m -Xmx512m -XX:PermSize=128m -XX:MaxPermSize=256m"
 	        </programlisting>
         </sect2>
         <sect2 id="samples-build">
-	        <title>Building the Test Drive</title>
+	        <title>Building and Running the Test Drive</title>
 	        <para>
 	            Once your Maven environment is set up correctly, cd to {project distribution root}/samples/spring-flex-testdrive and execute:
 	        </para>
@@ -28,8 +28,16 @@ mvn clean install
 ]]>
 	        </programlisting>
 	        <para>
-	            This will first build all of the individual Flex projects and then finally assemble the 'testdrive' WAR project.
+	            This will first build all of the individual Flex projects and then finally assemble the 'testdrive' WAR project.  After building successfully, if you'd like to 
+	            run the application from the command line with an embedded Tomcat instance, execute:
 	        </para>
+	        <programlisting><![CDATA[
+mvn tomcat:run
+]]>
+			</programlisting>
+			<para>
+				Once the application has started successfully, you can access the samples walk-through at <ulink url="http://localhost:8080/testdrive/index.html">http://localhost:8080/testdrive/index.html</ulink>
+			</para>
 	    </sect2>
 	    <sect2 id="blazeds-4-maven">
         	<title>Using BlazeDS 4 with Maven</title>
@@ -75,7 +83,7 @@ mvn clean install
 	        <para>
 	            The individual Test Drive projects are pre-configured to be imported in Eclipse and run with WTP.  (There are a number of individual projects, so you may want to consider creating a fresh
 	            workspace or at least create a new working set to manage the projects.)  We recommend using the free <ulink url="http://www.springsource.com/products/sts">SpringSource Tool Suite</ulink> to work with the samples so that you can take full 
-	            advantage of its extensive Spring support, but any version of Eclipse 3.4+ with WTP should work.  
+	            advantage of its extensive Spring support, but any version of Eclipse 3.5+ with WTP should work.  
 	        </para>
 	        <para>  
 	            To import the samples, select File->Import...->General->Existing Projects into Workspace and navigate to the
@@ -84,7 +92,7 @@ mvn clean install
 	        <para>
 	            There is an individual project for each Flex sample, and one WTP project for the 'testdrive' WAR.  Once the projects have been imported, you can start the web application by selecting the 
 	            'testdrive' project, right-clicking and selecting Run As->Run on Server.  The samples have been most thoroughly tested in Tomcat 6.0, but should run in any Servlet 2.4 container that WTP supports.  Once 
-	            the application has started successfully, you can access the samples walk-through at <ulink url="http://localhost:8080/testdrive">http://localhost:8080/testdrive</ulink> (If running on a server other than 
+	            the application has started successfully, you can access the samples walk-through at <ulink url="http://localhost:8080/testdrive/index.html">http://localhost:8080/testdrive/index.html</ulink> (If running on a server other than 
 	            Tomcat, change the port number as needed.)
 	        </para>
         </sect2>

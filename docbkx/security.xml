@@ -25,7 +25,7 @@
         <anonymous enabled="false"/>
     </http>
     
-    <beans:bean id="entryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+    <beans:bean id="entryPoint" class="org.springframework.flex.security3.FlexAuthenticationEntryPoint"/>
     
     <authentication-manager>
        <authentication-provider>
@@ -42,8 +42,10 @@
 			<para>
 				With a typical Flex application, this approach is preferred to using Spring Security's auto-config setup.  Auto-config sets up a number of 
 				features that typically are not needed with a Flex application.  For instance, auto-config sets up a default <code>intercept-url</code> entry that
-				requires authentication for all URL paths within the application.  This does not work well for the needs of a typical BlazeDS setup as it would result in
-				the server returning a 403 response code for un-authenticated calls to BlazeDS endpoints which the Flex client does not handle gracefully.  (See <link linkend="secured-endpoint-path">
+				requires authentication for all URL paths within the application.  The <code>FlexAuthenticationEntryPoint</code> will return a proper AMF error 
+				response when such URL's are hit via normal Flex communication processing, but it's invocation should generally be considered a last resort.  Most of 
+				the time, authentication and authorization processing should happen deeper within the BlazeDS request handling process, where there are opportunities to 
+				provide more useful information to the client. (See <link linkend="secured-endpoint-path">
 				Securing BlazeDS Channels by Endpoint URL Path</link> for an alternative to <code>intercept-url</code> that generates proper AMF responses for the Flex client.) 
 				It is recommended to start simple as in this example, and add the additional features as needed.  
 			</para>
@@ -108,6 +110,39 @@
     		destination would cause the provided <code>LoginCommand</code> to be invoked to both verify that the user is logged in and to check
     		that they have the appropriate role.  Violation of either will result in an exception being thrown by Spring Security.    
     	</para>
+    	<para>
+    		The provided <code>LoginCommand</code> mimics as much as possible the functionality of Spring Security's 
+    		<code>AbstractAuthenticationProcessingFilter</code> including taking the necessary actions to coordinate Spring Security's additional 
+    		features such as, <ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#remember-me">Remember Me</ulink>, 
+    		<ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#ns-session-fixation">Session Fixation Protection</ulink>, 
+    		and <ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#concurrent-sessions">Concurrent Session Management</ulink> 
+    		upon commencement of the authentication process.  Additionally, it will invoke any configured <code>LogoutHandlers</code> as part of the logout 
+    		process, including both those auto-configured by Spring Security, and any that might be supplied by the application developer. 
+    	</para>
+    	<sect2 id="custom-login-command">
+    		<title>Using a Custom LoginCommand</title>
+	    	<para>
+	    		While the supplied <code>LoginCommand</code> covers many of the most common security configuration scenarios, sometimes it can be useful 
+	    		to provide your own implementation that either extends <code>SpringSecurityLoginCommand</code>, while using the Spring container to wire in 
+	    		any necessary dependencies.  A custom <code>LoginCommand</code> can be supplied via the <code>login-command</code> attribute of the <code>secured</code> 
+	    		tag as follows:
+	    	</para>
+	    	<programlisting language="xml"><![CDATA[
+<flex:message-broker>
+	<flex:secured login-command="myLoginCommand"/>
+</flex:message-broker>
+
+<bean id="myLoginCommand" class="com.foo.app.security.CustomLoginCommand"/>]]>
+	    	</programlisting>
+	    	<para>
+	    		If your custom <code>LoginCommand</code> extends <code>SpringSecurityLoginCommand</code>, the following properties will be autowired by the container if possible:
+	    		<itemizedlist>
+				    <listitem><para>rememberMeServices</para></listitem>
+				    <listitem><para>sessionAuthenticationStrategy</para></listitem>
+				    <listitem><para>logoutHandlers</para></listitem>
+				</itemizedlist>
+	    	</para>
+    	</sect2>
     	<sect2 id="accessing-user-details">
     		<title>Accessing User Details</title>
     		<para>

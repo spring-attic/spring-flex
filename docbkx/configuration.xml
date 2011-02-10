@@ -371,12 +371,70 @@ public class MyDestinationCountingConfigProcessor implements MessageBrokerConfig
     	<sect2 id="resource-handling-message-interceptors">
     	   <title>Resource Handling with Custom Message Interceptors</title>
     	   <para>
-    	       As of release 1.0.2 of Spring BlazeDS Integration, an additional <code>org.springframework.flex.core.ResourceHandlingMessageInterceptor</code> interface
+    	       For housekeeping purposes, an additional <code>org.springframework.flex.core.ResourceHandlingMessageInterceptor</code> interface
     	       is available to use.  Interceptors that implement this extended interface receive an additional guaranteed callback after message processing is completed,
     	       whether processing was successful or failed due to an exception being thrown by the Endpoint.  This allows the interceptor to clean up any resources that 
     	       it may have been using.  This interface extends the basic <code>MessageInterceptor</code> interface, thus it is configured the same way using the 
     	       <code>message-interceptor</code> tag.
     	   </para>
+    	</sect2>
+    	<sect2 id="message-interception-order">
+    		<title>Customizing the Message Interceptor Chain</title>
+    		<para>
+    			The framework installs a number of predefined <code>MessageInterceptors</code> that are automatically configured through the use of the configuration 
+    			namespace.  These interceptors are configured in a specific order, and any custom interceptors are by default added to the beginning of the chain, in the 
+    			order that their <code>message-interceptor</code> elements appear.  It is possible to specify an explicit order via the <code>position</code>, <code>before</code>, 
+    			and <code>after</code> attributes.  The <code>position</code> attribute allows the user to *override* the framework-supplied interceptor at that position, or to 
+    			simply specify that the interceptor should be at the beginning or end of the chain by using the <code>FIRST</code> and <code>LAST</code> values respectively. The 
+    			<code>before</code> and <code>after</code> attributes allow specifying position *relative to* the framework-supplied filters.
+     		</para>
+     		<para>
+     			The ordering and implementation of the framework-supplied filters is shown in the table below.
+     			<table id="interceptor-stack">
+					<title>Standard Interceptor Aliases and Ordering</title>
+					<tgroup cols="3" align="left">
+						<colspec colnum="1" colname="col1" colwidth="2*" />
+						<colspec colnum="2" colname="col2" colwidth="2*" />
+						<colspec colnum="3" colname="col3" colwidth="1*" />
+						<thead>
+							<row>
+								<entry align="center">Alias</entry>
+								<entry align="center">MessageInterceptor Class</entry>
+								<entry align="center">Namespace Element or Attribute</entry>
+							</row>
+						</thead>
+						<tbody>
+							<row>
+								<entry> PER_CLIENT_AUTH_INTERCEPTOR</entry>
+								<entry>
+									<literal>PerClientAuthenticationInterceptor</literal>
+								</entry>
+								<entry>
+									<literal>message-broker/secured@per-client-authentication</literal>
+								</entry>
+							</row>
+							<row>
+								<entry> LOGIN_MESSAGE_INTERCEPTOR</entry>
+								<entry>
+									<literal>LoginMessageInterceptor</literal>
+								</entry>
+								<entry>
+									<literal>message-broker/secured</literal>
+								</entry>
+							</row>
+							<row>
+								<entry> ENDPOINT_INTERCEPTOR</entry>
+								<entry>
+									<literal>EndpointInterceptor</literal>
+								</entry>
+								<entry>
+									<literal>message-broker/secured/secured-endpoint-path or message-broker/secured/secured-channel</literal>
+								</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</table>
+     		</para>
     	</sect2>
 	</sect1>
 	<sect1 id="service-adapters">
