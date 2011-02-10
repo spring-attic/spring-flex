@@ -12,7 +12,7 @@
 	<channel id="fromFlex"/>
 
 	<inbound-channel-adapter ref="counter" method="next" channel="toFlex">
-		<poller max-messages-per-poll="1" fixed-rate="5000" />
+		<poller max-messages-per-poll="1" fixed-rate="2000" />
 	</inbound-channel-adapter>
 
 	<service-activator input-channel="fromFlex" ref="counter" method="handle"/>

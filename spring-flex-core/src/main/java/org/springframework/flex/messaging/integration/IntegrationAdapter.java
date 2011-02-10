@@ -16,7 +16,9 @@
 
 package org.springframework.flex.messaging.integration;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,6 +54,8 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
 
     private final Log logger = LogFactory.getLog(getClass());
 
+    private static final List<String> filteredHeaders;
+    
     private volatile MessageChannel messageChannel;
 
     private volatile boolean extractPayload = true;
@@ -59,6 +63,13 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
     private final Set<Object> subscriberIds = new HashSet<Object>();
 
     private volatile AbstractEndpoint consumerEndpoint;
+    
+    static {
+    	filteredHeaders = new ArrayList<String>(FlexHeaders.ignored());
+    	filteredHeaders.add(MessageHeaders.ID);
+    	filteredHeaders.add(MessageHeaders.TIMESTAMP);
+    	filteredHeaders.add(MessageHeaders.EXPIRATION_DATE);
+    }
 
     /**
      * Specify whether the Flex Message body should be extracted
@@ -92,15 +103,16 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
         AsyncMessage flexMessage = new AsyncMessage();
         flexMessage.setBody(message.getPayload());
         MessageHeaders headers = message.getHeaders();
-        flexMessage.setMessageId(headers.getId().toString());
-        flexMessage.setTimestamp(headers.getTimestamp().longValue());
+        flexMessage.setMessageId(headers.containsKey(FlexHeaders.MESSAGE_ID) ? headers.get(FlexHeaders.MESSAGE_ID, String.class) : headers.getId().toString());
+        Long timestamp = headers.containsKey(FlexHeaders.TIMESTAMP) ? headers.get(FlexHeaders.MESSAGE_ID, Long.class) : headers.getTimestamp();
+        flexMessage.setTimestamp(timestamp);
         Long expirationDate = headers.getExpirationDate();
         if (expirationDate != null) {
-            flexMessage.setTimeToLive(expirationDate - headers.getTimestamp());
+            flexMessage.setTimeToLive(expirationDate - timestamp);
         }
         for (Map.Entry<String, Object> header : headers.entrySet()) {
             String key = header.getKey();
-            if (!MessageHeaders.ID.equals(key) && !MessageHeaders.TIMESTAMP.equals(key) && !MessageHeaders.EXPIRATION_DATE.equals(key)) {
+            if (!filteredHeaders.contains(key)) {
                 flexMessage.setHeader(key, header.getValue());
             }
         }
@@ -133,11 +145,11 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
             Map headers = flexMessage.getHeaders();
             headers.put(FlexHeaders.CLIENT_ID, flexMessage.getClientId());
             headers.put(FlexHeaders.DESTINATION_ID, flexMessage.getDestination());
+            headers.put(FlexHeaders.MESSAGE_ID, flexMessage.getMessageId());
+            headers.put(FlexHeaders.TIMESTAMP, flexMessage.getTimestamp());
             long timestamp = flexMessage.getTimestamp();
             message = MessageBuilder.withPayload(flexMessage.getBody())
                     .copyHeaders(headers)
-                    .setHeader(MessageHeaders.ID, flexMessage.getMessageId())
-                    .setHeader(MessageHeaders.TIMESTAMP, timestamp)
                     .setExpirationDate(timestamp + flexMessage.getTimeToLive())
                     .build();
         }

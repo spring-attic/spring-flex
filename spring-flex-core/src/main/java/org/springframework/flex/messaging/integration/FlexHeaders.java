@@ -16,6 +16,9 @@
 
 package org.springframework.flex.messaging.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Constants for the header names that are mapped from a Flex
  * Message to a Spring Integration Message.
@@ -27,5 +30,24 @@ public abstract class FlexHeaders {
     public static final String CLIENT_ID = "flex_client_id";
 
     public static final String DESTINATION_ID = "flex_destination_id";
-
+    
+    public static final String MESSAGE_ID = "flex_id";
+    
+    public static final String TIMESTAMP = "flex_timestamp";
+    
+    private static final List<String> ignoredHeaders;
+    
+    static {
+    	ignoredHeaders = new ArrayList<String>();
+    	ignoredHeaders.add(MESSAGE_ID);
+    	ignoredHeaders.add(TIMESTAMP);
+    }
+    
+    /**
+     * Returns the list of headers that are set explicitly to properties of AsyncMessage and shouldn't be added to it's header map.
+     * @return a list of headers to ignore when setting AsyncMessage headers
+     */
+    public static List<String> ignored() {
+    	return ignoredHeaders;
+    }
 }
