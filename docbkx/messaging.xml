@@ -28,7 +28,7 @@
     	</para>  	
     	<programlisting language="xml"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<service id="remoting-service"
+<service id="message-service"
     class="flex.messaging.services.MessageService">
 
     <adapters>
