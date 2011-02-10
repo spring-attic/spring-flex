@@ -357,7 +357,7 @@
 
 	<properties>
 		<spring.version>3.0.5.RELEASE</spring.version>
-		<integration.version>2.0.3.BUILD-SNAPSHOT</integration.version>
+		<integration.version>2.0.3.RELEASE</integration.version>
 		<security.version>3.0.5.RELEASE</security.version>
 		<blazeds.version>4.0.0.14931</blazeds.version>
 	</properties>

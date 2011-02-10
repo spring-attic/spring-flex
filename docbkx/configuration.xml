@@ -369,6 +369,7 @@ public class MyDestinationCountingConfigProcessor implements MessageBrokerConfig
 </flex:message-broker>]]>    		
     	</programlisting>
     	<sect2 id="resource-handling-message-interceptors">
+    	   <title>Resource Handling with Custom Message Interceptors</title>
     	   <para>
     	       As of release 1.0.2 of Spring BlazeDS Integration, an additional <code>org.springframework.flex.core.ResourceHandlingMessageInterceptor</code> interface
     	       is available to use.  Interceptors that implement this extended interface receive an additional guaranteed callback after message processing is completed,
