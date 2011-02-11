@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable] private var contacts:ArrayCollection;
+			
+			private function resultHandler(event:ResultEvent):void
+			{
+				contacts = event.result as ArrayCollection
+			}
+			
+			private function faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultDetail);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RemoteObject id="ro" destination="contactService" fault="faultHandler(event)" endpoint="http://localhost:8080/testdrive/messagebroker/amf">
+			<s:method name="findByName" result="resultHandler(event)"/>
+		</s:RemoteObject>
+	</fx:Declarations>
+	
+	<s:controlBarContent>
+		<s:TextInput id="searchStr"/>
+		<s:Button label="Search" click="ro.findByName(searchStr.text)"/>
+	</s:controlBarContent>
+	
+	<mx:HDividedBox top="8" left="8" right="8" bottom="8">
+		
+		<mx:DataGrid id="dg" dataProvider="{contacts}" width="30%" height="100%">
+			<mx:columns>
+				<mx:DataGridColumn dataField="firstName" headerText="First Name"/>
+				<mx:DataGridColumn dataField="lastName" headerText="Last Name"/>
+			</mx:columns>
+		</mx:DataGrid>
+		
+		<local:ContactForm contact="{dg.selectedItem as Contact}" width="70%" height="100%"/>
+
+	</mx:HDividedBox>
+	
+</s:Application>

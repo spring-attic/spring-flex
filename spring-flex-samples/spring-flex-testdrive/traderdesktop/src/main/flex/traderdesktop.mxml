@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   applicationComplete="initApp()">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.messaging.MultiTopicConsumer;
+			import mx.messaging.events.MessageEvent;
+			
+			import org.springframework.flex.samples.marketfeed.Stock;
+		
+			[Bindable] private var items:ArrayCollection;
+			
+			private var stockMap:Object;
+			
+			private function initApp():void
+			{
+				stockMap = new Object();
+				items = new ArrayCollection();
+				addSymbol("IBM");
+				addSymbol("JBLU");
+				addSymbol("ADBE");
+				addSymbol("GE");
+				addSymbol("C");
+				consumer.subscribe();
+			}
+			
+			private function deleteSymbol():void
+			{
+				var symbol:String = dg.selectedItem.symbol;
+				consumer.removeSubscription(symbol);
+				items.removeItemAt(dg.selectedIndex);
+				delete stockMap[symbol];
+			}
+			
+			private function addSymbol(symbol:String):void
+			{
+				if (symbol == null || symbol == "")
+				{
+					Alert.show("Cannot add an empty symbol");
+					return;
+				}
+				
+				symbol = symbol.toUpperCase();
+				if (stockMap.hasOwnProperty(symbol))
+				{
+					Alert.show("Symbol '" + symbol + "' is already in the list");
+					return;
+				}
+				
+				var stock:Stock = new Stock();
+				stock.symbol = symbol;
+				stockMap[symbol] = stock;
+				items.addItem(stock);
+				consumer.addSubscription(symbol);
+			}
+			
+			private function messageHandler(event:MessageEvent):void 
+			{
+				var changedStock:Stock = event.message.body as Stock;
+				var stock:Stock = stockMap[changedStock.symbol];
+				
+				BackgroundColorRenderer.symbol = changedStock.symbol;
+				
+				if (stock)
+				{
+					stock.open = changedStock.open;
+					stock.change = changedStock.change;
+					stock.last = changedStock.last;
+					stock.high = changedStock.high;
+					stock.low = changedStock.low;
+					stock.date = changedStock.date;
+				}
+			}
+			
+			private function formatNumber(item:Object, column:DataGridColumn):String
+			{
+				return nf.format(item[column.dataField]);
+			}
+		
+		
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+
+		<mx:ChannelSet id="cs">
+			<mx:StreamingAMFChannel url="http://localhost:8080/testdrive/messagebroker/streamingamf"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
+		</mx:ChannelSet>
+		
+		<mx:MultiTopicConsumer id="consumer" destination="market-feed" channelSet="{cs}" message="messageHandler(event)"/>		
+		<mx:NumberFormatter id="nf" precision="2"/>
+
+	</fx:Declarations>
+	
+	<s:Panel title="Watch List" top="20" left="20" bottom="20" right="20">
+		<mx:DataGrid id="dg" dataProvider="{items}" width="100%" height="100%" borderVisible="false">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Symbol" dataField="symbol" width="80"/>
+				<mx:DataGridColumn headerText="Open" dataField="open" labelFunction="formatNumber" textAlign="right" width="60"/>
+				<mx:DataGridColumn headerText="Last" dataField="last" itemRenderer="BackgroundColorRenderer" labelFunction="formatNumber" textAlign="right" width="60"/>
+				<mx:DataGridColumn headerText="Change" dataField="change" itemRenderer="ColorRenderer" labelFunction="formatNumber" textAlign="right" width="60"/>
+				<mx:DataGridColumn headerText="High" dataField="high" labelFunction="formatNumber" textAlign="right" width="60"/>
+				<mx:DataGridColumn headerText="Low" dataField="low" labelFunction="formatNumber" textAlign="right" width="60"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:controlBarLayout>
+			<s:VerticalLayout paddingTop="8" paddingLeft="8" paddingBottom="8" paddingRight="8"/>
+		</s:controlBarLayout>
+		<s:controlBarContent>
+			<s:RichText width="100%">
+				<s:text>The stocks available in the sample feed are: XOM, WMT, GM, CVX, COP, GE, C, AIG, GOOG, ADBE, JBLU, COKE, GENZ, YHOO, IBM, BA, SAP, MOT, VZ, MCD.</s:text>
+			</s:RichText>
+			<s:HGroup width="100%">
+				<s:TextInput id="symbol" enter="addSymbol(symbol.text);symbol.text='';" width="50"/>
+				<s:Button label="Add Symbol" click="addSymbol(symbol.text);symbol.text='';"/>
+				<mx:Spacer width="100%"/>
+				<s:Button label="Delete Symbol" click="deleteSymbol()" enabled="{dg.selectedItem}"/>
+			</s:HGroup>
+		</s:controlBarContent>
+	</s:Panel>
+
+</s:Application>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable] private var contacts:ArrayCollection;
+			
+			private function resultHandler(event:ResultEvent):void
+			{
+				contacts = event.result as ArrayCollection
+			}
+			
+			private function faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultDetail);
+			}
+			
+			public function openContact(contact:Contact):void
+			{
+				var children:Array = tn.getChildren();
+				for (var i:int = 0; i<children.length; i++)
+				{
+					if (ContactForm(children[i]).contact.id == contact.id)
+					{
+						tn.selectedChild = children[i];
+						return;
+					}
+				}
+				
+				var form:ContactForm = new ContactForm();
+				form.addEventListener(ContactEvent.CREATED, contactCreatedHandler);
+				form.addEventListener(ContactEvent.UPDATED, contactUpdatedHandler);
+				form.addEventListener(ContactEvent.DELETED, contactDeletedHandler);
+				tn.addChild(form);
+				form.contact = contact;
+				tn.selectedChild = form;
+			}
+
+			private function search():void
+			{
+				ro.findByName(searchStr.text);
+			}
+			
+			private function contactCreatedHandler(event:ContactEvent):void
+			{
+				search();				
+			}
+			
+			private function contactUpdatedHandler(event:ContactEvent):void
+			{
+				search();				
+			}
+			
+			private function contactDeletedHandler(event:ContactEvent):void
+			{
+				tn.removeChild(event.target as ContactForm);
+				search();				
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RemoteObject id="ro" destination="contactService" fault="faultHandler(event)" endpoint="http://localhost:8080/testdrive/messagebroker/amf">
+			<s:method name="findByName" result="resultHandler(event)"/>
+		</s:RemoteObject>
+	</fx:Declarations>
+	
+	<s:controlBarContent>
+		<s:TextInput id="searchStr"/>
+		<s:Button label="Search" click="search()"/>
+		<mx:Button label="New Contact" click="openContact(new Contact())"/>
+	</s:controlBarContent>
+	
+	<mx:HDividedBox  top="8" left="8" right="8" bottom="8">
+		<mx:DataGrid id="dg" dataProvider="{contacts}" width="30%" height="100%"
+					 doubleClickEnabled="true"
+					 doubleClick="openContact(dg.selectedItem as Contact)">
+			<mx:columns>
+				<mx:DataGridColumn dataField="firstName" headerText="First Name"/>
+				<mx:DataGridColumn dataField="lastName" headerText="Last Name"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:TabNavigator id="tn" width="70%" height="100%"/>
+	</mx:HDividedBox>
+	
+</s:Application>

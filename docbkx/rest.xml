@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="amf-rest">
+    <title>Communicating with RESTful Spring MVC Endpoints using AMF</title>
+    <sect1 id="rest-introduction">
+        <title>Introduction</title>
+        <para>
+        	TODO - An <code>AmfView</code> and <code>AmfHttpMessageConverter</code> are now provided with Spring BlazeDS Integration to 
+        	support RESTful communication protocols as an alternative to direct RPC.  This is an especially attractive option when your 
+        	application needs to support more than just a Flex client.  Complete documentation for the AMF support for the RESTful Spring 
+        	MVC @Controller model will be provided in 1.5.0.RC1. For now, see the new <code>insync-rest</code> example that has been added 
+        	to the <link linkend="samples">Test Drive</link>, which duplicated the full functionality of the complete inSync application 
+        	that was originally built using BlazeDS Remoting. 
+        </para>
+    </sect1>
+</chapter>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" label="Chat">
+	
+	<fx:Script>
+		<![CDATA[
+		
+			import mx.messaging.messages.AsyncMessage;
+			import mx.messaging.messages.IMessage;
+			import mx.messaging.events.MessageFaultEvent;
+			import mx.controls.Alert;
+			
+			public var username:String;
+			
+			private function send():void
+			{
+				var message:IMessage = new AsyncMessage();
+				message.body.userId = username;
+				message.body.chatMessage = msg.text;
+				producer.send(message);
+				msg.text = "";
+			}
+			
+			private function faultHandler(event:MessageFaultEvent):void
+			{
+				Alert.show(event.faultString, "Error sending message");
+			}
+							
+			private function messageHandler(message:IMessage):void
+			{
+				log.text += message.body.userId + ": " + message.body.chatMessage + "\n";	
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:ChannelSet id="cs">
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
+		</mx:ChannelSet>
+		
+		<mx:Producer id="producer" destination="secured-chat" channelSet="{cs}" fault="faultHandler(event)"/>
+		<mx:Consumer id="consumer" destination="secured-chat" channelSet="{cs}" message="messageHandler(event.message)"/>
+	</fx:Declarations>
+	
+	<mx:Panel width="100%" height="100%">
+		<s:TextArea id="log" width="100%" height="100%"/>
+		<mx:ControlBar>
+			<mx:Form width="100%" paddingTop="4" paddingBottom="4" paddingLeft="4" paddingRight="4">				
+				<mx:FormItem label="Message:" width="100%" direction="horizontal">
+					<s:TextInput id="msg" width="100%" enter="send()"/>
+					<s:Button label="Send" click="send()"/> 
+				</mx:FormItem>				
+			</mx:Form>
+		</mx:ControlBar>
+	</mx:Panel>
+	
+</mx:Canvas>
