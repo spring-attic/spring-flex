@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[2.3.2.201003220227-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[false]]></enableImports>
+	<configs>
+		<config>src/test/java/org/springframework/flex/config/xml/flex-namespace-prototype.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/annotated-remote-bean-context.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/default-message-broker.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/invalid-message-broker.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/invalid-remote-service-decorator.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/invalid-remote-service.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/message-broker.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/message-destination.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/remote-service-annotations.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/remote-service-decorator.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/remote-service.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/secured-message-broker.xml</config>
+		<config>src/test/resources/org/springframework/flex/config/security-context.xml</config>
+	</configs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>

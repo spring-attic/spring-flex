@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<bookinfo>
+		<title>Spring BlazeDS Integration Reference Guide</title>
+		<titleabbrev>Spring BlazeDS Integration</titleabbrev>
+		<productname>Spring BlazeDS Integration</productname>
+		<releaseinfo>Version &version;</releaseinfo>
+		<pubdate>February 2011</pubdate>
+		<authorgroup>
+			<author>
+				<firstname>Jeremy</firstname>
+				<surname>Grelle</surname>
+			</author>
+		</authorgroup>
+		<legalnotice>
+			<para>
+				Copies of this document may be made for your own use and for
+				distribution to others, provided that you do not charge any
+				fee for such copies and further provided that each copy
+				contains this Copyright Notice, whether distributed in print
+				or electronically.
+			</para>
+		</legalnotice>
+	</bookinfo>
+	
+	<toc />
+	
+	<xi:include href="./overview.xml"/>
+	<xi:include href="./configuration.xml"/>
+	<xi:include href="./remoting.xml"/>
+	<xi:include href="./rest.xml"/>
+	<xi:include href="./hibernate.xml"/>
+	<xi:include href="./security.xml"/>
+	<xi:include href="./messaging.xml"/>
+	<xi:include href="./samples.xml"/>
+	<xi:include href="./flexaddon.xml"/>
+	
+</book>

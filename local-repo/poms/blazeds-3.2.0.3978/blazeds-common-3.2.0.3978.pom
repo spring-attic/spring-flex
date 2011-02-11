@@ -1,0 +1,25 @@
+<project>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.adobe.blazeds</groupId>
+  <artifactId>blazeds-common</artifactId>
+  <version>3.2.0.3978</version>
+  <packaging>jar</packaging>
+
+  <name>BlazeDS Common Library</name>
+  <url>http://opensource.adobe.com/wiki/display/blazeds/BlazeDS/</url>
+  <description>BlazeDS is the server-based Java remoting and web messaging technology that enables developers to easily connect to back-end distributed data and push data in real-time to Adobe Flex and Adobe AIR applications for more responsive rich Internet application (RIA) experiences.</description>
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL v3)</name>
+
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://opensource.adobe.com/svn/opensource/blazeds/tags/3.2.0/</url>
+  </scm>
+
+</project>
+
+

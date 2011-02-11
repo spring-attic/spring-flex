@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<plugins>
+	<springFlex>
+	
+		<plugin>
+			<groupId>org.sonatype.flexmojos</groupId>
+			<artifactId>flexmojos-maven-plugin</artifactId>
+			<version>3.7.1</version>
+			<dependencies>
+				<dependency>
+					<groupId>com.adobe.flex</groupId>
+					<artifactId>compiler</artifactId>
+					<version>4.0.0.14159</version>
+					<type>pom</type>
+				</dependency>
+			</dependencies>
+			<extensions>true</extensions>
+			<executions>
+				<execution>
+					<phase>process-resources</phase>
+					<id>compile-scaffold-swf</id>
+					<goals>
+						<goal>compile-swf</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-eclipse-plugin</artifactId>
+			<version>2.7</version>  <!--  Note 2.8 does not work with AspectJ aspect path -->
+			<configuration>
+				<downloadSources>true</downloadSources>
+				<downloadJavadocs>false</downloadJavadocs>
+				<wtpversion>2.0</wtpversion>
+				<additionalBuildcommands>
+					<buildCommand>
+						<name>com.adobe.flexbuilder.project.flexbuilder</name>
+					</buildCommand>
+					<buildCommand>
+						<name>org.eclipse.ajdt.core.ajbuilder</name>
+						<arguments>
+							<aspectPath>org.springframework.aspects</aspectPath>
+						</arguments>
+					</buildCommand>
+					<buildCommand>
+						<name>org.springframework.ide.eclipse.core.springbuilder</name>
+					</buildCommand>
+				</additionalBuildcommands>
+				<additionalProjectnatures>
+					<projectnature>org.eclipse.ajdt.ui.ajnature</projectnature>
+					<projectnature>com.springsource.sts.roo.core.nature</projectnature>
+					<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+					<projectnature>com.adobe.flexbuilder.project.flexnature</projectnature>
+					<projectnature>com.adobe.flexbuilder.project.actionscriptnature</projectnature>
+				</additionalProjectnatures>
+			</configuration>
+		</plugin>
+		
+	</springFlex>
+</plugins>

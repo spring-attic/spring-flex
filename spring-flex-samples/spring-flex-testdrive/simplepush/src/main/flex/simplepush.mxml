@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.messaging.messages.IMessage;
+			
+			private function messageHandler(message:IMessage):void
+			{
+				pushedValue.text = ""+ message.body;	
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:ChannelSet id="cs">
+			<mx:StreamingAMFChannel url="http://localhost:8080/testdrive/messagebroker/streamingamf"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amflongpolling"/>
+			<mx:AMFChannel url="http://localhost:8080/testdrive/messagebroker/amfpolling"/>
+		</mx:ChannelSet>
+		
+		<mx:Consumer id="consumer" destination="simple-feed" channelSet="{cs}" 
+					 message="messageHandler(event.message)"/>
+	</fx:Declarations>
+
+	<s:TextInput id="pushedValue" width="250" verticalCenter="0" horizontalCenter="0"/>
+	
+	<s:Button label="Subscribe" click="consumer.subscribe()" enabled="{!consumer.subscribed}" verticalCenter="30" horizontalCenter="-50"/>
+	<s:Button label="Unsubscribe" click="consumer.unsubscribe()" enabled="{consumer.subscribed}" verticalCenter="30" horizontalCenter="50"/>
+
+</s:Application>

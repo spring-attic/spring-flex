@@ -1,0 +1,19 @@
+project --topLevelPackage org.example.flexrocks --projectName flexrocks
+persistence setup --provider HIBERNATE --database H2_IN_MEMORY 
+ent --class ~.domain.Person
+field string --fieldName name
+field set --fieldName children --element ~.domain.Person
+flex setup
+entity --class ~.domain.Address
+field string --fieldName street
+focus --class ~.domain.Person
+field reference --fieldName currentAddress --type ~.domain.Address
+field reference --fieldName spouse --type ~.domain.Person --cardinality ONE_TO_ONE 
+field set --fieldName previousAddresses --element ~.domain.Address
+entity --class ~.domain.BuildingInfo
+field reference --fieldName address --type ~.domain.Address --cardinality ONE_TO_ONE 
+entity --class ~.domain.TaxRecord
+field string --fieldName taxId
+focus --class ~.domain.Address
+field reference --type ~.domain.TaxRecord --fieldName taxRecord --cardinality ONE_TO_ONE
+flex remoting all --package ~.service

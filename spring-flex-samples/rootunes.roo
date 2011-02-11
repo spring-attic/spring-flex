@@ -1,0 +1,17 @@
+project --topLevelPackage org.example.rootunes
+persistence setup --provider HIBERNATE --database H2_IN_MEMORY 
+flex setup
+entity --class ~.domain.Artist
+field string --fieldName name --notNull
+entity --class ~.domain.Album
+field string --fieldName title --notNull 
+field number --fieldName numberOfTracks --type java.lang.Integer --notNull --min 1
+field date --fieldName releaseDate --type java.util.Date --notNull
+field reference --fieldName artist --type ~.domain.Artist
+flex remoting all --package ~.service
+entity --class ~.domain.Song
+field string --fieldName title --notNull 
+field boolean --fieldName explicitLyrics
+field number --fieldName runningLength --type java.lang.Float
+flex remoting scaffold --name ~.service.SongService
+field reference --fieldName album --type ~.domain.Album

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+	<incremental>true</incremental>
+	<sourceFile>${basedir}/src/main/flex/${project.name}_scaffold.mxml</sourceFile>
+	<sourcePaths>
+		<path>${basedir}/src/main/flex</path>
+	</sourcePaths>
+	<output>${basedir}/src/main/webapp/${project.name}_scaffold.swf</output>
+	<contextRoot>/${project.build.finalName}</contextRoot>
+	<services>${basedir}/src/main/webapp/WEB-INF/flex/services-config.xml</services>
+	<debug>true</debug>
+</configuration>
