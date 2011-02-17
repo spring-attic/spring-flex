@@ -32,6 +32,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.flex.core.MessageInterceptionAdvice;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -40,11 +41,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.access.intercept.RequestKey;
-import org.springframework.security.web.util.AntUrlPathMatcher;
+import org.springframework.security.web.util.RequestMatcher;
 
+import flex.messaging.FlexContext;
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
@@ -62,6 +63,9 @@ public class EndpointInterceptorTests extends TestCase {
 
     @Mock
     private Message outMessage;
+    
+    @Mock
+    private MockHttpServletRequest request;
 
     private AbstractEndpoint advisedEndpoint;
 
@@ -69,11 +73,11 @@ public class EndpointInterceptorTests extends TestCase {
     public void setUp() throws Exception{
         MockitoAnnotations.initMocks(this);
 
-        LinkedHashMap<RequestKey, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestKey, Collection<ConfigAttribute>>();
+        LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>>();
         List<ConfigAttribute> attrs = new ArrayList<ConfigAttribute>();
         attrs.add(new SecurityConfig("ROLE_USER"));
-        requestMap.put(new RequestKey("**/messagebroker/amf"), attrs);
-        EndpointSecurityMetadataSource source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), requestMap);
+        requestMap.put(new AntPathRequestMatcher("/messagebroker/amf"), attrs);
+        EndpointSecurityMetadataSource source = new EndpointSecurityMetadataSource(requestMap);
 
         EndpointInterceptor interceptor;
         interceptor = new EndpointInterceptor();
@@ -88,11 +92,15 @@ public class EndpointInterceptorTests extends TestCase {
         factory.addAdvisor(new EndpointServiceMessagePointcutAdvisor(advice));
         factory.setTarget(this.endpoint);
         this.advisedEndpoint = (AbstractEndpoint) factory.getProxy();
+        
+        this.request = new MockHttpServletRequest();
+        FlexContext.setThreadLocalHttpRequest(this.request);
     }
 
     @Override
     public void tearDown() {
         SecurityContextHolder.getContext().setAuthentication(null);
+        FlexContext.clearThreadLocalObjects();
     }
 
     public void testLoginCommand() throws Exception {
@@ -111,7 +119,7 @@ public class EndpointInterceptorTests extends TestCase {
         when(this.endpoint.serviceMessage(this.inMessage)).thenReturn(this.outMessage);
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -122,7 +130,8 @@ public class EndpointInterceptorTests extends TestCase {
 
     public void testServiceUnauthenticated() throws Exception {
 
-        when(this.endpoint.getUrlForClient()).thenReturn("http://foo.com/bar/spring/messagebroker/amf");
+        this.request.setServletPath("/messagebroker");
+        this.request.setPathInfo("/amf");
         try {
             this.advisedEndpoint.serviceMessage(this.inMessage);
             fail("An AuthenticationException should be thrown");
@@ -133,7 +142,8 @@ public class EndpointInterceptorTests extends TestCase {
 
     public void testServiceUnauthorized() throws Exception {
 
-        when(this.endpoint.getUrlForClient()).thenReturn("http://foo.com/bar/spring/messagebroker/amf");
+        this.request.setServletPath("/messagebroker");
+        this.request.setPathInfo("/amf");
 
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", new ArrayList<GrantedAuthority>());
         SecurityContextHolder.getContext().setAuthentication(auth);

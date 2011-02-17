@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
-import org.springframework.security.web.access.intercept.RequestKey;
-import org.springframework.security.web.util.AntUrlPathMatcher;
 import org.springframework.util.StringUtils;
 
 public class SpringSecurity3ConfigHelper implements SpringSecurityConfigHelper {
@@ -58,14 +56,6 @@ public class SpringSecurity3ConfigHelper implements SpringSecurityConfigHelper {
         } else {
             return null;
         }
-    }
-
-    public Object parseRequestKey(String requestPath) {
-        return new RequestKey(requestPath);
-    }
-
-    public Object getPathMatcher() {
-        return new AntUrlPathMatcher();
     }
 
     public String getEndpointDefinitionSourceClassName() {

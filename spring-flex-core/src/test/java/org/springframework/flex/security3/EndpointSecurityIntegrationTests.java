@@ -31,6 +31,7 @@ import org.springframework.flex.core.EndpointConfigProcessor;
 import org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor;
 import org.springframework.flex.core.ExceptionTranslationAdvice;
 import org.springframework.flex.core.MessageInterceptionAdvice;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
@@ -43,11 +44,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.access.intercept.RequestKey;
-import org.springframework.security.web.util.AntUrlPathMatcher;
+import org.springframework.security.web.util.RequestMatcher;
 
+import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageException;
 import flex.messaging.endpoints.AMFEndpoint;
@@ -67,31 +68,38 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
     
     @Mock
     private Message message;
+    
+    @Mock
+    private MockHttpServletRequest request;
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        LinkedHashMap<RequestKey, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestKey, Collection<ConfigAttribute>>();
+        LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>>();
         List<ConfigAttribute> attrs = new ArrayList<ConfigAttribute>();
         attrs.add(new SecurityConfig("ROLE_USER"));
-        requestMap.put(new RequestKey("**/messagebroker/**"), attrs);
-        this.source = new EndpointSecurityMetadataSource(new AntUrlPathMatcher(), requestMap);
+        requestMap.put(new AntPathRequestMatcher("/messagebroker/**"), attrs);
+        this.source = new EndpointSecurityMetadataSource(requestMap);
 
         List<AccessDecisionVoter> voters = new ArrayList<AccessDecisionVoter>();
         voters.add(new RoleVoter());
         ((AffirmativeBased) this.adm).setDecisionVoters(voters);
 
         initializeInterceptors();
+        
+        this.request = new MockHttpServletRequest();
     }
 
     @Override
     public void tearDown() {
         SecurityContextHolder.getContext().setAuthentication(null);
+        FlexContext.clearThreadLocalObjects();
     }
 
     public void testServiceAuthorized() throws Exception {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -112,6 +120,10 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
         Endpoint endpoint = broker.getEndpoint("my-amf");
         assertNotNull(endpoint);
 
+        FlexContext.setThreadLocalHttpRequest(this.request);
+        this.request.setServletPath("/messagebroker");
+        this.request.setPathInfo("/amf");
+        
         try {
             ((AbstractEndpoint) endpoint).serviceMessage(this.message);
             fail("A SecurityException should be thrown");
@@ -132,6 +144,10 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
         MessageBroker broker = getMessageBroker();
         Endpoint endpoint = broker.getEndpoint("my-amf");
         assertNotNull(endpoint);
+        
+        FlexContext.setThreadLocalHttpRequest(this.request);
+        this.request.setServletPath("/messagebroker");
+        this.request.setPathInfo("/amf");
 
         try {
             ((AbstractEndpoint) endpoint).serviceMessage(this.message);

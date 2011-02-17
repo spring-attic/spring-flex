@@ -15,10 +15,6 @@ interface SpringSecurityConfigHelper {
     String getLoginMessageInterceptorClassName();
     
     Object parseConfigAttributes(String access);
-    
-    Object parseRequestKey(String requestPath);
-
-    Object getPathMatcher();
 
     String getEndpointInterceptorClassName();
 

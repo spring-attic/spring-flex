@@ -16,10 +16,12 @@
 
 package org.springframework.flex.security3;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
+import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
@@ -107,9 +109,13 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
         this.securityMetadataSource = newSource;
     }
 
-    private void configureDefaultAccessDecisionManager() {
+    @SuppressWarnings("rawtypes")
+	private void configureDefaultAccessDecisionManager() {
         AffirmativeBased adm = new AffirmativeBased();
-        adm.setDecisionVoters(Arrays.asList(new RoleVoter(), new AuthenticatedVoter()));
+        List<AccessDecisionVoter> voters = new ArrayList<AccessDecisionVoter>();
+        voters.add(new RoleVoter());
+        voters.add(new AuthenticatedVoter());
+        adm.setDecisionVoters(voters);
         setAccessDecisionManager(adm);
     }
     

@@ -37,6 +37,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.config.FlexConfigurationManager;
 import org.springframework.flex.config.RuntimeEnvironment;
+import org.springframework.flex.security3.AntPathRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
@@ -373,12 +374,11 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
                 Iterator<Element> i = securedEndpointPathElements.iterator();
                 while (i.hasNext()) {
                     Element securedPath = i.next();
-                    requestMap.put(securityHelper.parseRequestKey(securedPath.getAttribute(PATTERN_ATTR)),
+                    requestMap.put(new AntPathRequestMatcher(securedPath.getAttribute(PATTERN_ATTR)),
                         securityHelper.parseConfigAttributes(securedPath.getAttribute(ACCESS_ATTR)));
                 }
             }
-
-            endpointDefSourceBuilder.addConstructorArgValue(securityHelper.getPathMatcher());
+            
             endpointDefSourceBuilder.addConstructorArgValue(requestMap);
             endpointDefSourceBuilder.addConstructorArgValue(endpointMap);
 

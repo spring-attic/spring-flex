@@ -18,6 +18,8 @@ package org.springframework.flex.security3;
 
 import java.beans.PropertyDescriptor;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -151,13 +153,16 @@ public class SecurityConfigurationPostProcessor implements MergedBeanDefinitionP
 		this.sessionAuthenticationStrategy = sessionAuthenticationStrategy;
 	}
 	
-	private static final class FilterChainAccessor extends FilterChainProxy {
+	private static final class FilterChainAccessor {
     	
     	private final Set<Filter> filters;
     	
-    	public FilterChainAccessor(FilterChainProxy proxy) {
-    		setFilterChainMap(proxy.getFilterChainMap());
-    		this.filters = new HashSet<Filter>(obtainAllDefinedFilters());
+    	public FilterChainAccessor(FilterChainProxy proxy) {    		
+    		this.filters = new LinkedHashSet<Filter>();
+
+            for (List<Filter> filters : proxy.getFilterChainMap().values()) {
+                this.filters.addAll(filters);
+            }
     	}
     	
     	public Set<Filter> getFilters() {

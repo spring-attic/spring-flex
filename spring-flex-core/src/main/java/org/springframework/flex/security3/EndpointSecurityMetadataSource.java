@@ -24,13 +24,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityMetadataSource;
-import org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.access.intercept.RequestKey;
-import org.springframework.security.web.util.UrlMatcher;
+import org.springframework.security.web.util.RequestMatcher;
 import org.springframework.util.Assert;
 
+import flex.messaging.FlexContext;
 import flex.messaging.endpoints.Endpoint;
 
 /**
@@ -43,15 +44,18 @@ import flex.messaging.endpoints.Endpoint;
  * @author Jeremy Grelle
  */
 
-public class EndpointSecurityMetadataSource extends DefaultFilterInvocationSecurityMetadataSource {
+public class EndpointSecurityMetadataSource implements SecurityMetadataSource {
+	
+	private Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>>();
 
-    private Map<String, Collection<ConfigAttribute>> endpointMap = new HashMap<String, Collection<ConfigAttribute>>();
+    private Map<String, Collection<ConfigAttribute>> endpointMap = new LinkedHashMap<String, Collection<ConfigAttribute>>();
 
     /**
      * @see DefaultFilterInvocationDefinitionSource#DefaultFilterInvocationDefinitionSource(UrlMatcher, LinkedHashMap)
      */
-    public EndpointSecurityMetadataSource(UrlMatcher urlMatcher, LinkedHashMap<RequestKey, Collection<ConfigAttribute>> requestMap) {
-        super(urlMatcher, requestMap);
+    public EndpointSecurityMetadataSource(LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap) {
+    	Assert.notNull(requestMap, "requestMap cannot be null");
+        this.requestMap = requestMap;
     }
 
     /**
@@ -60,9 +64,9 @@ public class EndpointSecurityMetadataSource extends DefaultFilterInvocationSecur
      * @param endpointMap map of <String, Collection<ConfigAttribute>>
      * @see DefaultFilterInvocationDefinitionSource#DefaultFilterInvocationDefinitionSource(UrlMatcher, LinkedHashMap)
      */
-    public EndpointSecurityMetadataSource(UrlMatcher urlMatcher, LinkedHashMap<RequestKey, Collection<ConfigAttribute>> requestMap,
+    public EndpointSecurityMetadataSource(LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap,
         HashMap<String, Collection<ConfigAttribute>> endpointMap) {
-        super(urlMatcher, requestMap);
+    	this(requestMap);
         Assert.notNull(endpointMap, "endpointMap cannot be null");
         this.endpointMap = endpointMap;
     }
@@ -71,7 +75,6 @@ public class EndpointSecurityMetadataSource extends DefaultFilterInvocationSecur
      * 
      * {@inheritDoc}
      */
-    @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         if (object == null || !this.supports(object.getClass())) {
             throw new IllegalArgumentException("Object must be an Endpoint");
@@ -83,7 +86,14 @@ public class EndpointSecurityMetadataSource extends DefaultFilterInvocationSecur
         if (this.endpointMap.containsKey(endpoint.getId())) {
             attributes = this.endpointMap.get(endpoint.getId());
         } else {
-            attributes = lookupAttributes(endpoint.getUrlForClient(), null);
+        	final HttpServletRequest request = FlexContext.getHttpRequest();
+        	if (request != null) {
+	            for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap.entrySet()) {
+	                if (entry.getKey().matches(request)) {
+	                    return entry.getValue();
+	                }
+	            }
+        	}
         }
         return attributes;
     }
@@ -92,22 +102,21 @@ public class EndpointSecurityMetadataSource extends DefaultFilterInvocationSecur
      * 
      * {@inheritDoc}
      */
-    @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
-        Collection<ConfigAttribute> pathDefinitions = super.getAllConfigAttributes();
-        List<ConfigAttribute> allDefinitions = new ArrayList<ConfigAttribute>();
-        for (Collection<ConfigAttribute> attrValues : this.endpointMap.values()) {
-            allDefinitions.addAll(attrValues);
+        List<ConfigAttribute> allAttributes = new ArrayList<ConfigAttribute>();
+        for (Map.Entry<String, Collection<ConfigAttribute>> entry : this.endpointMap.entrySet()) {
+            allAttributes.addAll(entry.getValue());
         }
-        allDefinitions.addAll(pathDefinitions);
-        return Collections.unmodifiableCollection(allDefinitions);
+        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : this.requestMap.entrySet()) {
+            allAttributes.addAll(entry.getValue());
+        }
+        return Collections.unmodifiableCollection(allAttributes);
     }
 
     /**
      * 
      * {@inheritDoc}
      */
-    @Override
     public boolean supports(Class<?> clazz) {
         return Endpoint.class.isAssignableFrom(clazz);
     }
