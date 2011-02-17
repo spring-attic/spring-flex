@@ -109,7 +109,6 @@ public class EndpointInterceptor extends AbstractSecurityInterceptor implements 
         this.securityMetadataSource = newSource;
     }
 
-    @SuppressWarnings("rawtypes")
 	private void configureDefaultAccessDecisionManager() {
         AffirmativeBased adm = new AffirmativeBased();
         List<AccessDecisionVoter> voters = new ArrayList<AccessDecisionVoter>();

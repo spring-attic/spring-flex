@@ -35,7 +35,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -119,8 +119,8 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
 
     public void testDoAuthorization_MatchingAuthority() throws Exception {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        authorities.add(new SimpleGrantedAuthority("ROLE_ABUSER"));
+        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new GrantedAuthorityImpl("ROLE_ABUSER"));
         Principal principal = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
 
         List<String> roles = new ArrayList<String>();
@@ -131,8 +131,8 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
 
     public void testDoAuthorization_NoMatchingAuthority() throws Exception {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        authorities.add(new SimpleGrantedAuthority("ROLE_ABUSER"));
+        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new GrantedAuthorityImpl("ROLE_ABUSER"));
         Principal principal = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
 
         List<String> roles = new ArrayList<String>();
