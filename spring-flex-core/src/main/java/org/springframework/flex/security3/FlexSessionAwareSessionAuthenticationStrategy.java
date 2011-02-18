@@ -50,11 +50,11 @@ public class FlexSessionAwareSessionAuthenticationStrategy implements SessionAut
 		currentSession = request.getSession(false);
 		if (currentSession != null && !currentSession.getId().equals(sessionId)) {
 			if (currentSession.getAttribute("__flexSession") != null) {
-				HttpFlexSessionProvider provider = (HttpFlexSessionProvider) MessageBroker.getMessageBroker("_messageBroker").
-					getFlexSessionManager().getFlexSessionProvider(HttpFlexSession.class);
 				currentSession.removeAttribute("__flexSession");
-				provider.getOrCreateSession(request);
 			}
+			HttpFlexSessionProvider provider = (HttpFlexSessionProvider) MessageBroker.getMessageBroker("_messageBroker").
+				getFlexSessionManager().getFlexSessionProvider(HttpFlexSession.class);
+			provider.getOrCreateSession(request);
 		}
 	}
 }
