@@ -24,7 +24,6 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.flex.config.BeanIds;
-import org.springframework.flex.messaging.jms.JmsAdapter;
 import org.springframework.util.Assert;
 
 import flex.messaging.FlexContext;
@@ -39,8 +38,17 @@ import flex.messaging.util.UUIDUtils;
  * Simple helper for sending Flex {@link AsyncMessage}s from a Java client. The message will be routed through the
  * {@link MessageBroker} to the specified {@link MessageDestination}. This allows for flexible routing of the message
  * using whatever {@link MessagingAdapter} is configured for the target destination, be it the basic BlazeDS
- * {@link ActionScriptAdapter}, one of the provided Spring adapters such as {@link JmsAdapter} or {TODO
- * SpringIntegrationAdapter}, or some other custom adapter implementation.
+ * {@link ActionScriptAdapter}, one of the provided Spring adapters such as {@link org.springframework.flex.messaging.jms.JmsAdapter} 
+ * or {@link org.springframework.flex.messaging.integration.IntegrationAdapter}, or some other custom adapter implementation.
+ * 
+ * <p>This class should typically be configured as a Spring bean in the same ApplicationContext as the &lt;flex:message-broker&gt; tag 
+ * to allow injection of a Spring-managed {@link MessageBroker} instance. When a single <code>MessageBroker</code> is detected in the 
+ * ApplicationContext, it will be automatically injected into the MessageTemplate bean.  If more than one <code>MessageBroker</code> is 
+ * present (not typical), a reference to the correct <code>MessageBroker</code> must be explicitly set for the {@link MessageTemplate#setMessageBroker(MessageBroker)} 
+ * property.
+ * 
+ * <p>The <code>MessageTemplate</code> may also be instantiated directly, in which case it will try to look up the ThreadLocal 
+ * <code>MessageBroker</code> instance for the current request, but configuration as a Spring bean is strongly preferred.
  * 
  * @author Jeremy Grelle
  */
