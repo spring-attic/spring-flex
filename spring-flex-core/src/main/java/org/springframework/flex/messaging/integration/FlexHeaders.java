@@ -27,7 +27,7 @@ import java.util.List;
  */
 public abstract class FlexHeaders {
 
-    public static final String CLIENT_ID = "flex_client_id";
+    public static final String MESSAGE_CLIENT_ID = "flex_message_client_id";
 
     public static final String DESTINATION_ID = "flex_destination_id";
     
@@ -35,12 +35,18 @@ public abstract class FlexHeaders {
     
     public static final String TIMESTAMP = "flex_timestamp";
     
+    public static final String FLEX_CLIENT_ID = "flex_client_id";
+    
+    
+    
     private static final List<String> ignoredHeaders;
     
     static {
     	ignoredHeaders = new ArrayList<String>();
     	ignoredHeaders.add(MESSAGE_ID);
     	ignoredHeaders.add(TIMESTAMP);
+    	ignoredHeaders.add(MESSAGE_CLIENT_ID);
+    	ignoredHeaders.add(DESTINATION_ID);
     }
     
     /**

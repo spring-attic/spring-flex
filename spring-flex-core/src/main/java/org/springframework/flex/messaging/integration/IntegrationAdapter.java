@@ -17,6 +17,7 @@
 package org.springframework.flex.messaging.integration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.flex.messaging.SubscribeEvent;
+import org.springframework.flex.messaging.UnsubscribeEvent;
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
 import org.springframework.integration.MessageHeaders;
@@ -39,6 +44,8 @@ import org.springframework.integration.message.GenericMessage;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.util.Assert;
 
+import flex.messaging.FlexContext;
+import flex.messaging.client.FlexClient;
 import flex.messaging.messages.AsyncMessage;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.services.MessageService;
@@ -50,7 +57,7 @@ import flex.messaging.services.messaging.adapters.MessagingAdapter;
  * 
  * @author Mark Fisher
  */
-public class IntegrationAdapter extends MessagingAdapter implements MessageHandler, InitializingBean, BeanNameAware {
+public class IntegrationAdapter extends MessagingAdapter implements MessageHandler, InitializingBean, BeanNameAware, ApplicationEventPublisherAware {
 
     private final Log logger = LogFactory.getLog(getClass());
 
@@ -59,8 +66,14 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
     private volatile MessageChannel messageChannel;
 
     private volatile boolean extractPayload = true;
+    
+    private volatile boolean filterSender = true;
+    
+    private volatile ApplicationEventPublisher applicationEventPublisher;
 
     private final Set<Object> subscriberIds = new HashSet<Object>();
+    
+    private final Map<Object, String> clientSubscriptions = new HashMap<Object, String>();
 
     private volatile AbstractEndpoint consumerEndpoint;
     
@@ -104,11 +117,14 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
         flexMessage.setBody(message.getPayload());
         MessageHeaders headers = message.getHeaders();
         flexMessage.setMessageId(headers.containsKey(FlexHeaders.MESSAGE_ID) ? headers.get(FlexHeaders.MESSAGE_ID, String.class) : headers.getId().toString());
-        Long timestamp = headers.containsKey(FlexHeaders.TIMESTAMP) ? headers.get(FlexHeaders.MESSAGE_ID, Long.class) : headers.getTimestamp();
+        Long timestamp = headers.containsKey(FlexHeaders.TIMESTAMP) ? Long.parseLong(headers.get(FlexHeaders.TIMESTAMP, String.class)) : headers.getTimestamp();
         flexMessage.setTimestamp(timestamp);
         Long expirationDate = headers.getExpirationDate();
         if (expirationDate != null) {
             flexMessage.setTimeToLive(expirationDate - timestamp);
+        }
+        if (headers.containsKey(FlexHeaders.MESSAGE_CLIENT_ID)) {
+        	flexMessage.setClientId(headers.get(FlexHeaders.MESSAGE_CLIENT_ID));
         }
         for (Map.Entry<String, Object> header : headers.entrySet()) {
             String key = header.getKey();
@@ -118,7 +134,18 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
         }
         flexMessage.setDestination(this.getDestination().getId());
         MessageService messageService = (MessageService) getDestination().getService();
-        messageService.pushMessageToClients(flexMessage, true);
+        if (filterSender && headers.containsKey(FlexHeaders.FLEX_CLIENT_ID)) {
+        	Set<Object> subscribers = new HashSet<Object>(this.subscriberIds);
+        	FlexClient flexClient = messageService.getMessageBroker().getFlexClientManager().getFlexClient(headers.get(FlexHeaders.FLEX_CLIENT_ID).toString());
+        	for (Object subscriberId : this.subscriberIds) {
+        		if (flexClient.getMessageClient(subscriberId.toString()) != null) {
+        			subscribers.remove(subscriberId);
+        		}
+        	}
+        	messageService.pushMessageToClients(subscribers, flexMessage, true);
+        } else {
+        	messageService.pushMessageToClients(flexMessage, true);
+        }
         messageService.sendPushMessageFromPeer(flexMessage, true);
     }
 
@@ -143,10 +170,13 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
         Message<?> message = null;
         if (this.extractPayload) {
             Map headers = flexMessage.getHeaders();
-            headers.put(FlexHeaders.CLIENT_ID, flexMessage.getClientId());
+            headers.put(FlexHeaders.MESSAGE_CLIENT_ID, flexMessage.getClientId());
             headers.put(FlexHeaders.DESTINATION_ID, flexMessage.getDestination());
             headers.put(FlexHeaders.MESSAGE_ID, flexMessage.getMessageId());
-            headers.put(FlexHeaders.TIMESTAMP, flexMessage.getTimestamp());
+            headers.put(FlexHeaders.TIMESTAMP, String.valueOf(flexMessage.getTimestamp()));
+            if (FlexContext.getFlexClient() != null) {
+                headers.put(FlexHeaders.FLEX_CLIENT_ID, FlexContext.getFlexClient().getId());
+            }
             long timestamp = flexMessage.getTimestamp();
             message = MessageBuilder.withPayload(flexMessage.getBody())
                     .copyHeaders(headers)
@@ -177,6 +207,9 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
             if (this.logger.isInfoEnabled()) {
                 this.logger.info("client [" + clientId + "] subscribed to destination [" + this.getDestination().getId() + "]");
             }
+            String flexClientId = FlexContext.getFlexClient().getId();
+            this.clientSubscriptions.put(clientId, flexClientId);
+            this.applicationEventPublisher.publishEvent(new SubscribeEvent(flexClientId, clientId, this.getDestination().getId()));
         } else if (commandMessage.getOperation() == CommandMessage.UNSUBSCRIBE_OPERATION) {
             this.subscriberIds.remove(clientId);
             synchronized (this.consumerEndpoint) {
@@ -187,6 +220,8 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
             if (this.logger.isInfoEnabled()) {
                 this.logger.info("client [" + clientId + "] unsubscribed from destination [" + this.getDestination().getId() + "]");
             }
+            String flexClientId = this.clientSubscriptions.remove(clientId);
+            this.applicationEventPublisher.publishEvent(new UnsubscribeEvent(flexClientId, clientId, this.getDestination().getId()));
         }
         return null;
     }
@@ -216,5 +251,10 @@ public class IntegrationAdapter extends MessagingAdapter implements MessageHandl
     public void start() {
         super.start();
     }
+
+	public void setApplicationEventPublisher(
+			ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 
 }

@@ -16,7 +16,9 @@
 
 package org.springframework.flex.messaging.jms;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.jms.ConnectionFactory;
@@ -26,6 +28,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.flex.messaging.SubscribeEvent;
+import org.springframework.flex.messaging.UnsubscribeEvent;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.adapter.MessageListenerAdapter;
@@ -34,6 +40,7 @@ import org.springframework.jms.support.destination.DestinationResolver;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.Assert;
 
+import flex.messaging.FlexContext;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
 import flex.messaging.services.MessageService;
@@ -45,7 +52,7 @@ import flex.messaging.services.messaging.adapters.MessagingAdapter;
  * @author Mark Fisher
  * @author Jeremy Grelle
  */
-public class JmsAdapter extends MessagingAdapter implements InitializingBean, BeanNameAware {
+public class JmsAdapter extends MessagingAdapter implements InitializingBean, BeanNameAware, ApplicationEventPublisherAware {
 
     private final Log logger = LogFactory.getLog(getClass());
 
@@ -56,12 +63,16 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
     private volatile boolean pubSubDomain;
 
     private volatile MessageConverter messageConverter;
+    
+    private volatile ApplicationEventPublisher applicationEventPublisher;
 
     private final JmsTemplate jmsTemplate = new JmsTemplate();
 
     private final DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
 
     private final Set<Object> subscriberIds = new HashSet<Object>();
+    
+    private final Map<Object, String> clientSubscriptions = new HashMap<Object, String>();
 
     /**
      * 
@@ -142,6 +153,9 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
             if (this.logger.isInfoEnabled()) {
                 this.logger.info("client [" + clientId + "] subscribed to destination [" + this.getDestination().getId() + "]");
             }
+            String flexClientId = FlexContext.getFlexClient().getId();
+            this.clientSubscriptions.put(clientId, flexClientId);
+            this.applicationEventPublisher.publishEvent(new SubscribeEvent(flexClientId, clientId, this.getDestination().getId()));
         } else if (commandMessage.getOperation() == CommandMessage.UNSUBSCRIBE_OPERATION) {
             this.subscriberIds.remove(clientId);
             synchronized (this.messageListenerContainer) {
@@ -152,6 +166,8 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
             if (this.logger.isInfoEnabled()) {
                 this.logger.info("client [" + clientId + "] unsubscribed from destination [" + this.getDestination().getId() + "]");
             }
+            String flexClientId = this.clientSubscriptions.remove(clientId);
+            this.applicationEventPublisher.publishEvent(new UnsubscribeEvent(flexClientId, clientId, this.getDestination().getId()));
         }
         return null;
     }
@@ -266,5 +282,10 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
         messageService.pushMessageToClients(flexMessage, true);
         messageService.sendPushMessageFromPeer(flexMessage, true);
     }
+
+	public void setApplicationEventPublisher(
+			ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 
 }
