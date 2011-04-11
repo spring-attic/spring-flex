@@ -5,10 +5,14 @@ import javax.jms.Destination;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
 
+import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.messages.AsyncMessage;
@@ -20,6 +24,14 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
 
     private static final String DEST_ID = "testJmsAdapter";
     
+    @Mock
+    private ApplicationEventPublisher publisher;
+    
+    @Override
+    public void setUp() throws Exception {
+    	MockitoAnnotations.initMocks(this);
+    }
+    
     @Override
     public void tearDown() throws Exception {
         getMessageService().removeDestination(DEST_ID);
@@ -27,6 +39,8 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
     
     public void testDestinationSubscribeSendUnsubscribe() throws Exception {
         JmsAdapter adapter = createAdapter();
+        
+        FlexContext.setThreadLocalFlexClient(getMessageBroker().getFlexClientManager().getFlexClient("foo"));
         
         CommandMessage subscribeMessage = new CommandMessage(CommandMessage.SUBSCRIBE_OPERATION);
         subscribeMessage.setClientId("1234");
@@ -204,6 +218,7 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         destination.setId(DEST_ID);
         destination.setService(getMessageService());
         adapter.setDestination(destination);
+        adapter.setApplicationEventPublisher(publisher);
         adapter.start();
         return adapter;
     }
