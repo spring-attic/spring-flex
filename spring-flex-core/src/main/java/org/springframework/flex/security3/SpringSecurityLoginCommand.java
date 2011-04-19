@@ -106,15 +106,16 @@ public class SpringSecurityLoginCommand implements LoginCommand, InitializingBea
     	HttpServletResponse response = FlexContext.getHttpResponse();
     	try {
 	        Authentication authentication = this.authManager.authenticate(new UsernamePasswordAuthenticationToken(username, extractPassword(credentials)));
-	        SecurityContextHolder.getContext().setAuthentication(authentication);
-	        if (authentication != null && !isPerClientAuthentication()) {
-	        	if (request != null && response != null) {
+	        if (authentication != null) {
+	        	if (!isPerClientAuthentication() && request != null && response != null) {
 	        		this.sessionStrategy.onAuthentication(authentication, request, response);
 	        		this.rememberMeServices.loginSuccess(request, response, authentication);
 	        	}
+	        	SecurityContextHolder.getContext().setAuthentication(authentication);
 	        }
 	        return authentication;
     	} catch (AuthenticationException ex) {
+    	    SecurityContextHolder.clearContext();
     		if (request != null && response != null && !isPerClientAuthentication()) {
     			this.rememberMeServices.loginFail(request, response);
     		}
