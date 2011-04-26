@@ -53,8 +53,7 @@ public class HibernateConfigProcessor implements MessageBrokerConfigProcessor, B
         if (hibernateConfigured) {
             Iterator<ClassMetadata> it = this.sessionFactory.getAllClassMetadata().values().iterator();
             while (it.hasNext()) {
-                SpringPropertyProxy proxy = new SpringPropertyProxy(it.next().getMappedClass(EntityMode.POJO), this.useDirectFieldAccess);
-                proxy.setConversionService(this.conversionService);
+                SpringPropertyProxy proxy = SpringPropertyProxyFactory.proxyFor(it.next().getMappedClass(EntityMode.POJO), useDirectFieldAccess, conversionService);
                 registerPropertyProxy(proxy);
             }
             log.info("Hibernate detected and AMF serialization support automatically installed successfully.");

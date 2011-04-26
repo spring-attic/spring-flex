@@ -100,6 +100,10 @@ public class SpringPropertyProxy extends BeanProxy {
         getPropertyAccessor(instance).setPropertyValue(propertyName, value);
     }
     
+    public ConversionService getConversionService() {
+        return this.conversionService;
+    }
+    
     public void setConversionService(ConversionService conversionService) {
         this.conversionService = conversionService;
     }
