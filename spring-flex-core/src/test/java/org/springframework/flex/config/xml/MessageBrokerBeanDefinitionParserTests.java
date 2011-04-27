@@ -63,6 +63,8 @@ import org.springframework.flex.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -429,12 +431,20 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void testMessageBroker_PerClientAuthentication() {
         this.broker = applicationContext.getBean("perClientAuthentication", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         SpringSecurityLoginCommand loginCommand = (SpringSecurityLoginCommand) this.broker.getLoginManager().getLoginCommand();
         assertNotNull("LoginCommand not found", loginCommand);
         assertTrue("perClientAuthentication not configured", loginCommand.isPerClientAuthentication());
+        List<LogoutHandler> handlers = (List<LogoutHandler>) ReflectionTestUtils.getField(loginCommand, "logoutHandlers");
+        assertTrue("Logout handlers not configured", handlers.size() > 0);
+        for (LogoutHandler handler : handlers) {
+            if (handler instanceof SecurityContextLogoutHandler) {
+                assertTrue("SecurityContext logout handler configured incorrectly", !((SecurityContextLogoutHandler)handler).isInvalidateHttpSession());
+            }
+        }
 
         for (Endpoint endpoint : this.broker.getEndpoints().values()) {
             assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));

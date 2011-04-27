@@ -30,6 +30,7 @@ import org.springframework.flex.core.AbstractMessageBrokerTests;
 import org.springframework.flex.core.LoginCommandConfigProcessor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -175,12 +176,37 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
 
         Principal principal = this.cmd.doAuthentication(username, password);
 
-        this.request.getSession();
+        MockHttpSession originalSession = (MockHttpSession) this.request.getSession();
         SecurityContext original = SecurityContextHolder.getContext();
 
         this.cmd.logout(principal);
 
         assertTrue("SecurityContext was not cleared", original != SecurityContextHolder.getContext());
         assertNull(this.request.getSession(false));
+        assertTrue(originalSession.isInvalid());
+    }
+    
+    public void testLogoutWithPerClientAuthentication() throws Exception {
+        
+        List<LogoutHandler> logoutHandlers = new ArrayList<LogoutHandler>();
+        SecurityContextLogoutHandler handler = new SecurityContextLogoutHandler();
+        handler.setInvalidateHttpSession(false);
+        logoutHandlers.add(handler);
+        this.cmd.setPerClientAuthentication(true);
+        this.cmd.setLogoutHandlers(logoutHandlers);
+        
+        String username = "foo";
+        String password = "bar";
+
+        Principal principal = this.cmd.doAuthentication(username, password);
+
+        MockHttpSession originalSession = (MockHttpSession) this.request.getSession();
+        SecurityContext original = SecurityContextHolder.getContext();
+
+        this.cmd.logout(principal);
+
+        assertTrue("SecurityContext was not cleared", original != SecurityContextHolder.getContext());
+        assertNotNull(this.request.getSession(false));
+        assertTrue(!originalSession.isInvalid());
     }
 }
