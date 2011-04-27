@@ -63,7 +63,6 @@ public class SpringPropertyProxy extends BeanProxy {
     
     @Override
     public List<String> getPropertyNames(Object instance) {
-        //TODO - Consider an option hear to leave out uninitialized properties altogether instead of just returning null
         if (this.useDirectFieldAccess) {
             return getFieldNames(instance);
         } else {
@@ -96,8 +95,16 @@ public class SpringPropertyProxy extends BeanProxy {
     }
 
     @Override
+    public boolean isWriteOnly(Object instance, String propertyName) {
+        PropertyAccessor accessor = getPropertyAccessor(instance);
+        return isReadIgnored(instance, propertyName) || (!accessor.isReadableProperty(propertyName) && accessor.isWritableProperty(propertyName));
+    }
+
+    @Override
     public void setValue(Object instance, String propertyName, Object value) {
-        getPropertyAccessor(instance).setPropertyValue(propertyName, value);
+        if (!isWriteIgnored(instance, propertyName)) {
+            getPropertyAccessor(instance).setPropertyValue(propertyName, value);
+        }
     }
     
     public ConversionService getConversionService() {
@@ -128,7 +135,40 @@ public class SpringPropertyProxy extends BeanProxy {
                 names.add(field.getName());
             }
         });
+        if (log.isDebugEnabled()) {
+            log.debug("Property names for "+instance+" : "+names);
+        }
         return names;
+    }
+    
+    private boolean isReadIgnored(Object instance, String propertyName) {
+        PropertyAccessor accessor = getPropertyAccessor(instance);
+        if (this.useDirectFieldAccess) {
+            AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
+            return ignoreField != null && ignoreField.onSerialization();
+        } else {
+            PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
+            if (pd.getReadMethod() == null) {
+                return true;
+            } else {
+                return pd.getReadMethod().getAnnotation(AmfIgnore.class) != null;
+            }
+        }
+    }
+    
+    private boolean isWriteIgnored(Object instance, String propertyName) {
+        PropertyAccessor accessor = getPropertyAccessor(instance);
+        if (this.useDirectFieldAccess) {
+            AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
+            return ignoreField != null && ignoreField.onDeserialization();
+        } else {
+            PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
+            if (pd.getWriteMethod() == null) {
+                return true;
+            } else {
+                return pd.getWriteMethod().getAnnotation(AmfIgnore.class) != null;
+            }
+        }
     }
     
     private PropertyAccessor getPropertyAccessor(Object instance) {
