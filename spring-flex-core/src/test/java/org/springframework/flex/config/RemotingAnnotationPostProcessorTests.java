@@ -58,7 +58,7 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertEquals("Source not properly set", AnnotatedAutowiredScopedProxyRemoteBean.class.getName(), rd.getSource());
     }
 
-    public void testExportAnnotatedBeanWithDefaults() {
+    public void testExportAnnotatedBeanWithCustomChannelsAndPostConstruct() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -66,6 +66,9 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         flex.messaging.services.remoting.RemotingDestination rd = (flex.messaging.services.remoting.RemotingDestination) rs.getDestination("annotatedRemoteBean");
         assertNotNull("Destination not found", rd);
         assertEquals("Source not properly set", AnnotatedRemoteBean.class.getName(), rd.getSource());
+        assertTrue("Channels not set", rd.getChannels().contains("my-amf") && rd.getChannels().contains("my-secure-amf"));
+        AnnotatedRemoteBean bean = applicationContext.getBean(AnnotatedRemoteBean.class);
+        assertTrue("@PostConstruct method not invoked", bean.initInvoked);
     }
     
     public void testExportAnnotatedBeanFromParentContextWithDefaults() {

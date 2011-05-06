@@ -16,6 +16,8 @@
 
 package org.springframework.flex.config;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
 
@@ -23,4 +25,10 @@ import org.springframework.stereotype.Service;
 @RemotingDestination(channels = { "my-amf", "my-secure-amf" })
 public class AnnotatedRemoteBean {
 
+    boolean initInvoked = false;
+    
+    @PostConstruct
+    public void init() {
+        this.initInvoked = true;
+    }
 }
