@@ -113,6 +113,7 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         this.factory.setAllowSubtopics("true");
         this.factory.setClusterMessageRouting("broadcast");
         this.factory.setClusterRef("default-cluster");
+        this.factory.setDisallowWildcardSubtopics("true");
         this.factory.setMessageTimeToLive("1");
         this.factory.setSubscriptionTimeoutMinutes("1");
         this.factory.setSubtopicSeparator("/");
@@ -131,6 +132,7 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         assertEquals("foo2", destination.getId());
         assertTrue(destination.getChannels().containsAll(Arrays.asList(channels)));
         assertTrue(destination.getServerSettings().getAllowSubtopics());
+        assertTrue(destination.getServerSettings().isDisallowWildcardSubtopics());
         assertTrue(destination.getServerSettings().isBroadcastRoutingMode());
         assertEquals("default-cluster", destination.getNetworkSettings().getClusterId());
         assertEquals(1, destination.getServerSettings().getMessageTTL());
@@ -163,6 +165,7 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         assertEquals("foo4", destination.getId());
         assertTrue(destination.getChannels().containsAll(Arrays.asList(channels)));
         assertTrue(destination.getServerSettings().getAllowSubtopics());
+        assertTrue(destination.getServerSettings().isDisallowWildcardSubtopics());
         assertTrue(destination.getServerSettings().isBroadcastRoutingMode());
         assertEquals(1, destination.getServerSettings().getMessageTTL());
         assertEquals(1, destination.getNetworkSettings().getSubscriptionTimeoutMinutes());

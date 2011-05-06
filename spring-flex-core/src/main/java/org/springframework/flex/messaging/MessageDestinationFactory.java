@@ -82,6 +82,10 @@ public class MessageDestinationFactory extends AbstractDestinationFactory {
     public void setClusterRef(String clusterRef) {
 		getClusterMap().addProperty("ref", clusterRef);
 	}
+    
+    public void setDisallowWildcardSubtopics(String disallow) {
+        getServerMap().addProperty("disallow-wildcard-subtopics", disallow);
+    }
 
     public void setMessageTimeToLive(String timeToLive) {
         getServerMap().addProperty("message-time-to-live", timeToLive);

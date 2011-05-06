@@ -581,6 +581,17 @@ Sets the cluster id for the destination. For more information, see the “Cluste
 				</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
+		<xsd:attribute name="disallow-wildcard-subtopics" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Specifies whether wildcard characters (*) to receive messages from more than one subtopic are disallowed. The default value is false.  
+
+Note: This setting is currently only used by the ActionScriptAdapter.
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
 		<xsd:attribute name="message-time-to-live" type="xsd:int">
 			<xsd:annotation>
 				<xsd:documentation>

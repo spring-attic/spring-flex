@@ -46,6 +46,7 @@ public abstract class AbstractMessageDestinationBeanDefinitionParserTests extend
         assertEquals(getCustomConfigDestination(), destination.getId());
         assertTrue(destination.getChannels().containsAll(Arrays.asList(channels)));
         assertTrue(destination.getServerSettings().getAllowSubtopics());
+        assertTrue(destination.getServerSettings().isDisallowWildcardSubtopics());
         assertTrue(destination.getServerSettings().isBroadcastRoutingMode());
         assertEquals("default-cluster", destination.getNetworkSettings().getClusterId());
         assertEquals(1, destination.getServerSettings().getMessageTTL());
