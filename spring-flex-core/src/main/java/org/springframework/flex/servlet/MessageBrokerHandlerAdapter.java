@@ -90,8 +90,8 @@ public class MessageBrokerHandlerAdapter implements HandlerAdapter, ServletConfi
             try {
                 endpoint = broker.getEndpoint(endpointPath, contextPath);
             } catch (MessageException me) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Received invalid request for endpoint path '" + endpointPath + "'.");
+                if (logger.isErrorEnabled()) {
+                    logger.error("Received invalid request for endpoint path '" + endpointPath + "'.");
                 }
 
                 if (!res.isCommitted()) {
@@ -107,8 +107,8 @@ public class MessageBrokerHandlerAdapter implements HandlerAdapter, ServletConfi
                 }
                 endpoint.service(req, res);
             } catch (UnsupportedOperationException ue) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Channel endpoint " + endpoint.getId() + " received request for an unsupported operation.", ue);
+                if (logger.isErrorEnabled()) {
+                    logger.error("Channel endpoint " + endpoint.getId() + " received request for an unsupported operation.", ue);
                 }
 
                 if (!res.isCommitted()) {
