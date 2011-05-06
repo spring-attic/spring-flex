@@ -585,7 +585,8 @@ Sets the cluster id for the destination. For more information, see the “Cluste
 			<xsd:annotation>
 				<xsd:documentation>
 					<![CDATA[
-Specifies whether wildcard characters (*) to receive messages from more than one subtopic are disallowed. The default value is false.  
+Specifies whether wildcard characters (*) to receive messages from more than one subtopic are disallowed. The default value is true 
+(this is different from the default standard BlazeDS setting, but we opt for it as it is the more secure option).  
 
 Note: This setting is currently only used by the ActionScriptAdapter.
 ]]>

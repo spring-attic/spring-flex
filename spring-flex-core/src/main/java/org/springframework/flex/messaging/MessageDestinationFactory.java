@@ -168,6 +168,12 @@ public class MessageDestinationFactory extends AbstractDestinationFactory {
     @Override
     protected void initializeDestination(Destination destination) {
         String adapterId = StringUtils.hasText(destination.getAdapter().getId()) ? destination.getAdapter().getId() : getDestinationId() + "Adapter";
+        
+        //As per FLEX-198, we're doing the opposite of the BlazeDS default and defaulting disallow-wildcard-subtopics to "true"
+        if (!getServerMap().containsKey("disallow-wildcard-subtopics")) {
+            getServerMap().addProperty("disallow-wildcard-subtopics", "true");
+        }
+        
         destination.getAdapter().initialize(adapterId, getProperties());
         destination.initialize(getDestinationId(), getProperties());
         destination.start();

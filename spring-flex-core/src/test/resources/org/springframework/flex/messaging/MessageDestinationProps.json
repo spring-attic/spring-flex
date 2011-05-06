@@ -7,7 +7,7 @@
 	"server" : {
 		"allow-subtopics" : true,
 		"cluster-message-routing" : "broadcast",
-		"disallow-wildcard-subtopics": true,
+		"disallow-wildcard-subtopics": false,
 		"message-time-to-live" : 1,
 		"subtopic-separator" : "/"
 	}

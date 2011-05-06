@@ -49,6 +49,7 @@ public class MessageDestinationBeanDefinitionParserTests extends AbstractMessage
         assertNotNull("destination not found", destination);
         assertNotNull("adapter not set", destination.getAdapter());
         assertTrue(destination.getAdapter() instanceof ActionScriptAdapter);
+        assertTrue(destination.getServerSettings().isDisallowWildcardSubtopics());
     }
 
     @Override
