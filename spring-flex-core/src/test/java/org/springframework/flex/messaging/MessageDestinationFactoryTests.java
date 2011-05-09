@@ -34,6 +34,7 @@ import org.springframework.flex.core.AbstractMessageBrokerTests;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
+import flex.messaging.FlexContext;
 import flex.messaging.MessageDestination;
 import flex.messaging.cluster.ClusterManager;
 import flex.messaging.config.ConfigMap;
@@ -189,15 +190,20 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
 
         this.factory.afterPropertiesSet();
 
-        MessageDestination destination = (MessageDestination) this.service.getDestination("foo3");
-        assertNotNull(destination);
-        assertEquals("foo3", destination.getId());
-
-        MessagingAdapter adapter = (MessagingAdapter) destination.getAdapter();
-        adapter.getSecurityConstraintManager().assertSendAuthorization();
-        adapter.getSecurityConstraintManager().assertSubscribeAuthorization();
-
-        verify(this.loginManager, times(2)).checkConstraint(isA(SecurityConstraint.class));
+        try {
+            FlexContext.setMessageFromPeer(false);
+            MessageDestination destination = (MessageDestination) this.service.getDestination("foo3");
+            assertNotNull(destination);
+            assertEquals("foo3", destination.getId());
+    
+            MessagingAdapter adapter = (MessagingAdapter) destination.getAdapter();
+            adapter.getSecurityConstraintManager().assertSendAuthorization();
+            adapter.getSecurityConstraintManager().assertSubscribeAuthorization();
+    
+            verify(this.loginManager, times(2)).checkConstraint(isA(SecurityConstraint.class));
+        } finally {
+            FlexContext.clearThreadLocalObjects();
+        }
     }
 
     private String readJsonFile() throws Exception {

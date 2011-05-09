@@ -57,9 +57,7 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
         this.mbfb.setConfigProcessors(this.startupProcessors);
         this.mbfb.afterPropertiesSet();
 
-        MessageBroker broker = this.mbfb.getObject();
-        FlexContext.setThreadLocalObjects(null, null, broker);
-        return broker;
+        return this.mbfb.getObject();
     }
 
     protected String getCurrentConfigPath() {

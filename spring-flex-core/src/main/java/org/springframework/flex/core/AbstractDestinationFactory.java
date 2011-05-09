@@ -19,6 +19,8 @@ package org.springframework.flex.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -28,8 +30,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.ServletConfigAware;
 
 import flex.messaging.Destination;
+import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
 import flex.messaging.services.Service;
 import flex.messaging.services.ServiceAdapter;
@@ -40,7 +44,7 @@ import flex.messaging.services.ServiceAdapter;
  * @author Jeremy Grelle
  * @author Mark Fisher
  */
-public abstract class AbstractDestinationFactory implements InitializingBean, DisposableBean, BeanNameAware, BeanFactoryAware {
+public abstract class AbstractDestinationFactory implements InitializingBean, DisposableBean, BeanNameAware, BeanFactoryAware, ServletConfigAware {
 
     private volatile String destinationId;
 
@@ -53,6 +57,8 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
     private BeanFactory beanFactory;
 
     private String serviceAdapter;
+    
+    private ServletConfig servletConfig;
 
     /**
      * 
@@ -60,10 +66,18 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
      */
     public final void afterPropertiesSet() throws Exception {
         Assert.notNull(this.broker, "The 'messageBroker' property is required.");
-        Destination destination = this.createDestination(getDestinationId(), this.broker);
-        this.configureAdapter(destination);
-        this.configureChannels(destination);
-        this.initializeDestination(destination);
+        try {
+            //These ThreadLocals are needed during destination initialization for JMX MBean registration
+            FlexContext.setThreadLocalMessageBroker(this.broker);
+            FlexContext.setThreadLocalServletConfig(this.servletConfig);
+            
+            Destination destination = this.createDestination(getDestinationId(), this.broker);
+            this.configureAdapter(destination);
+            this.configureChannels(destination);
+            this.initializeDestination(destination);
+        } finally {
+            FlexContext.clearThreadLocalObjects();
+        }
     }
 
     /**
@@ -127,6 +141,14 @@ public abstract class AbstractDestinationFactory implements InitializingBean, Di
      */
     public void setServiceAdapter(String serviceAdapter) {
         this.serviceAdapter = serviceAdapter;
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     */
+    public void setServletConfig(ServletConfig servletConfig) {
+        this.servletConfig = servletConfig;
     }
 
     /**
