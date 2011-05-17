@@ -430,6 +430,21 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             // Expected
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    public void testMessageBroker_InvalidateHttpSession() {
+        this.broker = applicationContext.getBean("invalidateHttpSession", MessageBroker.class);
+        assertNotNull("MessageBroker bean not found for custom id", this.broker);
+        SpringSecurityLoginCommand loginCommand = (SpringSecurityLoginCommand) this.broker.getLoginManager().getLoginCommand();
+        assertNotNull("LoginCommand not found", loginCommand);
+        List<LogoutHandler> handlers = (List<LogoutHandler>) ReflectionTestUtils.getField(loginCommand, "logoutHandlers");
+        assertTrue("Logout handlers not configured", handlers.size() > 0);
+        for (LogoutHandler handler : handlers) {
+            if (handler instanceof SecurityContextLogoutHandler) {
+                assertTrue("SecurityContext logout handler configured incorrectly", ((SecurityContextLogoutHandler)handler).isInvalidateHttpSession());
+            }
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void testMessageBroker_PerClientAuthentication() {

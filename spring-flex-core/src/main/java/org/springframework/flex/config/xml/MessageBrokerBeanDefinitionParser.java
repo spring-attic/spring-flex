@@ -112,6 +112,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     
     private static final String LOGIN_COMMAND_ATTR = "login-command";
 
+    private static final String INVALIDATE_HTTP_SESSION_ATTR = "invalidate-http-session";
+    
     private static final String PER_CLIENT_AUTHENTICATION_ATTR = "per-client-authentication";
 
     private static final String ACCESS_ATTR = "access";
@@ -124,6 +126,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private static final String ORDER_PROPERTY = "order";
 
     private static final String CONFIG_PROCESSORS_PROPERTY = "configProcessors";
+    
+    private static final String INVALIDATE_HTTP_SESSION_PROPERTY = "invalidateHttpSession";
 
     private static final String PER_CLIENT_AUTHENTICATION_PROPERTY = "perClientAuthentication";
 
@@ -285,6 +289,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             return;
         }
 
+        boolean invalidateHttpSession = Boolean.parseBoolean(securedElement.getAttribute(INVALIDATE_HTTP_SESSION_ATTR));
         boolean perClientAuthentication = Boolean.parseBoolean(securedElement.getAttribute(PER_CLIENT_AUTHENTICATION_ATTR));
 
         String authManager = securedElement.getAttribute(AUTH_MANAGER_ATTR);
@@ -300,7 +305,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         registerSecurityConfigPostProcessorIfNecessary(parserContext, securedElement);
 
         String brokerId = parent.getAttribute(ID_ATTRIBUTE);
-        registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, perClientAuthentication);
+        registerLoginCommand(brokerId, parserContext, configProcessors, securedElement, authManager, invalidateHttpSession, perClientAuthentication);
 
         BeanDefinitionBuilder exceptionTranslatorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getSecurityExceptionTranslatorClassName());
         String exceptionTranslatorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, exceptionTranslatorBuilder);
@@ -490,7 +495,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     }
 
     private void registerLoginCommand(String brokerId, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, Element securedElement,
-        String authManager, boolean perClientAuthentication) {
+        String authManager, boolean invalidateHttpSession, boolean perClientAuthentication) {
 
     	String loginCommandId = securedElement.getAttribute(LOGIN_COMMAND_ATTR);
     	if (!StringUtils.hasText(loginCommandId)) {
@@ -499,6 +504,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginCommandClassName());
             loginCommandBuilder.addConstructorArgReference(authManager);
             loginCommandBuilder.addPropertyValue(PER_CLIENT_AUTHENTICATION_PROPERTY, perClientAuthentication);
+            loginCommandBuilder.getRawBeanDefinition().setAttribute(INVALIDATE_HTTP_SESSION_PROPERTY, invalidateHttpSession);
 
             ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginCommandBuilder, loginCommandId);
     	}

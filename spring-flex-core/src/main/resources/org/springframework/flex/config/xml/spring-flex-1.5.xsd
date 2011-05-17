@@ -786,6 +786,17 @@ A bean reference to a custom Spring-managed BlazeDS LoginCommand implementation.
 				</xsd:appinfo>
 			</xsd:annotation>
 		</xsd:attribute>
+		<xsd:attribute name="invalidate-http-session" type="xsd:boolean" default="false">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+Controls whether the user's HTTP session will be invalidated upon logout when invoking ChannelSet.logout() from the Flex application.  Default is false.  
+Note that if using a custom LoginCommand with an explicitly defined set of LogoutHandlers, this attribute will be ignored.  Also note that you should typically leave 
+this set to false when using per-client authentication, as invalidating the HTTP session will in turn invalidate all individual Flex client logins for the same user. 								
+]]>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
 		<xsd:attribute name="per-client-authentication" type="xsd:boolean" default="false">
 			<xsd:annotation>
 				<xsd:documentation>

@@ -189,8 +189,6 @@ public class SpringSecurityLoginCommand implements LoginCommand, InitializingBea
         return true;
     }
 
-    
-    
     public void setLogoutHandlers(List<LogoutHandler> logoutHandlers) {
 		this.logoutHandlers = logoutHandlers;
 	}

@@ -83,9 +83,9 @@ public class SecurityConfigurationPostProcessor implements MergedBeanDefinitionP
 			if (pv.getPropertyValue("logoutHandlers") == null) {
 				ManagedList handlers = new ManagedList();
 				SecurityContextLogoutHandler contextHandler = new SecurityContextLogoutHandler();
-				boolean perClientAuthentication = (Boolean) pv.getPropertyValue("perClientAuthentication").getValue();
+				boolean invalidateHttpSession = (Boolean) beanDefinition.getAttribute("invalidateHttpSession");
+				contextHandler.setInvalidateHttpSession(invalidateHttpSession);
 				handlers.add(contextHandler);
-				contextHandler.setInvalidateHttpSession(!perClientAuthentication);
 				if (this.rememberMeServices != null && !rememberMeServicesConfigured && ClassUtils.isAssignableValue(LogoutHandler.class, this.rememberMeServices)) {
 					handlers.add(this.rememberMeServices);
 				}

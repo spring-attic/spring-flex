@@ -62,6 +62,10 @@
 		<flex:secured/>
 	</flex:message-broker>
 	
+	<flex:message-broker id="invalidateHttpSession" >
+		<flex:secured invalidate-http-session="true"/>
+	</flex:message-broker>
+	
 	<flex:message-broker id="perClientAuthentication" >
 		<flex:secured per-client-authentication="true"/>
 	</flex:message-broker>
