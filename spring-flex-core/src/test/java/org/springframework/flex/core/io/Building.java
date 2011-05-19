@@ -1,5 +1,7 @@
 package org.springframework.flex.core.io;
 
+import java.util.Set;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,9 +13,36 @@ public class Building {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
+    private Integer id;
 	
 	@Embedded
-	EmbeddedAddressNP address;
+	private EmbeddedAddress address;
+	
+	@org.hibernate.annotations.CollectionOfElements
+	private Set<EmbeddedFloor> floors;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public EmbeddedAddress getAddress() {
+		return address;
+	}
+
+	public void setAddress(EmbeddedAddress address) {
+		this.address = address;
+	}
+
+    public void setFloors(Set<EmbeddedFloor> floors) {
+        this.floors = floors;
+    }
+
+    public Set<EmbeddedFloor> getFloors() {
+        return floors;
+    }
 	
 }

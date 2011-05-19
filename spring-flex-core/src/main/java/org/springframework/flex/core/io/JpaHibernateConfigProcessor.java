@@ -37,13 +37,13 @@ public class JpaHibernateConfigProcessor extends HibernateConfigProcessor{
 	@Override
 	protected void registerPropertyProxy(SpringPropertyProxy proxy) {
 		super.registerPropertyProxy(proxy);
-		ReflectionUtils.doWithFields(proxy.getBeanType(), new FieldCallback() {
+		/*ReflectionUtils.doWithFields(proxy.getBeanType(), new FieldCallback() {
 			public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
 				if (PropertyProxyRegistry.getRegistry().getProxy(field.getType(), false, false) == null) {
 					PropertyProxyRegistry.getRegistry().register(field.getType(), new SpringPropertyProxy(field.getType(), false));
 				}
 			}
-		}, new EmbeddedFieldFilter());
+		}, new EmbeddedFieldFilter());*/
 	}
     
 	private static final class EmbeddedFieldFilter implements FieldFilter {

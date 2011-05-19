@@ -395,6 +395,13 @@ public class SpringPropertyProxyHibernateJPATests {
     	assertTrue(proxy instanceof SpringPropertyProxy);
     }
     
+    @Test
+    public void testPropertyProxyRegisteredForElementCollection() {
+        PropertyProxy proxy = PropertyProxyRegistry.getRegistry().getProxy(EmbeddedFloor.class);
+        assertNotNull(proxy);
+        assertTrue(proxy instanceof SpringPropertyProxy);
+    }
+    
     private EntityManager getEntityManager() {
         if (!isTransactional){
             return emf.createEntityManager();
