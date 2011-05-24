@@ -6,4 +6,6 @@ import javax.persistence.Embeddable;
 public class EmbeddedFloorNP {
 
     Integer units;
+    
+    EmbeddedFloorAttributesNP embeddedFloorAttributes;
 }

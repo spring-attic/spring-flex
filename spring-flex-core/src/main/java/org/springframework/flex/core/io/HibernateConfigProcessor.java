@@ -10,6 +10,7 @@ import org.hibernate.EntityMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
+import org.hibernate.type.AbstractComponentType;
 import org.hibernate.type.Type;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -56,27 +57,36 @@ public class HibernateConfigProcessor extends ConversionServiceConfigProcessor i
 
     @Override
     protected Set<Class<?>> findTypesToRegister() {
-        Set<Class<?>> types = new HashSet<Class<?>>();
+        Set<Class<?>> typesToRegister = new HashSet<Class<?>>();
         if (hibernateConfigured) {
             for(ClassMetadata classMetadata : this.classMetadata) {
-                types.add(classMetadata.getMappedClass(EntityMode.POJO));
-                for (Type propertyType : classMetadata.getPropertyTypes()) {
-                    if (propertyType.isComponentType()) {
-                        types.add(propertyType.getReturnedClass());
-                    }
-                }
+                typesToRegister.add(classMetadata.getMappedClass(EntityMode.POJO));
+                findComponentProperties(classMetadata.getPropertyTypes(), typesToRegister);
             }
             for (CollectionMetadata collectionMetadata : this.collectionMetadata) {
                 Type elementType = collectionMetadata.getElementType();
                 if (elementType.isComponentType()) {
-                    types.add(elementType.getReturnedClass());
+                    typesToRegister.add(elementType.getReturnedClass());
+                    findComponentProperties(((AbstractComponentType)elementType).getSubtypes(), typesToRegister);
                 }
             }
             if (log.isInfoEnabled()) {
-                log.info("Hibernate types detected and for AMF serialization support: "+types.toString());
+                log.info("Hibernate types detected for AMF serialization support: "+typesToRegister.toString());
             }
         }
-        return types;
+        return typesToRegister;
+    }
+    
+    private void findComponentProperties(Type[] propertyTypes, Set<Class<?>> typesToRegister) {
+        if (propertyTypes == null) {
+            return;
+        }
+        for (Type propertyType : propertyTypes) {
+            if (propertyType.isComponentType()) {
+                typesToRegister.add(propertyType.getReturnedClass());
+                findComponentProperties(((AbstractComponentType)propertyType).getSubtypes(), typesToRegister);
+            }
+        }
     }
 
     @Override
