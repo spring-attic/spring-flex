@@ -1,32 +1,31 @@
-package org.springframework.flex.core.io;
+package org.springframework.flex.core.io.domain;
 
 
+public class PrimitiveCompany {
 
-public class Company {
+    private int id;
 
-    private Integer id;
-
-    private Integer version;
+    private int version;
 
     private String name;
 
     
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
     
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
     
-    public Integer getVersion() {
+    public int getVersion() {
         return version;
     }
 
     
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 
@@ -39,6 +38,5 @@ public class Company {
     public void setName(String name) {
         this.name = name;
     }
-    
-    
+
 }

@@ -25,6 +25,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.flex.core.io.domain.Address;
+import org.springframework.flex.core.io.domain.Company;
+import org.springframework.flex.core.io.domain.ContactInfo;
+import org.springframework.flex.core.io.domain.Person;
+import org.springframework.flex.core.io.domain.PrimitiveCompany;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
@@ -46,7 +51,7 @@ import flex.messaging.io.amf.MessageBody;
 import flex.messaging.util.ToStringPrettyPrinter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "hibernate-np-context.xml")
+@ContextConfiguration(locations = "hibernate-context.xml")
 @TestExecutionListeners( { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class,
     SpringPropertyProxyHibernateNativeTests.InternalDbTestExecutionListener.class })
 public class SpringPropertyProxyHibernateNativeTests {

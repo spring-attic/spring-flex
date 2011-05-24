@@ -1,4 +1,4 @@
-package org.springframework.flex.core.io;
+package org.springframework.flex.core.io.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,14 +12,14 @@ public class ContactInfoNP {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
+    public int id;
     
     @Version
     @Column(name = "version")
-    int version;
+    public int version;
     
-    String phone;
+    public String phone;
     
-    String email;
+    public String email;
 
 }

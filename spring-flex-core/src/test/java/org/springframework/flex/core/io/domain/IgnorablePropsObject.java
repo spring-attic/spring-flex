@@ -1,4 +1,7 @@
-package org.springframework.flex.core.io;
+package org.springframework.flex.core.io.domain;
+
+import org.springframework.flex.core.io.AmfIgnore;
+import org.springframework.flex.core.io.AmfIgnoreField;
 
 
 public class IgnorablePropsObject {

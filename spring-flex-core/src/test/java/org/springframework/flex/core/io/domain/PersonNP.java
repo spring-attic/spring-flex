@@ -1,5 +1,5 @@
 
-package org.springframework.flex.core.io;
+package org.springframework.flex.core.io.domain;
 
 import java.util.Set;
 
@@ -19,24 +19,24 @@ public class PersonNP {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
+    public Integer id;
 
     @Version
     @Column(name = "version")
-    Integer version;
+    public Integer version;
 
-    String name;
+    public String name;
 
     @OneToOne(fetch = FetchType.LAZY)
-    PersonNP spouse;
+    public PersonNP spouse;
 
     @OneToOne
-    AddressNP address;
+    public AddressNP address;
 
     @OneToMany
-    Set<AddressNP> previousAddresses;
+    public Set<AddressNP> previousAddresses;
 
     @ManyToMany
-    Set<PersonNP> children;
+    public Set<PersonNP> children;
 
 }

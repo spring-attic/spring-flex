@@ -22,7 +22,7 @@ import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.util.Assert;
 
 
-public class HibernateConfigProcessor extends ConversionServiceConfigProcessor implements BeanFactoryAware, InitializingBean {
+public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfigProcessor implements BeanFactoryAware, InitializingBean {
 
     private Log log = LogFactory.getLog(HibernateConfigProcessor.class);
     

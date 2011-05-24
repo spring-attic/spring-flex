@@ -1,5 +1,5 @@
 
-package org.springframework.flex.core.io;
+package org.springframework.flex.core.io.domain;
 
 import java.util.Date;
 
@@ -13,17 +13,17 @@ public class AddressNP {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
+    public Integer id;
 
-    String street;
+    public String street;
 
-    String city;
+    public String city;
 
-    String state;
+    public String state;
 
-    String zipcode;
+    public String zipcode;
 
-    Integer rooms;
+    public Integer rooms;
 
-    Date moveInDate;
+    public Date moveInDate;
 }

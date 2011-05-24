@@ -83,12 +83,10 @@ public class SpringPropertyProxy extends BeanProxy {
             getType(instance, propertyName);
             log.debug("Actual type of value for property '"+propertyName+"' on instance "+instance+" is "+(value != null ? value.getClass() : null));
         }
-        if(value == null) {
-            return null;
-        }
+        
         TypeDescriptor targetType = accessor.getPropertyTypeDescriptor(propertyName);
-        TypeDescriptor sourceType = TypeDescriptor.valueOf(value.getClass());
-        if (!sourceType.getType().equals(targetType.getType()) && this.conversionService.canConvert(sourceType, targetType)) {
+        TypeDescriptor sourceType = value == null ? targetType : TypeDescriptor.valueOf(value.getClass());
+        if (this.conversionService.canConvert(sourceType, targetType)) {
             value = this.conversionService.convert(value, sourceType, targetType);
         }
         return value;

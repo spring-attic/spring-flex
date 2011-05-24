@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.flex.core.io.domain.ImmutableValueObject;
+import org.springframework.flex.core.io.domain.Person;
 
 import flex.messaging.io.PropertyProxy;
 

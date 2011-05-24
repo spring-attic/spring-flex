@@ -14,6 +14,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.ManagedSet;
+import org.springframework.flex.core.io.AbstractAmfConversionServiceConfigProcessor;
 import org.springframework.flex.core.io.HibernateConfigProcessor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -57,7 +58,7 @@ public class HibernateSerializationConfigPostProcessor implements BeanFactoryPos
             }
             
             //Abort if HibernateConfigProcessor is already present
-            if (isHibernateConfigProcessorConfigured(beanFactory, configProcessors)) {
+            if (isAmfConversionServiceProcessorConfigured(beanFactory, configProcessors)) {
                 return;
             }
             
@@ -85,7 +86,8 @@ public class HibernateSerializationConfigPostProcessor implements BeanFactoryPos
         }
     }
 
-    private boolean isHibernateConfigProcessorConfigured(ConfigurableListableBeanFactory beanFactory, ManagedSet<RuntimeBeanReference> configProcessors) {
+    private boolean isAmfConversionServiceProcessorConfigured(ConfigurableListableBeanFactory beanFactory, ManagedSet<RuntimeBeanReference> configProcessors) {
+        
         for (RuntimeBeanReference configProcessor: configProcessors) {
             BeanDefinition bd = beanFactory.getMergedBeanDefinition(configProcessor.getBeanName());
             if (bd instanceof AbstractBeanDefinition) {
@@ -97,7 +99,7 @@ public class HibernateSerializationConfigPostProcessor implements BeanFactoryPos
                         throw new CannotLoadBeanClassException(abd.getResourceDescription(), configProcessor.getBeanName(), abd.getBeanClassName(), ex);
                     }
                 }
-                if (HibernateConfigProcessor.class.isAssignableFrom(abd.getBeanClass())) {
+                if (AbstractAmfConversionServiceConfigProcessor.class.isAssignableFrom(abd.getBeanClass())) {
                     return true;
                 }                    
             }

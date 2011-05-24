@@ -1,4 +1,4 @@
-package org.springframework.flex.core.io;
+package org.springframework.flex.core.io.domain;
 
 import javax.persistence.Embeddable;
 
@@ -7,7 +7,7 @@ public class EmbeddedFloorAttributesNP {
 
     //Hibernate complains if this one doesn't have getters and setters - thinking that's a Hibernate bug
     
-    Integer emergencyExits;
+    public Integer emergencyExits;
 
     
     public Integer getEmergencyExits() {

@@ -1,5 +1,5 @@
 
-package org.springframework.flex.core.io;
+package org.springframework.flex.core.io.domain;
 
 import java.util.Date;
 

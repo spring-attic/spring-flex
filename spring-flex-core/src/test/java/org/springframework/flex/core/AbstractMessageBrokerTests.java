@@ -21,6 +21,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.config.TestWebInfResourceLoader;
 import org.springframework.mock.web.MockServletContext;
@@ -60,6 +61,10 @@ public abstract class AbstractMessageBrokerTests extends TestCase {
         return this.mbfb.getObject();
     }
 
+    protected ApplicationContext getApplicationContext() {
+        return this.context;
+    }
+    
     protected String getCurrentConfigPath() {
         return this.currentConfigPath;
     }

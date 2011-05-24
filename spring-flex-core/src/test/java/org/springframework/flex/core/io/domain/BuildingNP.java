@@ -1,4 +1,4 @@
-package org.springframework.flex.core.io;
+package org.springframework.flex.core.io.domain;
 
 import java.util.Set;
 
@@ -13,11 +13,11 @@ public class BuildingNP {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Integer id;
+    public Integer id;
 	
 	@Embedded
-	EmbeddedAddressNP address;
+	public EmbeddedAddressNP address;
 	
 	@org.hibernate.annotations.CollectionOfElements
-    Set<EmbeddedFloorNP> floors;
+	public Set<EmbeddedFloorNP> floors;
 }

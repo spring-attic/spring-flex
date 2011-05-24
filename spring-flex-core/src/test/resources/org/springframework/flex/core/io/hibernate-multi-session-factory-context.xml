@@ -11,7 +11,7 @@
     
     <bean id="sessionFactory2" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
-        <property name="packagesToScan" value="org.springframework.flex.core.io" />
+        <property name="packagesToScan" value="org.springframework.flex.core.io.domain" />
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>

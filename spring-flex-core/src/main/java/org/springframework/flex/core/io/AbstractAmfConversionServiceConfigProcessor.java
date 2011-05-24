@@ -1,6 +1,5 @@
 package org.springframework.flex.core.io;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.InitializingBean;
@@ -14,7 +13,7 @@ import flex.messaging.MessageBroker;
 import flex.messaging.io.PropertyProxyRegistry;
 
 
-public class ConversionServiceConfigProcessor implements MessageBrokerConfigProcessor, InitializingBean {
+public abstract class AbstractAmfConversionServiceConfigProcessor implements MessageBrokerConfigProcessor, InitializingBean {
 
     private ConversionService conversionService;
     
@@ -48,9 +47,7 @@ public class ConversionServiceConfigProcessor implements MessageBrokerConfigProc
         PropertyProxyRegistry.getRegistry().register(proxy.getBeanType(), proxy);
     }
     
-    protected Set<Class<?>> findTypesToRegister() {
-        return new HashSet<Class<?>>();
-    }
+    protected abstract Set<Class<?>> findTypesToRegister();
     
     /**
      * Template method to allow subclasses to configure their own set of {@link Converter} instances.  This is a 

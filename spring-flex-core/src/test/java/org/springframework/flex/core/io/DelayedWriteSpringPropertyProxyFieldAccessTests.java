@@ -11,6 +11,9 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.flex.core.io.domain.Address;
+import org.springframework.flex.core.io.domain.ImmutableValueObject;
+import org.springframework.flex.core.io.domain.Person;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 

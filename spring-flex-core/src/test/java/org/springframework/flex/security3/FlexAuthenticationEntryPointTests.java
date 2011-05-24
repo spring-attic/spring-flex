@@ -11,7 +11,7 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.springframework.flex.core.ExceptionTranslator;
-import org.springframework.flex.core.io.Person;
+import org.springframework.flex.core.io.domain.Person;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;

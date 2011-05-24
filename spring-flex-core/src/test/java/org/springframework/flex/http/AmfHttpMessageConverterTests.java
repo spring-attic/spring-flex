@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.springframework.flex.core.io.Person;
+import org.springframework.flex.core.io.domain.Person;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
