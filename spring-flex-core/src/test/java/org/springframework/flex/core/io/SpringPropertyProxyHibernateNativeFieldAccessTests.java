@@ -46,7 +46,7 @@ import flex.messaging.io.amf.MessageBody;
 import flex.messaging.util.ToStringPrettyPrinter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "hibernate-context.xml")
+@ContextConfiguration(locations = "hibernate-np-context.xml")
 @TestExecutionListeners( { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class,
     SpringPropertyProxyHibernateNativeFieldAccessTests.InternalDbTestExecutionListener.class })
 public class SpringPropertyProxyHibernateNativeFieldAccessTests {
@@ -219,7 +219,7 @@ public class SpringPropertyProxyHibernateNativeFieldAccessTests {
     @Test
     public void testSerializationOutsideTransactionAfterHibernateQuery() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.openSession();
-        List<PersonNP> people = session.createQuery("from Person").list();
+        List<PersonNP> people = session.createQuery("from PersonNP").list();
         session.close();
         
         serialize(people);
@@ -242,7 +242,7 @@ public class SpringPropertyProxyHibernateNativeFieldAccessTests {
     @Transactional
     public void testSerializationInsideTransactionAfterHibernateQuery() throws IOException, ClassNotFoundException {
         Session session = this.sessionFactory.getCurrentSession();
-        List<PersonNP> people = session.createQuery("from Person").list();
+        List<PersonNP> people = session.createQuery("from PersonNP").list();
         serialize(people);
         
         List<PersonNP> results = (List<PersonNP>) deserialize();

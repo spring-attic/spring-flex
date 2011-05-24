@@ -7,6 +7,6 @@
               http://www.springframework.org/schema/flex/spring-flex-1.5.xsd"> 
     	
 	<!-- Custom services-config.xml path -->
-	<flex:message-broker id="multiSessionFactoryMessageBroker"/>
+	<flex:message-broker id="multiEntityManagerMessageBroker"/>
 	
 </beans>

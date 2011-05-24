@@ -2,7 +2,6 @@
 package org.springframework.flex.core.io;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -26,21 +25,22 @@ public class HibernateConfigProcessor extends ConversionServiceConfigProcessor i
 
     private Log log = LogFactory.getLog(HibernateConfigProcessor.class);
     
-    private SessionFactory sessionFactory;
+    private Set<ClassMetadata> classMetadata = new HashSet<ClassMetadata>();
+    
+    private Set<CollectionMetadata> collectionMetadata = new HashSet<CollectionMetadata>();
 
     private ListableBeanFactory beanFactory;
     
-    private boolean hibernateConfigured = false;
+    protected boolean hibernateConfigured = false;
     
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (this.sessionFactory == null) {
+        if (!this.hibernateConfigured) {
             if (BeanFactoryUtils.beanNamesForTypeIncludingAncestors(getBeanFactory(), SessionFactory.class).length > 0) {
-                this.sessionFactory = BeanFactoryUtils.beanOfTypeIncludingAncestors(beanFactory, SessionFactory.class);
-                this.hibernateConfigured = true;
+                for (SessionFactory sessionFactory : BeanFactoryUtils.beansOfTypeIncludingAncestors(beanFactory, SessionFactory.class).values()) {
+                    extractHibernateMetadata(sessionFactory);
+                }
             }
-        } else {
-            this.hibernateConfigured = true;
         }
         super.afterPropertiesSet();
     }
@@ -51,17 +51,14 @@ public class HibernateConfigProcessor extends ConversionServiceConfigProcessor i
     }
     
     public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+        extractHibernateMetadata(sessionFactory);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected Set<Class<?>> findTypesToRegister() {
         Set<Class<?>> types = new HashSet<Class<?>>();
         if (hibernateConfigured) {
-            Iterator<ClassMetadata> classIt = this.sessionFactory.getAllClassMetadata().values().iterator();
-            while (classIt.hasNext()) {
-                ClassMetadata classMetadata = classIt.next();
+            for(ClassMetadata classMetadata : this.classMetadata) {
                 types.add(classMetadata.getMappedClass(EntityMode.POJO));
                 for (Type propertyType : classMetadata.getPropertyTypes()) {
                     if (propertyType.isComponentType()) {
@@ -69,9 +66,8 @@ public class HibernateConfigProcessor extends ConversionServiceConfigProcessor i
                     }
                 }
             }
-            Iterator<CollectionMetadata> collIt = this.sessionFactory.getAllCollectionMetadata().values().iterator();
-            while (collIt.hasNext()) {
-                Type elementType = collIt.next().getElementType();
+            for (CollectionMetadata collectionMetadata : this.collectionMetadata) {
+                Type elementType = collectionMetadata.getElementType();
                 if (elementType.isComponentType()) {
                     types.add(elementType.getReturnedClass());
                 }
@@ -88,12 +84,15 @@ public class HibernateConfigProcessor extends ConversionServiceConfigProcessor i
         registry.addConverter(new HibernateProxyConverter());
         registry.addConverterFactory(new PersistentCollectionConverterFactory());
     }
-
-	protected SessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
    
     protected ListableBeanFactory getBeanFactory() {
         return beanFactory;
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected void extractHibernateMetadata(SessionFactory sessionFactory) {
+        this.classMetadata.addAll(sessionFactory.getAllClassMetadata().values());
+        this.collectionMetadata.addAll(sessionFactory.getAllCollectionMetadata().values());
+        this.hibernateConfigured = true;
     }
 }
