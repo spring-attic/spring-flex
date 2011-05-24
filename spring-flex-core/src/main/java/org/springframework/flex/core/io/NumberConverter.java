@@ -13,7 +13,9 @@ public class NumberConverter implements GenericConverter {
     @SuppressWarnings("unchecked")
     public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
         Number numberValue = (Number) source;
-        if (numberValue.equals(Double.NaN)) {
+        if (numberValue == null) {
+            return Double.NaN;
+        } else if (numberValue.equals(Double.NaN)) {
             return null;
         } else if (!sourceType.getType().equals(targetType.getType())){
             return NumberUtils.convertNumberToTargetClass(numberValue, (Class<? extends Number>)targetType.getObjectType());
