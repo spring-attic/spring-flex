@@ -30,6 +30,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.view.AbstractView;
 
+import flex.messaging.FlexContext;
 import flex.messaging.io.SerializationContext;
 import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfTrace;
@@ -88,28 +89,34 @@ public class AmfView extends AbstractView {
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Object value = filterModel(model);
         
-        AmfTrace trace = null;
-        if (log.isDebugEnabled()) {
-            trace = new AmfTrace();
-        }
+        try {
         
-        ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
-        SerializationContext context = new SerializationContext();
-        Amf3Output out = new Amf3Output(context);
-        if (trace != null) {
-        	out.setDebugTrace(trace);
-        }
-        out.setOutputStream(outBuffer);
-        out.writeObject(value);
-        out.flush();
-        
-        outBuffer.flush();
-        
-        response.setContentLength(outBuffer.size());
-        outBuffer.writeTo(response.getOutputStream());
-        
-        if (log.isDebugEnabled()) {
-            log.debug("Wrote AMF message:\n" + trace);
+            AmfTrace trace = null;
+            if (log.isDebugEnabled()) {
+                trace = new AmfTrace();
+            }
+            
+            ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
+            SerializationContext context = new SerializationContext();
+            Amf3Output out = new Amf3Output(context);
+            if (trace != null) {
+            	out.setDebugTrace(trace);
+            }
+            out.setOutputStream(outBuffer);
+            out.writeObject(value);
+            out.flush();
+            
+            outBuffer.flush();
+            
+            response.setContentLength(outBuffer.size());
+            outBuffer.writeTo(response.getOutputStream());
+            
+            if (log.isDebugEnabled()) {
+                log.debug("Wrote AMF message:\n" + trace);
+            }
+        } finally {
+            FlexContext.clearThreadLocalObjects();
+            SerializationContext.clearThreadLocalObjects();
         }
     }
     

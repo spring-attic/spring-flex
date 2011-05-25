@@ -28,6 +28,7 @@ import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
+import flex.messaging.FlexContext;
 import flex.messaging.MessageException;
 import flex.messaging.io.MessageIOConstants;
 import flex.messaging.io.SerializationContext;
@@ -59,45 +60,55 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
     @Override
     protected Object readInternal(Class<? extends Object> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
         
-        
-        AmfTrace trace = null;
-        if (log.isDebugEnabled()) {
-            trace = new AmfTrace();
+        try {
+            AmfTrace trace = null;
+            if (log.isDebugEnabled()) {
+                trace = new AmfTrace();
+            }
+            
+            Object result = null;
+            
+            if (clazz.equals(ActionMessage.class)) {
+            	result = readActionMessage(inputMessage, trace);
+            } else {
+            	result = readObject(inputMessage, trace);
+            }
+            
+            if (log.isDebugEnabled()) {
+                log.debug("Read AMF message:\n" + trace);
+            }
+            return result;
+        } finally {
+            FlexContext.clearThreadLocalObjects();
+            SerializationContext.clearThreadLocalObjects();
         }
-        
-        Object result = null;
-        
-        if (clazz.equals(ActionMessage.class)) {
-        	result = readActionMessage(inputMessage, trace);
-        } else {
-        	result = readObject(inputMessage, trace);
-        }
-        
-        if (log.isDebugEnabled()) {
-            log.debug("Read AMF message:\n" + trace);
-        }
-        return result;
     }
 
     @Override
     protected void writeInternal(Object data, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-    	AmfTrace trace = null;
-        if (log.isDebugEnabled()) {
-            trace = new AmfTrace();
-        }
-        
-        outputMessage.getHeaders().setPragma("no-cache");
-        outputMessage.getHeaders().setCacheControl("no-cache, no-store, max-age=0");
-        outputMessage.getHeaders().setExpires(1L);
-        
-        if (data instanceof ActionMessage) {
-        	writeActionMessage((ActionMessage) data, outputMessage, trace);
-        } else {
-        	writeObject(data, outputMessage, trace);
-        }
-        
-        if (log.isDebugEnabled()) {
-            log.debug("Wrote AMF message:\n" + trace);
+    	
+        try {
+            AmfTrace trace = null;
+            if (log.isDebugEnabled()) {
+                trace = new AmfTrace();
+            }
+            
+            outputMessage.getHeaders().setPragma("no-cache");
+            outputMessage.getHeaders().setCacheControl("no-cache, no-store, max-age=0");
+            outputMessage.getHeaders().setExpires(1L);
+            
+            if (data instanceof ActionMessage) {
+            	writeActionMessage((ActionMessage) data, outputMessage, trace);
+            } else {
+            	writeObject(data, outputMessage, trace);
+            }
+            
+            if (log.isDebugEnabled()) {
+                log.debug("Wrote AMF message:\n" + trace);
+            }
+        } finally {
+            FlexContext.clearThreadLocalObjects();
+            SerializationContext.clearThreadLocalObjects();
         }
     }
     

@@ -34,6 +34,7 @@ import flex.messaging.HttpFlexSessionProvider;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageException;
 import flex.messaging.endpoints.Endpoint;
+import flex.messaging.io.SerializationContext;
 
 /**
  * {@link HandlerAdapter} for routing HTTP messages to a Spring-managed {@link MessageBroker}.
@@ -117,6 +118,7 @@ public class MessageBrokerHandlerAdapter implements HandlerAdapter, ServletConfi
             }
         } finally {
             FlexContext.clearThreadLocalObjects();
+            SerializationContext.clearThreadLocalObjects();
         }
 
         return null;

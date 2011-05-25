@@ -55,6 +55,7 @@ import flex.messaging.MessageBroker;
 import flex.messaging.VersionInfo;
 import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.MessagingConfiguration;
+import flex.messaging.io.PropertyProxyRegistry;
 import flex.messaging.io.SerializationContext;
 import flex.messaging.io.TypeMarshallingContext;
 
@@ -189,8 +190,9 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
             
             // Setup provider for FlexSessions that wrap underlying J2EE HttpSessions.
             this.messageBroker.getFlexSessionManager().registerFlexSessionProvider(HttpFlexSession.class, new HttpFlexSessionProvider());
+            
             // clear the broker and servlet config as this thread is done
-            FlexContext.clearThreadLocalObjects();
+            clearThreadLocals();
 
         } catch (Throwable error) {
             // Ensure the broker gets cleaned up properly, then re-throw
@@ -351,29 +353,23 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
 
     private void initThreadLocals() {
         // allocate static thread local objects
-
-    	// If available, invoke the MessageBroker.createThreadLocalObjects() method:
-        Method createThreadLocalObjMethod = ReflectionUtils.findMethod(MessageBroker.class, "createThreadLocalObjects");
-        if (createThreadLocalObjMethod != null) {
-        	ReflectionUtils.invokeMethod(createThreadLocalObjMethod, null);
-        }
-    	
+        MessageBroker.createThreadLocalObjects();
         FlexContext.createThreadLocalObjects();
         SerializationContext.createThreadLocalObjects();
         TypeMarshallingContext.createThreadLocalObjects();
+        PropertyProxyRegistry.getRegistry();
+    }
+    
+    private void clearThreadLocals() {
+        // clear thread local objects after startup
+        FlexContext.clearThreadLocalObjects();
+        SerializationContext.clearThreadLocalObjects();
     }
 
     private void destroyThreadLocals() {
-        // clear static member variables
+        // clear static member variables for shutdown
         MBeanServerLocatorFactory.clear();
-
-        // Destroy static thread local objects
-    	// If available, invoke the MessageBroker.releaseThreadLocalObjects() method:
-        Method releaseThreadLocalObjMethod = ReflectionUtils.findMethod(MessageBroker.class, "releaseThreadLocalObjects");
-        if (releaseThreadLocalObjMethod != null) {
-        	ReflectionUtils.invokeMethod(releaseThreadLocalObjMethod, null);
-        }
-        
+        MessageBroker.releaseThreadLocalObjects();
         FlexContext.releaseThreadLocalObjects();
         SerializationContext.releaseThreadLocalObjects();
         TypeMarshallingContext.releaseThreadLocalObjects();
