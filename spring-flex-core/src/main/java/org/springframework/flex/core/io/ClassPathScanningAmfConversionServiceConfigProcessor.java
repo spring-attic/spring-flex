@@ -1,3 +1,19 @@
+/*
+ * Copyright 2002-20011 the original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.springframework.flex.core.io;
 
 import java.io.IOException;
@@ -8,9 +24,11 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -20,13 +38,37 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.SystemPropertyUtils;
 
-
+/**
+ * Generic extension of {@link AbstractAmfConversionServiceConfigProcessor} that configures the Spring {@link ConversionService}-based AMF 
+ * serialization/deserialization support via classpath scanning.
+ * 
+ * <p>
+ * This implementation will recursively scan for classes starting with the base package provided in the 
+ * {@link ClassPathScanningAmfConversionServiceConfigProcessor#ClassPathScanningAmfConversionServiceConfigProcessor(String) constructor}.  
+ * By default, a {@link SpringPropertyProxy} will be registered for every class found in the scan.
+ * 
+ * <p>
+ * The scanning process may be more finely tuned by providing {@link TypeFilter} implementations to be used in 
+ * {@link ClassPathScanningAmfConversionServiceConfigProcessor#setIncludeFilters(List) including} and 
+ * {@link ClassPathScanningAmfConversionServiceConfigProcessor#setExcludeFilters(List) excluding} specific classes.  For example, you 
+ * can filter by {@link RegexPatternTypeFilter RegEx patterns}, {@link AnnotationTypeFilter custom annotations}, or anything else that 
+ * can be used for matching in a {@code TypeFilter}.
+ * 
+ * <p>
+ * This implementation does not register any additional {@link TypeConverter TypeConverters} beyond those registered in the parent class.  
+ * Additional {@code TypeConverters} may be registered by extending this class and overriding 
+ * {@link AbstractAmfConversionServiceConfigProcessor#configureConverters(org.springframework.core.convert.converter.ConverterRegistry) configureConverters}. 
+ * 
+ * @author Jeremy Grelle
+ */
 public class ClassPathScanningAmfConversionServiceConfigProcessor extends AbstractAmfConversionServiceConfigProcessor implements ResourceLoaderAware, BeanClassLoaderAware {
 
     private static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
@@ -47,6 +89,10 @@ public class ClassPathScanningAmfConversionServiceConfigProcessor extends Abstra
     
     private final String basePackage;
     
+    /**
+     * Create a ClassPathScanningAmfConversionServiceConfigProcessor
+     * @param basePackage the base package to scan for classes to be registered for AMF serialization/deserialization
+     */
     public ClassPathScanningAmfConversionServiceConfigProcessor(String basePackage) {
         this.basePackage = basePackage;
     }
