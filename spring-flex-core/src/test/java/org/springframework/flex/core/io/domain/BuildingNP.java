@@ -18,6 +18,7 @@ public class BuildingNP {
 	@Embedded
 	public EmbeddedAddressNP address;
 	
-	@org.hibernate.annotations.CollectionOfElements
+	@SuppressWarnings("deprecation")
+    @org.hibernate.annotations.CollectionOfElements
 	public Set<EmbeddedFloorNP> floors;
 }

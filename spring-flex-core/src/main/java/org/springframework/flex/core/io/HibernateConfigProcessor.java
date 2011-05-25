@@ -10,7 +10,7 @@ import org.hibernate.EntityMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
-import org.hibernate.type.AbstractComponentType;
+import org.hibernate.type.ComponentType;
 import org.hibernate.type.Type;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -65,9 +65,9 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
             }
             for (CollectionMetadata collectionMetadata : this.collectionMetadata) {
                 Type elementType = collectionMetadata.getElementType();
-                if (elementType.isComponentType()) {
+                if (elementType instanceof ComponentType) {
                     typesToRegister.add(elementType.getReturnedClass());
-                    findComponentProperties(((AbstractComponentType)elementType).getSubtypes(), typesToRegister);
+                    findComponentProperties(((ComponentType)elementType).getSubtypes(), typesToRegister);
                 }
             }
             if (log.isInfoEnabled()) {
@@ -82,9 +82,9 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
             return;
         }
         for (Type propertyType : propertyTypes) {
-            if (propertyType.isComponentType()) {
+            if (propertyType instanceof ComponentType) {
                 typesToRegister.add(propertyType.getReturnedClass());
-                findComponentProperties(((AbstractComponentType)propertyType).getSubtypes(), typesToRegister);
+                findComponentProperties(((ComponentType)propertyType).getSubtypes(), typesToRegister);
             }
         }
     }

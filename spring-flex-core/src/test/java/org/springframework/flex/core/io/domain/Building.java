@@ -18,7 +18,8 @@ public class Building {
 	@Embedded
 	private EmbeddedAddress address;
 	
-	@org.hibernate.annotations.CollectionOfElements
+	@SuppressWarnings("deprecation")
+    @org.hibernate.annotations.CollectionOfElements
 	private Set<EmbeddedFloor> floors;
 
 	public Integer getId() {
