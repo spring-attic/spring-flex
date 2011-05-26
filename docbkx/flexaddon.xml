@@ -4,104 +4,104 @@
     <sect1 id="flexaddon-introduction">
         <title>Introduction</title>
         <para>
-        	Spring Roo brings brings a whole new level of productivity to building Java applications.  From the Spring Roo Reference Guide:
+            Spring Roo brings brings a whole new level of productivity to building Java applications.  From the Spring Roo Reference Guide:
         </para>
         <para>
-        	"<ulink url="http://www.springsource.org/roo">Spring Roo</ulink> is an easy-to-use productivity tool for rapidly building enterprise applications in the 
-        	Java programming language. It allows you to build high-quality, high-performance, lock-in-free enterprise applications in just minutes. Best of all, Roo 
-        	works alongside your existing Java knowledge, skills and experience. You probably won't need to learn anything new to use Roo, as there's no new language 
-        	or runtime platform needed. You simply program in your normal Java way and Roo just works, sitting in the background taking care of the things you don't 
-        	want to worry about."
+            "<ulink url="http://www.springsource.org/roo">Spring Roo</ulink> is an easy-to-use productivity tool for rapidly building enterprise applications in the 
+            Java programming language. It allows you to build high-quality, high-performance, lock-in-free enterprise applications in just minutes. Best of all, Roo 
+            works alongside your existing Java knowledge, skills and experience. You probably won't need to learn anything new to use Roo, as there's no new language 
+            or runtime platform needed. You simply program in your normal Java way and Roo just works, sitting in the background taking care of the things you don't 
+            want to worry about."
         </para>
         <para>
-        	To learn more about Spring Roo itself, you'll find numerous resources from the project's homepage at <ulink url="http://www.springsource.org/roo">http://www.springsource.org/roo</ulink>
+            To learn more about Spring Roo itself, you'll find numerous resources from the project's homepage at <ulink url="http://www.springsource.org/roo">http://www.springsource.org/roo</ulink>
         </para>
         <para>
-        	The Flex Addon for Spring Roo aims to raise the bar for developer productivity in building Spring-based RIAs with a Flex client by meeting the 
-        	following goals:  
+            The Flex Addon for Spring Roo aims to raise the bar for developer productivity in building Spring-based RIAs with a Flex client by meeting the 
+            following goals:  
         </para>
         <orderedlist>
-        	<listitem>
-        		Provide the fastest way to get a Spring project configured to use Spring BlazeDS Integration set up and running.
-        	</listitem>
-        	<listitem>
-        		Eliminate the need to manually perform repetitive tasks such as keeping ActionScript and Java domain objects in sync.
-        	</listitem>
-        	<listitem>
-        		Automate round-tripping code-generation of Flex artifacts with a focus on letting developers do what they do best - write code.
-        	</listitem>
+            <listitem>
+                Provide the fastest way to get a Spring project configured to use Spring BlazeDS Integration set up and running.
+            </listitem>
+            <listitem>
+                Eliminate the need to manually perform repetitive tasks such as keeping ActionScript and Java domain objects in sync.
+            </listitem>
+            <listitem>
+                Automate round-tripping code-generation of Flex artifacts with a focus on letting developers do what they do best - write code.
+            </listitem>
         </orderedlist>
         <sect2 id="flex-addon-requirements">
-        	<title>Minimum Requirements for the Flex Addon for Spring Roo</title>
-        	<para>
-        		Java 5+
-        	</para>
-        	<para>
-        		Maven 2.2.0+
-        	</para>
-        	<para>
-        		Spring Roo 1.1.0.M1
-        	</para>
+            <title>Minimum Requirements for the Flex Addon for Spring Roo</title>
+            <para>
+                Java 5+
+            </para>
+            <para>
+                Maven 2.2.0+
+            </para>
+            <para>
+                Spring Roo 1.1.0.M1
+            </para>
         </sect2>
         <sect2 id="flex-addon-setup">
-        	<title>Installing the Flex Addon for Spring Roo</title>
-        	<para>
-        		The currently released version of the Flex Addon for Spring Roo is 1.0.0.M1.  The addon was included in the Spring BlazeDS Integration 1.5.0.M1 distribution 
-        		and is also available from the Spring Milestones Maven Repository at <code>http://maven.springframework.org/milestone</code> under the group id 
-        		<code>org.springframework.flex.roo.addon</code> and artifact id <code>org.springframework.flex.roo.addon</code>.  
-        		<note><para>The addon is currently under heavy development and an updated 1.0.0.M2 release should be available in the near future.  
-        		This next release will be available via Addon Discovery feature of Spring Roo 1.1+.  1.5.0.M1 is known to be incompatible with Roo 1.1 and above.  See the 
-        		Spring Flex community support forums if you are interested in following along with development and trying out the nightly snapshot builds.</para></note>
-        		
-        	</para>
-        	<para>
-        		First, ensure that you have Spring Roo 1.1.0.M1 set up correctly by following the <ulink url="http://static.springsource.org/spring-roo/reference/html-single/index.html#intro-installation">steps found here</ulink>.
-        	</para>
-        	<para>
-        		If you've not already done so, download the Spring BlazeDS Integration 1.5.0.M1 <ulink url="http://www.springsource.com/download/community?project=Spring%20BlazeDS%20Integration">project distribution</ulink>.
-        	</para>
-        	<para>
-        		Once you have a working Spring Roo installation, you can install the Flex Addon by simply copying it from <code>{spring_blazeds_dist}/org.springframework.flex.roo.addon-1.0.0.M1.jar</code> into the 
-        		<code>$ROO_HOME/bundle</code> directory.
-        	</para>
-        	<para>
-        		To verify that the Flex Addon has been picked up and activated, start Spring Roo from a clean directory and execute the command <code>osgi scr list</code>.  You should see <code>org.springframework.flex.roo.addon.FlexCommands</code> 
-        		listed with a status of <code>active</code>.
-        	</para>	
+            <title>Installing the Flex Addon for Spring Roo</title>
+            <para>
+                The currently released version of the Flex Addon for Spring Roo is 1.0.0.M1.  The addon was included in the Spring BlazeDS Integration 1.5.0.M1 distribution 
+                and is also available from the Spring Milestones Maven Repository at <code>http://maven.springframework.org/milestone</code> under the group id 
+                <code>org.springframework.flex.roo.addon</code> and artifact id <code>org.springframework.flex.roo.addon</code>.  
+                <note><para>The addon is currently under heavy development and an updated 1.0.0.M2 release should be available in the near future.  
+                This next release will be available via Addon Discovery feature of Spring Roo 1.1+.  1.5.0.M1 is known to be incompatible with Roo 1.1 and above.  See the 
+                Spring Flex community support forums if you are interested in following along with development and trying out the nightly snapshot builds.</para></note>
+                
+            </para>
+            <para>
+                First, ensure that you have Spring Roo 1.1.0.M1 set up correctly by following the <ulink url="http://static.springsource.org/spring-roo/reference/html-single/index.html#intro-installation">steps found here</ulink>.
+            </para>
+            <para>
+                If you've not already done so, download the Spring BlazeDS Integration 1.5.0.M1 <ulink url="http://www.springsource.com/download/community?project=Spring%20BlazeDS%20Integration">project distribution</ulink>.
+            </para>
+            <para>
+                Once you have a working Spring Roo installation, you can install the Flex Addon by simply copying it from <code>{spring_blazeds_dist}/org.springframework.flex.roo.addon-1.0.0.M1.jar</code> into the 
+                <code>$ROO_HOME/bundle</code> directory.
+            </para>
+            <para>
+                To verify that the Flex Addon has been picked up and activated, start Spring Roo from a clean directory and execute the command <code>osgi scr list</code>.  You should see <code>org.springframework.flex.roo.addon.FlexCommands</code> 
+                listed with a status of <code>active</code>.
+            </para> 
         </sect2>
         <sect2 id="flex-addon-features">
-        	<title>Flex Addon for Spring Roo Features</title>
-        	<para>The Flex Addon for Spring Roo provides the following high-level features:</para>
-        	<itemizedlist>
-			    <listitem>
-			    	<para>Automated setup of the necessary Spring, Maven, and Eclipse configuration for a standard Spring BlazeDS Integration project.</para>
-			    </listitem>
-			    <listitem>
-			    	<para>Generation of Spring BlazeDS Integration <code>@RemotingDestination</code> services with full CRUD capabilities for a given entity.</para>
-			    </listitem>
-			    <listitem>
-			    	<para>Continuous synchronization of changes between ActionScript and Java domain classes for AMF remoting.</para>
-			    </listitem>
-			    <listitem>
-			    	<para>Generation of UI scaffold that is continuously updated as changes occur in the corresponding ActionScript or Java classes.</para>
-			    </listitem>
-			    <listitem>
-			    	<para>Client-side Flex validator generation corresponding to the Bean Validation annotations on the Java model.</para>
-			    </listitem>
-			</itemizedlist>
+            <title>Flex Addon for Spring Roo Features</title>
+            <para>The Flex Addon for Spring Roo provides the following high-level features:</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Automated setup of the necessary Spring, Maven, and Eclipse configuration for a standard Spring BlazeDS Integration project.</para>
+                </listitem>
+                <listitem>
+                    <para>Generation of Spring BlazeDS Integration <code>@RemotingDestination</code> services with full CRUD capabilities for a given entity.</para>
+                </listitem>
+                <listitem>
+                    <para>Continuous synchronization of changes between ActionScript and Java domain classes for AMF remoting.</para>
+                </listitem>
+                <listitem>
+                    <para>Generation of UI scaffold that is continuously updated as changes occur in the corresponding ActionScript or Java classes.</para>
+                </listitem>
+                <listitem>
+                    <para>Client-side Flex validator generation corresponding to the Bean Validation annotations on the Java model.</para>
+                </listitem>
+            </itemizedlist>
         </sect2>
         <sect2 id="flex-addon-commands">
-        	<title>Flex Commands</title>
-        	<para>
-        		The Flex Addon provides its functionality through just a few simple commands.
-        	</para>
-        	<sect3 id="flex-setup-command">
-	        	<title>flex setup</title>
-	        	<para>
-	        		Once a basic Spring Roo project has been set up, the Flex Addon provides a single <code>flex setup</code> command for adding the necessary Spring, Maven, and Eclipse 
-	        		configuration for a Flex project backed by Spring BlazeDS Integration.  Its execution is as simple as:  
-	        	</para>
-	        	<programlisting>
+            <title>Flex Commands</title>
+            <para>
+                The Flex Addon provides its functionality through just a few simple commands.
+            </para>
+            <sect3 id="flex-setup-command">
+                <title>flex setup</title>
+                <para>
+                    Once a basic Spring Roo project has been set up, the Flex Addon provides a single <code>flex setup</code> command for adding the necessary Spring, Maven, and Eclipse 
+                    configuration for a Flex project backed by Spring BlazeDS Integration.  Its execution is as simple as:  
+                </para>
+                <programlisting>
 org.example.rootunes roo> <emphasis role="bold">flex setup</emphasis>
 Created SRC_MAIN_WEBAPP/WEB-INF/flex
 Created SRC_MAIN_WEBAPP/WEB-INF/flex/services-config.xml
@@ -112,19 +112,19 @@ Created SRC_MAIN_WEBAPP/WEB-INF/web.xml
 Created SRC_MAIN_WEBAPP/WEB-INF/urlrewrite.xml
 Managed SRC_MAIN_WEBAPP/WEB-INF/web.xml
 ...
-				</programlisting>
-				<para>
-					Once you have the basic Flex project infrastructure in place, you can start generating remoting destinations and scaffolding.
-				</para>
-			</sect3>
-			<sect3 id="flex-remoting-scaffold-command">
-				<title>flex remoting scaffold</title>
-				<para>
-					The <code>flex remoting scaffold</code> command will create a Spring-managed <code>@RemotingDestination</code> and Flex UI scaffolding for a given Java domain entity.  It 
-					requires a <code>--name</code> option that specifies the name of the <code>@RemotingDestination</code> class to be created, and an <code>--entity</code> option which will 
-					be inferred from the current Roo command context if not specified explicitly. 
-				</para>
-				<programlisting>
+                </programlisting>
+                <para>
+                    Once you have the basic Flex project infrastructure in place, you can start generating remoting destinations and scaffolding.
+                </para>
+            </sect3>
+            <sect3 id="flex-remoting-scaffold-command">
+                <title>flex remoting scaffold</title>
+                <para>
+                    The <code>flex remoting scaffold</code> command will create a Spring-managed <code>@RemotingDestination</code> and Flex UI scaffolding for a given Java domain entity.  It 
+                    requires a <code>--name</code> option that specifies the name of the <code>@RemotingDestination</code> class to be created, and an <code>--entity</code> option which will 
+                    be inferred from the current Roo command context if not specified explicitly. 
+                </para>
+                <programlisting>
 ~.domain.Artist roo> <emphasis role="bold">flex remoting scaffold</emphasis> --name ~.service.ArtistService          
 Created SRC_MAIN_JAVA/org/example/rootunes/service
 Created SRC_MAIN_JAVA/org/example/rootunes/service/ArtistService.java
@@ -136,76 +136,76 @@ Managed ROOT/src/main/flex/rootunes_scaffold-config.xml
 Created ROOT/src/main/flex/org/example/rootunes/presentation/artist
 Created ROOT/src/main/flex/org/example/rootunes/presentation/artist/ArtistEvent.as
 Created ROOT/src/main/flex/org/example/rootunes/presentation/artist/ArtistView.mxml
-Created ROOT/src/main/flex/org/example/rootunes/presentation/artist/ArtistForm.mxml	
-				</programlisting>
-				<para>
-					As shown in the listing above, the command causes the following to be generated:
-				</para>
-				<itemizedlist>
-					<listitem>
-						<para>A <code>@RemotingDestination</code> that provides persistence operations for the given entity.</para>
-					</listitem>
-					<listitem>
-						<para>An ActionScript class that mirrors the Java entity.  If there were any JPA relationships in the Java entity, additional ActionScript classes would be generated 
-						accordingly.  Once this link is established between an ActionScript and Java class, the addon will automatically keep the two in sync and propagate any changes made to 
-						the fields in either the ActionScript or Java class, whether those changes are made manually in the code, or with the aid of a Roo command.</para>
-					</listitem>
-					<listitem>
-						<para>Flex UI scaffolding for carrying out CRUD operation on the entity.  Anytime fields are added to the ActionScript class, the necessary updates will be made to 
-						the proper .mxml artifacts to reflect the new fields.  (Note - At this time, the Flex addon will not delete fields from the .mxml once they've been added.  The syncronization 
-						capabilities will be expanded in further releases.)
-						</para>
-					</listitem>
-				</itemizedlist>
-				<para>
-					The <code>@RemotingDestination</code> that gets generated (in this example, <code>org.example.rootunes.ArtistService</code>), will automatically provide basic CRUD 
-					functionality for the given <code>Artist</code> entity.  The generated methods that provide this functionality are as follows:
-				</para>
-				<informaltable>
-					<tgroup cols="2">
-						<thead>
-							<row>
-								<entry align="center">Method Signature </entry>
-								<entry align="center">Comment </entry>
-							</row>
-						</thead>
-						<tbody>
-							<row>
-							  <entry>public Artist <emphasis role="bold">create</emphasis>(Artist artist){..}</entry>
-							  <entry>The create method will persist a newly created Artist instance and return the persistent instance.</entry>
-							</row>
-							<row>
-							  <entry>public Artist <emphasis role="bold">show</emphasis>(Long id) {..}</entry>
-							  <entry>The show method will return an existing Artist instance matching the provided id.</entry>
-							</row>
-							<row>
-							  <entry>public List&lt;Artist&gt; <emphasis role="bold">list</emphasis>() {..}</entry>
-							  <entry>The list method will return a list of all existing Artist instances.</entry>
-							</row>
-							<row>
-							  <entry>public List&lt;Artist&gt; <emphasis role="bold">listPaged</emphasis>(Integer page, Integer size) {..}</entry>
-							  <entry>The listPaged method will return a list containing a subset of existing Artist instances according to the provided page and size parameters.</entry>
-							</row>
-							<row>
-							  <entry>public Artist <emphasis role="bold">update</emphasis>(Artist artist){..}</entry>
-							  <entry>The update method will update and already persistent Artist instance and return the persistent instance.</entry>
-							</row>
-							<row>
-							  <entry>public void <emphasis role="bold">delete</emphasis>(Long id){..}</entry>
-							  <entry>The delete method will remove an existing Artist instance matching the provided id.</entry>
-							</row>
-						</tbody>
-					</tgroup>
-				</informaltable>					   
-				
-			</sect3>
-			<sect3 id="flex-remoting-all-command">
-				<title>flex remoting all</title>
-				<para>
-					The <code>flex remoting all</code> command is a convenient variation of <code>flex remoting scaffold</code> that will create a Spring-managed <code>@RemotingDestination</code> 
-					and Flex UI scaffolding for all Java domain entities in a given <code>--package</code> if it does not already exist.  Its usage is shown below:
-				</para>
-				<programlisting>
+Created ROOT/src/main/flex/org/example/rootunes/presentation/artist/ArtistForm.mxml 
+                </programlisting>
+                <para>
+                    As shown in the listing above, the command causes the following to be generated:
+                </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>A <code>@RemotingDestination</code> that provides persistence operations for the given entity.</para>
+                    </listitem>
+                    <listitem>
+                        <para>An ActionScript class that mirrors the Java entity.  If there were any JPA relationships in the Java entity, additional ActionScript classes would be generated 
+                        accordingly.  Once this link is established between an ActionScript and Java class, the addon will automatically keep the two in sync and propagate any changes made to 
+                        the fields in either the ActionScript or Java class, whether those changes are made manually in the code, or with the aid of a Roo command.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Flex UI scaffolding for carrying out CRUD operation on the entity.  Anytime fields are added to the ActionScript class, the necessary updates will be made to 
+                        the proper .mxml artifacts to reflect the new fields.  (Note - At this time, the Flex addon will not delete fields from the .mxml once they've been added.  The syncronization 
+                        capabilities will be expanded in further releases.)
+                        </para>
+                    </listitem>
+                </itemizedlist>
+                <para>
+                    The <code>@RemotingDestination</code> that gets generated (in this example, <code>org.example.rootunes.ArtistService</code>), will automatically provide basic CRUD 
+                    functionality for the given <code>Artist</code> entity.  The generated methods that provide this functionality are as follows:
+                </para>
+                <informaltable>
+                    <tgroup cols="2">
+                        <thead>
+                            <row>
+                                <entry align="center">Method Signature </entry>
+                                <entry align="center">Comment </entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                              <entry>public Artist <emphasis role="bold">create</emphasis>(Artist artist){..}</entry>
+                              <entry>The create method will persist a newly created Artist instance and return the persistent instance.</entry>
+                            </row>
+                            <row>
+                              <entry>public Artist <emphasis role="bold">show</emphasis>(Long id) {..}</entry>
+                              <entry>The show method will return an existing Artist instance matching the provided id.</entry>
+                            </row>
+                            <row>
+                              <entry>public List&lt;Artist&gt; <emphasis role="bold">list</emphasis>() {..}</entry>
+                              <entry>The list method will return a list of all existing Artist instances.</entry>
+                            </row>
+                            <row>
+                              <entry>public List&lt;Artist&gt; <emphasis role="bold">listPaged</emphasis>(Integer page, Integer size) {..}</entry>
+                              <entry>The listPaged method will return a list containing a subset of existing Artist instances according to the provided page and size parameters.</entry>
+                            </row>
+                            <row>
+                              <entry>public Artist <emphasis role="bold">update</emphasis>(Artist artist){..}</entry>
+                              <entry>The update method will update and already persistent Artist instance and return the persistent instance.</entry>
+                            </row>
+                            <row>
+                              <entry>public void <emphasis role="bold">delete</emphasis>(Long id){..}</entry>
+                              <entry>The delete method will remove an existing Artist instance matching the provided id.</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </informaltable>                       
+                
+            </sect3>
+            <sect3 id="flex-remoting-all-command">
+                <title>flex remoting all</title>
+                <para>
+                    The <code>flex remoting all</code> command is a convenient variation of <code>flex remoting scaffold</code> that will create a Spring-managed <code>@RemotingDestination</code> 
+                    and Flex UI scaffolding for all Java domain entities in a given <code>--package</code> if it does not already exist.  Its usage is shown below:
+                </para>
+                <programlisting>
 roo> <emphasis role="bold">flex remoting all</emphasis> --package ~.service
 Created SRC_MAIN_JAVA/org/example/rootunes/service
 Created SRC_MAIN_JAVA/org/example/rootunes/service/ArtistService.java
@@ -227,100 +227,100 @@ Created ROOT/src/main/flex/org/example/rootunes/presentation/album
 Created ROOT/src/main/flex/org/example/rootunes/presentation/album/AlbumEvent.as
 Created ROOT/src/main/flex/org/example/rootunes/presentation/album/AlbumView.mxml
 Created ROOT/src/main/flex/org/example/rootunes/presentation/album/AlbumForm.mxml
-				</programlisting>
-			</sect3>
+                </programlisting>
+            </sect3>
         </sect2>
         <sect2 id="running-flex-addon-project">
-        	<title>Building and Running a Flex Addon Project</title>
-        	<para>
-        		The project configuration provided by the <code>flex setup</code> command prepares the project for both running and building from the command line, via Maven, or running as a Flex 
-        		and WTP project in SpringSource Tool Suite with the Flash Builder v4 plugin installed.
-        	</para>
-        	<sect3 id="building-with-maven">
-        		<title>Building and Running a Flex Addon Project with Maven</title>
-        		<para>With the necessary configuration for both the Java and Flex source already set up, building the project is as simple as:</para>
-        		<programlisting>
+            <title>Building and Running a Flex Addon Project</title>
+            <para>
+                The project configuration provided by the <code>flex setup</code> command prepares the project for both running and building from the command line, via Maven, or running as a Flex 
+                and WTP project in SpringSource Tool Suite with the Flash Builder v4 plugin installed.
+            </para>
+            <sect3 id="building-with-maven">
+                <title>Building and Running a Flex Addon Project with Maven</title>
+                <para>With the necessary configuration for both the Java and Flex source already set up, building the project is as simple as:</para>
+                <programlisting>
 mvn install
-        		</programlisting>
-        		<para>Similarly, running the project from the command line via the already configured Maven Tomcat plugin is as simple as:</para>
-        		<programlisting>
-mvn tomcat:run        		
-        		</programlisting>
-        		<para>
-        			(Note - The first time you execute these commands with an unpopulated Maven cache, it will take a few minutes to download the necessary dependencies.  Don't worry, after you've done 
-        			this once, the commands execute much faster.)
-        		</para>
-        		<para>Once server startup is complete, you should be able to access the scaffolded Flex UI at <code>http://localhost:8080/{project_name}/{project_name}_scaffold.html</code>  - for example, 
-        		in the sample Spring Roo script bundled with the distribution (and in the above examples), we create a project named "rootunes".  Once the server is started, the Flex UI can be accessed at:</para>
-        		<itemizedlist>
-        			<listitem>
-        				<para><ulink url="http://localhost:8080/rootunes/rootunes_scaffold.html">http://localhost:8080/rootunes/rootunes_scaffold.html</ulink></para>
-        			</listitem>
-        		</itemizedlist>
-        	</sect3>
-        	<sect3 id="building-with-sts">
-        		<title>Importing a Flex Addon Project into SpringSource Tool Suite and Flash Builder</title>
-        		<para>To generate the necessary Eclipse metadata for the project, from the project root you must execute</para>
-        		<programlisting>
+                </programlisting>
+                <para>Similarly, running the project from the command line via the already configured Maven Tomcat plugin is as simple as:</para>
+                <programlisting>
+mvn tomcat:run              
+                </programlisting>
+                <para>
+                    (Note - The first time you execute these commands with an unpopulated Maven cache, it will take a few minutes to download the necessary dependencies.  Don't worry, after you've done 
+                    this once, the commands execute much faster.)
+                </para>
+                <para>Once server startup is complete, you should be able to access the scaffolded Flex UI at <code>http://localhost:8080/{project_name}/{project_name}_scaffold.html</code>  - for example, 
+                in the sample Spring Roo script bundled with the distribution (and in the above examples), we create a project named "rootunes".  Once the server is started, the Flex UI can be accessed at:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para><ulink url="http://localhost:8080/rootunes/rootunes_scaffold.html">http://localhost:8080/rootunes/rootunes_scaffold.html</ulink></para>
+                    </listitem>
+                </itemizedlist>
+            </sect3>
+            <sect3 id="building-with-sts">
+                <title>Importing a Flex Addon Project into SpringSource Tool Suite and Flash Builder</title>
+                <para>To generate the necessary Eclipse metadata for the project, from the project root you must execute</para>
+                <programlisting>
 mvn eclipse:eclipse
-        		</programlisting>
-        		<para>Once that is done, the project can be imported into SpringSource Tool Suite and run on a server via WTP.</para>
-        		<para>  
-		            To import the project, select File->Import...->General->Existing Projects into Workspace and navigate to the
-		            project's root directory and import the Eclipse project found there.  If you have created the project outside of your Eclipse workspace, you should 
-		            check the "Copy projects into workspace" box in the import dialog in order for the generated Flash Builder metadata to work correctly.
-		        </para>
-        	</sect3>
+                </programlisting>
+                <para>Once that is done, the project can be imported into SpringSource Tool Suite and run on a server via WTP.</para>
+                <para>  
+                    To import the project, select File->Import...->General->Existing Projects into Workspace and navigate to the
+                    project's root directory and import the Eclipse project found there.  If you have created the project outside of your Eclipse workspace, you should 
+                    check the "Copy projects into workspace" box in the import dialog in order for the generated Flash Builder metadata to work correctly.
+                </para>
+            </sect3>
         </sect2>
         <sect2 id="sample-script">
-        	<title>Running the Sample Roo Script</title>
-        	<para>
-        		A sample Spring Roo script that generates a complete Flex sample project is included in the Spring BlazeDS Integration distribution.  The script can be found 
-        		at {project_distribution_root}/samples/rootunes.roo
-        	</para>
-        	<para>
-        		The script can be run using Spring Roo's <code>script</code> command.  Create a new project directory, and then start the Roo shell.  From there, you can point 
-        		the <code>script</code> command at the location of the <code>rootunes.roo</code> script.  For example, if you've unzipped the distribution in your home directory, 
-        		the command would be:
-        	</para>
-        	<programlisting>
+            <title>Running the Sample Roo Script</title>
+            <para>
+                A sample Spring Roo script that generates a complete Flex sample project is included in the Spring BlazeDS Integration distribution.  The script can be found 
+                at {project_distribution_root}/samples/rootunes.roo
+            </para>
+            <para>
+                The script can be run using Spring Roo's <code>script</code> command.  Create a new project directory, and then start the Roo shell.  From there, you can point 
+                the <code>script</code> command at the location of the <code>rootunes.roo</code> script.  For example, if you've unzipped the distribution in your home directory, 
+                the command would be:
+            </para>
+            <programlisting>
 roo> script --file ~/spring-flex-1.5.0.M1/samples/rootunes.roo
-        	</programlisting>
-        	<para>
-        		Once the script has completed, you can build and run the example using the steps described above.
-        	</para>
+            </programlisting>
+            <para>
+                Once the script has completed, you can build and run the example using the steps described above.
+            </para>
         </sect2>
         <sect2 id="known-issues">
-        	<title>Known Issues</title>
-        	<para>
-        		As this is just an M1 release, there are a number of known issues and planned functionality yet to be completed.  Some of the more glaring ones are:
-        	</para>
-        	<itemizedlist>
-        		<listitem>
-        			<para>
-        				The scaffolding does not currently generate form fields for editing ONE_TO_MANY or MANY_TO_MANY relationships, though it does generate the correct
-        				field types for the relationship in the ActionScript class, so you are free to add the remaining code for editing such relationships manually.
-        			</para>
-        			<para>
-        				The generated ActionScript entities currently ignore any superclasses or interfaces that the Java type may declare.
-        			</para>
-        			<para>
-        				The ActionScript parser we are using is not able to generate property getters and setters, though it should still parse them without error. 
-        			</para>
-        			<para>
-        				The ActionScript parser does not give us control over the exact placement of fields in the ActionScript, instead always adding them at the bottom of 
-        				the Class declaration.  You are, of course, free to move the field declarations around to your liking without any adverse effects.
-        			</para>
-        			<para>
-        				The round-trip merging functionality for tags in .mxml artifacts is incomplete.  It currently can add new fields, but not update or remove existing ones.  This 
-        				will be remedied through a similar approach as Roo 1.1 uses for .jspx artifacts, only we'll use Flex meta-tags instead of additional tag attributes.
-        			</para>
-        			<para>
-        				The round-trip updating of <code>script</code> blocks in .mxml files is destructive, meaning it will overwrite changes.  This will be remedied in the future 
-        				by applying the same non-destructive ActionScript metadata layer that we use for the .as files.
-        			</para>
-        		</listitem>
-        	</itemizedlist>
-        </sect2>	
+            <title>Known Issues</title>
+            <para>
+                As this is just an M1 release, there are a number of known issues and planned functionality yet to be completed.  Some of the more glaring ones are:
+            </para>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        The scaffolding does not currently generate form fields for editing ONE_TO_MANY or MANY_TO_MANY relationships, though it does generate the correct
+                        field types for the relationship in the ActionScript class, so you are free to add the remaining code for editing such relationships manually.
+                    </para>
+                    <para>
+                        The generated ActionScript entities currently ignore any superclasses or interfaces that the Java type may declare.
+                    </para>
+                    <para>
+                        The ActionScript parser we are using is not able to generate property getters and setters, though it should still parse them without error. 
+                    </para>
+                    <para>
+                        The ActionScript parser does not give us control over the exact placement of fields in the ActionScript, instead always adding them at the bottom of 
+                        the Class declaration.  You are, of course, free to move the field declarations around to your liking without any adverse effects.
+                    </para>
+                    <para>
+                        The round-trip merging functionality for tags in .mxml artifacts is incomplete.  It currently can add new fields, but not update or remove existing ones.  This 
+                        will be remedied through a similar approach as Roo 1.1 uses for .jspx artifacts, only we'll use Flex meta-tags instead of additional tag attributes.
+                    </para>
+                    <para>
+                        The round-trip updating of <code>script</code> blocks in .mxml files is destructive, meaning it will overwrite changes.  This will be remedied in the future 
+                        by applying the same non-destructive ActionScript metadata layer that we use for the .as files.
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </sect2>    
     </sect1>
 </chapter>

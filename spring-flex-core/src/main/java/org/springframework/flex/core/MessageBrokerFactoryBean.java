@@ -153,7 +153,7 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
                 logger.info(VersionInfo.buildMessage());
             }
 
-            // Create endpoints, services, security, and logger on the broker based
+            // Create endpoints, services, security, and log on the broker based
             // on configuration
             messagingConfig.configureBroker(this.messageBroker);
 

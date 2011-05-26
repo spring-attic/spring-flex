@@ -19,8 +19,6 @@ package org.springframework.flex.core.io;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.EntityMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
@@ -39,8 +37,6 @@ import org.springframework.util.Assert;
 
 public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfigProcessor implements BeanFactoryAware, InitializingBean {
 
-    private Log log = LogFactory.getLog(HibernateConfigProcessor.class);
-    
     private Set<ClassMetadata> classMetadata = new HashSet<ClassMetadata>();
     
     private Set<CollectionMetadata> collectionMetadata = new HashSet<CollectionMetadata>();
@@ -84,9 +80,6 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
                     typesToRegister.add(elementType.getReturnedClass());
                     findComponentProperties(((ComponentType)elementType).getSubtypes(), typesToRegister);
                 }
-            }
-            if (log.isInfoEnabled()) {
-                log.info("Hibernate types detected for AMF serialization support: "+typesToRegister.toString());
             }
         }
         return typesToRegister;

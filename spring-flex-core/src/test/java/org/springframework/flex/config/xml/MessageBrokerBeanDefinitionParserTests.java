@@ -158,7 +158,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advisor a = advisedEndpoint.getAdvisors()[0];
             assertTrue("Exception translation advice was not applied", a.getAdvice() instanceof ExceptionTranslationAdvice);
             ExceptionLogger logger = ((ExceptionTranslationAdvice) a.getAdvice()).getExceptionLogger();
-            assertSame("Custom exception logger not found", logger, applicationContext.getBean("exceptionLogger",
+            assertSame("Custom exception log not found", logger, applicationContext.getBean("exceptionLogger",
                 TestExceptionLogger.class));
         }
     }

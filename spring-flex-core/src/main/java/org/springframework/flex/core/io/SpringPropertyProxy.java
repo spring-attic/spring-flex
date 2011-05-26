@@ -19,12 +19,13 @@ package org.springframework.flex.core.io;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanInstantiationException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.core.convert.ConversionService;
@@ -78,11 +79,14 @@ public class SpringPropertyProxy extends BeanProxy {
                     "or a constructor annotated with "+AmfCreator.class.getName());
             SpringPropertyProxy proxy = new SpringPropertyProxy(beanType, useDirectFieldAccess, conversionService);
             
-            //If a concrete type, cache the property names
-            if (!Modifier.isAbstract(beanType.getModifiers())) {
-                Object instance = proxy.createInstance(beanType.getName());
+            try {
+                //If possible, create an instance to introspect and cache the property names               
+                Object instance = BeanUtils.instantiate(beanType);
                 proxy.setPropertyNames(PropertyProxyUtils.findPropertyNames(conversionService, useDirectFieldAccess, instance));
+            } catch(BeanInstantiationException ex) {
+                //Property names can't be cached, but this is ok
             }
+            
             return proxy;
         }
     }

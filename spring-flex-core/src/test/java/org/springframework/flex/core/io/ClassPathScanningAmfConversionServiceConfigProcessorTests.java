@@ -81,5 +81,4 @@ public class ClassPathScanningAmfConversionServiceConfigProcessorTests extends A
         assertNotNull(PropertyProxyRegistry.getProxy(new EmbeddedAddress()));
         assertTrue(PropertyProxyRegistry.getProxy(new EmbeddedAddress()) instanceof SpringPropertyProxy);
     }
-
 }

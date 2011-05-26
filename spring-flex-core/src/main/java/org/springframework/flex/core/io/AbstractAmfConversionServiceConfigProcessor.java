@@ -18,6 +18,8 @@ package org.springframework.flex.core.io;
 
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
@@ -48,6 +50,8 @@ import flex.messaging.io.PropertyProxyRegistry;
  */
 public abstract class AbstractAmfConversionServiceConfigProcessor implements MessageBrokerConfigProcessor, InitializingBean {
 
+    protected final Log log = LogFactory.getLog(getClass());
+    
     private ConversionService conversionService;
     
     private boolean useDirectFieldAccess = false;
@@ -103,6 +107,9 @@ public abstract class AbstractAmfConversionServiceConfigProcessor implements Mes
      */
     protected void registerAmfProxies(ConversionService conversionService, boolean useDirectFieldAccess) {
         Set<Class<?>> typesToRegister = findTypesToRegister();
+        if (log.isInfoEnabled()) {
+            log.info("Types detected for AMF serialization support: "+typesToRegister.toString());
+        }
         for (Class<?> type : typesToRegister) {
             registerPropertyProxy(SpringPropertyProxy.proxyFor(type, useDirectFieldAccess, conversionService));
         }

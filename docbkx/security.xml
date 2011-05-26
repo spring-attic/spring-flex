@@ -4,17 +4,17 @@
     <sect1 id="security-introduction">
         <title>Introduction</title>
         <para>
-        	Spring Security provides an extremely flexible alternative to the container-based security support provided out-of-the-box with 
-        	BlazeDS.  Spring BlazeDS Integration provides explicit integration support for incorporating Spring Security smoothly into your 
-        	Flex/BlazeDS application.  Spring Security provides a wealth of different configuration options, but rather than go into the many
-        	different combinations here, we'll leave most of that to the Spring Security documentation.  
+            Spring Security provides an extremely flexible alternative to the container-based security support provided out-of-the-box with 
+            BlazeDS.  Spring BlazeDS Integration provides explicit integration support for incorporating Spring Security smoothly into your 
+            Flex/BlazeDS application.  Spring Security provides a wealth of different configuration options, but rather than go into the many
+            different combinations here, we'll leave most of that to the Spring Security documentation.  
         </para>
         <sect2 id="spring-security-config">
             <title>A simple Spring Security 3 configuration</title>
-	        <para>
-	        	Here is a simple Spring Security starting configuration for use in conjunction with the explicit integration features 
-	        	provided by Spring BlazeDS Integration that should be a solid starting point for securing a typical Flex application:   
-	        </para>
+            <para>
+                Here is a simple Spring Security starting configuration for use in conjunction with the explicit integration features 
+                provided by Spring BlazeDS Integration that should be a solid starting point for securing a typical Flex application:   
+            </para>
             <programlisting language="xml"><![CDATA[
 <beans:beans xmlns="http://www.springframework.org/schema/security"
     xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -39,24 +39,24 @@
 
 </beans:beans>]]>
         </programlisting>
-			<para>
-				With a typical Flex application, this approach is preferred to using Spring Security's auto-config setup.  Auto-config sets up a number of 
-				features that typically are not needed with a Flex application.  For instance, auto-config sets up a default <code>intercept-url</code> entry that
-				requires authentication for all URL paths within the application.  The <code>FlexAuthenticationEntryPoint</code> will return a proper AMF error 
-				response when such URL's are hit via normal Flex communication processing, but it's invocation should generally be considered a last resort.  Most of 
-				the time, authentication and authorization processing should happen deeper within the BlazeDS request handling process, where there are opportunities to 
-				provide more useful information to the client. (See <link linkend="secured-endpoint-path">
-				Securing BlazeDS Channels by Endpoint URL Path</link> for an alternative to <code>intercept-url</code> that generates proper AMF responses for the Flex client.) 
-				It is recommended to start simple as in this example, and add the additional features as needed.  
-			</para>
-		</sect2>
-		<sect2 id="security-filter-config">
-		    <title>Enabling the Spring Security filter chain in web.xml</title>
-		    <para>
-		        For a typical setup with Spring Security, it is critical to remember to enable 
-		        the Spring Security filter chain by adding the appropriate entry to web.xml:
-		    </para>
-		    <programlisting language="xml"><![CDATA[
+            <para>
+                With a typical Flex application, this approach is preferred to using Spring Security's auto-config setup.  Auto-config sets up a number of 
+                features that typically are not needed with a Flex application.  For instance, auto-config sets up a default <code>intercept-url</code> entry that
+                requires authentication for all URL paths within the application.  The <code>FlexAuthenticationEntryPoint</code> will return a proper AMF error 
+                response when such URL's are hit via normal Flex communication processing, but it's invocation should generally be considered a last resort.  Most of 
+                the time, authentication and authorization processing should happen deeper within the BlazeDS request handling process, where there are opportunities to 
+                provide more useful information to the client. (See <link linkend="secured-endpoint-path">
+                Securing BlazeDS Channels by Endpoint URL Path</link> for an alternative to <code>intercept-url</code> that generates proper AMF responses for the Flex client.) 
+                It is recommended to start simple as in this example, and add the additional features as needed.  
+            </para>
+        </sect2>
+        <sect2 id="security-filter-config">
+            <title>Enabling the Spring Security filter chain in web.xml</title>
+            <para>
+                For a typical setup with Spring Security, it is critical to remember to enable 
+                the Spring Security filter chain by adding the appropriate entry to web.xml:
+            </para>
+            <programlisting language="xml"><![CDATA[
 <filter> 
     <filter-name>springSecurityFilterChain</filter-name> 
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> 
@@ -65,34 +65,34 @@
 <filter-mapping> 
     <filter-name>springSecurityFilterChain</filter-name> 
     <url-pattern>/*</url-pattern> 
-</filter-mapping> 		    
+</filter-mapping>           
 ]]>
             </programlisting>
-		</sect2>
+        </sect2>
         <para>
-        	We will assume the above configuration is in place for the remainder of the examples in this chapter.  For additional details on the many options available in 
-        	configuring and using Spring Security, please refer to that project's <ulink url="http://static.springsource.org/spring-security/site/reference.html">documentation</ulink>.
+            We will assume the above configuration is in place for the remainder of the examples in this chapter.  For additional details on the many options available in 
+            configuring and using Spring Security, please refer to that project's <ulink url="http://static.springsource.org/spring-security/site/reference.html">documentation</ulink>.
         </para>
     </sect1>
     <sect1 id="configuring-security">
-    	<title>Configuring the Spring Security Integration</title>
-    	<para>
-    		Spring Security integration is enabled through the <code>secured</code> child element of the <code>message-broker</code> tag.  The
-    		simplest possible configuration would be:
-    	</para>
-    	<programlisting language="xml"><![CDATA[
+        <title>Configuring the Spring Security Integration</title>
+        <para>
+            Spring Security integration is enabled through the <code>secured</code> child element of the <code>message-broker</code> tag.  The
+            simplest possible configuration would be:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:secured />
+    <flex:secured />
 </flex:message-broker>]]>
-    	</programlisting>
-    	<para>
-    		This enables the basic security features.  A special BlazeDS <code>LoginCommand</code> implementation is automatically installed that
-    		enables ChannelSet.login and ChannelSet.logout requests to integrate with Spring Security's Authorization mechanisms.  Additionally, 
-    		the special <code>LoginCommand</code> enables Spring Security granted authorities to be referenced in BlazeDS XML security constraints.
-    		For example, if we were using a traditional BlazeDS remoting destination defined in remoting-config.xml, we could have something like 
-    		the following:  
-    	</para>
-    	<programlisting language="xml"><![CDATA[
+        </programlisting>
+        <para>
+            This enables the basic security features.  A special BlazeDS <code>LoginCommand</code> implementation is automatically installed that
+            enables ChannelSet.login and ChannelSet.logout requests to integrate with Spring Security's Authorization mechanisms.  Additionally, 
+            the special <code>LoginCommand</code> enables Spring Security granted authorities to be referenced in BlazeDS XML security constraints.
+            For example, if we were using a traditional BlazeDS remoting destination defined in remoting-config.xml, we could have something like 
+            the following:  
+        </para>
+        <programlisting language="xml"><![CDATA[
 <destination id="productService">
     ...
     <security>
@@ -103,208 +103,208 @@
             </roles>
         </security-constraint>
     </security>
-</destination>]]>    	
-    	</programlisting>
-    	<para>
-    		As you can see, we are referencing the "ROLE_USER" authority from our simple Spring Security setup.  The invocation of this remote
-    		destination would cause the provided <code>LoginCommand</code> to be invoked to both verify that the user is logged in and to check
-    		that they have the appropriate role.  Violation of either will result in an exception being thrown by Spring Security.    
-    	</para>
-    	<para>
-    		The provided <code>LoginCommand</code> mimics as much as possible the functionality of Spring Security's 
-    		<code>AbstractAuthenticationProcessingFilter</code> including taking the necessary actions to coordinate Spring Security's additional 
-    		features such as, <ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#remember-me">Remember Me</ulink>, 
-    		<ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#ns-session-fixation">Session Fixation Protection</ulink>, 
-    		and <ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#concurrent-sessions">Concurrent Session Management</ulink> 
-    		upon commencement of the authentication process.  Additionally, it will invoke any configured <code>LogoutHandlers</code> as part of the logout 
-    		process, including both those auto-configured by Spring Security, and any that might be supplied by the application developer. 
-    	</para>
-    	<sect2 id="custom-login-command">
-    		<title>Using a Custom LoginCommand</title>
-	    	<para>
-	    		While the supplied <code>LoginCommand</code> covers many of the most common security configuration scenarios, sometimes it can be useful 
-	    		to provide your own implementation that either extends <code>SpringSecurityLoginCommand</code>, while using the Spring container to wire in 
-	    		any necessary dependencies.  A custom <code>LoginCommand</code> can be supplied via the <code>login-command</code> attribute of the <code>secured</code> 
-	    		tag as follows:
-	    	</para>
-	    	<programlisting language="xml"><![CDATA[
+</destination>]]>       
+        </programlisting>
+        <para>
+            As you can see, we are referencing the "ROLE_USER" authority from our simple Spring Security setup.  The invocation of this remote
+            destination would cause the provided <code>LoginCommand</code> to be invoked to both verify that the user is logged in and to check
+            that they have the appropriate role.  Violation of either will result in an exception being thrown by Spring Security.    
+        </para>
+        <para>
+            The provided <code>LoginCommand</code> mimics as much as possible the functionality of Spring Security's 
+            <code>AbstractAuthenticationProcessingFilter</code> including taking the necessary actions to coordinate Spring Security's additional 
+            features such as, <ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#remember-me">Remember Me</ulink>, 
+            <ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#ns-session-fixation">Session Fixation Protection</ulink>, 
+            and <ulink url="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity-single.html#concurrent-sessions">Concurrent Session Management</ulink> 
+            upon commencement of the authentication process.  Additionally, it will invoke any configured <code>LogoutHandlers</code> as part of the logout 
+            process, including both those auto-configured by Spring Security, and any that might be supplied by the application developer. 
+        </para>
+        <sect2 id="custom-login-command">
+            <title>Using a Custom LoginCommand</title>
+            <para>
+                While the supplied <code>LoginCommand</code> covers many of the most common security configuration scenarios, sometimes it can be useful 
+                to provide your own implementation that either extends <code>SpringSecurityLoginCommand</code>, while using the Spring container to wire in 
+                any necessary dependencies.  A custom <code>LoginCommand</code> can be supplied via the <code>login-command</code> attribute of the <code>secured</code> 
+                tag as follows:
+            </para>
+            <programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:secured login-command="myLoginCommand"/>
+    <flex:secured login-command="myLoginCommand"/>
 </flex:message-broker>
 
 <bean id="myLoginCommand" class="com.foo.app.security.CustomLoginCommand"/>]]>
-	    	</programlisting>
-	    	<para>
-	    		If your custom <code>LoginCommand</code> extends <code>SpringSecurityLoginCommand</code>, the following properties will be autowired by the container if possible:
-	    		<itemizedlist>
-				    <listitem><para>rememberMeServices</para></listitem>
-				    <listitem><para>sessionAuthenticationStrategy</para></listitem>
-				    <listitem><para>logoutHandlers</para></listitem>
-				</itemizedlist>
-	    	</para>
-    	</sect2>
-    	<sect2 id="accessing-user-details">
-    		<title>Accessing User Details</title>
-    		<para>
-    			When using the ChannelSet.login API call from the Flex client with Spring Security integration enabled, the resulting ResponseEvent 
-    			fired client-side upon successful completion will contain additional information that can be inspected about the current user.  The 
-    			name and authorities will be extracted from the Authentication object and added to the body of the response message.  This information, 
-    			for example, can then be used to conditionally display different portions of the UI based on the user's identity and granted roles:
-    		</para>
-    		<programlisting language="java"><![CDATA[
+            </programlisting>
+            <para>
+                If your custom <code>LoginCommand</code> extends <code>SpringSecurityLoginCommand</code>, the following properties will be autowired by the container if possible:
+                <itemizedlist>
+                    <listitem><para>rememberMeServices</para></listitem>
+                    <listitem><para>sessionAuthenticationStrategy</para></listitem>
+                    <listitem><para>logoutHandlers</para></listitem>
+                </itemizedlist>
+            </para>
+        </sect2>
+        <sect2 id="accessing-user-details">
+            <title>Accessing User Details</title>
+            <para>
+                When using the ChannelSet.login API call from the Flex client with Spring Security integration enabled, the resulting ResponseEvent 
+                fired client-side upon successful completion will contain additional information that can be inspected about the current user.  The 
+                name and authorities will be extracted from the Authentication object and added to the body of the response message.  This information, 
+                for example, can then be used to conditionally display different portions of the UI based on the user's identity and granted roles:
+            </para>
+            <programlisting language="java"><![CDATA[
 var token:AsyncToken = myChannelSet.login("jeremy","atlanta");
 token.addResponder(
-	new AsyncResponder(
-  		function(event:ResultEvent, token:Object = null):void {
-  			if (event.result.authorities.indexOf("ROLE_ADMIN") >= 0) {
-  				displayAdminPanel(event.result.name);
-  			} else {
-  				displayUserPanel(event.result.name);
-  			}
-  		},
-  		function(event:FaultEvent, token:Object = null):void {
-  			displayErrorMessage("Login Failed: "+event.fault.faultString);
-  		}
-  	)
-);]]>    	
-    		</programlisting>
-    	</sect2>
-    	<sect2  id="security-exception-translation">
-    		<title>Security Exception Translation</title>
-	    	<para>
-	    		Another feature that is automatically installed when the <code>secured</code> tag is used is automatic exception translation from
-	    		any thrown SpringSecurityException to the proper BlazeDS SecurityException.  The exceptions are caught and translated at the proper 
-	    		point in the execution chain such that it will result in the proper AMF error message being serialized and sent back to the client.
-	    	</para>
-	    	<para>  
-	    		This is alternative to the normal Spring Security behavior where a filter in the chain catches the exception and sends back a
-	    		corresponding HTTP status code.  The problem with sending back HTTP status codes other than 200 is that this causes the Flex client
-	    		to throw a generic and rather unhelpful exception, and often the status code can't be determined from the Flex client.  Sending back 
-	    		specific AMF error messages instead causes a <code>FaultEvent</code> to be thrown client-side that contains the proper 
-	    		security fault code that can then be reasoned on and appropriate action can be taken.  This behavior is equivalent to that of the
-	    		out-of-the-box container-based security mechanisms provided with BlazeDS, so the programming model client-side remains the same.
-	    	</para>
-    	</sect2>
-    	<sect2 id="secured-tag-attributes">
-    		<title><code>secured</code> Configuration Attributes</title>
-	    	<para>
-	    		The <code>secured</code> tag has several additional attributes that allow further customization.
-	    	</para>  
-	    	<para>	
-	    		If you are not using Spring Security's
-	    		default bean ids for the <code>AuthenticationManager</code> or <code>AccessDecisionManager</code>, you can specify your custom bean references
-	    		using the corresponding <code>authentication-manager</code> and <code>access-decision-manager</code> attributes respectively on the <code>secured</code>
-	    		tag.   
-	    	</para>
-	    	<para>
-	    		The configuration of the provided <code>LoginCommand</code> can be further controlled via the <code>secured</code> tag.  The <code>invalidate-flex-session</code>
-	    		attribute controls whether the current Flex session is invalidated when the <code>logout()</code> method is called on the <code>LoginCommand</code>, and 
-	    		defaults to "true" if not specified.  The <code>per-client-authentication</code> attribute turns BlazeDS's per-client authentication mode on when true, and
-	    		defaults to "false" if not specified.  Enabling per-client authentication will cause the Security context to no longer be stored in the session between
-	    		requests and thus will prevent the use of any Spring Security filters that rely on the Security Context being available in the session, but the authentication 
-	    		and authorization integration will otherwise work as expected.  (See the BlazeDS docs for further information on the difference between per-session and per-client 
-	    		authentication.)  	    		
-	    	</para>
-    	</sect2>
+    new AsyncResponder(
+        function(event:ResultEvent, token:Object = null):void {
+            if (event.result.authorities.indexOf("ROLE_ADMIN") >= 0) {
+                displayAdminPanel(event.result.name);
+            } else {
+                displayUserPanel(event.result.name);
+            }
+        },
+        function(event:FaultEvent, token:Object = null):void {
+            displayErrorMessage("Login Failed: "+event.fault.faultString);
+        }
+    )
+);]]>       
+            </programlisting>
+        </sect2>
+        <sect2  id="security-exception-translation">
+            <title>Security Exception Translation</title>
+            <para>
+                Another feature that is automatically installed when the <code>secured</code> tag is used is automatic exception translation from
+                any thrown SpringSecurityException to the proper BlazeDS SecurityException.  The exceptions are caught and translated at the proper 
+                point in the execution chain such that it will result in the proper AMF error message being serialized and sent back to the client.
+            </para>
+            <para>  
+                This is alternative to the normal Spring Security behavior where a filter in the chain catches the exception and sends back a
+                corresponding HTTP status code.  The problem with sending back HTTP status codes other than 200 is that this causes the Flex client
+                to throw a generic and rather unhelpful exception, and often the status code can't be determined from the Flex client.  Sending back 
+                specific AMF error messages instead causes a <code>FaultEvent</code> to be thrown client-side that contains the proper 
+                security fault code that can then be reasoned on and appropriate action can be taken.  This behavior is equivalent to that of the
+                out-of-the-box container-based security mechanisms provided with BlazeDS, so the programming model client-side remains the same.
+            </para>
+        </sect2>
+        <sect2 id="secured-tag-attributes">
+            <title><code>secured</code> Configuration Attributes</title>
+            <para>
+                The <code>secured</code> tag has several additional attributes that allow further customization.
+            </para>  
+            <para>  
+                If you are not using Spring Security's
+                default bean ids for the <code>AuthenticationManager</code> or <code>AccessDecisionManager</code>, you can specify your custom bean references
+                using the corresponding <code>authentication-manager</code> and <code>access-decision-manager</code> attributes respectively on the <code>secured</code>
+                tag.   
+            </para>
+            <para>
+                The configuration of the provided <code>LoginCommand</code> can be further controlled via the <code>secured</code> tag.  The <code>invalidate-flex-session</code>
+                attribute controls whether the current Flex session is invalidated when the <code>logout()</code> method is called on the <code>LoginCommand</code>, and 
+                defaults to "true" if not specified.  The <code>per-client-authentication</code> attribute turns BlazeDS's per-client authentication mode on when true, and
+                defaults to "false" if not specified.  Enabling per-client authentication will cause the Security context to no longer be stored in the session between
+                requests and thus will prevent the use of any Spring Security filters that rely on the Security Context being available in the session, but the authentication 
+                and authorization integration will otherwise work as expected.  (See the BlazeDS docs for further information on the difference between per-session and per-client 
+                authentication.)                
+            </para>
+        </sect2>
     </sect1>
     <sect1 id="endpoint-security">
-    	<title>Configuring Endpoint and Destination Security</title>
-    	<para>
-    		The Spring Security integration allows flexible control over how you secure your application.  You can secure BlazeDS endpoints in
-    		a manner similar to Spring Security's traditional URL security, and you can secure your Spring services using the many existing
-    		object security mechanisms of Spring Security just as if you were writing a traditional web application.
-    	</para>
-    	<sect2 id="secured-channel">
-    		<title>Securing Specific BlazeDS Channels</title>
-    		<para>
-    			You can set security constraints on specific BlazeDS channels using the <code>secured-channel</code> child element of the <code>secured</code> 
-    			tag.  For example:  
-    		</para>
-    		<programlisting language="xml"><![CDATA[
+        <title>Configuring Endpoint and Destination Security</title>
+        <para>
+            The Spring Security integration allows flexible control over how you secure your application.  You can secure BlazeDS endpoints in
+            a manner similar to Spring Security's traditional URL security, and you can secure your Spring services using the many existing
+            object security mechanisms of Spring Security just as if you were writing a traditional web application.
+        </para>
+        <sect2 id="secured-channel">
+            <title>Securing Specific BlazeDS Channels</title>
+            <para>
+                You can set security constraints on specific BlazeDS channels using the <code>secured-channel</code> child element of the <code>secured</code> 
+                tag.  For example:  
+            </para>
+            <programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:secured>
-		<flex:secured-channel channel="my-amf" access="ROLE_USER" />
-	</flex:secured>
+    <flex:secured>
+        <flex:secured-channel channel="my-amf" access="ROLE_USER" />
+    </flex:secured>
 </flex:message-broker>]]>
-    		</programlisting>
-    		<para>
-    			This results in any request being routed to the "my-amf" channel to require the user to be logged in and to have the "ROLE_USER" 
-    			authority.  If either of those is violated, a <code>FaultEvent</code> will be signaled on the client. 
-    		</para>
-    	</sect2>
-    	<sect2 id="secured-endpoint-path">
-    		<title>Securing BlazeDS Channels by Endpoint URL Path</title>
-    		<para>
-    			You can set security constraints on multiple BlazeDS channels at once using the <code>secured-endpoint-path</code> child element 
-    			of the <code>secured</code> tag.  In this case you specify a URL pattern to be secured instead of a specific channel id.  For 
-    			example:  
-    		</para>
-    		<programlisting language="xml"><![CDATA[
+            </programlisting>
+            <para>
+                This results in any request being routed to the "my-amf" channel to require the user to be logged in and to have the "ROLE_USER" 
+                authority.  If either of those is violated, a <code>FaultEvent</code> will be signaled on the client. 
+            </para>
+        </sect2>
+        <sect2 id="secured-endpoint-path">
+            <title>Securing BlazeDS Channels by Endpoint URL Path</title>
+            <para>
+                You can set security constraints on multiple BlazeDS channels at once using the <code>secured-endpoint-path</code> child element 
+                of the <code>secured</code> tag.  In this case you specify a URL pattern to be secured instead of a specific channel id.  For 
+                example:  
+            </para>
+            <programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:secured>
-		<flex:secured-endpoint-path pattern="**/messagebroker/**" access="ROLE_USER" />
-	</flex:secured>
+    <flex:secured>
+        <flex:secured-endpoint-path pattern="**/messagebroker/**" access="ROLE_USER" />
+    </flex:secured>
 </flex:message-broker>]]>
-    		</programlisting>
-    		<para>
-    			This results in any request being routed to any channel whose endpoint URL contains "/messagebroker/" in the path to require the 
-    			user to be logged in and to have the "ROLE_USER" authority.  If either of those is violated, a <code>FaultEvent</code> will be 
-    			signaled on the client. 
-    		</para>
-    	</sect2>
-    	<sect2 id="securing-destinations">
-    		<title>Securing Exported Spring Services</title>
-    		<para>
-    			Earlier in this chapter you saw an example of using the BlazeDS XML configuration to secure a BlazeDS-managed destination.  Since
-    			most of the time you will instead be defining destinations by exporting Spring beans using the <code>remoting-destination</code>tag, an
-    			alternate approach to securing destinations is needed.  This is where Spring Security comes in, as all of its existing authorization
-    			mechanisms should "just work" when security integration is enabled using the <code>secured</code> tag.   
-    		</para>
-	        <note>
-	        	<para>
-	        		When securing destinations as in the examples shown below, it is important to keep in mind that this feature of Spring Security is
-	        		using Spring AOP.  By default, Spring AOP uses JDK dynamic proxies.  As such, if you have need to secure methods on a class that are 
-	        		not part of an interface that the class implements, then you will need either factor those methods out into an interface, or configure 
-	        		Spring to use CGLIB-based proxies instead.  See the following Spring documentation references for futher guidance:
-	        		<orderedlist>
-    					<listitem><para><ulink url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/aop.html#aop-introduction-proxies">AOP Proxies</ulink></para></listitem>
-    					<listitem><para><ulink url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/aop.html#aop-proxying">Proxying Mechanisms</ulink></para></listitem>
-    				</orderedlist>
-	        	</para>
-	        </note>
-    		<para>
-    			One of the major strengths of Spring Security is the multiple levels of granularity it provides you when securing your Spring services.  You can
-    			go from securing your entire service layer in one concise statement:
-    		</para>
-    		<programlisting language="xml"><![CDATA[
+            </programlisting>
+            <para>
+                This results in any request being routed to any channel whose endpoint URL contains "/messagebroker/" in the path to require the 
+                user to be logged in and to have the "ROLE_USER" authority.  If either of those is violated, a <code>FaultEvent</code> will be 
+                signaled on the client. 
+            </para>
+        </sect2>
+        <sect2 id="securing-destinations">
+            <title>Securing Exported Spring Services</title>
+            <para>
+                Earlier in this chapter you saw an example of using the BlazeDS XML configuration to secure a BlazeDS-managed destination.  Since
+                most of the time you will instead be defining destinations by exporting Spring beans using the <code>remoting-destination</code>tag, an
+                alternate approach to securing destinations is needed.  This is where Spring Security comes in, as all of its existing authorization
+                mechanisms should "just work" when security integration is enabled using the <code>secured</code> tag.   
+            </para>
+            <note>
+                <para>
+                    When securing destinations as in the examples shown below, it is important to keep in mind that this feature of Spring Security is
+                    using Spring AOP.  By default, Spring AOP uses JDK dynamic proxies.  As such, if you have need to secure methods on a class that are 
+                    not part of an interface that the class implements, then you will need either factor those methods out into an interface, or configure 
+                    Spring to use CGLIB-based proxies instead.  See the following Spring documentation references for futher guidance:
+                    <orderedlist>
+                        <listitem><para><ulink url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/aop.html#aop-introduction-proxies">AOP Proxies</ulink></para></listitem>
+                        <listitem><para><ulink url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/aop.html#aop-proxying">Proxying Mechanisms</ulink></para></listitem>
+                    </orderedlist>
+                </para>
+            </note>
+            <para>
+                One of the major strengths of Spring Security is the multiple levels of granularity it provides you when securing your Spring services.  You can
+                go from securing your entire service layer in one concise statement:
+            </para>
+            <programlisting language="xml"><![CDATA[
 <global-method-security>
     <protect-pointcut expression="execution(* com.mycompany.*Service.*(..))" access="ROLE_USER"/>
 </global-method-security>]]>
-    		</programlisting>
-    		<para>
-    			to controlling access in a more fine-grained manner at the method layer using XML:
-    		</para>
-    		<programlisting language="xml"><![CDATA[
+            </programlisting>
+            <para>
+                to controlling access in a more fine-grained manner at the method layer using XML:
+            </para>
+            <programlisting language="xml"><![CDATA[
 <bean id="myService" class="com.mycompany.myapp.MyService">
-	<flex:remoting-destination/>
+    <flex:remoting-destination/>
     <security:intercept-methods>
         <security:protect method="set*" access="ROLE_ADMIN" />
         <security:protect method="get*" access="ROLE_ADMIN,ROLE_USER" />
         <security:protect method="doSomething" access="ROLE_USER" />
     </security:intercept-methods>
 </bean>]]>
-    		</programlisting>
-    		<para>
-    			to using a combination of XML and annotations:
-    		</para>
-    		<programlisting language="xml"><![CDATA[
+            </programlisting>
+            <para>
+                to using a combination of XML and annotations:
+            </para>
+            <programlisting language="xml"><![CDATA[
 <security:global-method-security secured-annotations="enabled" jsr250-annotations="enabled"/>
 ...
 <flex:remoting-destination ref="myBankServiceImpl" />
   
 ]]>
-    		</programlisting>
-    		<programlisting language="java"><![CDATA[
+            </programlisting>
+            <programlisting language="java"><![CDATA[
 public interface BankService {
   
     @Secured("IS_AUTHENTICATED_ANONYMOUSLY")
@@ -317,11 +317,11 @@ public interface BankService {
     public Account post(Account account, double amount);
 }
 ]]>
-    		</programlisting>
-    		<para>
-    			to even more fine-grained ACL-based domain object permissions.  For more details on the options available, see the Spring Security
-    			documentation.
-    		</para>
-    	</sect2>
+            </programlisting>
+            <para>
+                to even more fine-grained ACL-based domain object permissions.  For more details on the options available, see the Spring Security
+                documentation.
+            </para>
+        </sect2>
     </sect1>
 </chapter>

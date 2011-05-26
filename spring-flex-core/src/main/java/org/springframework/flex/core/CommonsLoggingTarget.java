@@ -40,9 +40,9 @@ import flex.messaging.log.LogEvent;
  * <b>Underlying Logger Configuration (e.g. log4j.xml)</b>
  * 
  * <pre>
- * &lt;logger name=&quot;blazeds&quot; additivity=&quot;false&quot;&gt;
+ * &lt;log name=&quot;blazeds&quot; additivity=&quot;false&quot;&gt;
  *      &lt;level value=&quot;DEBUG&quot; /&gt;
- *  &lt;/logger&gt;
+ *  &lt;/log&gt;
  * </pre>
  * 
  * <b>Following Categories are available in BlazeDS/LCDS:</b>

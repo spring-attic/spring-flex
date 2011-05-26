@@ -22,8 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.context.ResourceLoaderAware;
@@ -76,8 +74,6 @@ import org.springframework.util.SystemPropertyUtils;
 public class ClassPathScanningAmfConversionServiceConfigProcessor extends AbstractAmfConversionServiceConfigProcessor implements ResourceLoaderAware, BeanClassLoaderAware {
 
     private static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
-
-    protected final Log logger = LogFactory.getLog(getClass());
 
     private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
@@ -188,11 +184,11 @@ public class ClassPathScanningAmfConversionServiceConfigProcessor extends Abstra
             String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
                     resolveBasePackage(basePackage) + "/" + this.resourcePattern;
             Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath);
-            boolean traceEnabled = logger.isTraceEnabled();
-            boolean debugEnabled = logger.isDebugEnabled();
+            boolean traceEnabled = log.isTraceEnabled();
+            boolean debugEnabled = log.isDebugEnabled();
             for (Resource resource : resources) {
                 if (traceEnabled) {
-                    logger.trace("Scanning " + resource);
+                    log.trace("Scanning " + resource);
                 }
                 if (resource.isReadable()) {
                     try {
@@ -200,19 +196,19 @@ public class ClassPathScanningAmfConversionServiceConfigProcessor extends Abstra
                         if (applyFilters(metadataReader)) {
                             if (isCandidateForAmf(metadataReader.getAnnotationMetadata())) {
                                 if (debugEnabled) {
-                                    logger.debug("Identified candidate AMF class: " + resource);
+                                    log.debug("Identified candidate AMF class: " + resource);
                                 }
                                 typesToRegister.add(ClassUtils.forName(metadataReader.getAnnotationMetadata().getClassName(), this.beanClassLoader));
                             }
                             else {
                                 if (debugEnabled) {
-                                    logger.debug("Ignored because not a concrete top-level class: " + resource);
+                                    log.debug("Ignored because not a concrete top-level class: " + resource);
                                 }
                             }
                         }
                         else {
                             if (traceEnabled) {
-                                logger.trace("Ignored because not matching any filter: " + resource);
+                                log.trace("Ignored because not matching any filter: " + resource);
                             }
                         }
                     }
@@ -223,7 +219,7 @@ public class ClassPathScanningAmfConversionServiceConfigProcessor extends Abstra
                 }
                 else {
                     if (traceEnabled) {
-                        logger.trace("Ignored because not readable: " + resource);
+                        log.trace("Ignored because not readable: " + resource);
                     }
                 }
             }

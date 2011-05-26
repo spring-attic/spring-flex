@@ -4,17 +4,17 @@
     <sect1 id="configuration-introduction">
         <title>Introduction</title>
         <para>
-        	The central component that must be configured to use Spring BlazeDS Integration is the <code>MessageBroker</code>.  HTTP messages from the Flex client
-        	will be routed through the Spring <code>DispatcherServlet</code> to the Spring-managed <code>MessageBroker</code>.  There is no need to configure the 
-        	BlazeDS <code>MessageBrokerServlet</code> when using the Spring-managed <code>MessageBroker</code>.
+            The central component that must be configured to use Spring BlazeDS Integration is the <code>MessageBroker</code>.  HTTP messages from the Flex client
+            will be routed through the Spring <code>DispatcherServlet</code> to the Spring-managed <code>MessageBroker</code>.  There is no need to configure the 
+            BlazeDS <code>MessageBrokerServlet</code> when using the Spring-managed <code>MessageBroker</code>.
         </para>
     </sect1>
     <sect1 id="configuration-dispatcherservlet">
-    	<title>Configuring the Spring DispatcherServlet</title>
-    	<para>
-    		The <code>DispatcherServlet</code> must be configured as normal in web.xml to bootstrap a Spring WebApplicationContext. For example:
-    	</para>
-    	<programlisting language="xml"><![CDATA[
+        <title>Configuring the Spring DispatcherServlet</title>
+        <para>
+            The <code>DispatcherServlet</code> must be configured as normal in web.xml to bootstrap a Spring WebApplicationContext. For example:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <!-- The front controller of this Spring Web application, responsible for handling all application requests -->
 <servlet>
     <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
@@ -25,19 +25,19 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
 </servlet>]]>
-		</programlisting>
+        </programlisting>
     </sect1>
     <sect1 id="configuration-messagebroker">
-    	<title>Configuring the MessageBroker in Spring</title>
-    	<para>
-    		A simplified Spring XML config namespace is provided for configuring the MessageBroker in your WebApplicationContext. To use the 
-    		namespace support you must add the schema location in your Spring XML config files.  A typical config will look something like
-    		the following:
-    	</para>
-    	<programlisting language="xml"><![CDATA[
+        <title>Configuring the MessageBroker in Spring</title>
+        <para>
+            A simplified Spring XML config namespace is provided for configuring the MessageBroker in your WebApplicationContext. To use the 
+            namespace support you must add the schema location in your Spring XML config files.  A typical config will look something like
+            the following:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:flex="http://www.springframework.org/schema/flex"
+       xmlns:flex="http://www.springframework.org/schema/flex"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
@@ -46,84 +46,84 @@
            http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
 ...
 </beans>
-]]>    		
-    	</programlisting>
-    	<para>
-    		This makes the Spring BlazeDS Integration configuration tags available under the <code>flex</code> namespace in your configuration files.  The above setup will
-    		be assumed for the rest of the configuration examples to follow.  For the full detail of every attribute and tag available in the config namespace, be sure
-    		to refer to the spring-flex-1.0.xsd as every element and attribute is fully documented there.  Using an XSD-aware XML editor such as the one in Eclipse
-    		should bring up the documentation automatically as you type.
-    	</para>
-    	<para>
-    		At a minimum, the <code>MessageBrokerFactoryBean</code> must be configured as a bean in your Spring WebApplicationContext in order to bootstrap the <code>MessageBroker</code>,
-    		along with a <code>MessageBrokerHandlerAdapter</code> and an appropriate <code>HandlerMapping</code> (usually a <code>SimpleUrlHandlerMapping</code>) to route incoming
-    		requests to the Spring-managed <code>MessageBroker</code>.
-    	</para>
-    	<para> 
-    		These beans will be registered automatically by using the provided <code>message-broker</code> tag in your bean
-    		definition file.  For example, in its simplest form:
-    	</para>
-    	<programlisting language="xml"><![CDATA[
-<flex:message-broker/>]]>    	
-    	</programlisting>
-    	<para>
-    		This will set up the <code>MessageBroker</code> and necessary supporting infrastructure using sensible defaults.  The defaults can be
-    		overriden using the provided attributes of the <code>message-broker</code> tag and its associated child elements.  For example, the
-    		default location of the BlazeDS XML configuration file (/WEB-INF/flex/services-config.xml) can be overridden using the 
-    		<code>services-config-path</code> attribute.  The <code>MessageBrokerFactoryBean</code> uses Spring's <code>ResourceLoader</code> abstraction,
-    		so that typical Spring resource paths may be used.  For example, to load the configuration from the application's classpath: 
-    	</para>
-    	<programlisting language="xml"><![CDATA[
-<flex:message-broker services-config-path="classpath*:services-config.xml"]]>    	
-    	</programlisting>
-    	<para>
-    		The equivalent <code>MessageBrokerFactoryBean</code> definition using vanilla Spring configuration would be:
-    	</para>
-    	<programlisting language="xml"><![CDATA[
+]]>         
+        </programlisting>
+        <para>
+            This makes the Spring BlazeDS Integration configuration tags available under the <code>flex</code> namespace in your configuration files.  The above setup will
+            be assumed for the rest of the configuration examples to follow.  For the full detail of every attribute and tag available in the config namespace, be sure
+            to refer to the spring-flex-1.0.xsd as every element and attribute is fully documented there.  Using an XSD-aware XML editor such as the one in Eclipse
+            should bring up the documentation automatically as you type.
+        </para>
+        <para>
+            At a minimum, the <code>MessageBrokerFactoryBean</code> must be configured as a bean in your Spring WebApplicationContext in order to bootstrap the <code>MessageBroker</code>,
+            along with a <code>MessageBrokerHandlerAdapter</code> and an appropriate <code>HandlerMapping</code> (usually a <code>SimpleUrlHandlerMapping</code>) to route incoming
+            requests to the Spring-managed <code>MessageBroker</code>.
+        </para>
+        <para> 
+            These beans will be registered automatically by using the provided <code>message-broker</code> tag in your bean
+            definition file.  For example, in its simplest form:
+        </para>
+        <programlisting language="xml"><![CDATA[
+<flex:message-broker/>]]>       
+        </programlisting>
+        <para>
+            This will set up the <code>MessageBroker</code> and necessary supporting infrastructure using sensible defaults.  The defaults can be
+            overriden using the provided attributes of the <code>message-broker</code> tag and its associated child elements.  For example, the
+            default location of the BlazeDS XML configuration file (/WEB-INF/flex/services-config.xml) can be overridden using the 
+            <code>services-config-path</code> attribute.  The <code>MessageBrokerFactoryBean</code> uses Spring's <code>ResourceLoader</code> abstraction,
+            so that typical Spring resource paths may be used.  For example, to load the configuration from the application's classpath: 
+        </para>
+        <programlisting language="xml"><![CDATA[
+<flex:message-broker services-config-path="classpath*:services-config.xml"]]>       
+        </programlisting>
+        <para>
+            The equivalent <code>MessageBrokerFactoryBean</code> definition using vanilla Spring configuration would be:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <!-- Bootstraps and exposes the BlazeDS MessageBroker -->
 <bean id="_messageBroker" class="org.springframework.flex.core.MessageBrokerFactoryBean" >
-	<property name="servicesConfigPath" value="classpath*:services-config.xml" />
-</bean>]]>    	
-    	</programlisting>
-    	<para>
-    		Note especially that with the <code>message-broker</code> tag, it is not necessary to assign a custom id to the MessageBroker, and it
-    		is in fact discouraged so that you won't have to continually reference it later.  The only reason you would ever need to provide a custom
-    		id is if you were bootstrapping more than one <code>MessageBroker</code> in the same WebApplicationContext.
-    	</para>
+    <property name="servicesConfigPath" value="classpath*:services-config.xml" />
+</bean>]]>      
+        </programlisting>
+        <para>
+            Note especially that with the <code>message-broker</code> tag, it is not necessary to assign a custom id to the MessageBroker, and it
+            is in fact discouraged so that you won't have to continually reference it later.  The only reason you would ever need to provide a custom
+            id is if you were bootstrapping more than one <code>MessageBroker</code> in the same WebApplicationContext.
+        </para>
     </sect1>
     <sect1 id="configuration-mapping">
-    	<title>Mapping Requests to the MessageBroker</title>
-    	<para>To properly route incoming requests to the Spring-managed <code>MessageBroker</code>, request mapping must be configured in three places:</para>
-    	<orderedlist>
-    		<listitem><para><code>DispatcherServlet</code> mapping in web.xml</para></listitem>
-    		<listitem><para><code>HandlerMapping</code> in the Spring WebApplicationContext</para></listitem>
-    		<listitem><para>Channel definitions in the BlazeDS services-config.xml</para></listitem>
-    	</orderedlist>
-    	<para>
-    		The simplest request mapping scenario is when the Flex front-end is the only client type for the application.  In this case you can just map /messagebroker as the top-level
-    		path for requests.  The mapping in web.xml would be:
-    	</para>
-    	<programlisting language="xml"><![CDATA[
+        <title>Mapping Requests to the MessageBroker</title>
+        <para>To properly route incoming requests to the Spring-managed <code>MessageBroker</code>, request mapping must be configured in three places:</para>
+        <orderedlist>
+            <listitem><para><code>DispatcherServlet</code> mapping in web.xml</para></listitem>
+            <listitem><para><code>HandlerMapping</code> in the Spring WebApplicationContext</para></listitem>
+            <listitem><para>Channel definitions in the BlazeDS services-config.xml</para></listitem>
+        </orderedlist>
+        <para>
+            The simplest request mapping scenario is when the Flex front-end is the only client type for the application.  In this case you can just map /messagebroker as the top-level
+            path for requests.  The mapping in web.xml would be:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <!-- Map all /messagbroker requests to the DispatcherServlet for handling -->
 <servlet-mapping>
     <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
     <url-pattern>/messagebroker/*</url-pattern>
 </servlet-mapping>]]>    
-		</programlisting>
-		<para> 
-    		When using the <code>message-broker</code> config tag, a <code>SimpleUrlHandlerMapping</code> is installed that by default maps all 
-    		incoming <code>DispatcherServlet</code> requests to the Spring-managed <code>MessageBroker</code> using a <code>/*</code>path pattern.  
-    		The default mapping can be overridden by providing one or more <code>mapping</code> child elements.  If you want to provide your own
-    		<code>HandlerMapping</code> bean configuration, you can disable the default using the <code>disable-default-mapping</code> attribute 
-    		of the <code>message-broker</code> tag.  The order of the installed <code>SimpleUrlHandlerMapping</code> can be set (for complex 
-    		scenarios where multiple handler mapping types are installed in the same context) using the <code>mapping-order</code> attribute.
-    	</para>
-		<para>
-			The <code>SimpleUrlHandlerMapping</code> in the Spring WebApplicationContext maps all requests to the Spring-managed <code>MessageBroker</code> via 
-			the <code>MessageBrokerHandlerAdapter</code>.  The default setup installed by the <code>message-broker</code> config tag is equivalent to the
-			following bean definitions:
-		</para>
-		<programlisting language="xml"><![CDATA[
+        </programlisting>
+        <para> 
+            When using the <code>message-broker</code> config tag, a <code>SimpleUrlHandlerMapping</code> is installed that by default maps all 
+            incoming <code>DispatcherServlet</code> requests to the Spring-managed <code>MessageBroker</code> using a <code>/*</code>path pattern.  
+            The default mapping can be overridden by providing one or more <code>mapping</code> child elements.  If you want to provide your own
+            <code>HandlerMapping</code> bean configuration, you can disable the default using the <code>disable-default-mapping</code> attribute 
+            of the <code>message-broker</code> tag.  The order of the installed <code>SimpleUrlHandlerMapping</code> can be set (for complex 
+            scenarios where multiple handler mapping types are installed in the same context) using the <code>mapping-order</code> attribute.
+        </para>
+        <para>
+            The <code>SimpleUrlHandlerMapping</code> in the Spring WebApplicationContext maps all requests to the Spring-managed <code>MessageBroker</code> via 
+            the <code>MessageBrokerHandlerAdapter</code>.  The default setup installed by the <code>message-broker</code> config tag is equivalent to the
+            following bean definitions:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <!-- Maps request paths at /* to the BlazeDS MessageBroker -->
 <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="mappings">
@@ -135,40 +135,40 @@
 
 <!-- Dispatches requests mapped to a MessageBroker -->
 <bean class="org.springframework.flex.servlet.MessageBrokerHandlerAdapter"/>]]>    
-		</programlisting>
-		<para>
-			Channel definitions in the BlazeDS services-config.xml must correspond to the chosen mapping.  For example, to set up a typical AMF channel in 
-			BlazeDS that matches the above mapping strategy:
-		</para>
-		<programlisting language="xml"><![CDATA[
+        </programlisting>
+        <para>
+            Channel definitions in the BlazeDS services-config.xml must correspond to the chosen mapping.  For example, to set up a typical AMF channel in 
+            BlazeDS that matches the above mapping strategy:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
     <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" 
-    	class="flex.messaging.endpoints.AMFEndpoint"/>
+        class="flex.messaging.endpoints.AMFEndpoint"/>
     <properties>
         <polling-enabled>false</polling-enabled>
     </properties>
-</channel-definition>]]> 		
-		</programlisting>
-		<para>
-			See the <ulink url="http://livedocs.adobe.com/blazeds/1/blazeds_devguide/">BlazeDS documentation</ulink> for more information on configuring communication 
-			channels in services-config.xml.
-		</para>
-	</sect1>
-	<sect1 id="flex-and-spring-mvc">
-		<title>Using Flex clients alongside Spring MVC Controllers</title>
-		<para>
-			It could often be the case that your application needs to serve more than just Flex-based clients.  For example, you may be constructing a RESTful architecture
-			that is meant to serve multiple client-types.  You could potentially even be consuming RESTful endpoints using the Flex HTTPService component.  Spring MVC's controller 
-			model provides a simple, flexible means to create such RESTful endpoints. In these sorts of hybrid web application secenarios, 
-			you will need to consider an alternate mapping strategy.  
-		</para>
-		<para>
-			The simplest approach is to use a hierarchical application context with multiple <code>DispatcherServlets</code>.  In this approach, you configure
-			your main application layer (services, security, supporting infrastructure, etc) in a parent context loaded via the <code>ContextLoaderListener</code>, and then
-			configure all aspects of your Spring MVC controllers in one child <code>DispatcherServlet</code> context, and all aspects specific to your Flex client in a separate 
-			child <code>DispatcherServlet</code> context.  This approach could look as follows in web.xml:     
-		</para>
-		<programlisting language="xml"><![CDATA[
+</channel-definition>]]>        
+        </programlisting>
+        <para>
+            See the <ulink url="http://livedocs.adobe.com/blazeds/1/blazeds_devguide/">BlazeDS documentation</ulink> for more information on configuring communication 
+            channels in services-config.xml.
+        </para>
+    </sect1>
+    <sect1 id="flex-and-spring-mvc">
+        <title>Using Flex clients alongside Spring MVC Controllers</title>
+        <para>
+            It could often be the case that your application needs to serve more than just Flex-based clients.  For example, you may be constructing a RESTful architecture
+            that is meant to serve multiple client-types.  You could potentially even be consuming RESTful endpoints using the Flex HTTPService component.  Spring MVC's controller 
+            model provides a simple, flexible means to create such RESTful endpoints. In these sorts of hybrid web application secenarios, 
+            you will need to consider an alternate mapping strategy.  
+        </para>
+        <para>
+            The simplest approach is to use a hierarchical application context with multiple <code>DispatcherServlets</code>.  In this approach, you configure
+            your main application layer (services, security, supporting infrastructure, etc) in a parent context loaded via the <code>ContextLoaderListener</code>, and then
+            configure all aspects of your Spring MVC controllers in one child <code>DispatcherServlet</code> context, and all aspects specific to your Flex client in a separate 
+            child <code>DispatcherServlet</code> context.  This approach could look as follows in web.xml:     
+        </para>
+        <programlisting language="xml"><![CDATA[
 <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
@@ -200,97 +200,97 @@
 <servlet-mapping>
     <servlet-name>spring-mvc</servlet-name>
     <url-pattern>/spring/*</url-pattern>
-</servlet-mapping>]]> 		
-		</programlisting>
-		<para>
-			Here the parent application context is being assembled from a group of files ending in <code>-context.xml</code> contained in the <code>/WEB-INF/spring/</code> directory.  The child 
-			context for the Flex-specific setup would be built (by convention) from <code>/WEB-INF/flex-servlet.xml</code>, and the context for the Spring MVC controllers would be built from <code>/WEB-INF/spring-mvc-servlet.xml</code>.  
-			This approach provides a nice separation of concerns and will allow Spring 2.5+ annotated controllers to work using their default configuration.
-		</para>
-		<para>
-			An alternate approach is to keep things consolidated under one <code>DispatcherServlet</code> context.  The down-side to this approach is that it requires some additional manual configuration, and you 
-			have to modify your mapping approach accordingly, such as mapping <code>/spring/*</code> to the <code>DispatcherServlet</code>, mapping <code>/messagebroker/*</code>
-			to the Spring-managed <code>MessageBroker</code> via the <code>mapping</code> XML namespace config tag, and modifying any BlazeDS channel definitions accordingly.  You would override the default mapping strategy
-			of the <code>message-broker</code> tag as follows:
-		</para>
-		<programlisting language="xml"><![CDATA[
+</servlet-mapping>]]>       
+        </programlisting>
+        <para>
+            Here the parent application context is being assembled from a group of files ending in <code>-context.xml</code> contained in the <code>/WEB-INF/spring/</code> directory.  The child 
+            context for the Flex-specific setup would be built (by convention) from <code>/WEB-INF/flex-servlet.xml</code>, and the context for the Spring MVC controllers would be built from <code>/WEB-INF/spring-mvc-servlet.xml</code>.  
+            This approach provides a nice separation of concerns and will allow Spring 2.5+ annotated controllers to work using their default configuration.
+        </para>
+        <para>
+            An alternate approach is to keep things consolidated under one <code>DispatcherServlet</code> context.  The down-side to this approach is that it requires some additional manual configuration, and you 
+            have to modify your mapping approach accordingly, such as mapping <code>/spring/*</code> to the <code>DispatcherServlet</code>, mapping <code>/messagebroker/*</code>
+            to the Spring-managed <code>MessageBroker</code> via the <code>mapping</code> XML namespace config tag, and modifying any BlazeDS channel definitions accordingly.  You would override the default mapping strategy
+            of the <code>message-broker</code> tag as follows:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <flex:message-broker>
     <flex:mapping pattern="/messagebroker/*" />
-</flex:message-broker>]]> 		
-		</programlisting>
-		<para>
-			and you would have to account for the /spring/* mapping in your BlazeDS channel definitions.  For example:
-		</para>
-		<programlisting language="xml"><![CDATA[
+</flex:message-broker>]]>       
+        </programlisting>
+        <para>
+            and you would have to account for the /spring/* mapping in your BlazeDS channel definitions.  For example:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
     <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/messagebroker/amf" 
-    	class="flex.messaging.endpoints.AMFEndpoint"/>
+        class="flex.messaging.endpoints.AMFEndpoint"/>
     <properties>
         <polling-enabled>false</polling-enabled>
     </properties>
-</channel-definition>]]> 		
-		</programlisting>
-		<para>
-			In addition to setting up the consolidated mapping strategy, you will also have to manually enable the correct <code>HandlerMapping</code> and <code>HandlerAdapter</code> for your Spring MVC controllers 
-			<ulink url="http://static.springframework.org/spring/docs/2.5.x/reference/mvc.html#mvc-ann-setup">as described in the Spring MVC documentation</ulink>, due to the fact that alternate <code>HandlerMapping</code> and 
-			<code>HandlerAdapter</code> beans are configured automatically when using the <code>message-broker</code> tag.
-		</para>
+</channel-definition>]]>        
+        </programlisting>
+        <para>
+            In addition to setting up the consolidated mapping strategy, you will also have to manually enable the correct <code>HandlerMapping</code> and <code>HandlerAdapter</code> for your Spring MVC controllers 
+            <ulink url="http://static.springframework.org/spring/docs/2.5.x/reference/mvc.html#mvc-ann-setup">as described in the Spring MVC documentation</ulink>, due to the fact that alternate <code>HandlerMapping</code> and 
+            <code>HandlerAdapter</code> beans are configured automatically when using the <code>message-broker</code> tag.
+        </para>
     </sect1>
     <sect1 id="client-side-remoting">
-    	<title>Using Spring-managed Destinations from the Flex Client</title>
-    	<para>
-    		Explicit channel definition is a requirement when using dynamic destinations (meaning any destination that is added programmatically and not defined in the BlazeDS 
-    		services-config.xml, i.e. the destinations created by the <code>remoting-destination</code> tag and the various <code>*-message-destination</code> tags).  See 
-    		<ulink url="http://livedocs.adobe.com/blazeds/1/blazeds_devguide/runtimeconfig_5.html#194376">Adobe's documentation</ulink> for more detail.
-    	</para>
-		<para>
-			The only way you don't have to explicitly define the ChannelSet on the client is if
-		</para>
-		<orderedlist>
-			<listitem>
-				<para>you are using explicitly defined destinations in services-config.xml (i.e, not dynamic destinations) AND you compile your flex client against that file</para>
-			</listitem>
-			<listitem>
-				<para>your destination is using the application-wide default channel AND you compile your flex client against that file</para>
-			</listitem>
-		</orderedlist>
-		<para>
-			Even if you weren't using dynamically created destinations it is debatable whether it is a good idea to ever compile your client against services-config.xml, 
-			thus coupling your client to your server configuration. It is often desirable to keep your flex client and your server side code as two distinct modules, 
-			but compiling against services-config.xml blurs the lines between those modules.
-		</para>
-		<para>
-			Our recommendation is that it is generally cleaner to keep the client-side configuration of ChannelSets explicitly contained within the client module. 
-			An excellent way to do this without having to hard-code the URLs in your client code is to use an ActionScript DI framework such as Spring 
-			ActionScript (a Spring Extensions project, formerly known as Prana).
-		</para>
-		<para>
-			If you choose to go the route of compiling your client against services-config.xml, note that you can at least keep the URL information out of the 
-			client code by using ServerConfig.getChannel as described in the referenced BlazeDS documentation.
-    	</para>
+        <title>Using Spring-managed Destinations from the Flex Client</title>
+        <para>
+            Explicit channel definition is a requirement when using dynamic destinations (meaning any destination that is added programmatically and not defined in the BlazeDS 
+            services-config.xml, i.e. the destinations created by the <code>remoting-destination</code> tag and the various <code>*-message-destination</code> tags).  See 
+            <ulink url="http://livedocs.adobe.com/blazeds/1/blazeds_devguide/runtimeconfig_5.html#194376">Adobe's documentation</ulink> for more detail.
+        </para>
+        <para>
+            The only way you don't have to explicitly define the ChannelSet on the client is if
+        </para>
+        <orderedlist>
+            <listitem>
+                <para>you are using explicitly defined destinations in services-config.xml (i.e, not dynamic destinations) AND you compile your flex client against that file</para>
+            </listitem>
+            <listitem>
+                <para>your destination is using the application-wide default channel AND you compile your flex client against that file</para>
+            </listitem>
+        </orderedlist>
+        <para>
+            Even if you weren't using dynamically created destinations it is debatable whether it is a good idea to ever compile your client against services-config.xml, 
+            thus coupling your client to your server configuration. It is often desirable to keep your flex client and your server side code as two distinct modules, 
+            but compiling against services-config.xml blurs the lines between those modules.
+        </para>
+        <para>
+            Our recommendation is that it is generally cleaner to keep the client-side configuration of ChannelSets explicitly contained within the client module. 
+            An excellent way to do this without having to hard-code the URLs in your client code is to use an ActionScript DI framework such as Spring 
+            ActionScript (a Spring Extensions project, formerly known as Prana).
+        </para>
+        <para>
+            If you choose to go the route of compiling your client against services-config.xml, note that you can at least keep the URL information out of the 
+            client code by using ServerConfig.getChannel as described in the referenced BlazeDS documentation.
+        </para>
     </sect1>
     <sect1 id="config-processors">
-    	<title>Advanced MessageBroker Customization</title>
-    	<para>
-    		The initialization of the <code>MessageBroker</code> by the <code>MessageBrokerFactoryBean</code> logically consists of two phases:
-    	</para>
-    	<orderedlist>
-    		<listitem>
-    			<para>Parsing the BlazeDS XML configuration files and applying their settings to a newly created MessageBroker</para>
-    		</listitem>
-    		<listitem>
-    			<para>Starting the MessageBroker and its services</para>
-    		</listitem>
-    	</orderedlist>
-    	<para>
-    		A special <code>MessageBrokerConfigProcessor</code> callback interface is provided that allows custom processing to be done on the
-    		newly created MessageBroker after each phase, before it is made available for request processing.  This interface is used internally
-    		by Spring BlazeDS Integration, but is also available for general use in advanced programmatic introspection and customization of the 
-    		<code>MessageBroker</code>.  A custom <code>MessageBrokerConfigProcessor</code> can be configured as a Spring bean and then registered with the 
-    		<code>MessageBrokerFactoryBean</code> via the <code>config-processor</code> tag.  For example, given a trivial implementation
-    		to log some additional info about the MessageBroker:   		
-    	</para>
-    	<programlisting language="java"><![CDATA[
+        <title>Advanced MessageBroker Customization</title>
+        <para>
+            The initialization of the <code>MessageBroker</code> by the <code>MessageBrokerFactoryBean</code> logically consists of two phases:
+        </para>
+        <orderedlist>
+            <listitem>
+                <para>Parsing the BlazeDS XML configuration files and applying their settings to a newly created MessageBroker</para>
+            </listitem>
+            <listitem>
+                <para>Starting the MessageBroker and its services</para>
+            </listitem>
+        </orderedlist>
+        <para>
+            A special <code>MessageBrokerConfigProcessor</code> callback interface is provided that allows custom processing to be done on the
+            newly created MessageBroker after each phase, before it is made available for request processing.  This interface is used internally
+            by Spring BlazeDS Integration, but is also available for general use in advanced programmatic introspection and customization of the 
+            <code>MessageBroker</code>.  A custom <code>MessageBrokerConfigProcessor</code> can be configured as a Spring bean and then registered with the 
+            <code>MessageBrokerFactoryBean</code> via the <code>config-processor</code> tag.  For example, given a trivial implementation
+            to log some additional info about the MessageBroker:        
+        </para>
+        <programlisting language="java"><![CDATA[
 package com.example;
 
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
@@ -300,160 +300,160 @@ import flex.messaging.services.RemotingService;
 
 public class MyDestinationCountingConfigProcessor implements MessageBrokerConfigProcessor {
 
-	public MessageBroker processAfterStartup(MessageBroker broker) {
-		RemotingService remotingService = 
-			(RemotingService) broker.getServiceByType(RemotingService.class.getName());
-		if (remotingService.isStarted()) {
-			System.out.println("The Remoting Service has been started with "
-					+remotingService.getDestinations().size()+" Destinations.");
-		}
-		return broker;
-	}
+    public MessageBroker processAfterStartup(MessageBroker broker) {
+        RemotingService remotingService = 
+            (RemotingService) broker.getServiceByType(RemotingService.class.getName());
+        if (remotingService.isStarted()) {
+            System.out.println("The Remoting Service has been started with "
+                    +remotingService.getDestinations().size()+" Destinations.");
+        }
+        return broker;
+    }
 
-	public MessageBroker processBeforeStartup(MessageBroker broker) {
-		return broker;
-	}
-}]]> 		
-		</programlisting>
-		<para>
-			This class could be configured and registered with the <code>MessageBroker</code> as follows:
-		</para>
-		<programlisting language="xml"><![CDATA[
+    public MessageBroker processBeforeStartup(MessageBroker broker) {
+        return broker;
+    }
+}]]>        
+        </programlisting>
+        <para>
+            This class could be configured and registered with the <code>MessageBroker</code> as follows:
+        </para>
+        <programlisting language="xml"><![CDATA[
 <flex:message-broker>
-	<flex:config-processor ref="myConfigProcessor" />
+    <flex:config-processor ref="myConfigProcessor" />
 </flex:message-broker>
 
 <bean id="myConfigProcessor" class="com.example.MyDestinationCountingConfigProcessor" />]]>
-		</programlisting>
+        </programlisting>
     </sect1>
     <sect1 id="exception-translators">
-    	<title>Using Custom Exception Translators</title>
-    	<para>
-    		In order to propagate useful information back to the Flex client when an exception occurs on the server, 
-    		the original exception must be translated into an instance of <code>flex.messaging.MessageException</code>.
-    		If special translation logic is not applied, a generic "Server.Processing" error will propagate to the client that
-    		doesn't give the client the chance to reason on the real cause of the error to take appropriate action.  Special 
-    		exception translators are configured by default for transforming Spring Security exceptions into an appropriate 
-    		<code>MessageException</code>, but it could also be useful to provide custom translation for your own application-level exceptions.    
-    	</para>
-    	<para>
-    		Custom exception translation logic can be provided through implementations of the <code>org.springframework.flex.core.ExceptionTranslator</code>
-    		interface.  These implementations must be configured as Spring beans and then registered through the XML configuration namespace as follows:  
-    	</para>
-    	<programlisting language="xml"><![CDATA[
+        <title>Using Custom Exception Translators</title>
+        <para>
+            In order to propagate useful information back to the Flex client when an exception occurs on the server, 
+            the original exception must be translated into an instance of <code>flex.messaging.MessageException</code>.
+            If special translation logic is not applied, a generic "Server.Processing" error will propagate to the client that
+            doesn't give the client the chance to reason on the real cause of the error to take appropriate action.  Special 
+            exception translators are configured by default for transforming Spring Security exceptions into an appropriate 
+            <code>MessageException</code>, but it could also be useful to provide custom translation for your own application-level exceptions.    
+        </para>
+        <para>
+            Custom exception translation logic can be provided through implementations of the <code>org.springframework.flex.core.ExceptionTranslator</code>
+            interface.  These implementations must be configured as Spring beans and then registered through the XML configuration namespace as follows:  
+        </para>
+        <programlisting language="xml"><![CDATA[
 <!-- Custom exception translator configured as a Spring bean -->
 <bean id="myExceptionTranslator" class="com.foo.app.MyBusinessExceptionTranslator"/>
 
 <flex:message-broker>
-	<flex:exception-translator ref="myExceptionTranslator"/>
-</flex:message-broker>]]>    		
-    	</programlisting>
+    <flex:exception-translator ref="myExceptionTranslator"/>
+</flex:message-broker>]]>           
+        </programlisting>
     </sect1>
-	<sect1 id="message-interceptors">
-		<title>Using Custom Message Interceptors</title>
-		<para>
-			Custom message interceptors may be used to apply special processing logic to incoming and outgoing AMF messages in 
-			their de-serialized Java form.  For example, an interceptor can be used to inspect the contents of the incoming message,
-			or to add extra information to the outgoing message.    
-		</para>
-		<para>
-			Custom message processing logic is provided through implementations of the <code>org.springframework.flex.core.MessageInterceptor</code> 
-			interface.  These implementations must be configured as Spring beans and then registered through the XML configuration namespace as follows:  
-		</para>
-		<programlisting language="xml"><![CDATA[
+    <sect1 id="message-interceptors">
+        <title>Using Custom Message Interceptors</title>
+        <para>
+            Custom message interceptors may be used to apply special processing logic to incoming and outgoing AMF messages in 
+            their de-serialized Java form.  For example, an interceptor can be used to inspect the contents of the incoming message,
+            or to add extra information to the outgoing message.    
+        </para>
+        <para>
+            Custom message processing logic is provided through implementations of the <code>org.springframework.flex.core.MessageInterceptor</code> 
+            interface.  These implementations must be configured as Spring beans and then registered through the XML configuration namespace as follows:  
+        </para>
+        <programlisting language="xml"><![CDATA[
 <!-- Custom message interceptor configured as a Spring bean -->
 <bean id="myMessageInterceptor" class="com.foo.app.MyMessageInterceptor"/>
 
 <flex:message-broker>
-	<flex:message-interceptor ref="myMessageInterceptor"/>
-</flex:message-broker>]]>    		
-    	</programlisting>
-    	<sect2 id="resource-handling-message-interceptors">
-    	   <title>Resource Handling with Custom Message Interceptors</title>
-    	   <para>
-    	       For housekeeping purposes, an additional <code>org.springframework.flex.core.ResourceHandlingMessageInterceptor</code> interface
-    	       is available to use.  Interceptors that implement this extended interface receive an additional guaranteed callback after message processing is completed,
-    	       whether processing was successful or failed due to an exception being thrown by the Endpoint.  This allows the interceptor to clean up any resources that 
-    	       it may have been using.  This interface extends the basic <code>MessageInterceptor</code> interface, thus it is configured the same way using the 
-    	       <code>message-interceptor</code> tag.
-    	   </para>
-    	</sect2>
-    	<sect2 id="message-interception-order">
-    		<title>Customizing the Message Interceptor Chain</title>
-    		<para>
-    			The framework installs a number of predefined <code>MessageInterceptors</code> that are automatically configured through the use of the configuration 
-    			namespace.  These interceptors are configured in a specific order, and any custom interceptors are by default added to the beginning of the chain, in the 
-    			order that their <code>message-interceptor</code> elements appear.  It is possible to specify an explicit order via the <code>position</code>, <code>before</code>, 
-    			and <code>after</code> attributes.  The <code>position</code> attribute allows the user to *override* the framework-supplied interceptor at that position, or to 
-    			simply specify that the interceptor should be at the beginning or end of the chain by using the <code>FIRST</code> and <code>LAST</code> values respectively. The 
-    			<code>before</code> and <code>after</code> attributes allow specifying position *relative to* the framework-supplied filters.
-     		</para>
-     		<para>
-     			The ordering and implementation of the framework-supplied filters is shown in the table below.
-     			<table id="interceptor-stack">
-					<title>Standard Interceptor Aliases and Ordering</title>
-					<tgroup cols="3" align="left">
-						<colspec colnum="1" colname="col1" colwidth="2*" />
-						<colspec colnum="2" colname="col2" colwidth="2*" />
-						<colspec colnum="3" colname="col3" colwidth="1*" />
-						<thead>
-							<row>
-								<entry align="center">Alias</entry>
-								<entry align="center">MessageInterceptor Class</entry>
-								<entry align="center">Namespace Element or Attribute</entry>
-							</row>
-						</thead>
-						<tbody>
-							<row>
-								<entry> PER_CLIENT_AUTH_INTERCEPTOR</entry>
-								<entry>
-									<literal>PerClientAuthenticationInterceptor</literal>
-								</entry>
-								<entry>
-									<literal>message-broker/secured@per-client-authentication</literal>
-								</entry>
-							</row>
-							<row>
-								<entry> LOGIN_MESSAGE_INTERCEPTOR</entry>
-								<entry>
-									<literal>LoginMessageInterceptor</literal>
-								</entry>
-								<entry>
-									<literal>message-broker/secured</literal>
-								</entry>
-							</row>
-							<row>
-								<entry> ENDPOINT_INTERCEPTOR</entry>
-								<entry>
-									<literal>EndpointInterceptor</literal>
-								</entry>
-								<entry>
-									<literal>message-broker/secured/secured-endpoint-path or message-broker/secured/secured-channel</literal>
-								</entry>
-							</row>
-						</tbody>
-					</tgroup>
-				</table>
-     		</para>
-    	</sect2>
-	</sect1>
-	<sect1 id="service-adapters">
-		<title>Providing Custom Service Adapters</title>
-		<para>
-			Using the XML config namespace automatically installs the needed implementations of <code>flex.messaging.services.ServiceAdapter</code>
-			for use with the Remoting and Message services.  Third-party adapters (such as those provided by the dpHibernate or Gilead projects) can
-			be configured using the <code>org.springframework.flex.core.ManageableComponentFactoryBean</code>.  This factory bean implementation is
-			able to process arbitrarily complex configuration metadata supplied in JSON format (instead of arbitrarily complex XML as in the native
-			BlazeDS configuration) and honors the lifecycle semantics (such as proper invocation of the <code>initialize</code> method) of the 
-			ManageableComponent.  These custom adapters may be used by Spring-managed Remoting and Message destinations by either setting its id as the 
-			default for the Remoting or Message service, or by setting the <code>service-adapter</code> attribute for a specific destination (see the 
-			Remoting and Messaging chapters for further detail).
-		</para>
-		<para>
-			For example, to use the special adapter provided by dpHibernate as the default adapter with the Remoting service, the configuration 
-			would be similar to the following:      
-		</para>
-		<programlisting language="xml"><![CDATA[
+    <flex:message-interceptor ref="myMessageInterceptor"/>
+</flex:message-broker>]]>           
+        </programlisting>
+        <sect2 id="resource-handling-message-interceptors">
+           <title>Resource Handling with Custom Message Interceptors</title>
+           <para>
+               For housekeeping purposes, an additional <code>org.springframework.flex.core.ResourceHandlingMessageInterceptor</code> interface
+               is available to use.  Interceptors that implement this extended interface receive an additional guaranteed callback after message processing is completed,
+               whether processing was successful or failed due to an exception being thrown by the Endpoint.  This allows the interceptor to clean up any resources that 
+               it may have been using.  This interface extends the basic <code>MessageInterceptor</code> interface, thus it is configured the same way using the 
+               <code>message-interceptor</code> tag.
+           </para>
+        </sect2>
+        <sect2 id="message-interception-order">
+            <title>Customizing the Message Interceptor Chain</title>
+            <para>
+                The framework installs a number of predefined <code>MessageInterceptors</code> that are automatically configured through the use of the configuration 
+                namespace.  These interceptors are configured in a specific order, and any custom interceptors are by default added to the beginning of the chain, in the 
+                order that their <code>message-interceptor</code> elements appear.  It is possible to specify an explicit order via the <code>position</code>, <code>before</code>, 
+                and <code>after</code> attributes.  The <code>position</code> attribute allows the user to *override* the framework-supplied interceptor at that position, or to 
+                simply specify that the interceptor should be at the beginning or end of the chain by using the <code>FIRST</code> and <code>LAST</code> values respectively. The 
+                <code>before</code> and <code>after</code> attributes allow specifying position *relative to* the framework-supplied filters.
+            </para>
+            <para>
+                The ordering and implementation of the framework-supplied filters is shown in the table below.
+                <table id="interceptor-stack">
+                    <title>Standard Interceptor Aliases and Ordering</title>
+                    <tgroup cols="3" align="left">
+                        <colspec colnum="1" colname="col1" colwidth="2*" />
+                        <colspec colnum="2" colname="col2" colwidth="2*" />
+                        <colspec colnum="3" colname="col3" colwidth="1*" />
+                        <thead>
+                            <row>
+                                <entry align="center">Alias</entry>
+                                <entry align="center">MessageInterceptor Class</entry>
+                                <entry align="center">Namespace Element or Attribute</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry> PER_CLIENT_AUTH_INTERCEPTOR</entry>
+                                <entry>
+                                    <literal>PerClientAuthenticationInterceptor</literal>
+                                </entry>
+                                <entry>
+                                    <literal>message-broker/secured@per-client-authentication</literal>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry> LOGIN_MESSAGE_INTERCEPTOR</entry>
+                                <entry>
+                                    <literal>LoginMessageInterceptor</literal>
+                                </entry>
+                                <entry>
+                                    <literal>message-broker/secured</literal>
+                                </entry>
+                            </row>
+                            <row>
+                                <entry> ENDPOINT_INTERCEPTOR</entry>
+                                <entry>
+                                    <literal>EndpointInterceptor</literal>
+                                </entry>
+                                <entry>
+                                    <literal>message-broker/secured/secured-endpoint-path or message-broker/secured/secured-channel</literal>
+                                </entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </table>
+            </para>
+        </sect2>
+    </sect1>
+    <sect1 id="service-adapters">
+        <title>Providing Custom Service Adapters</title>
+        <para>
+            Using the XML config namespace automatically installs the needed implementations of <code>flex.messaging.services.ServiceAdapter</code>
+            for use with the Remoting and Message services.  Third-party adapters (such as those provided by the dpHibernate or Gilead projects) can
+            be configured using the <code>org.springframework.flex.core.ManageableComponentFactoryBean</code>.  This factory bean implementation is
+            able to process arbitrarily complex configuration metadata supplied in JSON format (instead of arbitrarily complex XML as in the native
+            BlazeDS configuration) and honors the lifecycle semantics (such as proper invocation of the <code>initialize</code> method) of the 
+            ManageableComponent.  These custom adapters may be used by Spring-managed Remoting and Message destinations by either setting its id as the 
+            default for the Remoting or Message service, or by setting the <code>service-adapter</code> attribute for a specific destination (see the 
+            Remoting and Messaging chapters for further detail).
+        </para>
+        <para>
+            For example, to use the special adapter provided by dpHibernate as the default adapter with the Remoting service, the configuration 
+            would be similar to the following:      
+        </para>
+        <programlisting language="xml"><![CDATA[
 <bean id="hibernate-object" class="org.springframework.flex.core.ManageableComponentFactoryBean">
 <constructor-arg value="net.digitalprimates.persistence.hibernate.HibernateAdapter"/>
     <property name="properties">
@@ -470,8 +470,8 @@ public class MyDestinationCountingConfigProcessor implements MessageBrokerConfig
 </bean> 
 
 <flex:message-broker>
-	<flex:remoting-service default-adapter-id="hibernate-object" />
-</flex:message-broker>]]>    		
-    	</programlisting>
-	</sect1>
+    <flex:remoting-service default-adapter-id="hibernate-object" />
+</flex:message-broker>]]>           
+        </programlisting>
+    </sect1>
 </chapter>
