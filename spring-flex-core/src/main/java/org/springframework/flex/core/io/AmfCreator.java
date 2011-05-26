@@ -21,6 +21,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicates the constructor to be used when deserializing a type from AMF.  Generally used with classes 
+ * that lack a default no-arg constructor.  The annotated constructor's parameters must also be annotated 
+ * with {@link AmfProperty}.
+ * 
+ * @see AmfProperty
+ * 
+ * @author Jeremy Grelle
+ */
 @Target(ElementType.CONSTRUCTOR)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AmfCreator {

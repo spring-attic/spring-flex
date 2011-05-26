@@ -17,27 +17,31 @@
 package org.springframework.flex.core.io;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.ConfigurablePropertyAccessor;
 import org.springframework.beans.PropertyAccessor;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.core.convert.support.GenericConversionService;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ReflectionUtils.FieldCallback;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 import flex.messaging.io.BeanProxy;
+import flex.messaging.io.PropertyProxy;
+import flex.messaging.io.amf.ASObject;
 
 /**
- * Spring {@link ConversionService}-aware {@link BeanProxy} that seeks to find an appropriate converter for 
- * a given bean property during serialization and deserialization.
+ * Spring {@link ConversionService}-aware {@link PropertyProxy} that seeks to find an appropriate converter for 
+ * a given bean property during AMF serialization and deserialization.
+ * 
+ * <p>
+ * Uses Spring's {@link PropertyAccessor} interface for all property access, allowing for optional direct field access
+ * on the objects being serialized/deserialized.
  *
  * @author Jeremy Grelle
  */
@@ -47,37 +51,90 @@ public class SpringPropertyProxy extends BeanProxy {
     
     private static final long serialVersionUID = 5374027421774405789L;
     
-    private ConversionService conversionService = new GenericConversionService();
+    private List<String> propertyNames;
     
-    private Class<?> beanType;
+    protected final ConversionService conversionService;
     
-    private final boolean useDirectFieldAccess;
+    protected final Class<?> beanType;
     
-    //TODO - Cache metadata for a given type
+    protected final boolean useDirectFieldAccess;
     
-    public SpringPropertyProxy(Class<?> beanType, boolean useDirectFieldAccess) {
+    /**
+     * Factory method for creating correctly configured Spring property proxy instances.
+     * @param beanType the type being introspected
+     * @param useDirectFieldAccess whether to access fields directly
+     * @param conversionService the conversion service to use for property type conversion
+     * @return
+     */
+    public static SpringPropertyProxy proxyFor(Class<?> beanType, boolean useDirectFieldAccess, ConversionService conversionService) {
+        if(PropertyProxyUtils.hasAmfCreator(beanType)) {
+            SpringPropertyProxy proxy = new DelayedWriteSpringPropertyProxy(beanType, useDirectFieldAccess, conversionService);
+            return proxy;
+        } else {
+            Assert.isTrue(ClassUtils.hasConstructor(beanType), "Failed to create SpringPropertyProxy for "+beanType.getName()+" - Classes mapped " +
+                    "for deserialization from AMF must have either a no-arg default constructor, " +
+                    "or a constructor annotated with "+AmfCreator.class.getName());
+            SpringPropertyProxy proxy = new SpringPropertyProxy(beanType, useDirectFieldAccess, conversionService);
+            Object instance = proxy.createInstance(beanType.getName());
+            proxy.setPropertyNames(PropertyProxyUtils.findPropertyNames(conversionService, useDirectFieldAccess, instance));
+            return proxy;
+        }
+    }
+    
+    private SpringPropertyProxy(Class<?> beanType, boolean useDirectFieldAccess, ConversionService conversionService){
         super(null);
         this.beanType = beanType;
         this.useDirectFieldAccess = useDirectFieldAccess;
+        this.conversionService = conversionService;
     }
     
+    /**
+     * The type for which this {@link PropertyProxy} is registered.
+     * @return the bean type
+     */
+    public Class<?> getBeanType() {
+        return beanType;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * Delegates to the configured {@link ConversionService} to potentially convert the instance to the registered bean type.
+     */
     @Override
-    public List<String> getPropertyNames(Object instance) {
-        if (this.useDirectFieldAccess) {
-            return getFieldNames(instance);
+    public Object getInstanceToSerialize(Object instance) {
+        if (this.conversionService.canConvert(instance.getClass(), this.beanType)) {
+            return this.conversionService.convert(instance, this.beanType);
         } else {
-            return getBeanPropertyNames(instance);
+            return instance;
         }
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Class<?> getType(Object instance, String propertyName) {
-        return getPropertyAccessor(instance).getPropertyType(propertyName);
+    public List<String> getPropertyNames(Object instance) {
+        Assert.notNull(this.propertyNames, "Property names cannot be null.");
+        return this.propertyNames;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Class<?> getType(Object instance, String propertyName) {
+        return PropertyProxyUtils.getPropertyAccessor(this.conversionService, this.useDirectFieldAccess, instance).getPropertyType(propertyName);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * Delegates to the configured {@link ConversionService} to potentially convert the current value to the actual type of the property.
+     */
     @Override
     public Object getValue(Object instance, String propertyName) {
-        PropertyAccessor accessor = getPropertyAccessor(instance);
+        PropertyAccessor accessor = PropertyProxyUtils.getPropertyAccessor(this.conversionService, this.useDirectFieldAccess, instance);
         Object value = accessor.getPropertyValue(propertyName);
         if(log.isDebugEnabled()) {
             getType(instance, propertyName);
@@ -92,55 +149,33 @@ public class SpringPropertyProxy extends BeanProxy {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isWriteOnly(Object instance, String propertyName) {
-        PropertyAccessor accessor = getPropertyAccessor(instance);
+        PropertyAccessor accessor = PropertyProxyUtils.getPropertyAccessor(this.conversionService, this.useDirectFieldAccess, instance);
         return isReadIgnored(instance, propertyName) || (!accessor.isReadableProperty(propertyName) && accessor.isWritableProperty(propertyName));
     }
-
+    
+    /**
+     * {@inheritDoc}
+     * 
+     *  Delegates to the configured {@link ConversionService} to potentially convert the value to the actual type of the property.
+     */
     @Override
     public void setValue(Object instance, String propertyName, Object value) {
         if (!isWriteIgnored(instance, propertyName)) {
-            getPropertyAccessor(instance).setPropertyValue(propertyName, value);
+            PropertyProxyUtils.getPropertyAccessor(this.conversionService, this.useDirectFieldAccess, instance).setPropertyValue(propertyName, value);
         }
     }
-    
-    public ConversionService getConversionService() {
-        return this.conversionService;
+
+    private void setPropertyNames(List<String> propertyNames) {
+        this.propertyNames = propertyNames;
     }
-    
-    public void setConversionService(ConversionService conversionService) {
-        this.conversionService = conversionService;
-    }
-    
-    private List<String> getBeanPropertyNames(Object instance) {
-        List<String> names = new ArrayList<String>(); 
-        for (PropertyDescriptor pd : ((BeanWrapper)getPropertyAccessor(instance)).getPropertyDescriptors()) {
-            if (!pd.getName().equals("class")) {
-                names.add(pd.getName());
-            }
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Property names for "+instance+" : "+names);
-        }
-        return names;
-    }
-    
-    private List<String> getFieldNames(Object instance) {
-        final List<String> names = new ArrayList<String>();
-        ReflectionUtils.doWithFields(instance.getClass(), new FieldCallback() {
-            public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-                names.add(field.getName());
-            }
-        });
-        if (log.isDebugEnabled()) {
-            log.debug("Property names for "+instance+" : "+names);
-        }
-        return names;
-    }
-    
+
     private boolean isReadIgnored(Object instance, String propertyName) {
-        PropertyAccessor accessor = getPropertyAccessor(instance);
+        PropertyAccessor accessor = PropertyProxyUtils.getPropertyAccessor(this.conversionService, this.useDirectFieldAccess, instance);
         if (this.useDirectFieldAccess) {
             AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onSerialization();
@@ -155,7 +190,7 @@ public class SpringPropertyProxy extends BeanProxy {
     }
     
     private boolean isWriteIgnored(Object instance, String propertyName) {
-        PropertyAccessor accessor = getPropertyAccessor(instance);
+        PropertyAccessor accessor = PropertyProxyUtils.getPropertyAccessor(this.conversionService, this.useDirectFieldAccess, instance);
         if (this.useDirectFieldAccess) {
             AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onDeserialization();
@@ -169,26 +204,111 @@ public class SpringPropertyProxy extends BeanProxy {
         }
     }
     
-    private PropertyAccessor getPropertyAccessor(Object instance) {
-        ConfigurablePropertyAccessor accessor = null;
-        if (this.useDirectFieldAccess) {
-            accessor = PropertyAccessorFactory.forDirectFieldAccess(instance);
-        } else {
-            accessor = PropertyAccessorFactory.forBeanPropertyAccess(instance);
-        }
-        accessor.setConversionService(this.conversionService);
-        return accessor;
-    }
+    /**
+     * Extension to {@link SpringPropertyProxy} that allow for use of classes that lack default no-arg constructors and instead have
+     * a constructor annotated with {@link AmfCreator}.
+     *
+     * @author Jeremy Grelle
+     */
+    static final class DelayedWriteSpringPropertyProxy extends SpringPropertyProxy {
 
-    public Object getInstanceToSerialize(Object instance) {
-        if (this.conversionService.canConvert(instance.getClass(), this.beanType)) {
-            return this.conversionService.convert(instance, this.beanType);
-        } else {
-            return instance;
+        private static final long serialVersionUID = -5330475591068260312L;
+        
+        private final Constructor<?> amfConstructor;
+        private final List<String> paramNames = new ArrayList<String>();
+        
+        private DelayedWriteSpringPropertyProxy(Class<?> beanType, boolean useDirectFieldAccess, ConversionService conversionService) {
+            super(beanType, useDirectFieldAccess, conversionService);
+            this.amfConstructor = findAmfConstructor();
         }
-    }
-    
-    public Class<?> getBeanType() {
-        return beanType;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Object createInstance(String className) {
+            Assert.isTrue(this.beanType.getName().equals(className), "Asked to create instance of an unknown type.");
+            return new ASObject(className);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<String> getPropertyNames(Object instance) {
+            return PropertyProxyUtils.findPropertyNames(this.conversionService, this.useDirectFieldAccess, instance);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Object instanceComplete(Object instance) {
+            Assert.isInstanceOf(ASObject.class, instance, "Expected an instance of "+ASObject.class.getName());
+            ASObject sourceInstance = (ASObject) instance;
+            Assert.notNull(sourceInstance.getType(), "Expected an explicit type to be set on the ASObject instance passed to this PropertyProxy.");
+            Object targetInstance = createTargetInstance(sourceInstance);
+            applyPropertyValues(sourceInstance, targetInstance);
+            return targetInstance;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        public void setValue(Object instance, String propertyName, Object value) {
+            if (instance instanceof ASObject) {
+                ((ASObject) instance).put(propertyName, value);
+            } else {
+                super.setValue(instance, propertyName, value);
+            }
+        }
+
+        private Object createTargetInstance(ASObject sourceInstance) {
+            Object[] params = new Object[this.paramNames.size()];
+            for (int i=0; i<params.length; i++) {
+                Object value = sourceInstance.remove(this.paramNames.get(i));
+                TypeDescriptor targetType = TypeDescriptor.valueOf(this.amfConstructor.getParameterTypes()[i]);
+                TypeDescriptor sourceType = value == null ? targetType : TypeDescriptor.valueOf(value.getClass());
+                if (this.conversionService.canConvert(sourceType, targetType)) {
+                    value = this.conversionService.convert(value, sourceType, targetType);
+                }
+                params[i] = value;
+            }
+            try {
+                return this.amfConstructor.newInstance(params);
+            } catch (Exception ex) {
+                throw new IllegalArgumentException("Failed to invoke constructor marked with "+AmfCreator.class.getName()+" for type "+this.beanType, ex);
+            }
+        }
+        
+        private Object applyPropertyValues(ASObject sourceInstance, Object targetInstance) {
+            for (Object property : sourceInstance.keySet()) {
+                setValue(targetInstance, property.toString(), sourceInstance.get(property));
+            }
+            return targetInstance;
+        }
+        
+        private Constructor<?> findAmfConstructor() {
+            for (Constructor<?> c : this.beanType.getConstructors()) {
+                if (c.isAnnotationPresent(AmfCreator.class)) {
+                    Assert.isTrue(c.getParameterAnnotations().length == c.getParameterTypes().length, "Found a constructor marked with "+AmfCreator.class.getName()+" but not all of its parameters are marked with "+AmfProperty.class.getName());
+                    for (Annotation[] paramAnnotations : c.getParameterAnnotations()) {
+                        boolean hasAmfProperty = false;
+                        for (Annotation paramAnnotation : paramAnnotations) {
+                            if (paramAnnotation.annotationType().equals(AmfProperty.class)) {
+                                hasAmfProperty = true;
+                                this.paramNames.add(((AmfProperty)paramAnnotation).value());
+                                break;
+                            }
+                        }
+                        Assert.isTrue(hasAmfProperty, "Found a constructor marked with "+AmfCreator.class.getName()+" but not all of its parameters are marked with "+AmfProperty.class.getName());
+                    }
+                    return c;
+                }
+            }
+            throw new IllegalStateException("An instance of "+this.beanType+" could note be created.  Must either have a public no-arg constructor, or a constructor annotated with "+AmfCreator.class.getName()+".");
+        }
     }
 }

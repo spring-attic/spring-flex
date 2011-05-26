@@ -24,11 +24,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -63,9 +64,12 @@ import org.springframework.util.SystemPropertyUtils;
  * can be used for matching in a {@code TypeFilter}.
  * 
  * <p>
- * This implementation does not register any additional {@link TypeConverter TypeConverters} beyond those registered in the parent class.  
+ * This implementation does not register any additional {@link Converter Converters} beyond those registered in the parent class.  
  * Additional {@code TypeConverters} may be registered by extending this class and overriding 
- * {@link AbstractAmfConversionServiceConfigProcessor#configureConverters(org.springframework.core.convert.converter.ConverterRegistry) configureConverters}. 
+ * {@link AbstractAmfConversionServiceConfigProcessor#configureConverters(org.springframework.core.convert.converter.ConverterRegistry) configureConverters}.
+ * 
+ * <p>
+ * The implementation is heavily derived from {@link ClassPathScanningCandidateComponentProvider}.
  * 
  * @author Jeremy Grelle
  */
@@ -97,6 +101,9 @@ public class ClassPathScanningAmfConversionServiceConfigProcessor extends Abstra
         this.basePackage = basePackage;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
         if (CollectionUtils.isEmpty(includeFilters)) {
@@ -126,7 +133,7 @@ public class ClassPathScanningAmfConversionServiceConfigProcessor extends Abstra
     }
     
     /**
-     * Return the ResourceLoader that this scanner uses.
+     * Return the ResourceLoader used in locating matching resources.
      */
     public final ResourceLoader getResourceLoader() {
         return this.resourcePatternResolver;
@@ -143,10 +150,16 @@ public class ClassPathScanningAmfConversionServiceConfigProcessor extends Abstra
         this.resourcePattern = resourcePattern;
     }
     
+    /**
+     * Sets the list of type filters to use for inclusion.
+     */
     public void setIncludeFilters(List<TypeFilter> includeFilters) {
         this.includeFilters = includeFilters;
     }
 
+    /**
+     * Sets the list of type filters to use for exclusion.
+     */
     public void setExcludeFilters(List<TypeFilter> excludeFilters) {
         this.excludeFilters = excludeFilters;
     }
@@ -165,6 +178,9 @@ public class ClassPathScanningAmfConversionServiceConfigProcessor extends Abstra
         this.excludeFilters.add(0, excludeFilter);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Set<Class<?>> findTypesToRegister() {
         Set<Class<?>> typesToRegister = new HashSet<Class<?>>();

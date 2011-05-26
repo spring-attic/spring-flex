@@ -11,18 +11,18 @@ import org.springframework.flex.core.io.domain.Person;
 import flex.messaging.io.PropertyProxy;
 
 
-public class PropertyProxyFactoryTests {
+public class SpringPropertyProxyCreationTests {
 
     @Test
     public void testDefaultConstructorObject() {
-        PropertyProxy result = SpringPropertyProxyFactory.proxyFor(Person.class, false, new GenericConversionService());
+        PropertyProxy result = SpringPropertyProxy.proxyFor(Person.class, false, new GenericConversionService());
         assertEquals(SpringPropertyProxy.class, result.getClass());
     }
     
     @Test
     public void testAmfCreatorAnnotatedImmutableObject() {
-        PropertyProxy result = SpringPropertyProxyFactory.proxyFor(ImmutableValueObject.class, false, new GenericConversionService());
-        assertEquals(DelayedWriteSpringPropertyProxy.class, result.getClass());
+        PropertyProxy result = SpringPropertyProxy.proxyFor(ImmutableValueObject.class, false, new GenericConversionService());
+        assertEquals(SpringPropertyProxy.DelayedWriteSpringPropertyProxy.class, result.getClass());
     }
 
 }

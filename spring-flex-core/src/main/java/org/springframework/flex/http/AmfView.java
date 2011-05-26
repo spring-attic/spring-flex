@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractView;
 
 import flex.messaging.FlexContext;
@@ -35,7 +36,16 @@ import flex.messaging.io.SerializationContext;
 import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfTrace;
 
-
+/**
+ * Spring-MVC {@link View} that renders AMF content by serializing the model for the current request using <a
+ * BlazeDS's AMF serialization/deserialization APIs.
+ *
+ * <p>By default, the entire contents of the model map (with the exception of framework-specific classes) will be
+ * encoded as AMF. For cases where the contents of the map need to be filtered, users may specify a specific set of
+ * model attributes to encode via the {@link #setRenderedAttributes(Set) renderedAttributes} property.
+ *
+ * @author Jeremy Grelle
+ */
 public class AmfView extends AbstractView {
 
     public static final String DEFAULT_CONTENT_TYPE = "application/x-amf";
@@ -74,6 +84,9 @@ public class AmfView extends AbstractView {
         this.disableCaching = disableCaching;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void prepareResponse(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType(getContentType());
@@ -85,6 +98,9 @@ public class AmfView extends AbstractView {
         }
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Object value = filterModel(model);

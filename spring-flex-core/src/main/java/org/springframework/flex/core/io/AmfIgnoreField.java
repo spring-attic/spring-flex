@@ -21,11 +21,28 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicates a field to be skipped during the AMF conversion process.  This annotation is 
+ * only considered when {@link AbstractAmfConversionServiceConfigProcessor#setUseDirectFieldAccess(boolean) useDirectFieldAccess} 
+ * is set to {@code true}.
+ * 
+ * <p>
+ * By default, the field will be ignored during both serialization and deserialization.  To change this behavior, set the 
+ * {@link #onSerialization() onSerialization} or {@link #onDeserialization() onDeserialization} attribute accordingly.
+ *
+ * @author Jeremy Grelle
+ */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AmfIgnoreField {
 
+    /**
+     * When {@code true}, the field will be ignored during serialization to AMF.  Defaults to {@code true}.
+     */
     boolean onSerialization() default true;
     
+    /**
+     * When {@code true}, the field will be ignored during deserialization from AMF.  Defaults to {@code true}.
+     */
     boolean onDeserialization() default true;
 }

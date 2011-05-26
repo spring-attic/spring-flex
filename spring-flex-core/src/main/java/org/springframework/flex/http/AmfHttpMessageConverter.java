@@ -18,6 +18,7 @@ package org.springframework.flex.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +42,17 @@ import flex.messaging.io.amf.AmfMessageDeserializer;
 import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.AmfTrace;
 
-
+/**
+ * Implementation of {@link org.springframework.http.converter.HttpMessageConverter HttpMessageConverter}
+ * that can read and write AMF using BlazeDS's AMF serialization/deserialization APIs. 
+ *
+ * <p>This converter can be used to bind to typed beans, or untyped {@link java.util.HashMap HashMap} instances.
+ *
+ * <p>By default, this converter supports {@code application/x-amf}. This can be overridden by setting the
+ * {@link #setSupportedMediaTypes(List) supportedMediaTypes} property.
+ *
+ * @author Jeremy Grelle
+ */
 public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object> {
 
     private static final String AMF_ERROR = "Could not read input message body as AMF";
@@ -52,11 +63,17 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
         super(MediaType.parseMediaType(MessageIOConstants.AMF_CONTENT_TYPE));
     }
 
+    /**
+     * {@inheritDoc}
+     */
 	@Override
     protected boolean supports(Class<?> clazz) {
         return true;
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
     @Override
     protected Object readInternal(Class<? extends Object> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
         
@@ -84,6 +101,9 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeInternal(Object data, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
     	
@@ -178,6 +198,5 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
         } catch (SerializationException se) {
         	throw new HttpMessageNotWritableException("Could not write "+data+" as AMF message.", se);
         }
-		
 	}
 }

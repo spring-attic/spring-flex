@@ -17,7 +17,14 @@
 package org.springframework.flex.config.xml;
 
 
-
+/**
+ * This interface defines the various integration points for Spring Security, originally provided as a way to provide 
+ * support for both versions 2 and 3 of Spring Security concurrently.  The current version only provides support for 
+ * Spring Security 3 and above, thus this interface is not strictly necessary, but is being kept in place in case it 
+ * is needed again in the future with newer Spring Security versions.
+ *
+ * @author Jeremy Grelle
+ */
 interface SpringSecurityConfigHelper {
 
     String getAuthenticationManagerId();

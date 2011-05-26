@@ -159,16 +159,14 @@ public class AmfIgnoreSpringPropertyProxyTests {
     private PropertyProxy createSpringPropertyProxy() {
         GenericConversionService cs = new GenericConversionService();
         cs.addConverter(new NumberConverter());
-        SpringPropertyProxy voProxy = new SpringPropertyProxy(IgnorablePropsObject.class, false);
-        voProxy.setConversionService(cs);
+        SpringPropertyProxy voProxy = SpringPropertyProxy.proxyFor(IgnorablePropsObject.class, false, cs);
         return voProxy;
     }
     
     private PropertyProxy createSpringFieldProxy() {
         GenericConversionService cs = new GenericConversionService();
         cs.addConverter(new NumberConverter());
-        SpringPropertyProxy voProxy = new SpringPropertyProxy(IgnorablePropsObject.class, true);
-        voProxy.setConversionService(cs);
+        SpringPropertyProxy voProxy = SpringPropertyProxy.proxyFor(IgnorablePropsObject.class, true, cs);
         return voProxy;
     }
     

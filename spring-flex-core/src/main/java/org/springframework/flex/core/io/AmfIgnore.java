@@ -21,6 +21,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicates a property to be skipped during the AMF conversion process.  Applying to a getter 
+ * indicates that the property should be ignored during serialization to AMF.  Applying to a setter 
+ * indicates that the property should be ignored during AMF deserialization.
+ *
+ * @author Jeremy Grelle
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AmfIgnore {

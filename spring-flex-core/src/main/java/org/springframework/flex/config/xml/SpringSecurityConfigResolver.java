@@ -19,6 +19,11 @@ package org.springframework.flex.config.xml;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.util.ClassUtils;
 
+/**
+ * Detects the version of Spring Security being used at runtime and returns an appropriate {@link SpringSecurityConfigHelper}
+ *
+ * @author Jeremy Grelle
+ */
 public class SpringSecurityConfigResolver {
 
     private static final String SECURITY3_CONFIG_HELPER_CLASSNAME = "org.springframework.flex.config.xml.SpringSecurity3ConfigHelper";

@@ -16,6 +16,13 @@
 
 package org.springframework.flex.config.xml;
 
+import org.springframework.flex.core.MessageInterceptor;
+
+/**
+ * Defines the default order of the framework-supplied {@link MessageInterceptor} implementations.
+ *
+ * @author Jeremy Grelle
+ */
 enum MessageInterceptors {
 
 	FIRST,

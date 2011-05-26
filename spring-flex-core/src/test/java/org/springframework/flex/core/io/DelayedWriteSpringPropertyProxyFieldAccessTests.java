@@ -44,14 +44,11 @@ public class DelayedWriteSpringPropertyProxyFieldAccessTests {
     public void setUp() {
         GenericConversionService cs = new GenericConversionService();
         cs.addConverter(new NumberConverter());
-        DelayedWriteSpringPropertyProxy voProxy = new DelayedWriteSpringPropertyProxy(ImmutableValueObject.class, true);
-        voProxy.setConversionService(cs);
+        SpringPropertyProxy voProxy = SpringPropertyProxy.proxyFor(ImmutableValueObject.class, true, cs);
         PropertyProxyRegistry.getRegistry().register(ImmutableValueObject.class, voProxy);
-        SpringPropertyProxy personProxy = new SpringPropertyProxy(Person.class, true);
-        personProxy.setConversionService(cs);
+        SpringPropertyProxy personProxy = SpringPropertyProxy.proxyFor(Person.class, true, cs);
         PropertyProxyRegistry.getRegistry().register(Person.class, personProxy);
-        SpringPropertyProxy addressProxy = new SpringPropertyProxy(Address.class, true);
-        addressProxy.setConversionService(cs);
+        SpringPropertyProxy addressProxy = SpringPropertyProxy.proxyFor(Address.class, true, cs);
         PropertyProxyRegistry.getRegistry().register(Address.class, addressProxy);
         
         this.serializer = new AmfMessageSerializer();

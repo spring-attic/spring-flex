@@ -18,6 +18,14 @@ package org.springframework.flex.messaging;
 
 import org.springframework.context.ApplicationEvent;
 
+import flex.messaging.MessageDestination;
+
+/**
+ * Event that will be broadcast whenever a Flex client subscribes to a {@link MessageDestination} that is using 
+ * one of the Spring-provided {@link MessagingAdapter MessagingAdapters}.
+ *
+ * @author Jeremy Grelle
+ */
 public class SubscribeEvent extends ApplicationEvent {
 
 	private static final long serialVersionUID = 1L;
@@ -32,10 +40,16 @@ public class SubscribeEvent extends ApplicationEvent {
 		this.destinationId = destinationId;
 	}
 
+	/**
+	 * The client id of the subscribed Flex client.
+	 */
 	public String getClientId() {
 		return clientId;
 	}
-
+	
+	/**
+	 * The id of the message destination.
+	 */
 	public String getDestinationId() {
 		return destinationId;
 	}
