@@ -19,6 +19,7 @@ package org.springframework.flex.core.io;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
 
 import flex.messaging.io.BeanProxy;
 import flex.messaging.io.PropertyProxy;
@@ -75,8 +77,12 @@ public class SpringPropertyProxy extends BeanProxy {
                     "for deserialization from AMF must have either a no-arg default constructor, " +
                     "or a constructor annotated with "+AmfCreator.class.getName());
             SpringPropertyProxy proxy = new SpringPropertyProxy(beanType, useDirectFieldAccess, conversionService);
-            Object instance = proxy.createInstance(beanType.getName());
-            proxy.setPropertyNames(PropertyProxyUtils.findPropertyNames(conversionService, useDirectFieldAccess, instance));
+            
+            //If a concrete type, cache the property names
+            if (!Modifier.isAbstract(beanType.getModifiers())) {
+                Object instance = proxy.createInstance(beanType.getName());
+                proxy.setPropertyNames(PropertyProxyUtils.findPropertyNames(conversionService, useDirectFieldAccess, instance));
+            }
             return proxy;
         }
     }
@@ -115,8 +121,11 @@ public class SpringPropertyProxy extends BeanProxy {
      */
     @Override
     public List<String> getPropertyNames(Object instance) {
-        Assert.notNull(this.propertyNames, "Property names cannot be null.");
-        return this.propertyNames;
+        if (!CollectionUtils.isEmpty(propertyNames) && instance.getClass().equals(this.beanType)) { 
+            return this.propertyNames;
+        } else {
+            return PropertyProxyUtils.findPropertyNames(this.conversionService, this.useDirectFieldAccess, instance);
+        }
     }
 
     /**
@@ -229,14 +238,6 @@ public class SpringPropertyProxy extends BeanProxy {
         public Object createInstance(String className) {
             Assert.isTrue(this.beanType.getName().equals(className), "Asked to create instance of an unknown type.");
             return new ASObject(className);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public List<String> getPropertyNames(Object instance) {
-            return PropertyProxyUtils.findPropertyNames(this.conversionService, this.useDirectFieldAccess, instance);
         }
 
         /**
