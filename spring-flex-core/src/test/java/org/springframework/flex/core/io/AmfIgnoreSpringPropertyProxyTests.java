@@ -95,6 +95,7 @@ public class AmfIgnoreSpringPropertyProxyTests {
         data.put("foo", "foo");
         data.put("bar", "bar");
         data.put("baz", "baz");
+        data.put("zoo", "zoo");
         serialize(data);
         
         IgnorablePropsObject result = (IgnorablePropsObject) deserialize();
@@ -133,6 +134,7 @@ public class AmfIgnoreSpringPropertyProxyTests {
         data.put("fooField", "foo");
         data.put("barField", "bar");
         data.put("bazField", "baz");
+        data.put("zooField", "zoo");
         serialize(data);
         
         IgnorablePropsObject result = (IgnorablePropsObject) deserialize();

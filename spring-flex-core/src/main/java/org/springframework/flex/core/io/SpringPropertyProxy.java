@@ -189,31 +189,29 @@ public class SpringPropertyProxy extends BeanProxy {
 
     private boolean isReadIgnored(Object instance, String propertyName) {
         PropertyAccessor accessor = PropertyProxyUtils.getPropertyAccessor(this.conversionService, this.useDirectFieldAccess, instance);
+        if (!accessor.isReadableProperty(propertyName)) {
+            return true;
+        }
         if (this.useDirectFieldAccess) {
             AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onSerialization();
         } else {
             PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
-            if (pd.getReadMethod() == null) {
-                return true;
-            } else {
-                return pd.getReadMethod().getAnnotation(AmfIgnore.class) != null;
-            }
+            return pd.getReadMethod().getAnnotation(AmfIgnore.class) != null;
         }
     }
     
     private boolean isWriteIgnored(Object instance, String propertyName) {
         PropertyAccessor accessor = PropertyProxyUtils.getPropertyAccessor(this.conversionService, this.useDirectFieldAccess, instance);
+        if (!accessor.isWritableProperty(propertyName)) {
+            return true;
+        }
         if (this.useDirectFieldAccess) {
             AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onDeserialization();
         } else {
             PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
-            if (pd.getWriteMethod() == null) {
-                return true;
-            } else {
-                return pd.getWriteMethod().getAnnotation(AmfIgnore.class) != null;
-            }
+            return pd.getWriteMethod().getAnnotation(AmfIgnore.class) != null;
         }
     }
     
