@@ -26,7 +26,13 @@ import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.core.convert.support.PropertyTypeDescriptor;
 import org.springframework.util.Assert;
 
-
+/**
+ * 
+ * TODO Document HibernateProxyConverter
+ * <p />
+ *
+ * @author Jeremy Grelle
+ */
 public class HibernateProxyConverter implements GenericConverter {
     
     public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {

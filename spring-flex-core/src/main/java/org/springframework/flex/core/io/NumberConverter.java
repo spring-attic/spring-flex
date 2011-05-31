@@ -23,6 +23,13 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.util.NumberUtils;
 
+/**
+ * 
+ * TODO Document NumberConverter
+ * <p />
+ *
+ * @author Jeremy Grelle
+ */
 public class NumberConverter implements GenericConverter {
 
     @SuppressWarnings("unchecked")

@@ -25,7 +25,13 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
-
+/**
+ * 
+ * TODO Document JpaHibernateConfigProcessor
+ * <p />
+ *
+ * @author Jeremy Grelle
+ */
 public class JpaHibernateConfigProcessor extends HibernateConfigProcessor{
 
     @Override

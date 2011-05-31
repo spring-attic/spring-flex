@@ -22,13 +22,250 @@
                 <listitem><para>Use of an alternate constructor annotated with <code>@AmfCreator</code> for deserialization (instead of a public no-arg constructor)</para></listitem>
                 <listitem><para>Ignoring certain properties during serialization and/or deserialization when marked with <code>@AmfIgnore</code> or <code>@AmfIgnoreField</code></para></listitem>
             </itemizedlist>
-                
-            <orderedlist>
-                <listitem><para></para></listitem>
-                <listitem><para></para></listitem>
-                <listitem><para></para></listitem>
-            </orderedlist>
-            
+            <para>
+                To take advantage of the enhanced AMF support, an instance of <code>SpringPropertyProxy</code> must be registered for each individual type that
+                could potentially be converted to/from AMF. A specialized set of <code>MessageBrokerConfigProcessors</code> are provided that take varied
+                approaches to locating the types to be registered:
+            </para>
+            <para>
+                <table id="amf-configprocessors">
+                  <title>AMF Handling MessageBrokerConfigProcessors</title>
+                    <tgroup cols="2" align="left">
+                        <colspec colnum="1" colname="col1" colwidth="2*" />
+                        <colspec colnum="2" colname="col2" colwidth="2*" />
+                        <thead>
+                            <row>
+                                <entry align="center">Class</entry>
+                                <entry align="center">Implementation</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry>org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor</entry>
+                                <entry>Uses classpath scanning to locate types to register for AMF conversion. See <xref linkend="amf-classpath-scanning" /></entry>
+                            </row>
+                            <row>
+                                <entry>org.springframework.flex.core.io.HibernateConfigProcessor</entry>
+                                <entry>Uses the Hibernate metadata API to locate mapped Hibernate types to register for AMF conversion and configures specialized Hibernate <code>Converters</code>. See <xref linkend="hibernate-introduction" /></entry>                 
+                            </row>
+                            <row>
+                                <entry>org.springframework.flex.core.io.JpaHibernateConfigProcessor</entry>
+                                <entry>Uses the Hibernate metadata API to locate mapped Hibernate JPA types to register for AMF conversion and configures specialized Hibernate <code>Converters</code>. See <xref linkend="hibernate-introduction" /></entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </table> 
+            </para>
+            <para>
+                Explicit configuration of one of these classes is done just as with any other <code>MessageBrokerConfigProcessor</code>, by defining the desired
+                implementation as a bean and wiring it into the <code>MessageBroker</code> using the <code>config-processor</code> namespace tag.
+            </para>
+            <sect3 id="field-mapping">
+                <title>Using Direct Field Mapping</title>
+                <para>
+                    By default, the <code>SpringPropertyProxy</code> will read and write property values during AMF conversion using JavaBean standard get and
+                    set methods, just as the default BlazeDS <code>BeanProxy</code> does. Alternatively, you many configure it to access fields directly. This
+                    is useful in such cases as when you have a class that does not expose public getter or setter methods, such as the following:
+                </para>
+                <programlisting language="java">
+                <![CDATA[
+@Entity
+public class PackagePrivatePerson {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Integer id;
+
+    @Version
+    @Column(name = "version")
+    Integer version;
+
+    String name;
+}
+                ]]>
+                </programlisting>
+                <para>
+                    In order to be able to convert such a class to/from AMF, you must configure the <code>useDirectFieldAccess</code> property of one of the
+                    supplied AMF configuration processors.  For example:
+                </para>
+                <programlisting language="xml" >
+                <![CDATA[
+<flex:message-broker>
+    <flex:config-processor ref="myJpaConfigProcessor" />
+</flex:message-broker>
+
+<bean id="myJpaConfigProcessor" class="org.springframework.flex.core.io.JpaConfigProcessor">
+    <property name="useDirectFieldAccess" value="true" />
+</bean>                
+                ]]>
+                </programlisting>
+            </sect3>
+            <sect3 id="field-mapping">
+                <title>Deserializing Immutable Objects with @AmfCreator</title>
+                <para>
+                    By default, the <code>SpringPropertyProxy</code> will try to instantiate types using a public no-arg constructor during the AMF 
+                    deserialization process.  Types that do not have a no-arg constructor must provide an alternate constructor annotated with 
+                    <code>org.springframework.flex.core.io.AmfCreator</code>, whose properties are in turn annotated with 
+                    <code>org.springframework.flex.core.io.AmfProperty</code>, in order to be eligible for AMF conversion.  For example:  
+                </para>
+                <programlisting language="java">
+                <![CDATA[
+public class ImmutableValueObject {
+
+    final String foo;
+
+    final Integer zoo;
+
+    @AmfCreator
+    public ImmutableValueObject(@AmfProperty("foo") String foo, @AmfProperty("zoo") Integer zoo) {
+        this.foo = foo;
+        this.zoo = zoo;
+    }
+
+    public String getFoo() {
+        return this.foo;
+    }
+
+    public Integer getZoo() {
+        return this.zoo;
+    }
+}
+                ]]>
+                </programlisting>
+            </sect3>
+            <sect3 id="amf-ignoring-properties">
+                <title>Ignoring Properties During AMF Conversion</title>
+                <para>
+                    Sometimes it is desirable to ignore certain properties during serialization and/or deserialization. For example, there may be a property in
+                    your Java object that you do not wish to ever send to the Flex client. <code>SpringPropertyProxy</code> provides a means of achieving this
+                    by adding some additional annotations to your Java objects. 
+                </para>
+                <para>
+                    The annotation <code>org.springframework.flex.core.io.AmfIgnore</code> may be used on getter and setter methods.  Annotating a getter method
+                    with <code>@AmfIgnore</code> will cause the property to be ignored during serialization to AMF, and annotating a setter method with 
+                    <code>@AmfIgnore</code> will cause the property to be ignored during deserialization from AMF.  For example:
+                </para>
+                <programlisting language="java">
+                <![CDATA[
+public class IgnorablePropsObject {
+
+    //Will be ignored on both serialization and deserialization
+    private String foo;
+
+    //Will be ignored only on serialization
+    private String bar;
+
+    //Will be ignored only on deserialization
+    private String baz;
+
+    @AmfIgnore
+    public String getFoo() {
+        return foo;
+    }
+
+    @AmfIgnore
+    public void setFoo(String foo) {
+        this.foo = foo;
+    }
+
+    @AmfIgnore
+    public String getBar() {
+        return bar;
+    }
+
+    public void setBar(String bar) {
+        this.bar = bar;
+    }
+
+    public String getBaz() {
+        return baz;
+    }
+
+    @AmfIgnore
+    public void setBaz(String baz) {
+        this.baz = baz;
+    }
+}                
+                ]]>
+                </programlisting>
+                <para>
+                    When using direct field mapping, the annotation <code>org.springframework.flex.core.io.AmfIgnoreField</code> may be used on fields to 
+                    achieve equivalent functionality.  For example:
+                </para>
+                <programlisting language="java">
+                <![CDATA[
+public class IgnorableFieldsObject {
+
+    //Will be ignored on both serialization and deserialization
+    @AmfIgnoreField
+    private String foo; 
+
+    //Will be ignored only on serialization
+    @AmfIgnoreField(onDeserialization=false)
+    private String bar;
+
+    //Will be ignored only on deserialization
+    @AmfIgnoreField(onSerialization=false)
+    private String baz;
+
+}
+                ]]>
+                </programlisting>
+            </sect3>
+            <sect3 id="amf-custom-converters">
+                <title>Providing Custom Converters</title>
+                <para>
+                    Customizing the way Java objects are converted to/from AMF is a matter of providing Spring 3 type <code>Converters</code> and registering
+                    them with the <code>ConversionService</code>. The provided AMF config processors all extend from
+                    <code>org.springframework.flex.core.io.AbstractAmfConversionServiceConfigProcessor</code>, which provides a template method for registering 
+                    additional converters.  One such use for this would be if you wanted to use classpath scanning to locate AMF-eligible types, but still wanted 
+                    to register the specialized Hibernate converters.  The following example illustrates this:
+                </para>
+                <para>
+                    First, we configure the <code>ClassPathScanningAmfConversionServiceConfigProcessor</code> using the Spring 3 <link
+                    href="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/beans.html#beans-java" >@Configuration style</link>:
+                </para>
+                <programlisting language="java">
+                <![CDATA[
+package com.foo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.ConverterRegistry;
+import org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor;
+import org.springframework.flex.core.io.HibernateProxyConverter;
+import org.springframework.flex.core.io.PersistentCollectionConverterFactory;
+
+@Configuration
+public class CustomConverterConfiguration {
+
+    @Bean
+    public ClassPathScanningAmfConversionServiceConfigProcessor myConfigProcessor() {
+
+        return new ClassPathScanningAmfConversionServiceConfigProcessor("com.foo.domain") {
+
+            @Override
+            protected void configureConverters(ConverterRegistry registry) {
+                registry.addConverter(new HibernateProxyConverter());
+                registry.addConverterFactory(new PersistentCollectionConverterFactory());
+            }
+
+        };
+    }
+}
+                ]]>
+                </programlisting>
+                <para>
+                    Then we simply reference that config processor as usual in our <code>MessageBroker</code> configuration:
+                </para>
+                <programlisting language="xml">
+                <![CDATA[
+<flex:message-broker>
+    <flex:config-processor ref="myConfigProcessor" />
+</flex:message-broker>                
+                ]]>
+                </programlisting>
+            </sect3>
         </sect2>
     </sect1>
     <sect1 id="hibernate-introduction">
@@ -71,33 +308,12 @@
             <para>
                 The default behavior may be extended/overridden by manually deploying either the <code>HibernateConfigProcessor</code> or 
                 <code>JpaHibernateConfigProcessor</code> as a Spring bean and wiring it into the <code>MessageBroker</code> via the <code>config-processor</code> XML
-                namespace tag.  For example, assuming you have a custom <code>ConversionService</code> provided as a bean named "myCustomConversionService", and you 
-                are using JPA, you would configure the <code>JpaHibernateConfigProcessor</code> as follows:
-            </para>
-            <programlisting language="xml"><![CDATA[
-<flex:message-broker>
-    <flex:config-processor ref="myJpaConfigProcessor" />
-</flex:message-broker>
-
-<bean id="myJpaConfigProcessor" class="org.springframework.flex.core.io.JpaConfigProcessor">
-    <property name="conversionService" ref="myConversionService" />
-</bean>]]>
-        </programlisting>
-        </sect2>
-        <sect2 id="field-mapping">
-            <title>Using Direct Field Mapping</title>
-            <para>
-                TODO - More details will be provided with 1.5.0.RC1.  For now, you can experiment with this by setting the <code>useDirectFieldAccess</code> property on a 
-                custom-configured <code>HibernateConfigProcessor</code> or <code>JpaHibernateConfigProcessor</code> instance.
+                namespace tag as shown in <xref linkend="amf-config-processor" />.
             </para>
         </sect2>
-        <sect2 id="hibernate-io-custom-converters">
-            <title>Providing Custom Converters for Hibernate Entity Serialization/Deserialization</title>
-            <para>
-                Customizing the way Hibernate entities are converted to/from AMF is a matter of writing your own Spring 3 <code>Converter</code>s and 
-                configuring a <code>ConversionService</code> that uses them.
-            </para>
-            <para>TODO - Provide examples of custom converters to further control the serialization/deserialization process.</para>
-        </sect2>
+    </sect1>
+    <sect1 id="amf-classpath-scanning">
+        <title>Using Classpath Scanning for AMF Configuration</title>
+        <para>paragraph</para>
     </sect1>
 </chapter>

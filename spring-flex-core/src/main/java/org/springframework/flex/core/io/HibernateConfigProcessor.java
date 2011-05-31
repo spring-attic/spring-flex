@@ -34,7 +34,13 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.util.Assert;
 
-
+/**
+ * 
+ * TODO Document HibernateConfigProcessor
+ * <p />
+ *
+ * @author Jeremy Grelle
+ */
 public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfigProcessor implements BeanFactoryAware, InitializingBean {
 
     private Set<ClassMetadata> classMetadata = new HashSet<ClassMetadata>();

@@ -21,7 +21,13 @@ import org.hibernate.collection.PersistentCollection;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
-
+/**
+ * 
+ * TODO Document PersistentCollectionConverterFactory
+ * <p />
+ *
+ * @author Jeremy Grelle
+ */
 public class PersistentCollectionConverterFactory implements ConverterFactory<PersistentCollection, Object> {
 
     public <T> Converter<PersistentCollection, T> getConverter(Class<T> targetType) {
