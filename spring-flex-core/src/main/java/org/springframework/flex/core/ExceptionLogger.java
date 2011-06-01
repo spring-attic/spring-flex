@@ -30,7 +30,7 @@ public interface ExceptionLogger {
 	 * This will be called at the final moment before the <code>MessageException</code> is serialized as AMF 
 	 * to be returned to the client.
 	 * 
-	 * @param messageException the exception to be logged
+	 * @param throwable the exception to be logged
 	 */
 	public void log(Throwable throwable);
 }

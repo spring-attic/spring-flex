@@ -37,7 +37,7 @@ import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfTrace;
 
 /**
- * Spring-MVC {@link View} that renders AMF content by serializing the model for the current request using <a
+ * Spring-MVC {@link View} that renders AMF content by serializing the model for the current request using
  * BlazeDS's AMF serialization/deserialization APIs.
  *
  * <p>By default, the entire contents of the model map (with the exception of framework-specific classes) will be

@@ -19,6 +19,7 @@ package org.springframework.flex.messaging;
 import org.springframework.context.ApplicationEvent;
 
 import flex.messaging.MessageDestination;
+import flex.messaging.services.messaging.adapters.MessagingAdapter;
 
 /**
  * Event that will be broadcast whenever a Flex client unsubscribes to a {@link MessageDestination} that is using 

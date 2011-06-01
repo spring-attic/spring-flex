@@ -16,6 +16,8 @@
 
 package org.springframework.flex.config;
 
+import org.springframework.flex.core.MessageBrokerFactoryBean;
+
 import flex.messaging.MessageBroker;
 
 /**

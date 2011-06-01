@@ -1,6 +1,7 @@
 
 package org.springframework.flex.core;
 
+import flex.messaging.endpoints.Endpoint;
 import flex.messaging.messages.Message;
 
 /**

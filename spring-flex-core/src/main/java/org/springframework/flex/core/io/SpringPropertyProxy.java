@@ -67,7 +67,7 @@ public class SpringPropertyProxy extends BeanProxy {
      * @param beanType the type being introspected
      * @param useDirectFieldAccess whether to access fields directly
      * @param conversionService the conversion service to use for property type conversion
-     * @return
+     * @return a properly configured property proxy
      */
     public static SpringPropertyProxy proxyFor(Class<?> beanType, boolean useDirectFieldAccess, ConversionService conversionService) {
         if(PropertyProxyUtils.hasAmfCreator(beanType)) {

@@ -28,6 +28,7 @@ import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 
 import flex.messaging.MessageBroker;
+import flex.messaging.io.PropertyProxy;
 import flex.messaging.io.PropertyProxyRegistry;
 
 /**
@@ -134,7 +135,7 @@ public abstract class AbstractAmfConversionServiceConfigProcessor implements Mes
      * convenient alternative to supplying a completely custom-configured {@link ConversionService} instance.  
      * 
      * <p>
-     * The default implementation does not register any additional {@link Converters}, thus subclasses do not need to delegate to it.
+     * The default implementation does not register any additional {@link Converter Converters}, thus subclasses do not need to delegate to it.
      * 
      * @param registry - the converter registry used by the {@link ConversionService}
      */
