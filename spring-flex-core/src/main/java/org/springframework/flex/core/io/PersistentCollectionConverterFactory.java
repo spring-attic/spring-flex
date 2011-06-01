@@ -22,9 +22,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
 /**
+ * {@link ConverterFactory} implementation that supplies a {@link Converter} instance that can convert {@link PersistentCollection} 
+ * instances from Hibernate.  Given a specific {@code PersistentCollection} instance, the converter will:
  * 
- * TODO Document PersistentCollectionConverterFactory
- * <p />
+ * <ul>
+ *     <li>Convert to null if the {@code PersistentCollection} instance is uninitialized</li>
+ *     <li>Convert to the wrapped collection class if the {@code PersistentCollection} is initialized</li> 
+ * </ul>
  *
  * @author Jeremy Grelle
  */

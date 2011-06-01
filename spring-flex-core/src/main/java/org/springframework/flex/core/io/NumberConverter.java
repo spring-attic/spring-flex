@@ -24,9 +24,13 @@ import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.util.NumberUtils;
 
 /**
- * 
- * TODO Document NumberConverter
- * <p />
+ * {@link GenericConverter} implementation that converts between {@link @Number} types.  The conversion logic is:
+ *  <ul>
+ *     <li>If the value is {@code null}, convert to {@code Double.NaN}</li>
+ *     <li>If the value is {@code Double.NaN}, convert to {@code null}</li>
+ *     <li>Otherwise, if the source type and target type differ (ie they are different {@code Number} subclasses), 
+ *     convert the value to the target type</li> 
+ * </ul>
  *
  * @author Jeremy Grelle
  */

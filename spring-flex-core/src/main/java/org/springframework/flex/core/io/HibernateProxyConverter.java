@@ -27,14 +27,20 @@ import org.springframework.core.convert.support.PropertyTypeDescriptor;
 import org.springframework.util.Assert;
 
 /**
- * 
- * TODO Document HibernateProxyConverter
- * <p />
+ * {@link GenericConverter} implementation that converts from {@link HibernateProxy} to {@code Object} and will either:
+ * <ul>
+ *     <li>Convert to null if the {@code HibernateProxy} instance is uninitialized</li>
+ *     <li>Convert to the underlying proxied class if the {@code HibernateProxy} is initialized</li> 
+ * </ul>
  *
  * @author Jeremy Grelle
  */
 public class HibernateProxyConverter implements GenericConverter {
     
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
         Assert.isInstanceOf(HibernateProxy.class, source, "Expected an instance of HibernateProxy to convert");
         Assert.isAssignable(HibernateProxy.class, sourceType.getType(), "Expected a subclass of HibernateProxy for the source type");
@@ -47,6 +53,10 @@ public class HibernateProxyConverter implements GenericConverter {
         return proxy.getHibernateLazyInitializer().getImplementation();
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     */
     public Set<ConvertiblePair> getConvertibleTypes() {
         return Collections.singleton(new ConvertiblePair(HibernateProxy.class, Object.class));
     }

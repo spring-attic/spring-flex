@@ -20,7 +20,7 @@
 	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-common/4.0.0.14931/blazeds-common-4.0.0.14931.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-core/4.0.0.14931/blazeds-core-4.0.0.14931.jar" sourcepath="/BLAZEDS_SRC/core"/>
 	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-proxy/4.0.0.14931/blazeds-proxy-4.0.0.14931.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-remoting/4.0.0.14931/blazeds-remoting-4.0.0.14931.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/adobe/blazeds/blazeds-remoting/4.0.0.14931/blazeds-remoting-4.0.0.14931.jar" sourcepath="/BLAZEDS_SRC/remoting"/>
 	<classpathentry kind="var" path="M2_REPO/cglib/cglib/2.2/cglib-2.2.jar" sourcepath="M2_REPO/cglib/cglib/2.2/cglib-2.2-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar" sourcepath="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.2/commons-codec-1.2.jar"/>
