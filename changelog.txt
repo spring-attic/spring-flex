@@ -2,6 +2,43 @@ SPRING FLEX CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
+Changes in version Spring BlazeDS Integration 1.5.0.RC1 (6.1.2011)
+_________________________________________
+New Features
+* FLEX-168 - Allow the type conversion API to be used generally (beyond just Hibernate entities)
+
+Enhancements
+* FLEX-148 - Improve the JavaDoc for MessageTemplate
+* FLEX-149 - Make it easier for subclasses of HibernateConfigProcessor and JpaHibernateConfigProcessor to customize the converters used by the ConversionService.
+* FLEX-155 - Avoid need for public default constructor for mapped java objects
+* FLEX-171 - Register Spring type converters for @Embeddable types contained in a JPA 2 @ElementCollection
+* FLEX-172 - Convert Numeric null values to NaN when when serializing from Java to AS3
+* FLEX-180 - Add an 'invalidate-http-session' attribute to the 'secured' tag
+* FLEX-181 - Create a new section in the reference manual covering AMF REST support.
+* FLEX-185 - Set details on the new Authentication token before using it for authentication in SpringSecurityLoginCommand
+* FLEX-187 - Annotation on Objects Properties to Prevent Serialization
+* FLEX-189 - Expose the disallow-wildcard-subtopics Setting on Message Destinations
+* FLEX-196 - Ensure that Spring Flex jars are built with proper OSGi manifests
+* FLEX-198 - Default disallow-wildcard-subtopics to "true" in order to be secure by default
+* FLEX-199 - Register Spring type converters for every @Embeddable types
+
+Bug Fixes
+* FLEX-164 - AbstractDestinationFactory must expose ThreadLocals to allow correct JMX Bean naming
+* FLEX-165 - Concurrent Session Management is not working
+* FLEX-167 - JpaHibernateConfigProcessor complains when multiple EntityManagers present
+* FLEX-169 - PriorityOrderedRequestContextFilter introduced a locale problem
+* FLEX-182 - NoSuchMethodError org.springframework.flex.security3.SecurityConfigurationPostProcessor$FilterChainAccessor.obtainAllDefinedFilters()Ljava/util/Collection
+* FLEX-183 - Wrong Repo in Samples pom.xml
+* FLEX-186 - FlexSession not getting re-created properly when using session-fixation-protection="newSession"
+* FLEX-190 - SpringSecurity3ConfigHelper incompatible with Spring Security 3.1
+* FLEX-191 - Per client authentication logout throws error
+* FLEX-192 - Incorrect logging level in MessageBrokerHandlerAdapter
+* FLEX-193 - Concurrency control doesn't work as expected
+* FLEX-195 - IntegrationAdapter class has backwards logic to determine Timestamp
+* FLEX-200 - Fix Tomcat-reported memory leak on BlazeDS ThreadLocal variables
+* FLEX-201 - ClassCastException in HibernateConfigProcessor when using hibernate 3.6.X versions
+* FLEX-202 - SpringPropertyProxy factory method fails on abstract classes
+* FLEX-203 - SpringPropertyProxy.isWriteIgnored() throws an InvalidPropertyException if property doesn't exist in the Java class
 
 Changes in version Spring BlazeDS Integration 1.5.0.M2 (2.9.2011)
 _________________________________________
@@ -205,7 +242,7 @@ New Features
 * FLEX-20 - Add messaging support based on Spring Integration
 * FLEX-27 - Add support for messaging features to the flex configuration namespace
 * FLEX-30 - Generic hook for catching exceptions and translating them into BlazeDS MessageExceptions
-* FLEX-35 - Add GrantedAuthority[] from UserDetails on successful login result message
+* FLEX-35 - Add GrantedAuthority* ] from UserDetails on successful login result message
 * FLEX-42 - Configure MessageService on demand if none exists
 
 Enhancements
