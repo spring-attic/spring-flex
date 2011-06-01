@@ -41,16 +41,16 @@
                         </thead>
                         <tbody>
                             <row>
-                                <entry>org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor</entry>
-                                <entry>Uses classpath scanning to locate types to register for AMF conversion. See <xref linkend="amf-classpath-scanning" /></entry>
-                            </row>
-                            <row>
                                 <entry>org.springframework.flex.core.io.HibernateConfigProcessor</entry>
                                 <entry>Uses the Hibernate metadata API to locate mapped Hibernate types to register for AMF conversion and configures specialized Hibernate <code>Converters</code>. See <xref linkend="hibernate-introduction" /></entry>                 
                             </row>
                             <row>
                                 <entry>org.springframework.flex.core.io.JpaHibernateConfigProcessor</entry>
                                 <entry>Uses the Hibernate metadata API to locate mapped Hibernate JPA types to register for AMF conversion and configures specialized Hibernate <code>Converters</code>. See <xref linkend="hibernate-introduction" /></entry>
+                            </row>
+                            <row>
+                                <entry>org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor</entry>
+                                <entry>Uses classpath scanning to locate types to register for AMF conversion. See <xref linkend="amf-classpath-scanning" /></entry>
                             </row>
                         </tbody>
                     </tgroup>
@@ -279,24 +279,25 @@ public class CustomConverterConfiguration {
             which can cause unexpected results in the way the association gets serialized.   
         </para>
         <para>
-            Spring BlazeDS Integration 1.5+ provides a simple solution that will allow the direct use of Hibernate entities in AMF messages.  A special Spring-aware 
-            <code>PropertyProxy</code> (a BlazeDS-specific interface for customizing serialization) is automatically installed that delegates to the Spring 3.0 
-            <code>ConversionService</code> to allow for additional property conversion logic to be plugged in during the serialization/deserialization process.
+            Spring BlazeDS Integration provides a simple solution that will allow the direct use of Hibernate entities in AMF messages. A few special
+            Hibernate-aware <code>Converters</code> are automatically installed that understand how to properly convert Hibernate-specific types when they are
+            encountered.
         </para>
         <sect2 id="hibernate-io-config">
             <title>Configuring Hibernate Entity Serialization/Deserialization Support</title>
             <para>
-                The Hibernate serialization/deserialization support will be automatically configured with a default <code>ConversionService</code> upon application 
-                startup if Hibernate is detected on the classpath.  This support is provided in the form of two different <code>MessageBrokerConfigProcessors</code> - 
-                one for "native" Hibernate and one for using Hibernate as a JPA provider.  The proper one will be configured based on the presence of the JPA api on 
-                the classpath.   
+                The Hibernate serialization/deserialization support will be automatically configured with a default <code>ConversionService</code> upon
+                application startup if Hibernate is detected on the classpath. This support is provided in the form of two different
+                <code>MessageBrokerConfigProcessors</code> - one for "native" Hibernate and one for using Hibernate as a JPA provider. The proper one will be
+                configured based on the presence of the JPA api on the classpath.
             </para>
             <para>
-                The default behavior of the <code>ConversionService</code> (in the case of both "native" Hibernate and JPA), is as follows:
+                The default behavior of the <code>SpringPropertyProxy</code> (in the case of both "native" Hibernate and JPA), when this support is configured 
+                is as follows:
             </para>
             <orderedlist>
                 <listitem>
-                    <para>Check each property to see whether it is contains a Hibernate-specific Proxy or Collection</para>
+                    <para>Check each bean property to see whether it is contains a Hibernate-specific Proxy or Collection</para>
                 </listitem>
                 <listitem>
                     <para>If the Proxy/Collection is initialized, unwrap the underlying value for serialization</para>
@@ -306,14 +307,72 @@ public class CustomConverterConfiguration {
                 </listitem>
             </orderedlist>
             <para>
-                The default behavior may be extended/overridden by manually deploying either the <code>HibernateConfigProcessor</code> or 
-                <code>JpaHibernateConfigProcessor</code> as a Spring bean and wiring it into the <code>MessageBroker</code> via the <code>config-processor</code> XML
+                At startup time, Hibernate's Metadata API is used to determine which types to register with BlazeDS to use the specialized 
+                <code>SpringPropetyProxy</code>.
+            </para>
+            <para>
+                The default behavior may be extended/overridden by manually deploying either the <code>HibernateConfigProcessor</code>, 
+                <code>JpaHibernateConfigProcessor</code>, or some other custom extension of <code>AbstractAmfConversionServiceConfigProcessor</code>  as a Spring bean and wiring it into the <code>MessageBroker</code> via the <code>config-processor</code> XML
                 namespace tag as shown in <xref linkend="amf-config-processor" />.
             </para>
         </sect2>
     </sect1>
     <sect1 id="amf-classpath-scanning">
         <title>Using Classpath Scanning for AMF Configuration</title>
-        <para>paragraph</para>
+        <para>
+            As an alternative to using the Hibernate Metadata API to find types to which the <code>SpringPropertyProxy</code> should be applied, a more general
+            config processor implementation, <code>org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor</code>, is supplied as
+            an alternative that will instead find types using Spring's internal classpath scanning support. The implementation scans recursively starting from a
+            given base package, and all classes found in the scan will be registered to have the <code>SpringPropertyProxy</code> applied to them for AMF
+            conversion. The scanning process may be customized further by configuring <code>org.springframework.core.type.filter.TypeFilter</code>
+            implementations to either include or exclude matching types. For example, Spring provides out-of-the-box RegEx-based and Annotation-based
+            <code>TypeFilter</code> implementations. The easiest way to configure this implementation is by using the Java config support provided in Spring 3+, 
+            as in the following example: 
+        </para>
     </sect1>
+    <programlisting language="java">
+    <![CDATA[
+package com.foo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.converter.ConverterRegistry;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor;
+import org.springframework.flex.core.io.HibernateProxyConverter;
+import org.springframework.flex.core.io.PersistentCollectionConverterFactory;
+
+@Configuration
+public class ApplicationConfig {
+
+    @Bean
+    public ClassPathScanningAmfConversionServiceConfigProcessor amfConfigProcessor() {
+        ClassPathScanningAmfConversionServiceConfigProcessor configProcessor = 
+            new ClassPathScanningAmfConversionServiceConfigProcessor("com.foo.domain") {
+
+                @Override
+                protected void configureConverters(ConverterRegistry registry) {
+                    registry.addConverter(new HibernateProxyConverter());
+                    registry.addConverterFactory(new PersistentCollectionConverterFactory());
+                    registry.addConverter(new MyCustomConverter());
+                }
+
+            };
+
+        configProcessor.addIncludeFilter(new AnnotationTypeFilter(MyCustomAmfAnnotation.class));    
+
+        return configProcessor;
+    } 
+
+}
+    ]]>
+    </programlisting>
+    <programlisting language="xml">
+    <![CDATA[
+<flex:message-broker>
+    <flex:config-processor ref="amfConfigProcessor" />
+</flex:message-broker>                
+    ]]>
+    </programlisting>
 </chapter>

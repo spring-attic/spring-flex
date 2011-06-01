@@ -4,12 +4,170 @@
     <sect1 id="rest-introduction">
         <title>Introduction</title>
         <para>
-            TODO - An <code>AmfView</code> and <code>AmfHttpMessageConverter</code> are now provided with Spring BlazeDS Integration to 
-            support RESTful communication protocols as an alternative to direct RPC.  This is an especially attractive option when your 
-            application needs to support more than just a Flex client.  Complete documentation for the AMF support for the RESTful Spring 
-            MVC @Controller model will be provided in 1.5.0.RC1. For now, see the new <code>insync-rest</code> example that has been added 
-            to the <link linkend="samples">Test Drive</link>, which duplicated the full functionality of the complete inSync application 
-            that was originally built using BlazeDS Remoting. 
+            Spring MVC 3 introduced support for building RESTful services using the <ulink
+            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-controller">@Controller</ulink> programming
+            model. This allows for serving multiple representations of the same content based on what the client has requested. For example, a single RESTful
+            endpoint could be configured to serve HTML, XML, or JSON all from a single request handling Java method on the @Controller class. This approach
+            allows a single service implementation to support a variety of different client types, automatically providing the representation that a particular
+            client desires. In order to better support Flex as one of those client types, Spring BlazeDS Integration adds the necessary support to be able to
+            support an AMF representation of a given RESTful resource.
+        </para>
+        <para>
+            <code>AmfView</code> and <code>AmfHttpMessageConverter</code> provide the foundation necessary to use AMF with Spring MVC @Controllers. The
+            implementations are quite similar to <code>MappingJacksonJsonView</code> and <code>MappingJacksonHttpMessageConverter</code> which provide Spring's
+            out-of-the-box JSON support.  The basics of configuring these classes are shown throughout the rest of this chapter.
+        </para>
+    </sect1>           
+    <sect1 id="amf-rest-view">
+        <title>Using AmfView</title>
+        <para>
+            <code>AmfView</code> is a Spring MVC <ulink
+            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-viewresolver">View</ulink> implementation that is
+            intended to be used in conjunction with Spring MVC's <ulink
+            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-multiple-representations">ContentNegotiatingViewResolver</ulink>.
+            In particular, it is expected that it will be configured as a "default" singleton view implementation that can render any MVC model as AMF, rather
+            than needing to have a unique instance per logical view name.
+        </para>
+        <para>
+            The following example shows a simple configuration of <code>ContentNegotiatingViewResolver</code> to support both JSON and AMF representations:
+        </para>
+        <programlisting language="xml">
+        <![CDATA[
+<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+  <property name="mediaTypes">
+    <map>
+      <entry key="json" value="application/json"/>
+      <entry key="amf" value="application/x-amf"/>
+    </map>
+  </property>
+  <property name="defaultViews">
+    <list>
+      <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+      <bean class="org.springframework.flex.http.AmfView" />
+    </list>
+  </property>
+</bean>        
+        ]]>
+        </programlisting>
+        <para>
+            The above example includes setting the <code>mediaTypes</code> property to map file extensions to media types.  This is helpful for clients 
+            (such as Flex) that aren't always able to set an appropriate <code>Accept</code> header.  So given the above configuration, and a simple controller 
+            such as the following:
+        </para>
+        <programlisting language="java">
+        <![CDATA[
+@Controller
+@RequestMapping("/contacts")
+public class ContactsController {
+
+	@Autowired
+	private IContactDAO contactDAO;
+
+	@RequestMapping(method=RequestMethod.GET)
+	public List<Contact> find() {
+	    return contactDAO.findAll();
+	}
+}
+        ]]>
+        </programlisting>
+        <para>
+            an HTTP <code>GET</code> request issued to either <code>http://localhost/myapp/contacts.amf</code> <emphasis>without</emphasis> an appropriate
+            <code>Accept</code> header or to<code>http://localhost/myapp/contacts</code> <emphasis>with</emphasis> an accept header of
+            <code>application/x-amf</code> will return the list of contacts as an AMF message that may then be deserialized to an <code>ArrayCollection</code> 
+            of ActionScript objects on the Flex client.
+        </para>
+    </sect1>
+    <sect1 id="amf-rest-converter">
+        <title>Using AmfHttpMessageConverter</title>
+        <para>
+            <code>AmfHttpMessageConverter</code> is a <ulink
+            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/remoting.html#rest-message-conversion"
+            >HttpMessageConverter</ulink> implementation that can convert to and from AMF. In order to be able to convert HTTP <code>POST</code> and
+            <code>PUT</code> request message bodies from AMF to Java objects to be passed as a <ulink
+            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-ann-requestbody" >@RequestBody</ulink> arguments
+            to <code>@Controller</code> methods, it must be added to the converters used by Spring MVC's <code>AnnotationMethodHandlerAdapter</code>. In order
+            to add AMF support while also leaving the framework's default <code>HttpMessageConverters</code> in place, a simple <ulink
+            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/beans.html#beans-factory-extension-bpp"
+            >BeanPostProcessor</ulink> such as the following example can be used:
+        </para>
+        <programlisting language="java" >
+        <![CDATA[
+package org.springframework.flex.samples.rest;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.flex.http.AmfHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
+
+public class HandlerAdapterPostProcessor implements BeanPostProcessor {
+
+	public Object postProcessBeforeInitialization(Object bean, String beanName)
+			throws BeansException {
+		return bean;
+	}
+
+	public Object postProcessAfterInitialization(Object bean, String beanName)
+			throws BeansException {
+		if (bean instanceof AnnotationMethodHandlerAdapter) {
+			AnnotationMethodHandlerAdapter adapter = (AnnotationMethodHandlerAdapter) bean;
+			HttpMessageConverter<?>[] converters = adapter.getMessageConverters();
+			adapter.setMessageConverters((HttpMessageConverter<?>[]) ObjectUtils.addObjectToArray(converters, new AmfHttpMessageConverter()));
+		}
+		return bean;
+	}
+
+}
+        ]]>
+        </programlisting>
+        <para>
+            With this configuration in place, and a controller such as the following:
+        </para>
+        <programlisting language="java" >
+        <![CDATA[
+@Controller
+@RequestMapping("/contacts")
+public class ContactsController {
+
+	@Autowired
+	private IContactDAO contactDAO;
+
+	@RequestMapping(method=RequestMethod.POST)
+	public Contact create(@RequestBody Contact contact) {
+		return contactDAO.create(contact);
+	}
+}
+        ]]>
+        </programlisting>
+    </sect1>
+    <para>
+        the Flex client can send an HTTP <code>POST</code> request with an ActionScript <code>Contact</code> serialized to AMF in the message body to
+        <code>http://localhost/myapp/contacts</code> in order to persist that contact to the database.
+    </para>
+    <sect1 id="amf-rest-client">
+        <title>Interacting with RESTful AMF Endpoints from the Flex Client</title>
+        <para>
+            Effectively interacting with a RESTful service from the Flex client using AMF is generally a matter of dropping down to some lower-level Flash APIs
+            such as <code>flash.net.URLRequest</code> and <code>flash.net.URLStream</code>.  There are some limitations to how a Flash/Flex application can
+            interact with a REST service from within the browser. These limitations are generally imposed by the host browser, and are similar to the
+            limitations imposed on HTML pages. Fortunately, Spring MVC already accounts for such browser limitations and provides useable workarounds.
+        </para>
+        <para>
+            The first major limitation is that the Flash player is typically not able to set the <code>Accept</code> header for the request to
+            <code>application/x-amf</code> when using <code>URLRequest</code>. Spring supports mapping file extensions to media types as an alternative (see the
+            example <xref linkend="amf-rest-view">ContentNegotiatingViewResolver</xref> configuration for how this is achieved).  
+        </para>
+        <para>
+            The second major limitation is the inability to properly send HTTP <code>PUT</code> and <code>DELETE</code> requests. Spring provides the <ulink
+            url="http://static.springsource.org/spring/docs/3.0.x/javadoc-api/index.html?org/springframework/web/filter/HiddenHttpMethodFilter.html"
+            >HiddenHttpMethodFilter</ulink> to help cope with this. With the filter configured, a <code>DELETE</code> request (for example) could be simulated
+            by sending a <code>POST</code> request to a URL such as <code>http://localhost/myapp/contacts/1.amf?_method=DELETE</code>.
+        </para>
+        <para>    
+            A complete <code>insync-rest</code> example of interacting with a Spring MVC @Controller is now provided in the <link linkend="samples">Test
+            Drive</link>. This sample duplicates the full functionality of the complete inSync application that was originally built using BlazeDS Remoting. It
+            shows in detail how to work around Flash player's limitations to use AMF to interact with a RESTful service that supports it.
         </para>
     </sect1>
 </chapter>
