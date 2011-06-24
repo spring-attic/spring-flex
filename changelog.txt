@@ -2,6 +2,12 @@ SPRING FLEX CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
+Changes in version Spring BlazeDS Integration 1.5.0.RELEASE (6.24.2011)
+_________________________________________
+Bug Fixes
+* FLEX-163 - Spring - Flex does not work with the latest BlazeDS trunk libraries
+* FLEX-204 - HibernateConfigProcessor problem with interfaces
+
 Changes in version Spring BlazeDS Integration 1.5.0.RC1 (6.1.2011)
 _________________________________________
 New Features

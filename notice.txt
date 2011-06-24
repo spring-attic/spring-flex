@@ -18,5 +18,5 @@
    The names "Spring", "Spring Framework", and "Spring BlazeDS Integration" must
    not be used to endorse or promote products derived from this
    software without prior written permission. For written permission,
-   please contact rod.johnson@springsource.com or juergen.hoeller@springsource.com.
+   please contact jgrelle@vmware.com.
 
