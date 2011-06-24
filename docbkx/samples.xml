@@ -43,9 +43,9 @@ mvn tomcat:run
             <title>Using BlazeDS 4 with Maven</title>
             <para>
                 Spring BlazeDS Integration 1.5 requires BlazeDS 4, but as of this writing the BlazeDS 4 artifacts have not yet been published to Maven central.  
-                The artifacts have been published to the Spring External maven repository (as required for the Spring BlazeDS Integration automated builds).  The 
-                Test Drive is already configured to use this repository, but to use BlazeDS 4 in your own Maven projects, add the following repository entry 
-                (either to settings.xml or to your project's pom.xml):
+                The artifacts have been published to the Spring External maven repository (as required for the Spring BlazeDS Integration automated builds).  Declaring a 
+                dependency on the spring-flex-core-1.5.0.RELEASE jar *should* cause the BlazeDS 4 artifacts to be pulled down transitively from the Spring External repository, 
+                but if you encounter any problems, add the following repository entry (either to settings.xml or to your project's pom.xml):
             </para>
             <programlisting language="xml"><![CDATA[
 <repository>

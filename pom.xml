@@ -6,7 +6,7 @@
     <artifactId>spring-flex</artifactId>
     <packaging>pom</packaging>
     <name>Spring BlazeDS Integration Distribution</name>
-    <version>1.5.0.BUILD-SNAPSHOT</version>
+    <version>1.5.0.RELEASE</version>
 
     <modules>
         <module>parent</module>
@@ -15,9 +15,9 @@
 
     <distributionManagement>
         <repository>
-            <id>spring-milestone</id>
-            <name>Spring Milestone Repository</name>
-            <url>s3://maven.springframework.org/milestone</url>
+            <id>spring-release</id>
+            <name>Spring Release Repository</name>
+            <url>s3://maven.springframework.org/release</url>
         </repository>
 
         <snapshotRepository>

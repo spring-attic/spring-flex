@@ -6,13 +6,13 @@
 	<artifactId>spring-flex-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Spring BlazeDS Integration Parent POM</name>
-	<version>1.5.0.BUILD-SNAPSHOT</version>
+	<version>1.5.0.RELEASE</version>
 
 	<distributionManagement>
 		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Milestone Repository</name>
-			<url>s3://maven.springframework.org/milestone</url>
+			<id>spring-release</id>
+			<name>Spring Release Repository</name>
+			<url>s3://maven.springframework.org/release</url>
 		</repository>
 
 		<snapshotRepository>
@@ -21,6 +21,20 @@
 			<url>s3://maven.springframework.org/snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
+	<repositories>
+		<repository>
+			<id>spring-external</id>
+			<name>Spring External Repository</name>
+			<url>http://maven.springframework.org/external</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<dependencyManagement>
 		<dependencies>
