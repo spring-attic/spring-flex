@@ -12,6 +12,7 @@
     <moduleSets>
         <moduleSet>
             <includes>
+                <include>org.springframework.flex:spring-flex-parent</include>
                 <include>org.springframework.flex:spring-flex-core</include>
             </includes>
             <binaries>
@@ -66,7 +67,6 @@
             <directory>spring-flex-samples</directory>
             <outputDirectory>samples</outputDirectory>
             <includes>
-            	<include>rootunes.roo</include>
                 <include>spring-flex-testdrive/**</include>
             </includes>
             <excludes>
