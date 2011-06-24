@@ -60,13 +60,13 @@
 @RequestMapping("/contacts")
 public class ContactsController {
 
-	@Autowired
-	private IContactDAO contactDAO;
+    @Autowired
+    private IContactDAO contactDAO;
 
-	@RequestMapping(method=RequestMethod.GET)
-	public List<Contact> find() {
-	    return contactDAO.findAll();
-	}
+    @RequestMapping(method=RequestMethod.GET)
+    public List<Contact> find() {
+        return contactDAO.findAll();
+    }
 }
         ]]>
         </programlisting>
@@ -103,20 +103,22 @@ import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAda
 
 public class HandlerAdapterPostProcessor implements BeanPostProcessor {
 
-	public Object postProcessBeforeInitialization(Object bean, String beanName)
-			throws BeansException {
-		return bean;
-	}
+    public Object postProcessBeforeInitialization(Object bean, String beanName)
+            throws BeansException {
+        return bean;
+    }
 
-	public Object postProcessAfterInitialization(Object bean, String beanName)
-			throws BeansException {
-		if (bean instanceof AnnotationMethodHandlerAdapter) {
-			AnnotationMethodHandlerAdapter adapter = (AnnotationMethodHandlerAdapter) bean;
-			HttpMessageConverter<?>[] converters = adapter.getMessageConverters();
-			adapter.setMessageConverters((HttpMessageConverter<?>[]) ObjectUtils.addObjectToArray(converters, new AmfHttpMessageConverter()));
-		}
-		return bean;
-	}
+    public Object postProcessAfterInitialization(Object bean, String beanName)
+            throws BeansException {
+        if (bean instanceof AnnotationMethodHandlerAdapter) {
+            AnnotationMethodHandlerAdapter adapter = (AnnotationMethodHandlerAdapter) bean;
+            HttpMessageConverter<?>[] converters = adapter.getMessageConverters();
+            adapter.setMessageConverters(
+                (HttpMessageConverter<?>[]) ObjectUtils.
+                addObjectToArray(converters, new AmfHttpMessageConverter()));
+        }
+        return bean;
+    }
 
 }
         ]]>
@@ -130,13 +132,13 @@ public class HandlerAdapterPostProcessor implements BeanPostProcessor {
 @RequestMapping("/contacts")
 public class ContactsController {
 
-	@Autowired
-	private IContactDAO contactDAO;
+    @Autowired
+    private IContactDAO contactDAO;
 
-	@RequestMapping(method=RequestMethod.POST)
-	public Contact create(@RequestBody Contact contact) {
-		return contactDAO.create(contact);
-	}
+    @RequestMapping(method=RequestMethod.POST)
+    public Contact create(@RequestBody Contact contact) {
+        return contactDAO.create(contact);
+    }
 }
         ]]>
         </programlisting>

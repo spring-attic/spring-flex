@@ -1,4 +1,4 @@
-SPRING FLEX CHANGELOG
+SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
@@ -88,33 +88,17 @@ Bug Fixes
 * FLEX-163 - Spring - Flex does not work with the latest BlazeDS trunk libraries
 * FLEX-166 - Concurrent session management not working as expected with Spring Security 3
 
-Changes in version Spring BlazeDS Integration 1.5.0.M1 and 
-the Flex Addon for Spring Roo 1.0.0.M1 (06.30.2010)
+Changes in version Spring BlazeDS Integration 1.5.0.M1
 _________________________________________
 General
-* Minimum dependencies have been upgraded to Spring 3, BlazeDS 4, and Spring Security 3.  The release distribution also 
-includes version 1.0.0.M1 of the Flex Addon for Spring Roo.  Most of the requirements, including Hibernate serialization support 
-addressed so far in Spring BlazeDS Integration 1.5.0.M1 have been driven by the needs of the Flex Addon.  See the Spring BlazeDS 
-Integration reference manual for details on how to use the Flex Addon for Spring Roo.
+* Minimum dependencies have been upgraded to Spring 3, BlazeDS 4, and Spring Security 3.  Most of the requirements, 
+including Hibernate serialization support addressed so far in Spring BlazeDS Integration 1.5.0.M1 have been driven 
+by the needs of the Flex Addon for Spring Roo.
 
 New Features
 * FLEX-80 - Explicitly support serialization of Hibernate entities to AMF
 * FLEX-137 - Document the Hibernate serialization support.
 * FLEX-138 - Document basic installation and use of the Flex Addon for Spring Roo
-* ROOFLEX-1 - Create a Roo Addon for building Flex applications
-* ROOFLEX-2 - Implement a Roo CLI command to install Flex support
-* ROOFLEX-3 - Move the roo-addon branch into trunk as a Maven module
-* ROOFLEX-4 - Create a separate annotations jar
-* ROOFLEX-5 - Implement a Roo CLI command to scaffold a RemotingDestination for a given Entity
-* ROOFLEX-6 - Create an ActionScript parser-based metadata layer to enable round-tripping changes in .as files
-* ROOFLEX-7 - Implement a Roo CLI command to scaffold a RemotingDestination for all Entities
-* ROOFLEX-8 - Automatically create ActionScript classes that mirror Java types exposed for AMF remoting.
-* ROOFLEX-9 - Enable automatic updates of mirrored ActionScript and Java classes anytime the fields of an existing class are changed by the user.
-* ROOFLEX-10 - Automatically create a basic CRUD UI for an entity that has been exposed for AMF remoting.
-* ROOFLEX-11 - Enable automatic updates of UI scaffolding anytime the fields of an existing scaffolded class are changed by the user.
-* ROOFLEX-12 - Generate Flex client-side Validators that correspond to the Bean Validation annotations on an entity.
-* ROOFLEX-13 - Allow editing of @ManyToOne and @OneToOne relationships in the UI scaffolding
-* ROOFLEX-14 - Generate the configuration for a Flash Builder project
 
 Enhancements
 * FLEX-123 - Update minimum dependency to Spring 3.0

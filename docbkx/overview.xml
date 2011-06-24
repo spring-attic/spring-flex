@@ -36,13 +36,10 @@
             Spring Security 3.0
         </para>
         <para>
-            Spring Integration 1.0
+            Spring Integration 2.0
         </para>
         <para>
             Hibernate 3.5
-        </para>
-        <para>
-            Spring Roo 1.1M1
         </para>
     </sect1>
     <sect1 id="support">

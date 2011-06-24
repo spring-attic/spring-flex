@@ -41,15 +41,19 @@
                         </thead>
                         <tbody>
                             <row>
-                                <entry>org.springframework.flex.core.io.HibernateConfigProcessor</entry>
+                                <entry>org.springframework.flex.core.io.
+                                    HibernateConfigProcessor</entry>
                                 <entry>Uses the Hibernate metadata API to locate mapped Hibernate types to register for AMF conversion and configures specialized Hibernate <code>Converters</code>. See <xref linkend="hibernate-introduction" /></entry>                 
                             </row>
                             <row>
-                                <entry>org.springframework.flex.core.io.JpaHibernateConfigProcessor</entry>
+                                <entry>org.springframework.flex.core.io.
+                                    JpaHibernateConfigProcessor</entry>
                                 <entry>Uses the Hibernate metadata API to locate mapped Hibernate JPA types to register for AMF conversion and configures specialized Hibernate <code>Converters</code>. See <xref linkend="hibernate-introduction" /></entry>
                             </row>
                             <row>
-                                <entry>org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor</entry>
+                                <entry>org.springframework.flex.core.io.
+                                    ClassPathScanningAmfConversionService
+                                    ConfigProcessor</entry>
                                 <entry>Uses classpath scanning to locate types to register for AMF conversion. See <xref linkend="amf-classpath-scanning" /></entry>
                             </row>
                         </tbody>
@@ -100,7 +104,7 @@ public class PackagePrivatePerson {
                 ]]>
                 </programlisting>
             </sect3>
-            <sect3 id="field-mapping">
+            <sect3 id="amf-creator-mapping">
                 <title>Deserializing Immutable Objects with @AmfCreator</title>
                 <para>
                     By default, the <code>SpringPropertyProxy</code> will try to instantiate types using a public no-arg constructor during the AMF 
@@ -222,8 +226,8 @@ public class IgnorableFieldsObject {
                     to register the specialized Hibernate converters.  The following example illustrates this:
                 </para>
                 <para>
-                    First, we configure the <code>ClassPathScanningAmfConversionServiceConfigProcessor</code> using the Spring 3 <link
-                    href="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/beans.html#beans-java" >@Configuration style</link>:
+                    First, we configure the <code>ClassPathScanningAmfConversionServiceConfigProcessor</code> using the Spring 3 <ulink
+                    url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/beans.html#beans-java" >@Configuration style</ulink>:
                 </para>
                 <programlisting language="java">
                 <![CDATA[

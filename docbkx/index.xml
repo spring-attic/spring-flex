@@ -12,6 +12,7 @@
             <author>
                 <firstname>Jeremy</firstname>
                 <surname>Grelle</surname>
+                <affiliation>SpringSource</affiliation>
             </author>
         </authorgroup>
         <legalnotice>
@@ -35,6 +36,5 @@
     <xi:include href="./security.xml"/>
     <xi:include href="./messaging.xml"/>
     <xi:include href="./samples.xml"/>
-    <xi:include href="./flexaddon.xml"/>
     
 </book>
