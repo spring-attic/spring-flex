@@ -353,7 +353,13 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
 
     private void initThreadLocals() {
         // allocate static thread local objects
-        MessageBroker.createThreadLocalObjects();
+        
+        // If available, invoke the MessageBroker.createThreadLocalObjects() method:
+        Method createThreadLocalObjMethod = ReflectionUtils.findMethod(MessageBroker.class, "createThreadLocalObjects");
+        if (createThreadLocalObjMethod != null) {
+            ReflectionUtils.invokeMethod(createThreadLocalObjMethod, null);
+        }
+        
         FlexContext.createThreadLocalObjects();
         SerializationContext.createThreadLocalObjects();
         TypeMarshallingContext.createThreadLocalObjects();
@@ -369,7 +375,13 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
     private void destroyThreadLocals() {
         // clear static member variables for shutdown
         MBeanServerLocatorFactory.clear();
-        MessageBroker.releaseThreadLocalObjects();
+        
+        // If available, invoke the MessageBroker.releaseThreadLocalObjects() method:
+        Method releaseThreadLocalObjMethod = ReflectionUtils.findMethod(MessageBroker.class, "releaseThreadLocalObjects");
+        if (releaseThreadLocalObjMethod != null) {
+            ReflectionUtils.invokeMethod(releaseThreadLocalObjMethod, null);
+        }
+       
         FlexContext.releaseThreadLocalObjects();
         SerializationContext.releaseThreadLocalObjects();
         TypeMarshallingContext.releaseThreadLocalObjects();
