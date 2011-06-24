@@ -98,14 +98,18 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
         Set<Class<?>> typesToRegister = new HashSet<Class<?>>();
         if (hibernateConfigured) {
             for(ClassMetadata classMetadata : this.classMetadata) {
-                typesToRegister.add(classMetadata.getMappedClass(EntityMode.POJO));
-                findComponentProperties(classMetadata.getPropertyTypes(), typesToRegister);
+                if (!classMetadata.getMappedClass(EntityMode.POJO).isInterface()) {
+                    typesToRegister.add(classMetadata.getMappedClass(EntityMode.POJO));
+                    findComponentProperties(classMetadata.getPropertyTypes(), typesToRegister);
+                }
             }
             for (CollectionMetadata collectionMetadata : this.collectionMetadata) {
                 Type elementType = collectionMetadata.getElementType();
                 if (elementType instanceof ComponentType) {
-                    typesToRegister.add(elementType.getReturnedClass());
-                    findComponentProperties(((ComponentType)elementType).getSubtypes(), typesToRegister);
+                    if (!elementType.getReturnedClass().isInterface()) {
+                        typesToRegister.add(elementType.getReturnedClass());
+                        findComponentProperties(((ComponentType)elementType).getSubtypes(), typesToRegister);
+                    }
                 }
             }
         }
