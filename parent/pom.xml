@@ -294,6 +294,7 @@
 						<source>1.5</source>
 						<target>1.5</target>
 						<fork>true</fork>
+						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 				<plugin>
