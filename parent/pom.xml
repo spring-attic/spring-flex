@@ -6,13 +6,49 @@
 	<artifactId>spring-flex-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Spring BlazeDS Integration Parent POM</name>
-	<version>1.5.0.BUILD-SNAPSHOT</version>
+	<version>1.5.1.BUILD-SNAPSHOT</version>
+	
+	<description>
+    	Spring BlazeDS Integration is a top-level Spring project, and a component of the complete Spring Web stack.  This 
+    	project's purpose is to make it easier to build Spring-powered Rich Internet Applications using Adobe Flex as the 
+    	front-end client.  It aims to achieve this purpose by providing first-class support for using the open source 
+    	Adobe BlazeDS project and its powerful remoting and messaging facilities in combination with the familiar Spring 
+    	programming model.
+    </description>
+    
+    <licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+    
+    <url>http://www.springsource.org/spring-flex</url>
+    
+    <scm>
+    	<url>https://src.springframework.org/svn/spring-flex</url>
+    	<connection>https://src.springframework.org/svn/spring-flex</connection>
+    </scm>
+    
+    <developers>
+    	<developer>
+    		<name>Jeremy Grelle</name>
+    		<organization>SpringSource</organization>
+    		<organizationUrl>http://www.springsource.org</organizationUrl>
+    	</developer>
+    	<developer>
+    		<name>Mark Fisher</name>
+    		<organization>SpringSource</organization>
+    		<organizationUrl>http://www.springsource.org</organizationUrl>
+    	</developer>
+    </developers>
 
 	<distributionManagement>
 		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Milestone Repository</name>
-			<url>s3://maven.springframework.org/milestone</url>
+			<id>spring-release</id>
+			<name>Spring Release Repository</name>
+			<url>s3://maven.springframework.org/release</url>
 		</repository>
 
 		<snapshotRepository>
@@ -21,6 +57,20 @@
 			<url>s3://maven.springframework.org/snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
+	<repositories>
+		<repository>
+			<id>spring-external</id>
+			<name>Spring External Repository</name>
+			<url>http://maven.springframework.org/external</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<dependencyManagement>
 		<dependencies>
@@ -280,6 +330,7 @@
 						<source>1.5</source>
 						<target>1.5</target>
 						<fork>true</fork>
+						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 				<plugin>

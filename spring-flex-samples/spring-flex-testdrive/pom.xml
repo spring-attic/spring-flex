@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.flex</groupId>
 		<artifactId>spring-flex-parent</artifactId>
-		<version>1.5.0.BUILD-SNAPSHOT</version>
+		<version>1.5.1.BUILD-SNAPSHOT</version>
 	</parent>
 	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>spring-flex-testdrive</artifactId>
@@ -35,41 +35,6 @@
 	</modules>
 
 	<repositories>
-		<repository>
-			<id>spring-external</id>
-			<name>Spring External Repository</name>
-			<url>http://maven.springframework.org/external</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		
-		<repository>
-			<id>spring-release</id>
-			<name>Spring Release Repository</name>
-			<url>http://maven.springframework.org/release</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		
-		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Milestone Repository</name>
-			<url>http://maven.springframework.org/milestone</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 
 		<repository>
 			<id>flex-mojos-repository</id>
