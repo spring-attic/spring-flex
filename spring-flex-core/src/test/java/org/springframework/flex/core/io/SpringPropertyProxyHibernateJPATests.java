@@ -32,6 +32,7 @@ import org.springframework.flex.core.io.domain.ContactInfo;
 import org.springframework.flex.core.io.domain.EmbeddedAddress;
 import org.springframework.flex.core.io.domain.EmbeddedFloor;
 import org.springframework.flex.core.io.domain.EmbeddedFloorAttributes;
+import org.springframework.flex.core.io.domain.MaritalStatus;
 import org.springframework.flex.core.io.domain.Person;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -327,6 +328,7 @@ public class SpringPropertyProxyHibernateJPATests {
         proxy.setValue(person, "id", Double.NaN);
         proxy.setValue(person, "version", Double.NaN);
         proxy.setValue(person, "name", "Bob");
+        proxy.setValue(person, "maritalStatus", "DIVORCED");
         
         assertNull(person.getVersion());
         EntityManager em = getEntityManager();
@@ -335,6 +337,7 @@ public class SpringPropertyProxyHibernateJPATests {
         assertTrue(person.getId() > 0);
         assertNotNull(person.getVersion());
         assertTrue(person.getVersion() == 0);
+        assertEquals(MaritalStatus.DIVORCED, person.getMaritalStatus());
         person.setName("Robert");
         em.flush();
         assertTrue(person.getVersion() > 0);
@@ -457,6 +460,7 @@ public class SpringPropertyProxyHibernateJPATests {
             em.getTransaction().begin();
             Person father = new Person();
             father.setName("Dad");
+            father.setMaritalStatus(MaritalStatus.MARRIED);
             em.persist(father);
             
             Address address = new Address();
@@ -473,23 +477,27 @@ public class SpringPropertyProxyHibernateJPATests {
             Person mother = new Person();
             mother.setName("Mom");
             mother.setSpouse(father);
+            mother.setMaritalStatus(MaritalStatus.MARRIED);
             em.persist(mother);
 
             father.setSpouse(mother);
 
             Person child1 = new Person();
             child1.setName("Jack");
+            child1.setMaritalStatus(MaritalStatus.MARRIED);
             em.persist(child1);
 
             Person daughterInLaw = new Person();
             daughterInLaw.setName("Lisa");
             daughterInLaw.setSpouse(child1);
+            daughterInLaw.setMaritalStatus(MaritalStatus.MARRIED);
             em.persist(daughterInLaw);
 
             child1.setSpouse(daughterInLaw);
 
             Person child2 = new Person();
             child2.setName("Jill");
+            child2.setMaritalStatus(MaritalStatus.SINGLE);
             em.persist(child2);
 
             Set<Person> children = new HashSet<Person>();

@@ -41,6 +41,8 @@ public class Person {
     @ManyToMany
     private Set<Person> children;
 
+    private MaritalStatus maritalStatus;
+    
     public Integer getId() {
         return id;
     }
@@ -97,9 +99,18 @@ public class Person {
         this.children = children;
     }
     
+    public MaritalStatus getMaritalStatus() {
+        return maritalStatus;
+    }
+
+    public void setMaritalStatus(MaritalStatus maritalStatus) {
+        this.maritalStatus = maritalStatus;
+    }
+
     public static Person stubPerson() {
         Person father = new Person();
         father.setName("Dad");
+        father.setMaritalStatus(MaritalStatus.MARRIED);
         
         Address address = new Address();
         address.setStreet("777 Techwood Drive");
@@ -113,21 +124,25 @@ public class Person {
 
         Person mother = new Person();
         mother.setName("Mom");
+        mother.setMaritalStatus(MaritalStatus.MARRIED);
         mother.setSpouse(father);
 
         father.setSpouse(mother);
 
         Person child1 = new Person();
         child1.setName("Jack");
+        child1.setMaritalStatus(MaritalStatus.MARRIED);
 
         Person daughterInLaw = new Person();
         daughterInLaw.setName("Lisa");
         daughterInLaw.setSpouse(child1);
+        daughterInLaw.setMaritalStatus(MaritalStatus.MARRIED);
 
         child1.setSpouse(daughterInLaw);
 
         Person child2 = new Person();
         child2.setName("Jill");
+        child2.setMaritalStatus(MaritalStatus.SINGLE);
 
         Set<Person> children = new HashSet<Person>();
         children.add(child1);

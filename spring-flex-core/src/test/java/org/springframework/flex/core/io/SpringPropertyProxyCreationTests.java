@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.flex.core.io.domain.MaritalStatus;
 import org.springframework.flex.core.io.domain.ImmutableValueObject;
 import org.springframework.flex.core.io.domain.Person;
 
@@ -16,6 +17,12 @@ public class SpringPropertyProxyCreationTests {
     @Test
     public void testDefaultConstructorObject() {
         PropertyProxy result = SpringPropertyProxy.proxyFor(Person.class, false, new GenericConversionService());
+        assertEquals(SpringPropertyProxy.class, result.getClass());
+    }
+    
+    @Test
+    public void testEnum() {
+        PropertyProxy result = SpringPropertyProxy.proxyFor(MaritalStatus.class, false, new GenericConversionService());
         assertEquals(SpringPropertyProxy.class, result.getClass());
     }
     

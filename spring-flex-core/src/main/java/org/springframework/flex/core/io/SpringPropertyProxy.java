@@ -74,7 +74,7 @@ public class SpringPropertyProxy extends BeanProxy {
             SpringPropertyProxy proxy = new DelayedWriteSpringPropertyProxy(beanType, useDirectFieldAccess, conversionService);
             return proxy;
         } else {
-            Assert.isTrue(ClassUtils.hasConstructor(beanType), "Failed to create SpringPropertyProxy for "+beanType.getName()+" - Classes mapped " +
+            Assert.isTrue(beanType.isEnum() || ClassUtils.hasConstructor(beanType), "Failed to create SpringPropertyProxy for "+beanType.getName()+" - Classes mapped " +
                     "for deserialization from AMF must have either a no-arg default constructor, " +
                     "or a constructor annotated with "+AmfCreator.class.getName());
             SpringPropertyProxy proxy = new SpringPropertyProxy(beanType, useDirectFieldAccess, conversionService);
