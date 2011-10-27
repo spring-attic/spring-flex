@@ -246,6 +246,11 @@ public class SpringSecurityLoginCommand implements LoginCommand, InitializingBea
      * @param authRequest the authentication request object that should have its details set
      */
     protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
-        authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+    	try {
+			authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+		} catch (Exception e) {
+			// This would happen e.g. for LCDS NIO Endpoints, which only have a "shell" request.
+			// Don't do anything.
+		}
     }
 }
