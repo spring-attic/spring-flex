@@ -30,6 +30,8 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.BeanNameAware;
@@ -37,9 +39,11 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.flex.config.FlexConfigurationManager;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
+import org.springframework.flex.config.RuntimeEnvironment;
 import org.springframework.flex.servlet.MessageBrokerHandlerAdapter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
@@ -145,7 +149,7 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
             // Set the servlet config as thread local
             FlexContext.setThreadLocalObjects(null, null, this.messageBroker, null, null, servletConfig);
 
-            setupInternalPathResolver();
+            setupPathResolvers();
 
             setInitServletContext();
 
@@ -335,6 +339,13 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
         ReflectionUtils.makeAccessible(initMethod);
         ReflectionUtils.invokeMethod(initMethod, this.messageBroker, new Object[] { this.servletContext });
     }
+    
+    private void setupPathResolvers() {
+        setupInternalPathResolver();
+        if (RuntimeEnvironment.isBlazeDS46()) {
+            setupExternalPathResolver();
+        }
+    }
 
     private void setupInternalPathResolver() {
         this.messageBroker.setInternalPathResolver(new MessageBroker.InternalPathResolver() {
@@ -342,11 +353,37 @@ public class MessageBrokerFactoryBean implements FactoryBean<MessageBroker>, Bea
             public InputStream resolve(String filename) {
 
                 try {
-                    return MessageBrokerFactoryBean.this.resourceLoader.getResource(FLEXDIR + filename).getInputStream();
+                    Resource resource = MessageBrokerFactoryBean.this.resourceLoader.getResource(FLEXDIR + filename); 
+                    if (resource.exists()) {
+                    return resource.getInputStream();
+                    } else {
+                        return null;
+                    }
                 } catch (IOException e) {
                     throw new IllegalStateException("Could not resolve Flex internal resource at: " + FLEXDIR + filename);
                 }
 
+            }
+        });
+    }
+    
+    private void setupExternalPathResolver() {
+        BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(this.messageBroker);
+        wrapper.setPropertyValue("externalPathResolver", new MessageBroker.InternalPathResolver() {
+            
+            public InputStream resolve(String filename) throws IOException {
+                
+                try {
+                    Resource resource = MessageBrokerFactoryBean.this.resourceLoader.getResource(filename); 
+                    if (resource.exists()) {
+                    return resource.getInputStream();
+                    } else {
+                        return null;
+                    }
+                } catch (IOException e) {
+                    throw new IllegalStateException("Could not resolve Flex internal resource at: " + filename);
+                }
+                
             }
         });
     }

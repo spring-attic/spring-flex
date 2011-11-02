@@ -19,6 +19,7 @@ package org.springframework.flex.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,7 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
      * @param servletConfig the servlet config for the web application
      */
     @SuppressWarnings("unchecked")
-	public MessagingConfiguration getMessagingConfiguration(ServletConfig servletConfig) {
+    public MessagingConfiguration getMessagingConfiguration(ServletConfig servletConfig) {
         Assert.isTrue(JdkVersion.getMajorJavaVersion() >= JdkVersion.JAVA_15, "Spring BlazeDS Integration requires a minimum of Java 1.5");
         Assert.notNull(servletConfig, "FlexConfigurationManager requires a non-null ServletConfig - "
             + "Is it being used outside a WebApplicationContext?");
@@ -104,11 +105,11 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
         MessagingConfiguration configuration = new MessagingConfiguration();
 
         configuration.getSecuritySettings().setServerInfo(servletConfig.getServletContext().getServerInfo());
-        
+
         if (CollectionUtils.isEmpty(configuration.getSecuritySettings().getLoginCommands())) {
-        	LoginCommandSettings settings = new LoginCommandSettings();
-        	settings.setClassName(NoOpLoginCommand.class.getName());
-        	configuration.getSecuritySettings().getLoginCommands().put(LoginCommandSettings.SERVER_MATCH_OVERRIDE, settings);
+            LoginCommandSettings settings = new LoginCommandSettings();
+            settings.setClassName(NoOpLoginCommand.class.getName());
+            configuration.getSecuritySettings().getLoginCommands().put(LoginCommandSettings.SERVER_MATCH_OVERRIDE, settings);
         }
 
         if (this.parser == null) {
@@ -161,34 +162,34 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
     private ConfigurationParser getDefaultConfigurationParser() {
         return new CachingXPathServerConfigurationParser();
     }
-    
+
     /**
-     * This LoginCommand implementation serves as a temporary placeholder in the case where none is 
-     * defined in services-config.xml and a Spring-configured LoginCommand may be injected later.  This 
-     * serves to eliminate a potentially confusing warning message that would otherwise be logged by BlazeDS.
+     * This LoginCommand implementation serves as a temporary placeholder in the case where none is defined in
+     * services-config.xml and a Spring-configured LoginCommand may be injected later. This serves to eliminate a
+     * potentially confusing warning message that would otherwise be logged by BlazeDS.
      */
     public static class NoOpLoginCommand implements LoginCommand {
 
-		public void start(ServletConfig config) {
-						
-		}
+        public void start(ServletConfig config) {
 
-		public void stop() {
-						
-		}
+        }
 
-		public Principal doAuthentication(String username, Object credentials) {
-			return null;
-		}
+        public void stop() {
 
-		@SuppressWarnings("rawtypes")
-		public boolean doAuthorization(Principal principal, List roles) {
-			return false;
-		}
+        }
 
-		public boolean logout(Principal principal) {
-			return false;
-		}
+        public Principal doAuthentication(String username, Object credentials) {
+            return null;
+        }
+
+        @SuppressWarnings("rawtypes")
+        public boolean doAuthorization(Principal principal, List roles) {
+            return false;
+        }
+
+        public boolean logout(Principal principal) {
+            return false;
+        }
     }
 
     /**
@@ -255,6 +256,29 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
 
         private void pushConfigurationFile(Resource configFile) {
             this.configurationPathStack.push(configFile);
+        }
+
+        public List<String> getFiles(String dir) {
+            Resource parent = this.configurationPathStack.peek();
+            String dirPath = StringUtils.cleanPath(dir);
+            dirPath += dirPath.endsWith("/") ? "" : "/";
+            try {
+                Resource dirResource = parent.createRelative(dirPath);
+                Assert.isTrue(dirResource.exists(), "Flex configuration files could not be loaded from directory: " + dirPath);
+
+                Assert.isInstanceOf(ResourcePatternResolver.class, this.resourceLoader,
+                    "Cannot locate incuded resources using the current ResourceLoader - must be an instance of ResourcePatternResolver.");
+                ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
+                Resource[] resources = resolver.getResources(dirResource.getURL().toString() + "*.xml");
+                List<String> result = new ArrayList<String>();
+                for (Resource resource : resources) {
+                    Resource parentDir = parent.createRelative("/");
+                    result.add(resource.getURL().toString().substring(parentDir.getURL().toString().length()));
+                }
+                return result;
+            } catch (IOException e) {
+                throw new IllegalStateException("Flex configuration files could not be loaded from directory: " + dirPath);
+            }
         }
     }
 

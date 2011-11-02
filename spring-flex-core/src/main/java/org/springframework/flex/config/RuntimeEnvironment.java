@@ -18,6 +18,8 @@ package org.springframework.flex.config;
 
 import org.springframework.util.ClassUtils;
 
+import flex.messaging.config.ConfigurationFileResolver;
+
 /**
  * Internal helper class to determine the type of runtime data services environment being used, to allow for
  * automatically adapting to the available capabilities.
@@ -34,6 +36,8 @@ public abstract class RuntimeEnvironment {
     private static final boolean IS_LCDS_ENVIRONMENT;
     
     private static final boolean IS_SPRING_SUPPORT_AVAILABLE;
+
+    private static final boolean IS_BLAZEDS_46;
 
     static {
         boolean asyncMessageBrokerClassPresent;
@@ -52,6 +56,9 @@ public abstract class RuntimeEnvironment {
         } catch (ClassNotFoundException ex) {
         	springSupportClassPresent = false;
         }
+        
+        IS_BLAZEDS_46 = ClassUtils.getMethodIfAvailable(ConfigurationFileResolver.class, "getFiles", String.class) != null;
+        
 
         IS_LCDS_ENVIRONMENT = asyncMessageBrokerClassPresent;
         IS_SPRING_SUPPORT_AVAILABLE = springSupportClassPresent;
@@ -69,6 +76,14 @@ public abstract class RuntimeEnvironment {
      */
     public static boolean isBlazeDS() {
         return !IS_LCDS_ENVIRONMENT;
+    }
+    
+    /**
+     * Returns <code>true</code> if the runtime data services environment is BlazeDS 4.6 or greater.
+     * @return
+     */
+    public static boolean isBlazeDS46(){
+        return IS_BLAZEDS_46;
     }
     
     public static boolean isSpringSupportAvailable() {

@@ -26,6 +26,7 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
 
     protected static final String ENVIRONMENT = "environment";
     protected static final String BLAZEDS = "blazeds";
+    protected static final String BLAZEDS_46 = "blazeds46";
     protected static final String LCDS = "lcds";
     protected static final String LCDS_LEGACY = "lcdslegacy";
 
@@ -35,7 +36,11 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
            Assert.notNull(key, "Profile key cannot be null");
            Assert.isTrue(key.equals(ENVIRONMENT), "Unknown profile key.");
            if (RuntimeEnvironment.isBlazeDS()) {
-               return BLAZEDS;
+               if (RuntimeEnvironment.isBlazeDS46()) {
+                   return BLAZEDS_46;
+               } else {
+                   return BLAZEDS;
+               }
            } else if (RuntimeEnvironment.isLCDS() && RuntimeEnvironment.isSpringSupportAvailable()) {
                return LCDS;
            } else if (RuntimeEnvironment.isLCDS()) {

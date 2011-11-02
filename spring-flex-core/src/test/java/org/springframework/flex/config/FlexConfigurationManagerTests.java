@@ -18,13 +18,13 @@ package org.springframework.flex.config;
 
 import javax.servlet.ServletConfig;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.mock.web.MockServletConfig;
+import org.springframework.test.annotation.IfProfileValue;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
 import flex.messaging.config.ApacheXPathServerConfigurationParser;
@@ -32,7 +32,8 @@ import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.config.XPathServerConfigurationParser;
 
-public class FlexConfigurationManagerTests extends TestCase {
+@TestExecutionListeners(value={}, inheritListeners=false)
+public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwareTests {
 
     ServletConfig config = new MockServletConfig();
 
@@ -172,5 +173,20 @@ public class FlexConfigurationManagerTests extends TestCase {
         } catch (Exception ex) {
             // expected
         }
+    }
+    
+    @IfProfileValue(name=ENVIRONMENT, value=BLAZEDS_46)
+    public void testGetMessagingConfiguration_IncludedChannelsFiles() {
+        this.configManager = new FlexConfigurationManager(this.context, "classpath:org/springframework/flex/core/services-config-4.6.xml");
+
+        MessagingConfiguration messagingConfiguration = this.configManager.getMessagingConfiguration(this.config);
+
+        assertNotNull(messagingConfiguration);
+        assertNotNull(messagingConfiguration.getServiceSettings("message-service"));
+        assertNotNull(messagingConfiguration.getServiceSettings("proxy-service"));
+        assertNotNull(messagingConfiguration.getServiceSettings("remoting-service"));
+        assertNotNull(messagingConfiguration.getChannelSettings("my-included-amf"));
+        assertNotNull(messagingConfiguration.getChannelSettings("my-dir-included-amf-1"));
+        assertNotNull(messagingConfiguration.getChannelSettings("my-dir-included-amf-2"));
     }
 }

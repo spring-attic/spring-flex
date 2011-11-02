@@ -19,18 +19,19 @@ package org.springframework.flex.core;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.springframework.context.ApplicationContext;
+import org.springframework.flex.config.AbstractRuntimeEnvironmentAwareTests;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.config.TestWebInfResourceLoader;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
 import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
 
-public abstract class AbstractMessageBrokerTests extends TestCase {
+@TestExecutionListeners(value={}, inheritListeners=false)
+public abstract class AbstractMessageBrokerTests extends AbstractRuntimeEnvironmentAwareTests {
 
     private static final String ID = AbstractMessageBrokerTests.class.getSimpleName() + "MessageBroker";
     
