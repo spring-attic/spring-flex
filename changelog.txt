@@ -2,6 +2,15 @@ SPRING BLAZEDS INTEGRATION CHANGELOG
 =========================
 http://www.springsource.org/spring-flex
 
+Changes in version Spring BlazeDS Integration 1.5.1.RELEASE (11.02.2011)
+_________________________________________
+Enhancements
+* FLEX-210 - Spring BlazeDS Integration does not support reading of jgroup configuration from an external location
+
+Bug Fixes
+* FLEX-208 - SpringPropertyProxy factory method fails on Enum types
+* FLEX-212 - Spring Security integration does not work with Data Services NIO endpoints
+
 Changes in version Spring BlazeDS Integration 1.5.0.RELEASE (6.24.2011)
 _________________________________________
 Bug Fixes

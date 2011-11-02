@@ -1,4 +1,4 @@
-SPRING BLAZEDS INTEGRATION 1.5.0.RELEASE (June 2011)
+SPRING BLAZEDS INTEGRATION 1.5.1.RELEASE (November 2011)
 ----------------------------------
 http://www.springsource.org/spring-flex
 
@@ -31,7 +31,7 @@ The following jar files are included in the distribution.
 The contents of each jar and its dependencies are noted.
 Dependencies in [brackets] are optional, and are just necessary for certain functionality.
 
-* spring-flex-core-1.5.0.RELEASE.jar
+* spring-flex-core-1.5.1.RELEASE.jar
 - Contents: The Spring BlazeDS Integration core library, containing Spring's integration for Adobe BlazeDS.
 - Runtime Dependencies ([] indicates optional) : Spring Core, Spring MVC, BlazeDS, Commons Logging and HttpClient, CGLib, Backport of javax.util.concurrent, 
 [Spring Security], [Spring Integration], [Spring JMS], [Jackson]    
