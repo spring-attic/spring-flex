@@ -1,4 +1,4 @@
-SPRING BLAZEDS INTEGRATION 1.5.1.RELEASE (November 2011)
+SPRING BLAZEDS INTEGRATION 1.5.2.RELEASE (November 2011)
 ----------------------------------
 http://www.springsource.org/spring-flex
 
