@@ -399,16 +399,24 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         if (RuntimeEnvironment.isLCDS() && (!interceptors.isEmpty() || !translators.isEmpty())) {
             BeanDefinitionBuilder lcdsConfigProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(DATASERVICES_PROCESSOR_CLASS_NAME);
             lcdsConfigProcessorBuilder.addPropertyValue(EXCEPTION_TRANSLATORS_PROPERTY, translators);
-            
+
+            Map<Integer, RuntimeBeanReference> nioInterceptors;
+
             //NIO Endpoints require the PerClientAuthenticationInterceptor
             if (!interceptors.containsKey(MessageInterceptors.PER_CLIENT_AUTH_INTERCEPTOR.getOrder())) {
-            	BeanDefinitionBuilder perClientInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getPerClientAuthenticationInterceptorClassName());
+                BeanDefinitionBuilder perClientInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getPerClientAuthenticationInterceptorClassName());
                 String perClientInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, perClientInterceptorBuilder);
-                interceptors.put(MessageInterceptors.PER_CLIENT_AUTH_INTERCEPTOR.getOrder(), new RuntimeBeanReference(perClientInterceptorBeanId));
+
+                // Initialize the NIO message interceptor map
+                nioInterceptors = new TreeMap<Integer, RuntimeBeanReference>(interceptors);
+                nioInterceptors.put(MessageInterceptors.PER_CLIENT_AUTH_INTERCEPTOR.getOrder(), new RuntimeBeanReference(perClientInterceptorBeanId));
             }
-            
+            else {
+                nioInterceptors = interceptors;
+            }
+
             ManagedSet<RuntimeBeanReference> managedInterceptors = new ManagedSet<RuntimeBeanReference>();
-            managedInterceptors.addAll(interceptors.values());
+            managedInterceptors.addAll(nioInterceptors.values());
             managedInterceptors.setSource(parserContext.extractSource(securedElement));
             
             lcdsConfigProcessorBuilder.addPropertyValue(MESSAGE_INTERCEPTORS_PROPERTY, managedInterceptors);
