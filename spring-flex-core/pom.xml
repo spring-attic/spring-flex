@@ -47,7 +47,15 @@
     	</developer>
     </developers>
 
-	<build>
+    <contributors>
+        <contributor>
+            <name>Jose Barragan</name>
+            <organization>Codeoscopic</organization>
+            <organizationUrl>http://www.codeoscopic.com</organizationUrl>
+        </contributor>
+    </contributors>
+
+    <build>
 		<plugins>
 			<plugin>
 				<groupId>com.springsource.bundlor</groupId>
@@ -98,8 +106,8 @@
                                     <!-- copies doc-files subdirectory which contains image resources -->
                                     <docfilessubdirs>true</docfilessubdirs>
                                     <links>
-                                        <link>http://static.springframework.org/spring/docs/3.0.x/javadoc-api</link>
-                                        <link>http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs</link>
+                                        <link>http://static.springframework.org/spring/docs/3.1.x/javadoc-api</link>
+                                        <link>http://static.springsource.org/spring-security/site/docs/3.1.x/apidocs</link>
                                         <link>http://java.sun.com/javase/6/docs/api</link>
                                         <link>http://livedocs.adobe.com/blazeds/4/javadoc</link>
                                     </links>
@@ -237,6 +245,14 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
@@ -252,7 +268,12 @@
 			<artifactId>log4j</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 	
 	<pluginRepositories>
 		<pluginRepository>
