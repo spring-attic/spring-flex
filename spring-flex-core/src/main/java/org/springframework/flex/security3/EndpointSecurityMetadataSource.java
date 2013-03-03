@@ -16,6 +16,15 @@
 
 package org.springframework.flex.security3;
 
+import flex.messaging.FlexContext;
+import flex.messaging.endpoints.Endpoint;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityMetadataSource;
+import org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.util.RequestMatcher;
+import org.springframework.util.Assert;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,18 +32,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.SecurityMetadataSource;
-import org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.util.RequestMatcher;
-import org.springframework.security.web.util.UrlMatcher;
-import org.springframework.util.Assert;
-
-import flex.messaging.FlexContext;
-import flex.messaging.endpoints.Endpoint;
 
 /**
  * 
@@ -53,7 +50,7 @@ public class EndpointSecurityMetadataSource implements SecurityMetadataSource {
     private Map<String, Collection<ConfigAttribute>> endpointMap = new LinkedHashMap<String, Collection<ConfigAttribute>>();
 
     /**
-     * @see DefaultFilterInvocationSecurityMetadataSource#DefaultFilterInvocationSecurityMetadataSource(UrlMatcher, LinkedHashMap)
+     * @see DefaultFilterInvocationSecurityMetadataSource#DefaultFilterInvocationSecurityMetadataSource(LinkedHashMap)
      */
     public EndpointSecurityMetadataSource(LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap) {
     	Assert.notNull(requestMap, "requestMap cannot be null");
@@ -64,7 +61,7 @@ public class EndpointSecurityMetadataSource implements SecurityMetadataSource {
      * Builds the internal request map from the supplied map, and stores the endpoint map for matching by channel id.
      * 
      * @param endpointMap map of &lt;String, Collection&lt;ConfigAttribute&gt;&gt;
-     * @see DefaultFilterInvocationSecurityMetadataSource#DefaultFilterInvocationSecurityMetadataSource(UrlMatcher, LinkedHashMap)
+     * @see DefaultFilterInvocationSecurityMetadataSource#DefaultFilterInvocationSecurityMetadataSource(LinkedHashMap)
      */
     public EndpointSecurityMetadataSource(LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap,
         HashMap<String, Collection<ConfigAttribute>> endpointMap) {
