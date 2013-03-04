@@ -16,12 +16,9 @@
 
 package org.springframework.flex.core.io;
 
-import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-
+import flex.messaging.io.BeanProxy;
+import flex.messaging.io.PropertyProxy;
+import flex.messaging.io.amf.ASObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanInstantiationException;
@@ -34,9 +31,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
-import flex.messaging.io.BeanProxy;
-import flex.messaging.io.PropertyProxy;
-import flex.messaging.io.amf.ASObject;
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Spring {@link ConversionService}-aware {@link PropertyProxy} that seeks to find an appropriate converter for 
@@ -153,7 +152,7 @@ public class SpringPropertyProxy extends BeanProxy {
             getType(instance, propertyName);
             log.debug("Actual type of value for property '"+propertyName+"' on instance "+instance+" is "+(value != null ? value.getClass() : null));
         }
-        
+
         TypeDescriptor targetType = accessor.getPropertyTypeDescriptor(propertyName);
         TypeDescriptor sourceType = value == null ? targetType : TypeDescriptor.valueOf(value.getClass());
         if (this.conversionService.canConvert(sourceType, targetType)) {

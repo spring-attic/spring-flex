@@ -16,10 +16,7 @@
 
 package org.springframework.flex.core.io;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.hibernate.EntityMode;
+import flex.messaging.io.PropertyProxyRegistry;
 import org.hibernate.SessionFactory;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
@@ -35,7 +32,8 @@ import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.util.Assert;
 
-import flex.messaging.io.PropertyProxyRegistry;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * {@link MessageBrokerConfigProcessor} implementation that uses the Hibernate Metadata API to determine all classes that potentially need 
@@ -98,8 +96,8 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
         Set<Class<?>> typesToRegister = new HashSet<Class<?>>();
         if (hibernateConfigured) {
             for(ClassMetadata classMetadata : this.classMetadata) {
-                if (!classMetadata.getMappedClass(EntityMode.POJO).isInterface()) {
-                    typesToRegister.add(classMetadata.getMappedClass(EntityMode.POJO));
+                if (!classMetadata.getMappedClass().isInterface()) {
+                    typesToRegister.add(classMetadata.getMappedClass());
                     findComponentProperties(classMetadata.getPropertyTypes(), typesToRegister);
                 }
             }

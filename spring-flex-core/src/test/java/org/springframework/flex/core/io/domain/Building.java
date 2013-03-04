@@ -2,11 +2,7 @@ package org.springframework.flex.core.io.domain;
 
 import java.util.Set;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Building {
@@ -18,8 +14,7 @@ public class Building {
 	@Embedded
 	private EmbeddedAddress address;
 	
-	@SuppressWarnings("deprecation")
-    @org.hibernate.annotations.CollectionOfElements
+	@ElementCollection
 	private Set<EmbeddedFloor> floors;
 
 	public Integer getId() {
