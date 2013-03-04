@@ -16,14 +16,12 @@
 
 package org.springframework.flex.security3;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import flex.messaging.MessageException;
+import flex.messaging.io.MessageIOConstants;
+import flex.messaging.io.amf.ActionMessage;
+import flex.messaging.io.amf.MessageBody;
+import flex.messaging.messages.ErrorMessage;
+import flex.messaging.messages.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.flex.core.ExceptionTranslator;
@@ -40,12 +38,12 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.util.CollectionUtils;
 
-import flex.messaging.MessageException;
-import flex.messaging.io.MessageIOConstants;
-import flex.messaging.io.amf.ActionMessage;
-import flex.messaging.io.amf.MessageBody;
-import flex.messaging.messages.ErrorMessage;
-import flex.messaging.messages.Message;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * An {@link AuthenticationEntryPoint} implementation to be used in conjunction with an authentication 
@@ -102,6 +100,7 @@ public class FlexAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
 		
 		if (!converter.canRead(Object.class, inputMessage.getHeaders().getContentType())) {
 			super.commence(request, response, authException);
+			return;
 		}
 		
 		ActionMessage deserializedInput = null;
