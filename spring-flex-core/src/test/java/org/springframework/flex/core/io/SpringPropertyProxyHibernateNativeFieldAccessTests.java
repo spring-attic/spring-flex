@@ -1,20 +1,13 @@
 
 package org.springframework.flex.core.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import flex.messaging.io.PropertyProxyRegistry;
+import flex.messaging.io.SerializationContext;
+import flex.messaging.io.amf.AmfMessageDeserializer;
+import flex.messaging.io.amf.AmfMessageSerializer;
+import flex.messaging.io.amf.AmfTrace;
+import flex.messaging.io.amf.MessageBody;
+import flex.messaging.util.ToStringPrettyPrinter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.LazyInitializationException;
@@ -45,13 +38,19 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import flex.messaging.io.PropertyProxyRegistry;
-import flex.messaging.io.SerializationContext;
-import flex.messaging.io.amf.AmfMessageDeserializer;
-import flex.messaging.io.amf.AmfMessageSerializer;
-import flex.messaging.io.amf.AmfTrace;
-import flex.messaging.io.amf.MessageBody;
-import flex.messaging.util.ToStringPrettyPrinter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "hibernate-np-context.xml")
