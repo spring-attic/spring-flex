@@ -16,14 +16,14 @@
 
 package org.springframework.flex.core.io;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.util.Assert;
-
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * {@link GenericConverter} implementation that converts from {@link HibernateProxy} to {@code Object} and will either:

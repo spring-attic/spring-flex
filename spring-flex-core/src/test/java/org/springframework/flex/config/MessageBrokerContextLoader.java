@@ -1,7 +1,5 @@
 package org.springframework.flex.config;
 
-import flex.messaging.FlexContext;
-import flex.messaging.MessageBroker;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -10,6 +8,9 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.MergedContextConfiguration;
 import org.springframework.test.context.support.AbstractContextLoader;
 import org.springframework.web.context.support.GenericWebApplicationContext;
+
+import flex.messaging.FlexContext;
+import flex.messaging.MessageBroker;
 
 
 public class MessageBrokerContextLoader extends AbstractContextLoader {

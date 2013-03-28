@@ -16,9 +16,12 @@
 
 package org.springframework.flex.core.io;
 
-import flex.messaging.io.BeanProxy;
-import flex.messaging.io.PropertyProxy;
-import flex.messaging.io.amf.ASObject;
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanInstantiationException;
@@ -31,11 +34,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import flex.messaging.io.BeanProxy;
+import flex.messaging.io.PropertyProxy;
+import flex.messaging.io.amf.ASObject;
 
 /**
  * Spring {@link ConversionService}-aware {@link PropertyProxy} that seeks to find an appropriate converter for 
