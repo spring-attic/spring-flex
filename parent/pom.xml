@@ -105,18 +105,27 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>4.1.9.Final</version>
+                <version>4.1.10.Final</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-annotations</artifactId>
                 <version>3.5.6-Final</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-				<version>4.1.9.Final</version>
+				<version>4.1.10.Final</version>
+                <optional>true</optional>
 			</dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>3.6.10.Final</version>
+                <optional>true</optional>
+            </dependency>
 			<dependency>
 				<groupId>javax.annotation</groupId>
 				<artifactId>jsr250-api</artifactId>
