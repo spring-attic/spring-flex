@@ -171,8 +171,8 @@
                                     </groups>
                                     <excludePackageNames>org.springframework.flex.roo.addon:org.springframework.flex.samples</excludePackageNames>
                                     <links>
-                                        <link>http://static.springframework.org/spring/docs/3.1.x/javadoc-api</link>
-                                        <link>http://static.springsource.org/spring-security/site/docs/3.1.x/apidocs</link>
+                                        <link>http://static.springframework.org/spring/docs/3.2.x/javadoc-api</link>
+                                        <link>http://static.springsource.org/spring-security/site/docs/3.2.x/apidocs</link>
                                         <link>http://java.sun.com/javase/6/docs/api</link>
                                         <link>http://livedocs.adobe.com/blazeds/4/javadoc</link>
                                     </links>
