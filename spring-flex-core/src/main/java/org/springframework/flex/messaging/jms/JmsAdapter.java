@@ -269,7 +269,7 @@ public class JmsAdapter extends MessagingAdapter implements InitializingBean, Be
         super.stop();
     }
 
-    DefaultMessageListenerContainer getMessageListenerContainer() {
+    public DefaultMessageListenerContainer getMessageListenerContainer() {
         return this.messageListenerContainer;
     }
 

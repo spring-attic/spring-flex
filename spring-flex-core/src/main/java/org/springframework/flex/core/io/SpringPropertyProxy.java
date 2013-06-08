@@ -29,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.FieldTypeDescriptor;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -193,10 +194,10 @@ public class SpringPropertyProxy extends BeanProxy {
             return true;
         }
         if (this.useDirectFieldAccess) {
-            AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
+            AmfIgnoreField ignoreField = accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onSerialization();
         } else {
-            PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
+            PropertyDescriptor pd = BeanWrapper.class.cast(accessor).getPropertyDescriptor(propertyName);
             return pd.getReadMethod().getAnnotation(AmfIgnore.class) != null;
         }
     }
@@ -207,10 +208,10 @@ public class SpringPropertyProxy extends BeanProxy {
             return true;
         }
         if (this.useDirectFieldAccess) {
-            AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
+            AmfIgnoreField ignoreField = accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onDeserialization();
         } else {
-            PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
+            PropertyDescriptor pd = BeanWrapper.class.cast(accessor).getPropertyDescriptor(propertyName);
             return pd.getWriteMethod().getAnnotation(AmfIgnore.class) != null;
         }
     }
@@ -273,7 +274,7 @@ public class SpringPropertyProxy extends BeanProxy {
             for (int i=0; i<params.length; i++) {
                 Object value = sourceInstance.remove(this.paramNames.get(i));
                 TypeDescriptor targetType = TypeDescriptor.valueOf(this.amfConstructor.getParameterTypes()[i]);
-                TypeDescriptor sourceType = value == null ? targetType : TypeDescriptor.valueOf(value.getClass());
+                TypeDescriptor sourceType = value == null ? targetType : FieldTypeDescriptor.valueOf(value.getClass());
                 if (this.conversionService.canConvert(sourceType, targetType)) {
                     value = this.conversionService.convert(value, sourceType, targetType);
                 }
