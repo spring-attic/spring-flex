@@ -49,9 +49,9 @@ public class HibernateSerializationConfigPostProcessor implements BeanFactoryPos
 
     private static final Log log = LogFactory.getLog(HibernateSerializationConfigPostProcessor.class);
     
-    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.core.io.HibernateConfigProcessor";
+    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.orm.hibernate3.HibernateConfigProcessor";
     
-    private static final String JPA_HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.core.io.JpaHibernateConfigProcessor";
+    private static final String JPA_HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.orm.hibernate3.config.JpaHibernateConfigProcessor";
     
     private static final String MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME = "org.springframework.flex.core.MessageBrokerFactoryBean";
     
