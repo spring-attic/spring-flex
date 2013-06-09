@@ -21,6 +21,8 @@ import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.core.convert.FieldTypeDescriptor;
+import org.springframework.core.convert.PropertyTypeDescriptor;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.util.Assert;
@@ -43,11 +45,14 @@ public class HibernateProxyConverter implements GenericConverter {
 	public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
 		Assert.isInstanceOf(HibernateProxy.class, source, "Expected an instance of HibernateProxy to convert");
 		Assert.isAssignable(HibernateProxy.class, sourceType.getType(), "Expected a subclass of HibernateProxy for the source type");
-		HibernateProxy hibernateProxy = HibernateProxy.class.cast(source);
-		if (!Hibernate.isInitialized(hibernateProxy)) {
-			return null;
+		if (PropertyTypeDescriptor.class.isInstance(targetType) ||
+				    FieldTypeDescriptor.class.isInstance(targetType) &&
+						    FieldTypeDescriptor.class.cast(targetType).getField() != null){
+			if(!Hibernate.isInitialized(source)) {
+				return null;
+			}
 		}
-		return hibernateProxy.getHibernateLazyInitializer().getImplementation();
+		return HibernateProxy.class.cast(source).getHibernateLazyInitializer().getImplementation();
 	}
 
 	/**
