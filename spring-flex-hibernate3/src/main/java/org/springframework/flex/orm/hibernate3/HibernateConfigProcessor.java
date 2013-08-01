@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.flex.core.io;
+package org.springframework.flex.orm.hibernate3;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +32,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
+import org.springframework.flex.core.io.AbstractAmfConversionServiceConfigProcessor;
+import org.springframework.flex.core.io.PersistentCollectionConverterFactory;
 import org.springframework.util.Assert;
 
 import flex.messaging.io.PropertyProxyRegistry;
@@ -39,7 +41,7 @@ import flex.messaging.io.PropertyProxyRegistry;
 /**
  * {@link MessageBrokerConfigProcessor} implementation that uses the Hibernate Metadata API to determine all classes that potentially need 
  * special AMF conversion rules applied to them to prevent lazy initialization errors.  Each type found will have a properly configured 
- * instance of {@link SpringPropertyProxy} registered for it with the BlazeDS {@link PropertyProxyRegistry}.
+ * instance of {@link org.springframework.flex.core.io.SpringPropertyProxy} registered for it with the BlazeDS {@link PropertyProxyRegistry}.
  *
  * @author Jeremy Grelle
  */
@@ -135,7 +137,7 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
     
     /**
      * Extracts all {@link ClassMetadata} and {@link CollectionMetadata} from a given {@link SessionFactory} to be 
-     * used in determining the types that need a {@link SpringPropertyProxy} registered in {@link #findTypesToRegister()}
+     * used in determining the types that need a {@link org.springframework.flex.core.io.SpringPropertyProxy} registered in {@link #findTypesToRegister()}
      * @param sessionFactory the session factory from which to read metadata
      */
     @SuppressWarnings("unchecked")
