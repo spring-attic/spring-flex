@@ -33,6 +33,7 @@ import org.springframework.flex.core.io.domain.EmbeddedAddressNP;
 import org.springframework.flex.core.io.domain.EmbeddedFloorAttributesNP;
 import org.springframework.flex.core.io.domain.EmbeddedFloorNP;
 import org.springframework.flex.core.io.domain.PersonNP;
+import org.springframework.flex.orm.hibernate3.config.JpaHibernateConfigProcessor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;

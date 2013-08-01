@@ -8,16 +8,16 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <jdbc:embedded-database type="H2" id="dataSource" />
-    
+
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
-    
+
     <tx:annotation-driven />
-    
+
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-    	<property name="dataSource" ref="dataSource"/>
-    	<property name="persistenceXmlLocation" value="classpath:org/springframework/flex/core/io/persistence.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="persistenceXmlLocation" value="classpath:org/springframework/flex/core/io/persistence.xml"/>
     </bean>
     
 </beans>

@@ -30,6 +30,7 @@ import org.springframework.flex.core.io.domain.Company;
 import org.springframework.flex.core.io.domain.ContactInfo;
 import org.springframework.flex.core.io.domain.Person;
 import org.springframework.flex.core.io.domain.PrimitiveCompany;
+import org.springframework.flex.orm.hibernate3.HibernateConfigProcessor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;

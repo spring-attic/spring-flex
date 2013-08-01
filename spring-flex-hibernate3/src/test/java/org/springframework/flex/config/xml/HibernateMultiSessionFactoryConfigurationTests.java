@@ -6,7 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.flex.config.AbstractFlexConfigurationTests;
 import org.springframework.flex.config.MessageBrokerContextLoader;
 import org.springframework.flex.config.TestWebInfResourceLoader;
-import org.springframework.flex.core.io.HibernateConfigProcessor;
+import org.springframework.flex.orm.hibernate3.HibernateConfigProcessor;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.context.support.GenericWebApplicationContext;

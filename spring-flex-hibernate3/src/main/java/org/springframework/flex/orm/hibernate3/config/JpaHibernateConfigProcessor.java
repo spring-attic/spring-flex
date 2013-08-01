@@ -21,22 +21,23 @@ import java.lang.reflect.Method;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
+import org.springframework.flex.orm.hibernate3.HibernateConfigProcessor;
+
 /**
- * Specialized subclass of {@link HibernateConfigProcessor} that can be used with a Hibernate-provided JPA {@link EntityManagerFactory} 
- * instead of the native Hibernate {@link SessionFactory}.
- * 
+ * Specialized subclass of {@link HibernateConfigProcessor} that can be used with a Hibernate-provided JPA {@link javax.persistence.EntityManagerFactory}
+ * instead of the native Hibernate {@link org.hibernate.SessionFactory}.
+ *
  * @see HibernateConfigProcessor
  * @author Jeremy Grelle
  */
-public class JpaHibernateConfigProcessor extends HibernateConfigProcessor{
+public class JpaHibernateConfigProcessor extends HibernateConfigProcessor {
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -50,9 +51,9 @@ public class JpaHibernateConfigProcessor extends HibernateConfigProcessor{
     }
 
     /**
-     * Sets the Hibernate-provided {@link EntityManagerFactory} to be used for reading type metadata.  If this property is not 
-     * explicitly set, all available {@code EntityManagerFactory} instances will be retrieved from the containing 
-     * {@link BeanFactory} and have their type metadata extracted for use in {@link #findTypesToRegister()}
+     * Sets the Hibernate-provided {@link javax.persistence.EntityManagerFactory} to be used for reading type metadata.  If this property is not
+     * explicitly set, all available {@code EntityManagerFactory} instances will be retrieved from the containing
+     * {@link org.springframework.beans.factory.BeanFactory} and have their type metadata extracted for use in {@link #findTypesToRegister()}
      * @param entityManagerFactory the entity manager factory from which to read metadata
      */
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {

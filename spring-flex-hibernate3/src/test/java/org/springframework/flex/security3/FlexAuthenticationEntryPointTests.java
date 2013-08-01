@@ -8,8 +8,6 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 
-import junit.framework.TestCase;
-
 import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.flex.core.io.domain.Person;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -26,6 +24,8 @@ import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.MessageBody;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.ErrorMessage;
+
+import junit.framework.TestCase;
 
 public class FlexAuthenticationEntryPointTests extends TestCase {
 
