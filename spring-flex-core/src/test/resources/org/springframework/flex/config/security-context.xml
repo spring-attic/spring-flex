@@ -20,8 +20,6 @@
 			</security:user-service>
 		</security:authentication-provider>
 	</security:authentication-manager>
-    
-    <bean id="testHelper" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$AccessDecisionManagerLogger"/>
-	
+
 	<security:global-method-security secured-annotations="enabled" />
 </beans> 

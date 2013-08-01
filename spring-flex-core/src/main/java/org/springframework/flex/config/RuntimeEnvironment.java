@@ -30,18 +30,21 @@ import flex.messaging.config.ConfigurationFileResolver;
 public abstract class RuntimeEnvironment {
 
     private static final String ASYNC_MESSAGE_BROKER_CLASS_NAME = "flex.messaging.AsyncMessageBroker";
-
     private static final String SPRING_SUPPORT_CLASS_NAME = "flex.springintegration.core.DataServicesConfigProcessor";
+	private static final String HIBERNATE_SUPPORT_CLASS_NAME = "org.hibernate.Hibernate";
+	private static final String HIBERNATE4_SUPPORT_CLASS_NAME = "org.hibernate.collection.spi.PersistentCollection";
     
     private static final boolean IS_LCDS_ENVIRONMENT;
-    
     private static final boolean IS_SPRING_SUPPORT_AVAILABLE;
-
     private static final boolean IS_BLAZEDS_46;
+	private static final boolean IS_HIBERNATE_SUPPORT_AVAILABLE;
+	private static final boolean IS_HIBERNATE_4;
 
     static {
         boolean asyncMessageBrokerClassPresent;
         boolean springSupportClassPresent;
+	    boolean hibernateSupportClassPresent;
+	    boolean hibernate4SupportClassPresent;
         
         try {
             ClassUtils.forName(ASYNC_MESSAGE_BROKER_CLASS_NAME, null);
@@ -56,12 +59,28 @@ public abstract class RuntimeEnvironment {
         } catch (ClassNotFoundException ex) {
         	springSupportClassPresent = false;
         }
+
+	    try {
+		    ClassUtils.forName(HIBERNATE_SUPPORT_CLASS_NAME, null);
+		    hibernateSupportClassPresent = true;
+	    } catch (ClassNotFoundException ex) {
+		    hibernateSupportClassPresent = false;
+	    }
+
+	    try {
+		    ClassUtils.forName(HIBERNATE4_SUPPORT_CLASS_NAME, null);
+		    hibernate4SupportClassPresent = true;
+	    } catch (ClassNotFoundException ex) {
+		    hibernate4SupportClassPresent = false;
+	    }
         
         IS_BLAZEDS_46 = ClassUtils.getMethodIfAvailable(ConfigurationFileResolver.class, "getFiles", String.class) != null;
         
 
         IS_LCDS_ENVIRONMENT = asyncMessageBrokerClassPresent;
         IS_SPRING_SUPPORT_AVAILABLE = springSupportClassPresent;
+	    IS_HIBERNATE_SUPPORT_AVAILABLE = hibernateSupportClassPresent;
+	    IS_HIBERNATE_4 = hibernate4SupportClassPresent;
     }
 
     /**
@@ -89,4 +108,12 @@ public abstract class RuntimeEnvironment {
     public static boolean isSpringSupportAvailable() {
     	return IS_SPRING_SUPPORT_AVAILABLE;
     }
+
+	public static boolean isHibernateSupportAvailable(){
+		return IS_HIBERNATE_SUPPORT_AVAILABLE;
+	}
+
+	public static boolean isHibernate4(){
+		return IS_HIBERNATE_4;
+	}
 }

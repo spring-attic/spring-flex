@@ -54,117 +54,68 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     // --------------------------- Full qualified class names ----------------//
     private static final String MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME = "org.springframework.flex.core.MessageBrokerFactoryBean";
-
     private static final String MESSAGE_BROKER_HANDLER_ADAPTER_CLASS_NAME = "org.springframework.flex.servlet.MessageBrokerHandlerAdapter";
-
     private static final String DEFAULT_HANDLER_MAPPING_CLASS_NAME = "org.springframework.web.servlet.handler.SimpleUrlHandlerMapping";
-
     private static final String ENDPOINT_PROCESSOR_CLASS_NAME = "org.springframework.flex.core.EndpointConfigProcessor";
-
     private static final String EXCEPTION_TRANSLATION_CLASS_NAME = "org.springframework.flex.core.ExceptionTranslationAdvice";
-
     private static final String MESSAGE_INTERCEPTION_CLASS_NAME = "org.springframework.flex.core.MessageInterceptionAdvice";
-
     private static final String SERVICE_MESSAGE_ADVISOR_CLASS_NAME = "org.springframework.flex.core.EndpointServiceMessagePointcutAdvisor";
-
     private static final String REMOTING_PROCESSOR_CLASS_NAME = "org.springframework.flex.remoting.RemotingServiceConfigProcessor";
-
     private static final String MESSAGING_PROCESSOR_CLASS_NAME = "org.springframework.flex.messaging.MessageServiceConfigProcessor";
-
     private static final String DATASERVICES_PROCESSOR_CLASS_NAME = "flex.springintegration.core.DataServicesConfigProcessor";
-
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
-
-    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.HibernateSerializationConfigPostProcessor";
-
+    private static final String HIBERNATE3_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.orm.hibernate3.config.HibernateSerializationConfigPostProcessor";
+	private static final String HIBERNATE4_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.orm.hibernate4.config.HibernateSerializationConfigPostProcessor";
     private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
-
     private static final String JSON_CONFIG_MAP_EDITOR_CLASS_NAME = "org.springframework.flex.config.json.JsonConfigMapPropertyEditor";
-    
     private static final String LOGIN_COMMAND_PROCESSOR_CLASS_NAME = "org.springframework.flex.core.LoginCommandConfigProcessor";
-
     private static final String CONFIG_MAP_CLASS_NAME = "flex.messaging.config.ConfigMap";
 
     // --------------------------- XML Config Attributes ---------------------//
     private static final String CONFIGURATION_MANAGER_ATTR = "configuration-manager";
-    
     private static final String EXCEPTION_LOGGER_ATTR = "exception-logger";
-
     private static final String SERVICES_CONFIG_PATH_ATTR = "services-config-path";
-
     private static final String MAPPING_ORDER_ATTR = "mapping-order";
-
     private static final String DISABLE_DEFAULT_MAPPING_ATTR = "disable-default-mapping";
-
     private static final String PATTERN_ATTR = "pattern";
-
     private static final String REF_ATTR = "ref";
-    
     private static final String POSITION_ATTR = "position";
-    
     private static final String BEFORE_ATTR = "before";
-    
     private static final String AFTER_ATTR = "after";
-
     private static final String AUTH_MANAGER_ATTR = "authentication-manager";
-
     private static final String ACCESS_MANAGER_ATTR = "access-decision-manager";
-    
     private static final String LOGIN_COMMAND_ATTR = "login-command";
-
     private static final String INVALIDATE_HTTP_SESSION_ATTR = "invalidate-http-session";
-    
     private static final String PER_CLIENT_AUTHENTICATION_ATTR = "per-client-authentication";
-
     private static final String ACCESS_ATTR = "access";
-
     private static final String CHANNEL_ATTR = "channel";
 
     // --------------------------- Bean Configuration Properties -------------//
     private static final String URL_MAP_PROPERTY = "urlMap";
-
     private static final String ORDER_PROPERTY = "order";
-
     private static final String CONFIG_PROCESSORS_PROPERTY = "configProcessors";
-    
     private static final String INVALIDATE_HTTP_SESSION_PROPERTY = "invalidateHttpSession";
-
     private static final String PER_CLIENT_AUTHENTICATION_PROPERTY = "perClientAuthentication";
-
     private static final String AUTH_MANAGER_PROPERTY = "authenticationManager";
-
     private static final String ACCESS_MANAGER_PROPERTY = "accessDecisionManager";
-
     private static final String OBJECT_DEF_SOURCE_PROPERTY = "objectDefinitionSource";
-
     private static final String EXCEPTION_TRANSLATORS_PROPERTY = "exceptionTranslators";
-
     private static final String MESSAGE_INTERCEPTORS_PROPERTY = "messageInterceptors";
-
     private static final String CUSTOM_EDITORS_PROPERTY = "customEditors";
 
     // --------------------------- XML Child Elements ------------------------//
     private static final String MAPPING_PATTERN_ELEMENT = "mapping";
-
     private static final String CONFIG_PROCESSOR_ELEMENT = "config-processor";
-
     private static final String EXCEPTION_TRANSLATOR_ELEMENT = "exception-translator";
-
     private static final String MESSAGE_INTERCEPTOR_ELEMENT = "message-interceptor";
-
     private static final String SECURED_ELEMENT = "secured";
-
     private static final String SECURED_CHANNEL_ELEMENT = "secured-channel";
-
     private static final String SECURED_ENDPOINT_PATH_ELEMENT = "secured-endpoint-path";
-
     private static final String REMOTING_SERVICE_ELEMENT = "remoting-service";
-
     private static final String MESSAGE_SERVICE_ELEMENT = "message-service";
 
     // --------------------------- Default Values ----------------------------//
     private static final String DEFAULT_MAPPING_PATH = "/*";
-
     private final SpringSecurityConfigHelper securityHelper = SpringSecurityConfigResolver.resolve();
 
     @Override
@@ -464,8 +415,13 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     }
 
     private void registerHibernateSerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
-        if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
-            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME);
+        if (RuntimeEnvironment.isHibernateSupportAvailable() && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
+	        BeanDefinitionBuilder processorBuilder;
+	        if(RuntimeEnvironment.isHibernate4()){
+                processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE4_CONFIG_PROCESSOR_CLASS_NAME);
+	        }else{
+		        processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE3_CONFIG_PROCESSOR_CLASS_NAME);
+	        }
             ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
         }
     }

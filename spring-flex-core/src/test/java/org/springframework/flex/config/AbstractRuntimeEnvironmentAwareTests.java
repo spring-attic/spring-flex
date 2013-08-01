@@ -29,6 +29,8 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
     protected static final String BLAZEDS_46 = "blazeds46";
     protected static final String LCDS = "lcds";
     protected static final String LCDS_LEGACY = "lcdslegacy";
+	protected static final String HIBERNATE = "hibernate";
+	protected static final String HIBERNATE_4 = "hibernate4";
 
     public static final class RuntimeEnvironmentProfileValueSource implements ProfileValueSource {
     
@@ -45,6 +47,10 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
                return LCDS;
            } else if (RuntimeEnvironment.isLCDS()) {
         	   return LCDS_LEGACY;
+           } else if (RuntimeEnvironment.isHibernateSupportAvailable() && RuntimeEnvironment.isSpringSupportAvailable()) {
+	           return HIBERNATE;
+           } else if (RuntimeEnvironment.isHibernate4() && RuntimeEnvironment.isSpringSupportAvailable()) {
+	           return HIBERNATE_4;
            } else {
                throw new IllegalStateException("Runtime data services environment is unknown.");
            }

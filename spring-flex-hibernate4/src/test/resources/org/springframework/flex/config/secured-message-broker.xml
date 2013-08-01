@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:flex="http://www.springframework.org/schema/flex"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  			  http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://www.springframework.org/schema/flex 
+              http://www.springframework.org/schema/flex/spring-flex-1.5.xsd">
+              
+    <flex:message-broker id="defaultSecured2">
+    	<flex:secured>
+    		<flex:secured-channel channel="my-amf" access="ROLE_USER" />
+    	</flex:secured>
+    </flex:message-broker>
+	
+	<import resource="security-context.xml"/>
+	
+</beans> 

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>spring-flex-parent</artifactId>
+        <groupId>org.springframework.flex</groupId>
+        <version>1.5.3.BUILD-SNAPSHOT</version>
+    </parent>
+    <artifactId>spring-flex-hibernate4</artifactId>
+    <packaging>jar</packaging>
+    <name>Spring BlazeDS Integration Hibernate4</name>
+
+    <description>
+        Spring BlazeDS Integration - Hibernate 4.x
+    </description>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <url>http://www.springsource.org/spring-flex</url>
+
+    <scm>
+        <url>https://src.springframework.org/svn/spring-flex</url>
+        <connection>https://src.springframework.org/svn/spring-flex</connection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Jeremy Grelle</name>
+            <organization>SpringSource</organization>
+            <organizationUrl>http://www.springsource.org</organizationUrl>
+        </developer>
+        <developer>
+            <name>Mark Fisher</name>
+            <organization>SpringSource</organization>
+            <organizationUrl>http://www.springsource.org</organizationUrl>
+        </developer>
+    </developers>
+
+    <contributors>
+        <contributor>
+            <name>Jose Barragan</name>
+            <organization>Codeoscopic</organization>
+            <organizationUrl>http://www.codeoscopic.com</organizationUrl>
+        </contributor>
+    </contributors>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.springsource.bundlor</groupId>
+                <artifactId>com.springsource.bundlor.maven</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundlor-manifest</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>bundlor</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.5</version>
+                        <executions>
+                            <execution>
+                                <id>javadoc-jar</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <breakiterator>true</breakiterator>
+                                    <header>Spring BlazeDS Integration</header>
+                                    <source>1.5</source>
+                                    <quiet>true</quiet>
+                                    <javadocDirectory>${project.basedir}/../javadoc</javadocDirectory>
+                                    <overview>${project.basedir}/../javadoc/overview.html</overview>
+                                    <stylesheetfile>${project.basedir}/../javadoc/spring-javadoc.css</stylesheetfile>
+                                    <!-- copies doc-files subdirectory which contains image resources -->
+                                    <docfilessubdirs>true</docfilessubdirs>
+                                    <links>
+                                        <link>http://static.springframework.org/spring/docs/3.2.x/javadoc-api</link>
+                                        <link>http://static.springsource.org/spring-security/site/docs/3.2.x/apidocs</link>
+                                        <link>http://java.sun.com/javase/6/docs/api</link>
+                                        <link>http://livedocs.adobe.com/blazeds/4/javadoc</link>
+                                    </links>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <!-- Project -->
+        <dependency>
+            <groupId>org.springframework.flex</groupId>
+            <artifactId>spring-flex-core</artifactId>
+        </dependency>
+
+        <!-- Optionals -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.2.1.Final</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.2.1.Final</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+            <version>3.5.6-Final</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

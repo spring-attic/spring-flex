@@ -5,7 +5,7 @@ Bundle-Vendor: SpringSource
 Bundle-SymbolicName: com.springsource.flex.messaging.services.data
 Implementation-Version: 2.6.0.201390
 Implementation-Vendor: Adobe Systems Inc.
-Fragment-Host: com.springsource.flex.messaging;bundle-version="[3.2.0.3978, 3.2.0.3978]"
+Fragment-Host: com.springsource.flex.messaging;bundle-version="[4.0.0.14931, 4.0.0.14931]"
 Excluded-Imports: flex.management.*,
  flex.messaging.*,
  edu.emory.mathcs.backport.java.util.concurrent,
@@ -13,6 +13,6 @@ Excluded-Imports: flex.management.*,
  javax.servlet.*,
  javax.naming
 Import-Template: EDU.oswego.cs.dl.util.concurrent.*;version="[1.3.4,1.3.4]",
- org.hibernate.*;version="[3.2.5.ga,4.0.0)",
+ org.hibernate.*;version="[3.2.5.ga,4.2.0.Final)",
  javax.transaction.*;version="[1.0.1,2.0.0)",
  edu.emory.mathcs.backport.java.util;version="[2.2.0,3.0.0)"

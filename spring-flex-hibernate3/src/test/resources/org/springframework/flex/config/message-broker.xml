@@ -1,0 +1,127 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:flex="http://www.springframework.org/schema/flex"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  			  http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://www.springframework.org/schema/flex 
+              http://www.springframework.org/schema/flex/spring-flex-1.5.xsd"> 
+    	
+	<!-- Custom services-config.xml path -->
+	<flex:message-broker id="customServicesConfigPath" services-config-path="classpath:custom-services-config.xml"/>
+	
+	<!-- Custom ConfigurationManager -->
+	<flex:message-broker id="customConfigManager" configuration-manager="configManager"/>
+	
+	<!-- Custom mappings -->
+	<flex:message-broker id="customMappings" mapping-order="0"> 
+		<flex:mapping pattern="/foo"/>
+		<flex:mapping pattern="/bar"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="disabledHandlerMapping" disable-default-mapping="true" />
+	
+	<flex:message-broker id="customExceptionLogger" exception-logger="exceptionLogger" />
+	
+	<flex:message-broker id="customConfigProcessors">
+		<flex:config-processor ref="processor1"/>
+		<flex:config-processor ref="processor2"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customExceptionTranslators">
+		<flex:exception-translator ref="translator1"/>
+		<flex:exception-translator ref="translator2"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customMessageInterceptors">
+		<flex:message-interceptor ref="interceptor1"/>
+		<flex:message-interceptor ref="interceptor2"/>
+		<flex:message-interceptor ref="interceptor3"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customMessageInterceptorsOrdered">
+		<flex:message-interceptor ref="interceptor1" position="LAST"/>
+		<flex:message-interceptor ref="interceptor2" position="FIRST"/>
+		<flex:message-interceptor ref="interceptor3" position="PER_CLIENT_AUTH_INTERCEPTOR"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customMessageInterceptorsReplaced">
+		<flex:message-interceptor ref="interceptor1" position="ENDPOINT_INTERCEPTOR"/>
+		<flex:message-interceptor ref="interceptor2" position="LOGIN_MESSAGE_INTERCEPTOR"/>
+		<flex:message-interceptor ref="interceptor3" position="PER_CLIENT_AUTH_INTERCEPTOR"/>
+		<flex:secured per-client-authentication="true"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customMessageInterceptorsBeforeAfter">
+		<flex:message-interceptor ref="interceptor1" after="LOGIN_MESSAGE_INTERCEPTOR"/>
+		<flex:message-interceptor ref="interceptor2" before="PER_CLIENT_AUTH_INTERCEPTOR"/>
+		<flex:message-interceptor ref="interceptor3" before="PER_CLIENT_AUTH_INTERCEPTOR"/>
+		<flex:secured per-client-authentication="true"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="defaultSecured">
+		<flex:secured/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="invalidateHttpSession" >
+		<flex:secured invalidate-http-session="true"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="perClientAuthentication" >
+		<flex:secured per-client-authentication="true"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customLoginCommand">
+		<flex:secured login-command="loginCommand"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customRemotingService">
+		<flex:remoting-service default-adapter-id="my-default-adapter" default-channels="my-amf, my-secure-amf"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="customMessageService">
+		<flex:message-service default-adapter-id="my-default-adapter" default-channels="my-polling-amf, my-secure-amf"/>
+	</flex:message-broker>
+	
+	<flex:message-broker id="endpointSecured">
+		<flex:secured>
+			<flex:secured-channel access="ROLE_USER" channel="my-amf"/>
+			<flex:secured-endpoint-path access="ROLE_ADMIN" pattern="**/admin/*"/>
+			<flex:secured-endpoint-path access="ROLE_USER"/>
+		</flex:secured>
+	</flex:message-broker>
+	
+	<flex:message-broker id="flex-56-regression">
+    	<flex:config-processor ref="processor1" />
+    	<flex:remoting-service default-channels="my-amf"/>
+	</flex:message-broker> 
+	
+	<bean id="configManager" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestConfigurationManager"/>
+	
+	<bean id="processor1" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestConfigProcessor"/>
+	
+	<bean id="processor2" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestConfigProcessor"/>
+	
+	<bean id="translator1" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestExceptionTranslator"/>
+	
+	<bean id="translator2" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestExceptionTranslator"/>
+	
+	<bean id="interceptor1" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestMessageInterceptor"/>
+	
+	<bean id="interceptor2" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestMessageInterceptor"/>
+	
+	<bean id="interceptor3" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestResourceHandlingInterceptor"/>
+	
+	<bean id="loginCommand" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestLoginCommand"/>
+	
+	<bean id="exceptionLogger" class="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestExceptionLogger"/>
+	
+	<bean id="my-default-adapter" class="org.springframework.flex.core.ManageableComponentFactoryBean" >
+		<constructor-arg value="org.springframework.flex.config.xml.MessageBrokerBeanDefinitionParserTests$TestJavaAdapter"/>
+		<property name="properties">
+			<value>
+				{"foo" : { "bar":true, "baz":"moo" } }
+			</value>
+		</property>
+	</bean>
+	
+</beans>
