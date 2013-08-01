@@ -26,6 +26,7 @@ import org.springframework.flex.core.io.domain.ContactInfoNP;
 import org.springframework.flex.core.io.domain.PersonNP;
 import org.springframework.flex.core.io.domain.PrimitiveCompany;
 import org.springframework.flex.core.io.domain.PrimitiveCompanyNP;
+import org.springframework.flex.orm.hibernate4.HibernateConfigProcessor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;

@@ -22,7 +22,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
 /**
- * {@link ConverterFactory} implementation that supplies a {@link Converter} instance that can convert {@link PersistentCollection} 
+ * {@link org.springframework.core.convert.converter.ConverterFactory} implementation that supplies a {@link org.springframework.core.convert.converter.Converter} instance that can convert {@link PersistentCollection}
  * instances from Hibernate.  Given a specific {@code PersistentCollection} instance, the converter will:
  * 
  * <ul>

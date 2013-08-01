@@ -31,17 +31,14 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.convert.converter.ConverterRegistry;
-import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.io.AbstractAmfConversionServiceConfigProcessor;
-import org.springframework.flex.core.io.HibernateProxyConverter;
+import org.springframework.flex.orm.hibernate4.io.HibernateProxyConverter;
 import org.springframework.util.Assert;
 
-import flex.messaging.io.PropertyProxyRegistry;
-
 /**
- * {@link MessageBrokerConfigProcessor} implementation that uses the Hibernate Metadata API to determine all classes that potentially need 
+ * {@link org.springframework.flex.config.MessageBrokerConfigProcessor} implementation that uses the Hibernate Metadata API to determine all classes that potentially need
  * special AMF conversion rules applied to them to prevent lazy initialization errors.  Each type found will have a properly configured 
- * instance of {@link org.springframework.flex.core.io.SpringPropertyProxy} registered for it with the BlazeDS {@link PropertyProxyRegistry}.
+ * instance of {@link org.springframework.flex.core.io.SpringPropertyProxy} registered for it with the BlazeDS {@link flex.messaging.io.PropertyProxyRegistry}.
  *
  * @author Jeremy Grelle
  */
@@ -81,9 +78,9 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
     }
     
     /**
-     * Sets the Hibernate {@link SessionFactory} to be used for reading type metadata.  If this property is not 
+     * Sets the Hibernate {@link org.hibernate.SessionFactory} to be used for reading type metadata.  If this property is not
      * explicitly set, all available {@code SessionFactory} instances will be retrieved from the containing 
-     * {@link BeanFactory} and have their type metadata extracted for use in {@link #findTypesToRegister()} 
+     * {@link org.springframework.beans.factory.BeanFactory} and have their type metadata extracted for use in {@link #findTypesToRegister()}
      * @param sessionFactory the session factory from which to read metadata
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
@@ -128,7 +125,7 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
     }
    
     /**
-     * Provides access to the {@link BeanFactory} by subclasses.
+     * Provides access to the {@link org.springframework.beans.factory.BeanFactory} by subclasses.
      * @return the containing bean factory
      */
     protected ListableBeanFactory getBeanFactory() {
@@ -136,7 +133,7 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
     }
     
     /**
-     * Extracts all {@link ClassMetadata} and {@link CollectionMetadata} from a given {@link SessionFactory} to be 
+     * Extracts all {@link org.hibernate.metadata.ClassMetadata} and {@link org.hibernate.metadata.CollectionMetadata} from a given {@link org.hibernate.SessionFactory} to be
      * used in determining the types that need a {@link org.springframework.flex.core.io.SpringPropertyProxy} registered in {@link #findTypesToRegister()}
      * @param sessionFactory the session factory from which to read metadata
      */

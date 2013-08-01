@@ -34,6 +34,7 @@ import org.springframework.flex.core.io.domain.EmbeddedFloor;
 import org.springframework.flex.core.io.domain.EmbeddedFloorAttributes;
 import org.springframework.flex.core.io.domain.MaritalStatus;
 import org.springframework.flex.core.io.domain.Person;
+import org.springframework.flex.orm.hibernate4.config.JpaHibernateConfigProcessor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;

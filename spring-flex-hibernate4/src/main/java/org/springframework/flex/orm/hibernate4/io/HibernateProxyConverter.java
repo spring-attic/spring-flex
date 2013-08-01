@@ -37,26 +37,23 @@ import org.springframework.util.Assert;
  */
 public class HibernateProxyConverter implements GenericConverter {
 
-    /**
-     *
-     * {@inheritDoc}
-     */
-    public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
-        Assert.isInstanceOf(HibernateProxy.class, source, "Expected an instance of HibernateProxy to convert");
-        Assert.isAssignable(HibernateProxy.class, sourceType.getType(), "Expected a subclass of HibernateProxy for the source type");
-	    HibernateProxy proxy = HibernateProxy.class.cast(source);
-	    if (targetType.getAnnotations().length > 0 && !Hibernate.isInitialized(proxy)) {
-            return null;
-        }
-        return proxy.getHibernateLazyInitializer().getImplementation();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
+		Assert.isInstanceOf(HibernateProxy.class, source, "Expected an instance of HibernateProxy to convert");
+		Assert.isAssignable(HibernateProxy.class, sourceType.getType(), "Expected a subclass of HibernateProxy for the source type");
+		HibernateProxy hibernateProxy = HibernateProxy.class.cast(source);
+		if (!Hibernate.isInitialized(hibernateProxy)) {
+			return null;
+		}
+		return hibernateProxy.getHibernateLazyInitializer().getImplementation();
+	}
 
-    /**
-     *
-     * {@inheritDoc}
-     */
-    public Set<ConvertiblePair> getConvertibleTypes() {
-        return Collections.singleton(new ConvertiblePair(HibernateProxy.class, Object.class));
-    }
-
+	/**
+	 * {@inheritDoc}
+	 */
+	public Set<ConvertiblePair> getConvertibleTypes() {
+		return Collections.singleton(new ConvertiblePair(HibernateProxy.class, Object.class));
+	}
 }
