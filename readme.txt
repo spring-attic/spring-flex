@@ -1,6 +1,5 @@
 SPRING BLAZEDS INTEGRATION 1.5.2.RELEASE (November 2011)
 ----------------------------------
-http://www.springsource.org/spring-flex
 
 1. INTRODUCTION
 ---------------
@@ -25,7 +24,11 @@ Release distribution contents:
 
 Spring BlazeDS Integration is released under the terms of the Apache Software License (see license.txt).
 
-3. DISTRIBUTION JAR FILES
+3. ISSUE TRACKING
+-----------------
+Please report issues via the Spring Flex JIRA at https://jira.spring.io/browse/FLEX
+
+4. DISTRIBUTION JAR FILES
 -------------------------
 The following jar files are included in the distribution.
 The contents of each jar and its dependencies are noted.
