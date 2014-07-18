@@ -54,8 +54,6 @@ import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
 import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
-import org.springframework.flex.core.io.SpringPropertyProxy;
-import org.springframework.flex.core.io.domain.Person;
 import org.springframework.flex.security3.EndpointInterceptor;
 import org.springframework.flex.security3.SecurityConfigurationPostProcessor;
 import org.springframework.flex.security3.SpringSecurityLoginCommand;
@@ -77,7 +75,6 @@ import flex.messaging.MessageException;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.endpoints.Endpoint;
-import flex.messaging.io.PropertyProxyRegistry;
 import flex.messaging.messages.Message;
 import flex.messaging.security.LoginCommand;
 import flex.messaging.services.MessageService;
@@ -143,10 +140,6 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             fail("Unexpected exception:" + e);
             return;
         }
-    }
-
-    public void testMessageBroker_HibernateAutoConfigured() {
-        assertTrue(PropertyProxyRegistry.getRegistry().getProxy(Person.class) instanceof SpringPropertyProxy);
     }
 
     public void testMessageBroker_CustomExceptionLogger() {
@@ -581,7 +574,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         protected ConfigurableApplicationContext createParentContext() {
             GenericWebApplicationContext context = new GenericWebApplicationContext();
             context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
-            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml", "classpath:org/springframework/flex/core/io/hibernate-jpa-context.xml" });
+            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml"});
             AnnotationConfigUtils.registerAnnotationConfigProcessors(context);
             context.refresh();
             context.registerShutdownHook();

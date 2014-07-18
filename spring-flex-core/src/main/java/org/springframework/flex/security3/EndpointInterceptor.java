@@ -41,7 +41,7 @@ import flex.messaging.messages.Message;
  */
 public class EndpointInterceptor extends AbstractSecurityInterceptor implements MessageInterceptor {
 
-    private static final String STATUS_TOKEN = "_enpointInterceptorStatusToken";
+    private static final String STATUS_TOKEN = "_endPointInterceptorStatusToken";
 
     private EndpointSecurityMetadataSource securityMetadataSource;
     

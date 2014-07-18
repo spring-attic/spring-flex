@@ -102,6 +102,7 @@ public class FlexAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
 		
 		if (!converter.canRead(Object.class, inputMessage.getHeaders().getContentType())) {
 			super.commence(request, response, authException);
+			return;
 		}
 		
 		ActionMessage deserializedInput = null;

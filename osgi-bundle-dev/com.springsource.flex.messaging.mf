@@ -11,7 +11,7 @@ Import-Template:
  javax.jms;version="0",
  javax.management;version="0",
  javax.naming;version="0",
- javax.servlet.*;version="[2.4.0, 3.0.0)",
+ javax.servlet.*;version="[2.4.0, 3.2.0)",
  javax.sql;version="0",
  javax.xml.*;version="0",
  org.apache.xpath.*;version="[2.6.0, 3.0.0)",

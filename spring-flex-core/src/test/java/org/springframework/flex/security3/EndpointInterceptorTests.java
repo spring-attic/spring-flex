@@ -25,8 +25,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.ProxyFactory;
@@ -50,11 +48,13 @@ import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
 
+import junit.framework.TestCase;
+
 public class EndpointInterceptorTests extends TestCase {
 
     @Mock
     private AuthenticationManager mgr;
-    
+
     @Mock
     private AbstractEndpoint endpoint;
 
@@ -63,7 +63,7 @@ public class EndpointInterceptorTests extends TestCase {
 
     @Mock
     private Message outMessage;
-    
+
     @Mock
     private MockHttpServletRequest request;
 
@@ -92,7 +92,7 @@ public class EndpointInterceptorTests extends TestCase {
         factory.addAdvisor(new EndpointServiceMessagePointcutAdvisor(advice));
         factory.setTarget(this.endpoint);
         this.advisedEndpoint = (AbstractEndpoint) factory.getProxy();
-        
+
         this.request = new MockHttpServletRequest();
         FlexContext.setThreadLocalHttpRequest(this.request);
     }
@@ -129,9 +129,9 @@ public class EndpointInterceptorTests extends TestCase {
     }
 
     public void testServiceUnauthenticated() throws Exception {
-
         this.request.setServletPath("/messagebroker");
         this.request.setPathInfo("/amf");
+	    FlexContext.setThreadLocalHttpRequest(this.request);
         try {
             this.advisedEndpoint.serviceMessage(this.inMessage);
             fail("An AuthenticationException should be thrown");
@@ -141,9 +141,9 @@ public class EndpointInterceptorTests extends TestCase {
     }
 
     public void testServiceUnauthorized() throws Exception {
-
         this.request.setServletPath("/messagebroker");
         this.request.setPathInfo("/amf");
+	    FlexContext.setThreadLocalHttpRequest(this.request);
 
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", new ArrayList<GrantedAuthority>());
         SecurityContextHolder.getContext().setAuthentication(auth);

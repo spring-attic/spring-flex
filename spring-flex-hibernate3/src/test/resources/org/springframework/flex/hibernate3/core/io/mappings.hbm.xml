@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.springframework.flex.hibernate3.core.io.domain" default-access="field">
+	<class name="Company">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<version name="version"/>
+		<property name="name"/>
+        <one-to-one name="primitive" fetch="join" lazy="proxy" foreign-key="company" class="PrimitiveCompany"/>
+	</class>
+	
+	<class name="PrimitiveCompany">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<version name="version"/>
+		<property name="name"/>
+        <one-to-one name="company" fetch="join" lazy="proxy" foreign-key="primitive" class="Company"/>
+	</class>
+	
+	<class name="CompanyNP">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<version name="version"/>
+		<property name="name"/>
+        <one-to-one name="primitive" fetch="join" lazy="proxy" foreign-key="company" class="PrimitiveCompanyNP"/>
+	</class>
+	
+	<class name="PrimitiveCompanyNP">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<version name="version"/>
+		<property name="name"/>
+        <one-to-one name="company" fetch="join" lazy="proxy" foreign-key="primitive" class="CompanyNP"/>
+	</class>
+</hibernate-mapping>

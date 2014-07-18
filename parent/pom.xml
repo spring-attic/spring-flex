@@ -44,7 +44,15 @@
     	</developer>
     </developers>
 
-	<distributionManagement>
+    <contributors>
+        <contributor>
+            <name>Jose Barragan</name>
+            <organization>Codeoscopic</organization>
+            <organizationUrl>http://www.codeoscopic.com</organizationUrl>
+        </contributor>
+    </contributors>
+
+    <distributionManagement>
 		<repository>
 			<id>spring-release</id>
 			<name>Spring Release Repository</name>
@@ -77,27 +85,22 @@
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-				<version>1.0.71</version>
+				<version>1.3.170</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.6.1</version>
+				<version>1.7.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.6.1</version>
+				<version>1.7.3</version>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-				<version>1.2.16</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>3.6.4.Final</version>
+				<version>1.2.17</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.annotation</groupId>
@@ -107,8 +110,8 @@
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.5</version>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -134,12 +137,12 @@
 			<dependency>
 				<groupId>cglib</groupId>
 				<artifactId>cglib-nodep</artifactId>
-				<version>2.1_3</version>
+				<version>2.2.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjrt</artifactId>
-				<version>1.6.3</version>
+				<version>1.7.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -161,6 +164,11 @@
 				<artifactId>spring-core</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
@@ -245,18 +253,18 @@
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
-				<version>1.0.0</version>
+				<version>1.9.12</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.7</version>
+				<version>4.9</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
-				<version>1.8.2</version>
+				<version>1.9.5</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -274,7 +282,7 @@
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-core</artifactId>
-				<version>5.1.0</version>
+				<version>5.6.0</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
@@ -287,7 +295,13 @@
 				</exclusions>
 				<scope>test</scope>
 			</dependency>
-		</dependencies>
+            <dependency>
+                <groupId>backport-util-concurrent</groupId>
+                <artifactId>backport-util-concurrent</artifactId>
+                <version>3.1</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
 	</dependencyManagement>
 
 	<build>
@@ -295,7 +309,7 @@
 			<extension>
 				<groupId>org.springframework.build.aws</groupId>
 				<artifactId>org.springframework.build.aws.maven</artifactId>
-				<version>3.0.0.RELEASE</version>
+				<version>3.1.0.RELEASE</version>
 			</extension>
 		</extensions>
 		<pluginManagement>
@@ -303,7 +317,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.3</version>
+					<version>2.6</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
 					</configuration>
@@ -311,7 +325,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.4.2</version>
+					<version>2.12</version>
 					<configuration>
 						<includes>
 							<include>**/*Tests.class</include>
@@ -325,7 +339,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.0.2</version>
+					<version>3.0</version>
 					<configuration>
 						<source>1.5</source>
 						<target>1.5</target>
@@ -336,12 +350,12 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3</version>
+					<version>2.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>2.0.3</version>
+					<version>2.2.1</version>
 					<configuration>
 						<attach>true</attach>
 					</configuration>
@@ -377,7 +391,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
-					<version>2.2</version>
+					<version>2.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -413,9 +427,9 @@
 	</build>
 
 	<properties>
-		<spring.version>3.0.5.RELEASE</spring.version>
-		<integration.version>2.0.3.RELEASE</integration.version>
-		<security.version>3.0.5.RELEASE</security.version>
+		<spring.version>3.2.2.RELEASE</spring.version>
+		<integration.version>2.2.2.RELEASE</integration.version>
+		<security.version>3.1.3.RELEASE</security.version>
 		<blazeds.version>4.0.0.14931</blazeds.version>
 		<bundlor.version>1.0.0.RELEASE</bundlor.version>
 	</properties>

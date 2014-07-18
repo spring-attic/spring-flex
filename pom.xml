@@ -44,9 +44,19 @@
     	</developer>
     </developers>
 
+    <contributors>
+        <contributor>
+            <name>Jose Barragan</name>
+            <organization>Codeoscopic</organization>
+            <organizationUrl>http://www.codeoscopic.com</organizationUrl>
+        </contributor>
+    </contributors>
+
     <modules>
         <module>parent</module>
         <module>spring-flex-core</module>
+        <module>spring-flex-hibernate3</module>
+        <module>spring-flex-hibernate4</module>
     </modules>
 
     <distributionManagement>
@@ -105,7 +115,7 @@
                             <htmlCustomization>${project.basedir}/docbkx/resources/xsl/html.xsl</htmlCustomization>
                             <useExtensions>1</useExtensions>
                             <highlightSource>1</highlightSource>
-                            <highlightDefaultLanguage></highlightDefaultLanguage>
+                            <highlightDefaultLanguage/>
                             <entities>
                                 <entity>
                                     <name>version</name>
@@ -145,7 +155,7 @@
                                 </goals>
                                 <phase>package</phase>
                                 <configuration>
-                                    <javadoc:aggregate>true</javadoc:aggregate>
+                                    <aggregate>true</aggregate>
                                     <breakiterator>true</breakiterator>
                                     <header>Spring BlazeDS Integration</header>
                                     <source>1.5</source>
@@ -163,8 +173,8 @@
                                     </groups>
                                     <excludePackageNames>org.springframework.flex.roo.addon:org.springframework.flex.samples</excludePackageNames>
                                     <links>
-                                        <link>http://static.springframework.org/spring/docs/3.0.x/javadoc-api</link>
-                                        <link>http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs</link>
+                                        <link>http://static.springframework.org/spring/docs/3.2.x/javadoc-api</link>
+                                        <link>http://static.springsource.org/spring-security/site/docs/3.2.x/apidocs</link>
                                         <link>http://java.sun.com/javase/6/docs/api</link>
                                         <link>http://livedocs.adobe.com/blazeds/4/javadoc</link>
                                     </links>
@@ -201,7 +211,7 @@
             <extension>
                 <groupId>org.springframework.build.aws</groupId>
                 <artifactId>org.springframework.build.aws.maven</artifactId>
-                <version>3.0.0.RELEASE</version>
+                <version>3.1.0.RELEASE</version>
             </extension>
         </extensions>
     </build>

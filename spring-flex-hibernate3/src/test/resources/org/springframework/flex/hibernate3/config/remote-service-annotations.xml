@@ -1,0 +1,45 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:flex="http://www.springframework.org/schema/flex"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/flex http://www.springframework.org/schema/flex/spring-flex-1.5.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<flex:message-broker id="annotatedRemoteServiceBroker"/>
+	
+	<context:component-scan base-package="org.springframework.flex.hibernate3.config" scoped-proxy="targetClass"/>
+	
+	<bean id="annotatedRemoteBean1" class="org.springframework.flex.hibernate3.config.RemotingAnnotationPostProcessorTests$MyService1"/>
+        
+    <bean id="annotatedRemoteBean2" class="org.springframework.flex.hibernate3.config.RemotingAnnotationPostProcessorTests$MyService2"/>
+    
+    <bean id="annotatedDynamicRemoteBean1" class="org.springframework.flex.hibernate3.config.RemotingAnnotationPostProcessorTests$MyService3"/>
+    
+    <bean id="annotatedDynamicRemoteBean2" class="org.springframework.flex.hibernate3.config.RemotingAnnotationPostProcessorTests$MyService4"/>
+    
+    <bean id="annotatedDynamicRemoteBean3" class="org.springframework.flex.hibernate3.config.RemotingAnnotationPostProcessorTests$MyService5"/>
+        
+    <bean id="autowiredDependency" class="org.springframework.flex.hibernate3.config.RemotingAnnotationPostProcessorTests$MyDependency"/>
+    
+    <bean id="customAdapter1" class="org.springframework.flex.core.ManageableComponentFactoryBean">
+        <constructor-arg value="org.springframework.flex.hibernate3.config.RemotingAnnotationPostProcessorTests$TestAdapter"/>
+    </bean>
+    
+    <!-- The following two bean definitions are necessary to satisfy the requirements of FLEX-99 -->
+    <bean id="abstractFactoryBean" class="org.springframework.flex.hibernate3.config.NoDefaultConstructorFactoryBean" abstract="true"/>
+	
+	<bean id="actualFactoryBean" parent="abstractFactoryBean">
+		<constructor-arg value="foo"/>
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="properties">
+			<props>
+				<prop key="com.foo.bar">my-amf</prop>
+				<prop key="com.foo.baz">my-secure-amf, my-amf</prop>
+			</props>
+		</property>
+	</bean>
+    
+</beans>

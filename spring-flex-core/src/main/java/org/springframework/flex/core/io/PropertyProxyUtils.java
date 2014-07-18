@@ -11,8 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.ConfigurablePropertyAccessor;
 import org.springframework.beans.PropertyAccessor;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.flex.beans.PropertyAccessorFactory;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.FieldCallback;
 
@@ -39,7 +39,7 @@ class PropertyProxyUtils {
     public static PropertyAccessor getPropertyAccessor(ConversionService conversionService, boolean useDirectFieldAccess, Object instance) {
         ConfigurablePropertyAccessor accessor = null;
         if (useDirectFieldAccess) {
-            accessor = PropertyAccessorFactory.forDirectFieldAccess(instance);
+	        accessor = PropertyAccessorFactory.forDirectFieldAccess(instance);
         } else {
             accessor = PropertyAccessorFactory.forBeanPropertyAccess(instance);
         }
