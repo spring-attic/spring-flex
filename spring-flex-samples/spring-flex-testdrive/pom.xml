@@ -5,7 +5,8 @@
 	<parent>
 		<groupId>org.springframework.flex</groupId>
 		<artifactId>spring-flex-parent</artifactId>
-		<version>1.5.3.BUILD-SNAPSHOT</version>
+		<version>1.6.0.BUILD-SNAPSHOT</version>
+		<relativePath>../../spring-flex-parent</relativePath>
 	</parent>
 	<groupId>org.springframework.flex.samples</groupId>
 	<artifactId>spring-flex-testdrive</artifactId>

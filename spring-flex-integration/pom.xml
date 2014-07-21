@@ -5,7 +5,8 @@
 	<parent>
 		<groupId>org.springframework.flex</groupId>
 		<artifactId>spring-flex-parent</artifactId>
-		<version>1.5.3.BUILD-SNAPSHOT</version>
+		<version>1.6.0.BUILD-SNAPSHOT</version>
+		<relativePath>../spring-flex-parent</relativePath>
 	</parent>
 
 	<artifactId>spring-flex-integration</artifactId>
@@ -24,7 +25,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.0.2</version>
+				<version>2.4</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -36,7 +37,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5</version>
 				<configuration>
 					<filesets>
 						<fileset>

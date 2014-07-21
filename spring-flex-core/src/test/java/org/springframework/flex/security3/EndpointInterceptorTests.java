@@ -132,6 +132,7 @@ public class EndpointInterceptorTests extends TestCase {
 
         this.request.setServletPath("/messagebroker");
         this.request.setPathInfo("/amf");
+        FlexContext.setThreadLocalHttpRequest(this.request);
         try {
             this.advisedEndpoint.serviceMessage(this.inMessage);
             fail("An AuthenticationException should be thrown");
@@ -145,6 +146,7 @@ public class EndpointInterceptorTests extends TestCase {
         this.request.setServletPath("/messagebroker");
         this.request.setPathInfo("/amf");
 
+        FlexContext.setThreadLocalHttpRequest(this.request);
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", new ArrayList<GrantedAuthority>());
         SecurityContextHolder.getContext().setAuthentication(auth);
 

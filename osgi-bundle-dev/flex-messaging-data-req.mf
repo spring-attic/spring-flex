@@ -1,9 +1,0 @@
-Bundle-ManifestVersion: 2
-Bundle-Version: 2.6.0.201390
-Bundle-Name: Adobe LiveCycle Data Services - Licensing Module
-Bundle-Vendor: SpringSource
-Bundle-SymbolicName: com.springsource.flex.messaging.services.licensing
-Implementation-Version: 2.6.0.201390
-Implementation-Vendor: Adobe Systems Inc.
-Fragment-Host: com.springsource.flex.messaging;bundle-version="[3.2.0.3978, 3.2.0.3978]"
-Excluded-Imports: flex.messaging.util

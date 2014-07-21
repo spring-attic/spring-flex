@@ -6,7 +6,7 @@
 	<artifactId>spring-flex-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Spring BlazeDS Integration Parent POM</name>
-	<version>1.5.3.BUILD-SNAPSHOT</version>
+	<version>1.6.0.BUILD-SNAPSHOT</version>
 	
 	<description>
     	Spring BlazeDS Integration is a top-level Spring project, and a component of the complete Spring Web stack.  This 
@@ -24,75 +24,59 @@
 		</license>
 	</licenses>
     
-    <url>http://www.springsource.org/spring-flex</url>
+    <url>https://github.com/spring-projects/spring-flex</url>
     
     <scm>
-    	<url>https://src.springframework.org/svn/spring-flex</url>
-    	<connection>https://src.springframework.org/svn/spring-flex</connection>
+    	<url>https://github.com/spring-projects/spring-flex</url>
+    	<connection>https://github.com/spring-projects/spring-flex.git</connection>
     </scm>
     
     <developers>
     	<developer>
     		<name>Jeremy Grelle</name>
-    		<organization>SpringSource</organization>
-    		<organizationUrl>http://www.springsource.org</organizationUrl>
+    		<organization>Pivotal Software, Inc.</organization>
+    		<organizationUrl>http://www.spring.io</organizationUrl>
     	</developer>
     	<developer>
     		<name>Mark Fisher</name>
-    		<organization>SpringSource</organization>
-    		<organizationUrl>http://www.springsource.org</organizationUrl>
+    		<organization>Pivotal Software, Inc.</organization>
+    		<organizationUrl>http://www.spring.io</organizationUrl>
+    	</developer>
+    	<developer>
+    		<name>Sebastien Deleuze</name>
+    		<organization>Pivotal Software, Inc.</organization>
+    		<organizationUrl>http://www.spring.io</organizationUrl>
     	</developer>
     </developers>
 
-	<distributionManagement>
-		<repository>
-			<id>spring-release</id>
-			<name>Spring Release Repository</name>
-			<url>s3://maven.springframework.org/release</url>
-		</repository>
-
-		<snapshotRepository>
-			<id>spring-snapshot</id>
-			<name>Spring Snapshot Repository</name>
-			<url>s3://maven.springframework.org/snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
-	<repositories>
-		<repository>
-			<id>spring-external</id>
-			<name>Spring External Repository</name>
-			<url>http://maven.springframework.org/external</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+    <properties>
+		<spring.version>3.0.5.RELEASE</spring.version>
+		<integration.version>2.0.3.RELEASE</integration.version>
+		<security.version>3.0.5.RELEASE</security.version>
+		<blazeds.version>4.0.0.14931</blazeds.version>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-				<version>1.0.71</version>
+				<version>1.4.180</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.6.1</version>
+				<version>1.6.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.6.1</version>
+				<version>1.6.6</version>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-				<version>1.2.16</version>
+				<version>1.2.17</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -134,12 +118,12 @@
 			<dependency>
 				<groupId>cglib</groupId>
 				<artifactId>cglib-nodep</artifactId>
-				<version>2.1_3</version>
+				<version>3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjrt</artifactId>
-				<version>1.6.3</version>
+				<version>1.7.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -250,7 +234,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.7</version>
+				<version>4.9</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -291,19 +275,12 @@
 	</dependencyManagement>
 
 	<build>
-		<extensions>
-			<extension>
-				<groupId>org.springframework.build.aws</groupId>
-				<artifactId>org.springframework.build.aws.maven</artifactId>
-				<version>3.0.0.RELEASE</version>
-			</extension>
-		</extensions>
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.3</version>
+					<version>2.6</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
 					</configuration>
@@ -311,7 +288,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.4.2</version>
+					<version>2.17</version>
 					<configuration>
 						<includes>
 							<include>**/*Tests.class</include>
@@ -325,7 +302,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.0.2</version>
+					<version>3.1</version>
 					<configuration>
 						<source>1.5</source>
 						<target>1.5</target>
@@ -336,12 +313,12 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.3</version>
+					<version>2.5</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>2.0.3</version>
+					<version>2.3</version>
 					<configuration>
 						<attach>true</attach>
 					</configuration>
@@ -357,7 +334,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.1</version>
+					<version>2.8</version>
 					<executions>
 						<execution>
 							<id>copy-dependencies</id>
@@ -377,22 +354,17 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
-					<version>2.2</version>
+					<version>2.5.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>2.8</version>
+					<version>2.9</version>
 					<configuration>
 						<downloadSources>true</downloadSources>
 						<downloadJavadocs>false</downloadJavadocs>
 					</configuration>
 				</plugin>
-				<plugin>
-				    <groupId>com.springsource.bundlor</groupId>
-				    <artifactId>com.springsource.bundlor.maven</artifactId>
-				    <version>${bundlor.version}</version>
-			    </plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -412,11 +384,4 @@
 		</plugins>
 	</build>
 
-	<properties>
-		<spring.version>3.0.5.RELEASE</spring.version>
-		<integration.version>2.0.3.RELEASE</integration.version>
-		<security.version>3.0.5.RELEASE</security.version>
-		<blazeds.version>4.0.0.14931</blazeds.version>
-		<bundlor.version>1.0.0.RELEASE</bundlor.version>
-	</properties>
 </project>
