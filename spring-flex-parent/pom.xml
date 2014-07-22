@@ -197,8 +197,8 @@
 			</dependency>
 			<dependency>
 				<groupId>javax.jms</groupId>
-				<artifactId>jms</artifactId>
-				<version>1.1</version>
+				<artifactId>jms-api</artifactId>
+				<version>1.1-rev-1</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -383,5 +383,13 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>repo.spring.io-ext-release-local</id>
+			<name>Spring repository for third party libraries</name>
+			<url>http://repo.spring.io/ext-release-local</url>
+		</repository>
+	</repositories>
 
 </project>
