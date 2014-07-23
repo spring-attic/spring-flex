@@ -13,11 +13,15 @@ import org.springframework.flex.core.io.domain.Person;
 import org.springframework.flex.core.io.domain.PersonNP;
 
 import flex.messaging.io.PropertyProxyRegistry;
-
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 public class ClassPathScanningAmfConversionServiceConfigProcessorTests extends AbstractMessageBrokerTests {
 
-    public void testBasicPackageScan() throws Exception {
+    @Test
+    public void basicPackageScan() throws Exception {
         setDirty();
         ClassPathScanningAmfConversionServiceConfigProcessor configProcessor = new ClassPathScanningAmfConversionServiceConfigProcessor("org.springframework.flex.core.io.domain");
         configProcessor.setBeanClassLoader(getApplicationContext().getClassLoader());
@@ -30,8 +34,9 @@ public class ClassPathScanningAmfConversionServiceConfigProcessorTests extends A
         assertNotNull(PropertyProxyRegistry.getProxy(new Person()));
         assertTrue(PropertyProxyRegistry.getProxy(new Person()) instanceof SpringPropertyProxy);
     }
-    
-    public void testPackageScanWithRegexIncludeFilter() throws Exception {
+
+    @Test
+    public void packageScanWithRegexIncludeFilter() throws Exception {
         setDirty();
         ClassPathScanningAmfConversionServiceConfigProcessor configProcessor = new ClassPathScanningAmfConversionServiceConfigProcessor("org.springframework.flex.core.io.domain");
         configProcessor.setBeanClassLoader(getApplicationContext().getClassLoader());
@@ -47,8 +52,9 @@ public class ClassPathScanningAmfConversionServiceConfigProcessorTests extends A
         assertNotNull(PropertyProxyRegistry.getProxy(new PersonNP()));
         assertTrue(PropertyProxyRegistry.getProxy(new PersonNP()) instanceof SpringPropertyProxy);
     }
-    
-    public void testPackageScanWithRegexExcludeFilter() throws Exception {
+
+    @Test
+    public void packageScanWithRegexExcludeFilter() throws Exception {
         setDirty();
         ClassPathScanningAmfConversionServiceConfigProcessor configProcessor = new ClassPathScanningAmfConversionServiceConfigProcessor("org.springframework.flex.core.io.domain");
         configProcessor.setBeanClassLoader(getApplicationContext().getClassLoader());
@@ -64,8 +70,9 @@ public class ClassPathScanningAmfConversionServiceConfigProcessorTests extends A
         assertNotNull(PropertyProxyRegistry.getProxy(new PersonNP()));
         assertFalse(PropertyProxyRegistry.getProxy(new PersonNP()) instanceof SpringPropertyProxy);
     }
-    
-    public void testPackageScanWithAnnotationIncludeFilter() throws Exception {
+
+    @Test
+    public void packageScanWithAnnotationIncludeFilter() throws Exception {
         setDirty();
         ClassPathScanningAmfConversionServiceConfigProcessor configProcessor = new ClassPathScanningAmfConversionServiceConfigProcessor("org.springframework.flex.core.io.domain");
         configProcessor.setBeanClassLoader(getApplicationContext().getClassLoader());

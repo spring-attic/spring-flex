@@ -12,21 +12,26 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import flex.messaging.io.SerializationContext;
 import flex.messaging.io.amf.Amf3Input;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
-
-public class AmfViewTests extends TestCase {
+public class AmfViewTests {
 
     private MockHttpServletResponse response;
 
     private MockHttpServletRequest request;
     
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.response = new MockHttpServletResponse();
         this.request = new MockHttpServletRequest();
     }
-    
-    public void testRenderSimpleStringModel() throws Exception {
+
+    @Test
+    public void renderSimpleStringModel() throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("foo", "bar");
         AmfView view = new AmfView();
@@ -36,8 +41,9 @@ public class AmfViewTests extends TestCase {
         
         assertEquals("bar", result);
     }
-    
-	public void testRenderFullyTypedModel() throws Exception {
+
+    @Test
+    public void renderFullyTypedModel() throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("person", Person.stubPerson());
         AmfView view = new AmfView();
@@ -46,9 +52,10 @@ public class AmfViewTests extends TestCase {
         Person result = (Person) deserialize();
         assertNotNull(result);
     }
-	
-	@SuppressWarnings("unchecked")
-	public void testRenderFullyTypedMultiValuedModel() throws Exception {
+
+    @Test
+    @SuppressWarnings("unchecked")
+	public void renderFullyTypedMultiValuedModel() throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("person1", Person.stubPerson());
         model.put("person2", Person.stubPerson());

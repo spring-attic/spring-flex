@@ -18,11 +18,11 @@ package org.springframework.flex.config;
 
 import org.springframework.test.annotation.ProfileValueSource;
 import org.springframework.test.annotation.ProfileValueSourceConfiguration;
-import org.springframework.test.context.junit38.AbstractJUnit38SpringContextTests;
+import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.util.Assert;
 
 @ProfileValueSourceConfiguration(AbstractRuntimeEnvironmentAwareTests.RuntimeEnvironmentProfileValueSource.class)
-public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit38SpringContextTests {
+public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit4SpringContextTests {
 
     protected static final String ENVIRONMENT = "environment";
     protected static final String BLAZEDS = "blazeds";
@@ -31,7 +31,7 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
     protected static final String LCDS_LEGACY = "lcdslegacy";
 
     public static final class RuntimeEnvironmentProfileValueSource implements ProfileValueSource {
-    
+
         public String get(String key) {
            Assert.notNull(key, "Profile key cannot be null");
            Assert.isTrue(key.equals(ENVIRONMENT), "Unknown profile key.");
@@ -54,10 +54,6 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
 
     public AbstractRuntimeEnvironmentAwareTests() {
         super();
-    }
-
-    public AbstractRuntimeEnvironmentAwareTests(String name) {
-        super(name);
     }
 
 }

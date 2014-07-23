@@ -33,14 +33,17 @@ import flex.messaging.services.RemotingService;
 import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 @ContextConfiguration("classpath:org/springframework/flex/config/remote-service.xml")
 public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
 
     private MessageBroker broker;
 
-    @SuppressWarnings("rawtypes")
-	public void testExportBeanWithCustomSettings() {
+    @Test
+	@SuppressWarnings("rawtypes")
+	public void exportBeanWithCustomSettings() {
         this.broker = (MessageBroker) applicationContext.getBean("remoteServiceBroker", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -72,7 +75,8 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
         }
     }
 
-    public void testExportBeanWithDefaults() {
+    @Test
+    public void exportBeanWithDefaults() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -81,8 +85,9 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
         assertNotNull("Destination not found", rd);
         assertEquals("Source not properly set", Bean1.class.getName(), rd.getSource());
     }
-    
-    public void testExportScopedBeanWithDefaults() throws ClassNotFoundException, LinkageError {
+
+    @Test
+    public void exportScopedBeanWithDefaults() throws ClassNotFoundException, LinkageError {
         RequestContextHolder.setRequestAttributes(new DispatcherServletWebRequest(new MockHttpServletRequest()));
         
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
@@ -98,7 +103,8 @@ public class RemotingDestinationBeanDefinitionParserTests extends AbstractFlexCo
         RequestContextHolder.resetRequestAttributes();
     }
 
-    public void testInvalidConfig() {
+    @Test
+    public void invalidConfig() {
         try {
             new ClassPathXmlApplicationContext("org/springframework/flex/config/invalid-remote-service.xml");
             fail("Invalid message-broker config was not caught");

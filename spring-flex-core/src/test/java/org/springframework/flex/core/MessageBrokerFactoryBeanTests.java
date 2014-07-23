@@ -20,12 +20,16 @@ import org.springframework.flex.config.MessageBrokerConfigProcessor;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 public class MessageBrokerFactoryBeanTests extends AbstractMessageBrokerTests {
 
     private boolean testErrorCase = false;
-    
-    public void testBrokerInitialization() throws Exception {
+
+    @Test
+    public void brokerInitialization() throws Exception {
 
         MessageBroker broker = getMessageBroker();
 
@@ -34,8 +38,9 @@ public class MessageBrokerFactoryBeanTests extends AbstractMessageBrokerTests {
         assertNotNull("remoting-service not found", remotingService);
         assertTrue("The remoting service was not started", remotingService.isStarted());
     }
-    
-    public void testBrokerInitialization_InvalidConfigFileFailure() throws Exception {
+
+    @Test
+    public void invalidConfigFileFailure() throws Exception {
         
         setDirty();
         testErrorCase = true;
@@ -54,8 +59,9 @@ public class MessageBrokerFactoryBeanTests extends AbstractMessageBrokerTests {
         
         assertNotNull("MessageBroker was not created.", broker);        
     }
-    
-    public void testBrokerInitialization_ConfigProcessorErrorBeforeStartup() throws Exception {
+
+    @Test
+    public void configProcessorErrorBeforeStartup() throws Exception {
         
         setDirty();
         
@@ -76,8 +82,9 @@ public class MessageBrokerFactoryBeanTests extends AbstractMessageBrokerTests {
         
         assertNotNull("MessageBroker was not created.", broker);       
     }
-    
-    public void testBrokerInitialization_ConfigProcessorErrorAfterStartup() throws Exception {
+
+    @Test
+    public void configProcessorErrorAfterStartup() throws Exception {
         
         setDirty();
         

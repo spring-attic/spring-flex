@@ -26,6 +26,12 @@ import flex.messaging.MessageException;
 import flex.messaging.messages.AsyncMessage;
 import flex.messaging.messages.Message;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
+import org.junit.After;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Jeremy Grelle
@@ -39,7 +45,7 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
 
     private final AtomicReference<Message> messageHolder = new AtomicReference<Message>();
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         this.messageHolder.set(null);
 
@@ -56,13 +62,14 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         this.factory.afterPropertiesSet();
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
         this.factory.destroy();
         this.messageHolder.set(null);
     }
 
-    public void testInvalidDestination() throws Exception {
+    @Test
+    public void invalidDestination() throws Exception {
 
         this.template = new MessageTemplate();
         this.template.setMessageBroker(getMessageBroker());
@@ -75,7 +82,8 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         }
     }
 
-    public void testNoDestination() throws Exception {
+    @Test
+    public void noDestination() throws Exception {
 
         this.template = new MessageTemplate();
         this.template.setMessageBroker(getMessageBroker());
@@ -88,7 +96,8 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         }
     }
 
-    public void testSendCustomMessage() throws Exception {
+    @Test
+    public void sendCustomMessage() throws Exception {
         final Object data = new Object();
 
         this.template = new MessageTemplate();
@@ -108,7 +117,8 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         assertSame(data, this.messageHolder.get().getBody());
     }
 
-    public void testSendCustomMessageForDestination() throws Exception {
+    @Test
+    public void sendCustomMessageForDestination() throws Exception {
         final Object data = new Object();
 
         this.template = new MessageTemplate();
@@ -127,7 +137,8 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         assertSame(data, this.messageHolder.get().getBody());
     }
 
-    public void testSendToDefaultDestination() throws Exception {
+    @Test
+    public void sendToDefaultDestination() throws Exception {
         Object data = new Object();
 
         this.template = new MessageTemplate();
@@ -140,7 +151,8 @@ public class MessageTemplateTests extends AbstractMessageBrokerTests {
         assertSame(data, this.messageHolder.get().getBody());
     }
 
-    public void testSendToSpecifiedDestination() throws Exception {
+    @Test
+    public void sendToSpecifiedDestination() throws Exception {
         Object data = new Object();
 
         this.template = new MessageTemplate();

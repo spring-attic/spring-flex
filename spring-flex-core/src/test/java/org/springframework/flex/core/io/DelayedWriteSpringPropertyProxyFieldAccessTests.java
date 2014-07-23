@@ -61,7 +61,7 @@ public class DelayedWriteSpringPropertyProxyFieldAccessTests {
     }
     
     @Test
-    public void testDeserializeAnnotatedImmutableObject() throws IOException, ClassNotFoundException {
+    public void deserializeAnnotatedImmutableObject() throws IOException, ClassNotFoundException {
         ImmutableValueObject data = new ImmutableValueObject("bar", new Integer(1));
         data.setPersonRef(createPerson());
         data.setVoRef(new ImmutableValueObject("zed", new Integer(5)));

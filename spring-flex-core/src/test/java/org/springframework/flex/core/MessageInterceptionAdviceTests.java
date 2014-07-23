@@ -16,8 +16,10 @@
 
 package org.springframework.flex.core;
 
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -27,7 +29,7 @@ import flex.messaging.MessageException;
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.Message;
 
-public class MessageInterceptionAdviceTests extends TestCase {
+public class MessageInterceptionAdviceTests {
 
     @Mock
     private AbstractEndpoint endpoint;
@@ -46,12 +48,13 @@ public class MessageInterceptionAdviceTests extends TestCase {
 
     private AbstractEndpoint advisedEndpoint;
 
-    @Override
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
-    public final void testExceptionPassthrough() {
+    @Test
+    public void exceptionPassthrough() {
         PassthroughInterceptor interceptor = new PassthroughInterceptor();
         setupInterceptor(interceptor);
         MessageException error = new MessageException();
@@ -68,7 +71,8 @@ public class MessageInterceptionAdviceTests extends TestCase {
         assertFalse(interceptor.postInvoked);
     }
 
-    public final void testMessageMutatingInterceptor() {
+    @Test
+    public void messageMutatingInterceptor() {
 
         MessageMutatingInterceptor interceptor = new MessageMutatingInterceptor();
         setupInterceptor(interceptor);
@@ -83,7 +87,8 @@ public class MessageInterceptionAdviceTests extends TestCase {
 
     }
 
-    public final void testPassthroughInterceptor() {
+    @Test
+    public void passthroughInterceptor() {
 
         PassthroughInterceptor interceptor = new PassthroughInterceptor();
         setupInterceptor(interceptor);
@@ -96,8 +101,9 @@ public class MessageInterceptionAdviceTests extends TestCase {
         assertTrue(interceptor.postInvoked);
 
     }
-    
-    public final void testResourceHandlingInterceptorOnPreprocessException() {
+
+    @Test
+    public void resourceHandlingInterceptorOnPreprocessException() {
         PreProcessExceptionInterceptor interceptor = new PreProcessExceptionInterceptor();
         setupInterceptor(interceptor);
         TestException result = null;
@@ -109,8 +115,9 @@ public class MessageInterceptionAdviceTests extends TestCase {
         assertNotNull("Exception not re-thrown", result);
         assertTrue("Interceptor not completed", interceptor.completed);
     }
-    
-    public final void testResourceHandlingInterceptorOnInvocationException() {
+
+    @Test
+    public void resourceHandlingInterceptorOnInvocationException() {
         ResourceHandlingInterceptor interceptor = new ResourceHandlingInterceptor();
         setupInterceptor(interceptor);
         when(this.endpoint.serviceMessage(this.inMessage)).thenThrow(new TestException());
@@ -123,8 +130,9 @@ public class MessageInterceptionAdviceTests extends TestCase {
         assertNotNull("Exception not re-thrown", result);
         assertTrue("Interceptor not completed", interceptor.completed);
     }
-    
-    public final void testResourceHandlingInterceptorOnPostprocessException() {
+
+    @Test
+    public void testResourceHandlingInterceptorOnPostprocessException() {
         PostProcessExceptionInterceptor interceptor = new PostProcessExceptionInterceptor();
         setupInterceptor(interceptor);
         when(this.endpoint.serviceMessage(this.inMessage)).thenThrow(new TestException());
@@ -138,8 +146,9 @@ public class MessageInterceptionAdviceTests extends TestCase {
         assertNotNull("Preprocess not called", interceptor.preInvoked);
         assertTrue("Interceptor not completed", interceptor.completed);
     }
-    
-    public final void testResourceHandlingInterceptorOnSuccess() {
+
+    @Test
+    public void resourceHandlingInterceptorOnSuccess() {
         ResourceHandlingInterceptor interceptor = new ResourceHandlingInterceptor();
         setupInterceptor(interceptor);
         when(this.endpoint.serviceMessage(this.inMessage)).thenReturn(this.outMessage);

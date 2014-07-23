@@ -16,6 +16,10 @@
 
 package org.springframework.flex.messaging;
 
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,7 +68,7 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
     
     ClusterManager originalClusterManager;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
 
         if (!getServicesConfigPath().equals(getCurrentConfigPath())) {
@@ -80,13 +84,14 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         ReflectionTestUtils.setField(getMessageBroker(), "clusterManager", this.clusterManager);
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
         getMessageBroker().setLoginManager(this.originalLoginManager);
         ReflectionTestUtils.setField(getMessageBroker(), "clusterManager", this.originalClusterManager);
     }
 
-    public void testDefaultDestinationCreated() throws Exception {
+    @Test
+    public void defaultDestinationCreated() throws Exception {
 
         this.factory = new MessageDestinationFactory();
         this.factory.setBeanName("foo1");
@@ -105,7 +110,8 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
         assertTrue(destination.getServerSettings().isDisallowWildcardSubtopics());
     }
 
-    public void testDestinationWithExplicitProperties() throws Exception {
+    @Test
+	public void destinationWithExplicitProperties() throws Exception {
 
         this.factory = new MessageDestinationFactory();
         this.factory.setBeanName("foo-factory");
@@ -147,7 +153,8 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
 
     }
 
-    public void testDestinationWithJsonConfigMap() throws Exception {
+    @Test
+    public void destinationWithJsonConfigMap() throws Exception {
 
         PropertyEditor editor = new JsonConfigMapPropertyEditor();
         editor.setAsText(readJsonFile());
@@ -179,7 +186,8 @@ public class MessageDestinationFactoryTests extends AbstractMessageBrokerTests {
 
     }
 
-    public void testDestinationWithSecurityConstraints() throws Exception {
+    @Test
+    public void destinationWithSecurityConstraints() throws Exception {
         this.factory = new MessageDestinationFactory();
         this.factory.setBeanName("foo3");
         this.factory.setSendSecurityConstraint("spring-security-users");

@@ -20,21 +20,25 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.AuthenticationException;
 
-import junit.framework.TestCase;
-
 import flex.messaging.MessageException;
 import flex.messaging.security.SecurityException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SecurityExceptionTranslatorTests extends TestCase {
+public class SecurityExceptionTranslatorTests {
 
     private SecurityExceptionTranslator translator;
 
-    @Override
+    @Before
     public void setUp() {
         this.translator = new SecurityExceptionTranslator();
     }
 
-    public void testAccessDeniedException() {
+    @Test
+	public void accessDeniedException() {
 
         String error = "Access is denied";
 
@@ -46,7 +50,8 @@ public class SecurityExceptionTranslatorTests extends TestCase {
 
     }
 
-    public void testAuthorizationException() {
+    @Test
+    public void authorizationException() {
 
         String error = "Invalid authentication";
         MessageException ex = this.translator.translate(new AuthenticationCredentialsNotFoundException(error));
@@ -57,7 +62,8 @@ public class SecurityExceptionTranslatorTests extends TestCase {
 
     }
 
-    public void testUnknownExceptionPassthrough() {
+    @Test
+    public void unknownExceptionPassthrough() {
 
         MessageException expected = new MessageException();
         assertNull(this.translator.translate(expected));

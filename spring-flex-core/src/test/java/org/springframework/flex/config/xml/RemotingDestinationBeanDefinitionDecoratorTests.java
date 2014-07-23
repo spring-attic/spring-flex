@@ -31,14 +31,17 @@ import flex.messaging.services.RemotingService;
 import flex.messaging.services.remoting.RemotingDestination;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 @ContextConfiguration("classpath:org/springframework/flex/config/remote-service-decorator.xml")
 public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFlexConfigurationTests {
 
     private MessageBroker broker;
 
+    @Test
     @SuppressWarnings("rawtypes")
-	public void testExportBeanWithCustomSettings() {
+    public void exportBeanWithCustomSettings() {
         this.broker = (MessageBroker) applicationContext.getBean("remoteServiceBroker2", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -68,7 +71,8 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
         }
     }
 
-    public void testExportBeanWithDefaults() {
+    @Test
+    public void exportBeanWithDefaults() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -78,7 +82,8 @@ public class RemotingDestinationBeanDefinitionDecoratorTests extends AbstractFle
         assertEquals("Source not properly set", Bean1.class.getName(), rd.getSource());
     }
 
-    public void testInvalidConfig() {
+    @Test
+    public void invalidConfig() {
         try {
             new ClassPathXmlApplicationContext("org/springframework/flex/config/invalid-remote-service-decorator.xml");
             fail("Invalid message-broker config was not caught");

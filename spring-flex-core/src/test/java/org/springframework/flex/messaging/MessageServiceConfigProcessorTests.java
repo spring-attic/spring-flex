@@ -16,6 +16,9 @@
 
 package org.springframework.flex.messaging;
 
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Mockito.when;
 
 import org.mockito.Mock;
@@ -36,12 +39,13 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
     private @Mock
     BeanFactory beanFactory;
 
-    @Override
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
-    public void testMessageServiceAddedWithBrokerDefaultChannels() throws Exception {
+    @Test
+    public void messageServiceAddedWithBrokerDefaultChannels() throws Exception {
         setDirty();
         addStartupProcessor(new MessageServiceConfigProcessor());
         this.servicesConfigPath = "classpath:org/springframework/flex/messaging/default-channels-config.xml";
@@ -53,8 +57,9 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
         assertEquals("The default adapter was not set", "actionscript", messageService.getDefaultAdapter());
     }
 
+    @Test
     @SuppressWarnings("rawtypes")
-	public void testMessageServiceAddedWithCustomDefaults() throws Exception {
+    public void messageServiceAddedWithCustomDefaults() throws Exception {
         setDirty();
         MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
         processor.setBeanFactory(this.beanFactory);
@@ -70,7 +75,8 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
         assertEquals("The default adapter was not set", "my-adapter", messageService.getDefaultAdapter());
     }
 
-    public void testMessageServiceAddedWithInferredDefaultChannels() throws Exception {
+    @Test
+    public void messageServiceAddedWithInferredDefaultChannels() throws Exception {
         setDirty();
         addStartupProcessor(new MessageServiceConfigProcessor());
         this.servicesConfigPath = "classpath:org/springframework/flex/messaging/inferred-default-channels-config.xml";
@@ -80,7 +86,8 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
         assertEquals("The default adapter was not set", "actionscript", messageService.getDefaultAdapter());
     }
 
-    public void testMessageServiceAddedWithInvalidCustomChannels() throws Exception {
+    @Test
+    public void messageServiceAddedWithInvalidCustomChannels() throws Exception {
         setDirty();
         MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
         processor.setDefaultChannels(new String[] { "my-bogus-channel" });
@@ -97,7 +104,8 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
         }
     }
 
-    public void testMessageServiceAddedWithInvalidDefaultId() throws Exception {
+    @Test
+    public void messageServiceAddedWithInvalidDefaultId() throws Exception {
         setDirty();
         MessageServiceConfigProcessor processor = new MessageServiceConfigProcessor();
         processor.setBeanFactory(this.beanFactory);
@@ -116,7 +124,8 @@ public class MessageServiceConfigProcessorTests extends AbstractMessageBrokerTes
         }
     }
 
-    public void testMessageServiceExists() throws Exception {
+    @Test
+    public void messageServiceExists() throws Exception {
         setDirty();
         MessageServiceChecker checker = new MessageServiceChecker();
         addStartupProcessor(checker);

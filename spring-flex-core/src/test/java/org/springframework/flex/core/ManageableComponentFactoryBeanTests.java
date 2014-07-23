@@ -16,15 +16,19 @@
 
 package org.springframework.flex.core;
 
-import junit.framework.TestCase;
 import flex.management.ManageableComponent;
 import flex.messaging.config.ConfigMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
-public class ManageableComponentFactoryBeanTests extends TestCase {
+public class ManageableComponentFactoryBeanTests {
 
     private ManageableComponentFactoryBean factoryBean;
 
-    public void testComponentCreationAndInitialization() throws Exception {
+    @Test
+    public void componentCreationAndInitialization() throws Exception {
         this.factoryBean = new ManageableComponentFactoryBean(CustomManageableComponent.class);
         this.factoryBean.setBeanName("my-adapter");
         ManageableComponent component = (ManageableComponent) this.factoryBean.getObject();

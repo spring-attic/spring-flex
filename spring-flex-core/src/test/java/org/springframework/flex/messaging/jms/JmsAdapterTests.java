@@ -5,6 +5,11 @@ import javax.jms.Destination;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.junit.After;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.MutablePropertyValues;
@@ -27,17 +32,18 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
     @Mock
     private ApplicationEventPublisher publisher;
     
-    @Override
+    @Before
     public void setUp() throws Exception {
     	MockitoAnnotations.initMocks(this);
     }
     
-    @Override
+    @After
     public void tearDown() throws Exception {
         getMessageService().removeDestination(DEST_ID);
     }
-    
-    public void testDestinationSubscribeSendUnsubscribe() throws Exception {
+
+    @Test
+    public void destinationSubscribeSendUnsubscribe() throws Exception {
         JmsAdapter adapter = createAdapter();
         
         FlexContext.setThreadLocalFlexClient(getMessageBroker().getFlexClientManager().getFlexClient("foo"));
@@ -62,8 +68,9 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         assertFalse("MessageListener not stopped",adapter.getMessageListenerContainer().isRunning());
         assertFalse("MessageListener should be shut down", adapter.getMessageListenerContainer().isActive());
     }
-    
-    public void testDestinationSubscribeTwiceSendUnsubscribe() throws Exception {
+
+    @Test
+    public void destinationSubscribeTwiceSendUnsubscribe() throws Exception {
         JmsAdapter adapter = createAdapter();
         
         CommandMessage subscribeMessage = new CommandMessage(CommandMessage.SUBSCRIBE_OPERATION);
@@ -91,8 +98,9 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         assertTrue("MessageListener stopped unexpectedly",adapter.getMessageListenerContainer().isRunning());
         assertTrue("MessageListener shut down unexpectedly", adapter.getMessageListenerContainer().isActive());
     }
-    
-    public void testSubscribeUnsubscribeStop() throws Exception{
+
+    @Test
+    public void subscribeUnsubscribeStop() throws Exception{
         
         JmsAdapter adapter = createAdapter();
         
@@ -115,8 +123,9 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         adapter.stop();
         assertFalse("MessageListener not shut down", adapter.getMessageListenerContainer().isActive());
     }
-    
-    public void testSubscribeTwiceUnsubscribeStop() throws Exception{
+
+    @Test
+    public void subscribeTwiceUnsubscribeStop() throws Exception{
         
         JmsAdapter adapter = createAdapter();
         
@@ -144,8 +153,9 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         adapter.stop();
         assertFalse("MessageListener not shut down", adapter.getMessageListenerContainer().isActive());
     }
-    
-    public void testSubscribeStop() throws Exception{
+
+    @Test
+    public void subscribeStop() throws Exception{
         
         JmsAdapter adapter = createAdapter();
         
@@ -161,8 +171,9 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         assertFalse("MessageListener not stopped",adapter.getMessageListenerContainer().isRunning());
         assertFalse("MessageListener not shut down", adapter.getMessageListenerContainer().isActive());
     }
-    
-    public void testStop() throws Exception{
+
+    @Test
+    public void stop() throws Exception{
         
         JmsAdapter adapter = createAdapter();
         
@@ -170,8 +181,9 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         assertFalse("MessageListener not stopped",adapter.getMessageListenerContainer().isRunning());
         assertFalse("MessageListener not shut down", adapter.getMessageListenerContainer().isActive());
     }
-    
-    public void testStopRestart() throws Exception {
+
+    @Test
+    public void stopRestart() throws Exception {
         JmsAdapter adapter = createAdapter();        
         
         adapter.stop();
@@ -182,8 +194,9 @@ public class JmsAdapterTests extends AbstractMessageBrokerTests {
         assertTrue("MessageListener not initialized", adapter.getMessageListenerContainer().isActive());
         assertFalse("MessageListener running unexpectedly",adapter.getMessageListenerContainer().isRunning());
     }
-    
-    public void testSubscribeStopRestart() throws Exception{
+
+    @Test
+    public void subscribeStopRestart() throws Exception{
         JmsAdapter adapter = createAdapter();        
         
         CommandMessage subscribeMessage = new CommandMessage(CommandMessage.SUBSCRIBE_OPERATION);

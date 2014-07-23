@@ -16,6 +16,9 @@
 
 package org.springframework.flex.remoting;
 
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Mockito.when;
 
 import org.mockito.Mock;
@@ -36,12 +39,13 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
     private @Mock
     BeanFactory beanFactory;
 
-    @Override
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
-    public void testRemotingServiceAddedWithBrokerDefaultChannels() throws Exception {
+    @Test
+    public void remotingServiceAddedWithBrokerDefaultChannels() throws Exception {
         setDirty();
         addStartupProcessor(new RemotingServiceConfigProcessor());
         this.servicesConfigPath = "classpath:org/springframework/flex/remoting/default-channels-config.xml";
@@ -53,8 +57,9 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         assertEquals("The default adapter was not set", "java-object", remotingService.getDefaultAdapter());
     }
 
+    @Test
     @SuppressWarnings("rawtypes")
-	public void testRemotingServiceAddedWithCustomDefaults() throws Exception {
+	public void remotingServiceAddedWithCustomDefaults() throws Exception {
         setDirty();
         RemotingServiceConfigProcessor processor = new RemotingServiceConfigProcessor();
         processor.setBeanFactory(this.beanFactory);
@@ -70,7 +75,8 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         assertEquals("The default adapter was not set", "my-adapter", remotingService.getDefaultAdapter());
     }
 
-    public void testRemotingServiceAddedWithInferredDefaultChannels() throws Exception {
+    @Test
+    public void remotingServiceAddedWithInferredDefaultChannels() throws Exception {
         setDirty();
         addStartupProcessor(new RemotingServiceConfigProcessor());
         this.servicesConfigPath = "classpath:org/springframework/flex/remoting/inferred-default-channels-config.xml";
@@ -80,7 +86,8 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         assertEquals("The default adapter was not set", "java-object", remotingService.getDefaultAdapter());
     }
 
-    public void testRemotingServiceAddedWithInvalidCustomChannels() throws Exception {
+    @Test
+    public void remotingServiceAddedWithInvalidCustomChannels() throws Exception {
         setDirty();
         RemotingServiceConfigProcessor processor = new RemotingServiceConfigProcessor();
         processor.setDefaultChannels(new String[] { "my-bogus-channel" });
@@ -97,7 +104,8 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         }
     }
 
-    public void testRemotingServiceAddedWithInvalidDefaultId() throws Exception {
+    @Test
+    public void remotingServiceAddedWithInvalidDefaultId() throws Exception {
         setDirty();
         RemotingServiceConfigProcessor processor = new RemotingServiceConfigProcessor();
         processor.setBeanFactory(this.beanFactory);
@@ -116,7 +124,8 @@ public class RemotingServiceConfigProcessorTests extends AbstractMessageBrokerTe
         }
     }
 
-    public void testRemotingServiceExists() throws Exception {
+    @Test
+    public void remotingServiceExists() throws Exception {
         setDirty();
         RemotingServiceChecker checker = new RemotingServiceChecker();
         addStartupProcessor(checker);

@@ -19,14 +19,18 @@ package org.springframework.flex.config.json;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import flex.messaging.config.ConfigMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import org.junit.Test;
 
-public class JsonConfigMapPropertyEditorTests extends TestCase {
+public class JsonConfigMapPropertyEditorTests {
 
     JsonConfigMapPropertyEditor editor = new JsonConfigMapPropertyEditor();
 
-    public void testArrayProperty() {
+    @Test
+    public void arrayProperty() {
 
         String props = "{ \"foo\" : [ \"bar\", \"baz\", \"boo\" ] }";
 
@@ -42,7 +46,8 @@ public class JsonConfigMapPropertyEditorTests extends TestCase {
         assertEquals(expected, result.getPropertyAsList("foo", null));
     }
 
-    public void testBooleanProperty() {
+    @Test
+    public void booleanProperty() {
 
         String props = "{\"foo\": true}";
 
@@ -54,7 +59,8 @@ public class JsonConfigMapPropertyEditorTests extends TestCase {
         assertEquals(true, result.getPropertyAsBoolean("foo", false));
     }
 
-    public void testComplexElement() {
+    @Test
+    public void complexElement() {
 
         String props = "{ \"foo\" : { \"bar\" : \"baz\" } }";
 
@@ -68,7 +74,8 @@ public class JsonConfigMapPropertyEditorTests extends TestCase {
         assertEquals("baz", foo.getProperty("bar"));
     }
 
-    public void testComplexNestedElements() {
+    @Test
+    public void complexNestedElements() {
 
         String props = "{ \"network\" : { \"throttle-inbound\" : { \"policy\" : \"ERROR\", \"max-frequency\" : 50  }, "
             + "\"throttle-outbound\" : { \"policy\" : \"ERROR\", \"max-frequency\" : 500 }  } }";
@@ -93,7 +100,8 @@ public class JsonConfigMapPropertyEditorTests extends TestCase {
 
     }
 
-    public void testInvalidJson() {
+    @Test
+    public void invalidJson() {
 
         String props = "foo : bar";
 
@@ -108,7 +116,8 @@ public class JsonConfigMapPropertyEditorTests extends TestCase {
 
     }
 
-    public void testInvalidObjectStructure() {
+    @Test
+    public void invalidObjectStructure() {
 
         String props = "\"foo\" : \"bar\"";
 
@@ -123,7 +132,8 @@ public class JsonConfigMapPropertyEditorTests extends TestCase {
 
     }
 
-    public void testMissingPropertyName() {
+    @Test
+    public void missingPropertyName() {
 
         String props = "{{\"foo\" : \"bar\"}}";
 
@@ -138,7 +148,8 @@ public class JsonConfigMapPropertyEditorTests extends TestCase {
 
     }
 
-    public void testNumericProperty() {
+    @Test
+    public void numericProperty() {
 
         String props = "{\"foo\" : 100}";
 
@@ -150,7 +161,8 @@ public class JsonConfigMapPropertyEditorTests extends TestCase {
         assertEquals(100, result.getPropertyAsInt("foo", -1));
     }
 
-    public void testSimpleProperty() {
+    @Test
+    public void simpleProperty() {
 
         String props = "{\"foo\":\"bar\"}";
 

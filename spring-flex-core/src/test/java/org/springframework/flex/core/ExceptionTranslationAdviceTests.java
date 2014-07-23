@@ -16,6 +16,9 @@
 
 package org.springframework.flex.core;
 
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
@@ -28,7 +31,7 @@ import flex.messaging.MessageException;
 import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.Message;
 
-public class ExceptionTranslationAdviceTests extends TestCase {
+public class ExceptionTranslationAdviceTests {
 
     @Mock
     private AbstractEndpoint endpoint;
@@ -41,7 +44,7 @@ public class ExceptionTranslationAdviceTests extends TestCase {
 
     private AbstractEndpoint advisedEndpoint;
 
-    @Override
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
@@ -54,7 +57,8 @@ public class ExceptionTranslationAdviceTests extends TestCase {
         this.advisedEndpoint = (AbstractEndpoint) factory.getProxy();
     }
 
-    public void testKnownException() {
+    @Test
+    public void knownException() {
 
         when(this.endpoint.serviceMessage(this.inMessage)).thenThrow(new TestException());
 
@@ -67,7 +71,8 @@ public class ExceptionTranslationAdviceTests extends TestCase {
         }
     }
 
-    public void testKnownNestedException() {
+    @Test
+    public void knownNestedException() {
 
         MessageException wrapper = new MessageException();
         wrapper.setCode("Server.Processing");
@@ -83,7 +88,8 @@ public class ExceptionTranslationAdviceTests extends TestCase {
         }
     }
 
-    public void testNormalReturnPassthrough() {
+    @Test
+    public void normalReturnPassthrough() {
 
         when(this.endpoint.serviceMessage(this.inMessage)).thenReturn(this.outMessage);
 
@@ -92,7 +98,8 @@ public class ExceptionTranslationAdviceTests extends TestCase {
         assertSame(this.outMessage, result);
     }
 
-    public void testUnknownExceptionPassthrough() {
+    @Test
+    public void unknownExceptionPassthrough() {
 
         MessageException expected = new MessageException();
         expected.setCode("Server.Processing");

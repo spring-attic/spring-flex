@@ -16,6 +16,10 @@
 
 package org.springframework.flex.security3;
 
+import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -23,8 +27,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -37,7 +39,7 @@ import flex.messaging.FlexContext;
 import flex.messaging.endpoints.AMFEndpoint;
 import flex.messaging.endpoints.Endpoint;
 
-public class EndpointSecurityMetadataSourceTests extends TestCase {
+public class EndpointSecurityMetadataSourceTests {
 
     private @Mock
     Endpoint mockEndpoint;
@@ -46,19 +48,20 @@ public class EndpointSecurityMetadataSourceTests extends TestCase {
 
     private EndpointSecurityMetadataSource source;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.request = new MockHttpServletRequest();
         FlexContext.setThreadLocalHttpRequest(this.request);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         FlexContext.clearThreadLocalObjects();        
     }
-    
-    public void testGetAttributes_ForProtectedEndpointId() {
+
+    @Test
+    public void forProtectedEndpointId() {
         HashMap<String, Collection<ConfigAttribute>> endpointMap = new HashMap<String, Collection<ConfigAttribute>>();
         List<ConfigAttribute> attrs = new ArrayList<ConfigAttribute>();
         attrs.add(new SecurityConfig("ROLE_USER"));
@@ -72,7 +75,8 @@ public class EndpointSecurityMetadataSourceTests extends TestCase {
         assertTrue(def.size() > 0);
     }
 
-    public void testGetAttributes_ForProtectedURL() {
+    @Test
+    public void forProtectedURL() {
         List<ConfigAttribute> attrs = new ArrayList<ConfigAttribute>();
         attrs.add(new SecurityConfig("ROLE_USER"));
         LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>>();
@@ -87,7 +91,8 @@ public class EndpointSecurityMetadataSourceTests extends TestCase {
         assertTrue(def.size() > 0);
     }
 
-    public void testSupportsEndpoint() {
+    @Test
+    public void supportsEndpoint() {
         this.source = new EndpointSecurityMetadataSource(new LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>>());
 
         assertTrue(this.source.supports(Endpoint.class));
