@@ -16,6 +16,10 @@
 
 package org.springframework.flex.config;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
 import org.springframework.test.annotation.IfProfileValue;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -31,23 +35,27 @@ import org.springframework.test.context.TestExecutionListeners;
 @TestExecutionListeners(inheritListeners=false)
 public class RuntimeEnvironmentTests extends AbstractRuntimeEnvironmentAwareTests {
 
+    @Test
     @IfProfileValue(name=ENVIRONMENT, value=BLAZEDS)
-    public void testIsLCDSInBlazeDSEnvironment() {
+    public void isLCDSInBlazeDSEnvironment() {
         assertFalse(RuntimeEnvironment.isLCDS());
     }
 
+    @Test
     @IfProfileValue(name=ENVIRONMENT, value=BLAZEDS)
-    public void testIsBlazeDSInBlazeDSEnvironment() {
+    public void isBlazeDSInBlazeDSEnvironment() {
         assertTrue(RuntimeEnvironment.isBlazeDS());
     }
-    
+
+    @Test
     @IfProfileValue(name=ENVIRONMENT, value=LCDS)
-    public void testIsBlazeDSInLCDSEnvironment() {
+    public void isBlazeDSInLCDSEnvironment() {
         assertFalse(RuntimeEnvironment.isBlazeDS());
     }
 
+    @Test
     @IfProfileValue(name=ENVIRONMENT, value=LCDS)
-    public void testIsLCDSInLCDSEnvironment() {
+    public void isLCDSInLCDSEnvironment() {
         assertTrue(RuntimeEnvironment.isLCDS());
     }
 }

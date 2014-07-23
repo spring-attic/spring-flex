@@ -15,7 +15,7 @@ import flex.messaging.io.PropertyProxy;
 public class SpringPropertyProxyCreationTests {
 
     @Test
-    public void testDefaultConstructorObject() {
+    public void defaultConstructorObject() {
         PropertyProxy result = SpringPropertyProxy.proxyFor(Person.class, false, new GenericConversionService());
         assertEquals(SpringPropertyProxy.class, result.getClass());
     }
@@ -27,7 +27,7 @@ public class SpringPropertyProxyCreationTests {
     }
     
     @Test
-    public void testAmfCreatorAnnotatedImmutableObject() {
+    public void amfCreatorAnnotatedImmutableObject() {
         PropertyProxy result = SpringPropertyProxy.proxyFor(ImmutableValueObject.class, false, new GenericConversionService());
         assertEquals(SpringPropertyProxy.DelayedWriteSpringPropertyProxy.class, result.getClass());
     }

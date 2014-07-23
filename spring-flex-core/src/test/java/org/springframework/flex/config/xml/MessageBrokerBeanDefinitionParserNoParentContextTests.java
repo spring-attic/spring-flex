@@ -15,12 +15,17 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import flex.messaging.MessageBroker;
 import flex.messaging.security.LoginCommand;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 @ContextConfiguration("classpath:/org/springframework/flex/config/secured-message-broker.xml")
 public class MessageBrokerBeanDefinitionParserNoParentContextTests extends AbstractFlexConfigurationTests {
 
+    @Test
     @SuppressWarnings("rawtypes")
-	public void testMessageBroker_DefaultSecured() {
+    public void defaultSecured() {
         MessageBroker broker = (MessageBroker) applicationContext.getBean("defaultSecured2", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", broker);
         LoginCommand loginCommand = broker.getLoginManager().getLoginCommand();

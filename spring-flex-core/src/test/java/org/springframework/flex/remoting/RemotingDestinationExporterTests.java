@@ -16,6 +16,10 @@
 
 package org.springframework.flex.remoting;
 
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Mockito.when;
 
 import java.util.Iterator;
@@ -49,7 +53,7 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
     private @Mock
     BeanFactory beanFactory;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         if (getCurrentConfigPath() != getServicesConfigPath()) {
             setDirty();
@@ -59,7 +63,7 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         this.exporter.setBeanFactory(this.beanFactory);
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
         this.exporter.destroy();
     }
@@ -76,7 +80,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         }
     }
 
-    public void testDestinationConfiguredWithInvalidExcludeMethods() throws Exception {
+    @Test
+    public void destinationConfiguredWithInvalidExcludeMethods() throws Exception {
 
         String methodName = "retreiveStringValues";
         this.exporter.setExcludeMethods(new String[] { methodName });
@@ -88,7 +93,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         }
     }
 
-    public void testDestinationConfiguredWithInvalidIncludeMethods() throws Exception {
+    @Test
+    public void destinationConfiguredWithInvalidIncludeMethods() throws Exception {
 
         String methodName = "retreiveStringValues";
         this.exporter.setIncludeMethods(new String[] { methodName });
@@ -100,7 +106,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         }
     }
 
-    public void testDestinationConfiguredWithNullMessageBroker() throws Exception {
+    @Test
+    public void destinationConfiguredWithNullMessageBroker() throws Exception {
 
         this.exporter.setMessageBroker(null);
         try {
@@ -111,7 +118,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         }
     }
 
-    public void testDestinationConfiguredWithNullService() throws Exception {
+    @Test
+    public void destinationConfiguredWithNullService() throws Exception {
         this.exporter.setService(null);
         try {
             this.exporter.afterPropertiesSet();
@@ -121,7 +129,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         }
     }
 
-    public void testDestinationConfiguredWithSpringManagedCustomAdapter() throws Exception {
+    @Test
+    public void destinationConfiguredWithSpringManagedCustomAdapter() throws Exception {
 
         String adapterId = "my-adapter";
         ServiceAdapter springAdapter = new TestAdapter();
@@ -139,7 +148,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         assertSame(springAdapter, remotingDestination.getAdapter());
     }
 
-    public void testDestinationConfiguredWithSpringManagedDefaultAdapter() throws Exception {
+    @Test
+    public void destinationConfiguredWithSpringManagedDefaultAdapter() throws Exception {
 
         String adapterId = "java-object";
         ServiceAdapter springAdapter = new TestAdapter();
@@ -156,7 +166,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         assertSame(springAdapter, remotingDestination.getAdapter());
     }
 
-    public void testDestinationConfiguredWithValidChannels() throws Exception {
+    @Test
+    public void destinationConfiguredWithValidChannels() throws Exception {
         RemotingService remotingService = getRemotingService();
 
         String[] channelIds = new String[] { "my-secure-amf" };
@@ -169,7 +180,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         assertFalse("Default channel not overriden", remotingDestination.getChannels().contains("my-amf"));
     }
 
-    public void testDestinationConfiguredWithValidExcludeMethods() throws Exception {
+    @Test
+    public void destinationConfiguredWithValidExcludeMethods() throws Exception {
 
         RemotingService remotingService = getRemotingService();
 
@@ -186,7 +198,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 
     }
 
-    public void testDestinationConfiguredWithValidIncludeMethods() throws Exception {
+    @Test
+    public void destinationConfiguredWithValidIncludeMethods() throws Exception {
 
         RemotingService remotingService = getRemotingService();
 
@@ -203,7 +216,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 
     }
 
-    public void testDestinationRegisteredWithDefaultConfig() throws Exception {
+    @Test
+    public void destinationRegisteredWithDefaultConfig() throws Exception {
 
         RemotingService remotingService = getRemotingService();
 
@@ -217,7 +231,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         assertEquals("Source should be class name of target object", this.testService.getClass().getName(), remotingDestination.getSource());
     }
 
-    public void testDestinationRegisteredWithDestinationId() throws Exception {
+    @Test
+    public void destinationRegisteredWithDestinationId() throws Exception {
 
         RemotingService remotingService = getRemotingService();
 
@@ -227,8 +242,9 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
 
         assertNotNull("RemotingDestination not registered", remotingService.getDestination(destinationId));
     }
-    
-    public void testDestinationConfiguredWithSourceClassForProxiedInterface() throws Exception {
+
+    @Test
+    public void destinationConfiguredWithSourceClassForProxiedInterface() throws Exception {
         StaticWebApplicationContext context = new StaticWebApplicationContext();
         
         MutablePropertyValues props = new MutablePropertyValues();
@@ -245,8 +261,9 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         RemotingDestination remotingDestination = (RemotingDestination) remotingService.getDestination("proxiedBean");
         assertEquals("Source not set correctly", StubService.class.getName(), remotingDestination.getSource());
     }
-    
-    public void testDestinationConfiguredWithValidExcludeMethodsOnProxiedBean() throws Exception {
+
+    @Test
+    public void destinationConfiguredWithValidExcludeMethodsOnProxiedBean() throws Exception {
 
         RemotingService remotingService = getRemotingService();
 
@@ -275,7 +292,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         }
     }
 
-    public void testDestinationConfiguredWithValidIncludeMethodsOnProxiedBean() throws Exception {
+    @Test
+    public void destinationConfiguredWithValidIncludeMethodsOnProxiedBean() throws Exception {
 
         RemotingService remotingService = getRemotingService();
 

@@ -25,11 +25,15 @@ import flex.messaging.messages.Message;
 import flex.messaging.services.MessageService;
 import flex.messaging.services.messaging.adapters.ActionScriptAdapter;
 import flex.messaging.services.messaging.adapters.MessagingAdapter;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 @ContextConfiguration("classpath:org/springframework/flex/config/message-destination.xml")
 public class MessageDestinationBeanDefinitionParserTests extends AbstractMessageDestinationBeanDefinitionParserTests {
 
-    public void testNativeDestination_CustomAdapter() {
+    @Test
+    public void customAdapter() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         MessageService ms = (MessageService) this.broker.getService("message-service");
@@ -40,7 +44,8 @@ public class MessageDestinationBeanDefinitionParserTests extends AbstractMessage
         assertTrue(destination.getAdapter() instanceof TestMessagingAdapter);
     }
 
-    public void testNativeDestination_DefaultConfig() {
+    @Test
+    public void defaultConfig() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         MessageService ms = (MessageService) this.broker.getService("message-service");

@@ -16,6 +16,9 @@
 
 package org.springframework.flex.core;
 
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -40,7 +41,7 @@ import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.endpoints.BaseHTTPEndpoint;
 import flex.messaging.messages.Message;
 
-public class EndpointConfigProcessorTests extends TestCase {
+public class EndpointConfigProcessorTests {
 
     MessageBroker broker;
 
@@ -67,7 +68,7 @@ public class EndpointConfigProcessorTests extends TestCase {
 
     EndpointConfigProcessor processor;
 
-    @Override
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
@@ -92,8 +93,9 @@ public class EndpointConfigProcessorTests extends TestCase {
         this.broker.addEndpoint(this.endpoint3);
     }
 
+    @Test
     @SuppressWarnings("rawtypes")
-	public void testPostProcessAfterInit() throws Throwable {
+	public void postProcessAfterInit() throws Throwable {
 
         List<EndpointAdvisor> advisors = new ArrayList<EndpointAdvisor>();
         advisors.add(this.advisor1);
@@ -141,7 +143,7 @@ public class EndpointConfigProcessorTests extends TestCase {
             assertEquals(this.testMessage, result);
         }
     }
-    
+
     public static class CustomEndpoint extends AMFEndpoint {
 
         @Override

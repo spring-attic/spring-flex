@@ -22,6 +22,10 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.support.AopUtils;
@@ -72,7 +76,7 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
     @Mock
     private MockHttpServletRequest request;
 
-	@Override
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>>();
@@ -90,13 +94,14 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
         this.request = new MockHttpServletRequest();
     }
 
-    @Override
+    @After
     public void tearDown() {
         SecurityContextHolder.getContext().setAuthentication(null);
         FlexContext.clearThreadLocalObjects();
     }
 
-    public void testServiceAuthorized() throws Exception {
+    @Test
+    public void serviceAuthorized() throws Exception {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
@@ -114,7 +119,8 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
         }
     }
 
-    public void testServiceUnauthenticated() throws Exception {
+    @Test
+    public void serviceUnauthenticated() throws Exception {
         MessageBroker broker = getMessageBroker();
         Endpoint endpoint = broker.getEndpoint("my-amf");
         assertNotNull(endpoint);
@@ -135,7 +141,8 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
 
     }
 
-    public void testServiceUnauthorized() throws Exception {
+    @Test
+    public void serviceUnauthorized() throws Exception {
 
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", new ArrayList<GrantedAuthority>());
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -159,8 +166,9 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
         }
     }
 
+    @Test
     @SuppressWarnings("rawtypes")
-	public void testStartupProcessed() throws Exception {
+    public void startupProcessed() throws Exception {
         MessageBroker broker = getMessageBroker();
         Iterator i = broker.getEndpoints().values().iterator();
         while (i.hasNext()) {

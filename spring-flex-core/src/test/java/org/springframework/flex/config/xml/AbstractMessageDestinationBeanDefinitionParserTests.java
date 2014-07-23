@@ -16,6 +16,8 @@
 
 package org.springframework.flex.config.xml;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.flex.config.AbstractFlexConfigurationTests;
@@ -33,7 +35,8 @@ public abstract class AbstractMessageDestinationBeanDefinitionParserTests extend
 
     protected MessageBroker broker;
 
-    public void testDestination_CustomConfig() {
+    @Test
+    public void customConfig() {
         this.broker = (MessageBroker) applicationContext.getBean("messageServiceBroker", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         MessageService ms = (MessageService) this.broker.getService("message-service");

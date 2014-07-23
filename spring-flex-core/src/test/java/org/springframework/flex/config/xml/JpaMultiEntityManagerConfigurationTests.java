@@ -12,18 +12,22 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import flex.messaging.MessageBroker;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
 
 @ContextConfiguration(locations="classpath:org/springframework/flex/config/jpa-message-broker.xml", inheritLocations=false, loader=JpaMultiEntityManagerConfigurationTests.ParentContextLoader.class)
 public class JpaMultiEntityManagerConfigurationTests extends AbstractFlexConfigurationTests {
-    
-    public void testMessageBroker_AutoDetectMultipleEntityManagers() {
+
+    @Test
+    public void autoDetectMultipleEntityManagers() {
         MessageBroker broker = applicationContext.getBean("multiEntityManagerMessageBroker", MessageBroker.class);
         assertNotNull(broker);
         assertNotNull(applicationContext.getBean("entityManagerFactory"));
         assertNotNull(applicationContext.getBean("entityManagerFactory2"));
         assertEquals(1, applicationContext.getBeansOfType(JpaHibernateConfigProcessor.class).entrySet().size());
     }
-    
+
     public static final class ParentContextLoader extends MessageBrokerContextLoader {
         @Override
         protected ConfigurableApplicationContext createParentContext() {

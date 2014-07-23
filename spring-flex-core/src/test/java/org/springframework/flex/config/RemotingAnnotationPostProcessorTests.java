@@ -32,13 +32,16 @@ import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
 import flex.messaging.services.remoting.adapters.JavaAdapter;
 import flex.messaging.services.remoting.adapters.RemotingMethod;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 @ContextConfiguration(locations="classpath:org/springframework/flex/config/remote-service-annotations.xml", loader=RemotingAnnotationPostProcessorTests.ParentContextLoader.class)
 public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurationTests {
 
     private MessageBroker broker;
 
-    public void testExportAnnotatedBeanWithAutowiredConstructor() {
+    @Test
+    public void exportAnnotatedBeanWithAutowiredConstructor() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -47,8 +50,9 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertNotNull("Destination not found", rd);
         assertEquals("Source not properly set", AnnotatedAutowiredRemoteBean.class.getName(), rd.getSource());
     }
-    
-    public void testExportAnnotatedScopedProxyBeanWithAutowiredConstructor() {
+
+    @Test
+    public void exportAnnotatedScopedProxyBeanWithAutowiredConstructor() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -58,7 +62,8 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertEquals("Source not properly set", AnnotatedAutowiredScopedProxyRemoteBean.class.getName(), rd.getSource());
     }
 
-    public void testExportAnnotatedBeanWithCustomChannelsAndPostConstruct() {
+    @Test
+    public void exportAnnotatedBeanWithCustomChannelsAndPostConstruct() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -70,8 +75,9 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         AnnotatedRemoteBean bean = applicationContext.getBean(AnnotatedRemoteBean.class);
         assertTrue("@PostConstruct method not invoked", bean.initInvoked);
     }
-    
-    public void testExportAnnotatedBeanFromParentContextWithDefaults() {
+
+    @Test
+    public void exportAnnotatedBeanFromParentContextWithDefaults() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -81,7 +87,8 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertEquals("Source not properly set", MyService1.class.getName(), rd.getSource());
     }
 
-    public void testExportAnnotatedXmlConfiguredBeanWithDefaults() {
+    @Test
+    public void exportAnnotatedXmlConfiguredBeanWithDefaults() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -91,8 +98,9 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         assertEquals("Source not properly set", MyService1.class.getName(), rd.getSource());
     }
 
+    @Test
     @SuppressWarnings("rawtypes")
-	public void testExportBeanWithCustomSettings() {
+    public void exportBeanWithCustomSettings() {
         this.broker = (MessageBroker) applicationContext.getBean("annotatedRemoteServiceBroker", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -123,8 +131,9 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
             assertFalse(Arrays.asList(includeNames).contains(exclude.getName()));
         }
     }
-    
-    public void testExportBeanWithDynamicChannels() {
+
+    @Test
+    public void exportBeanWithDynamicChannels() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -134,8 +143,9 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         String[] channels = new String[] {"my-amf"};
         assertEquals("Channels not set", Arrays.asList(channels), rd.getChannels());
     }
-    
-    public void testExportBeanWithMultipleDynamicChannels() {
+
+    @Test
+    public void exportBeanWithMultipleDynamicChannels() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");
@@ -145,8 +155,9 @@ public class RemotingAnnotationPostProcessorTests extends AbstractFlexConfigurat
         String[] channels = new String[] {"my-secure-amf", "my-amf"};
         assertEquals("Channels not set", Arrays.asList(channels), rd.getChannels());
     }
-    
-    public void testExportBeanWithMultipleDynamicCombinedChannels() {
+
+    @Test
+    public void exportBeanWithMultipleDynamicCombinedChannels() {
         this.broker = (MessageBroker) applicationContext.getBean(BeanIds.MESSAGE_BROKER, MessageBroker.class);
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         RemotingService rs = (RemotingService) this.broker.getService("remoting-service");

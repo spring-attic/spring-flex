@@ -32,6 +32,10 @@ import flex.messaging.config.ConfigurationManager;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.config.XPathServerConfigurationParser;
 
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
 @TestExecutionListeners(value={}, inheritListeners=false)
 public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwareTests {
 
@@ -43,12 +47,13 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
     
     private static final Log log = LogFactory.getLog(FlexConfigurationManagerTests.class);
 
-    @Override
+    @Before
     public void setUp() {
         this.context.setServletConfig(this.config);
     }
 
-    public void testCustomConfiguration() {
+    @Test
+    public void customConfiguration() {
         this.context.registerSingleton("configParser", flex.messaging.config.XPathServerConfigurationParser.class);
         RuntimeBeanReference parserReference = new RuntimeBeanReference("configParser");
         GenericBeanDefinition configManagerDef = new GenericBeanDefinition();
@@ -68,7 +73,8 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
         assertNotNull(messagingConfiguration.getServiceSettings("remoting-service"));
     }
 
-    public void testGetMessagingConfiguration() {
+    @Test
+    public void getMessagingConfiguration() {
         this.configManager = new FlexConfigurationManager(this.context, "classpath:org/springframework/flex/core/services-config.xml");
 
         MessagingConfiguration messagingConfiguration = this.configManager.getMessagingConfiguration(this.config);
@@ -78,8 +84,9 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
         assertNotNull(messagingConfiguration.getServiceSettings("proxy-service"));
         assertNotNull(messagingConfiguration.getServiceSettings("remoting-service"));
     }
-    
-    public void testParserPerformance() {
+
+    @Test
+    public void parserPerformance() {
         long start = 0;
         long end = 0;
         long defaultTotal = 0;
@@ -119,8 +126,9 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
         log.info("Xalan total parser time = "+xalanTotal+"ms");
         
     }
-    
-    public void testGetMessagingConfigurationDoesNotExist() {
+
+    @Test
+    public void doesNotExist() {
         this.configManager = new FlexConfigurationManager(this.context, "classpath:org/springframework/flex/core/foo.xml");
 
         try {
@@ -130,8 +138,9 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
             // expected
         }
     }
-    
-    public void testGetMessagingConfiguration_ClasspathResourcePattern() {
+
+    @Test
+    public void classpathResourcePattern() {
         this.configManager = new FlexConfigurationManager(this.context, "classpath*:org/springframework/flex/core/services-config.xml");
 
         MessagingConfiguration messagingConfiguration = this.configManager.getMessagingConfiguration(this.config);
@@ -141,8 +150,9 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
         assertNotNull(messagingConfiguration.getServiceSettings("proxy-service"));
         assertNotNull(messagingConfiguration.getServiceSettings("remoting-service"));
     }
-    
-    public void testGetMessagingConfiguration_ClasspathResourcePatternDoesNotExist() {
+
+    @Test
+    public void classpathResourcePatternDoesNotExist() {
         this.configManager = new FlexConfigurationManager(this.context, "classpath*:org/springframework/flex/core/foo.xml");
 
         try {
@@ -152,8 +162,9 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
             // expected
         } 
     }
-    
-    public void testGetMessagingConfiguration_ClasspathResourcePatternTooAmbiguous() {
+
+    @Test
+    public void classpathResourcePatternTooAmbiguous() {
         this.configManager = new FlexConfigurationManager(this.context, "classpath*:org/springframework/flex/core/*-config.xml");
 
         try {
@@ -164,7 +175,8 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
         } 
     }
 
-    public void testGetMessagingConfiguration_NullServletConfig() {
+    @Test
+    public void nullServletConfig() {
         this.configManager = new FlexConfigurationManager(this.context, "classpath:org/springframework/flex/core/services-config.xml");
 
         try {
@@ -174,9 +186,10 @@ public class FlexConfigurationManagerTests extends AbstractRuntimeEnvironmentAwa
             // expected
         }
     }
-    
+
+    @Test
     @IfProfileValue(name=ENVIRONMENT, value=BLAZEDS_46)
-    public void testGetMessagingConfiguration_IncludedChannelsFiles() {
+    public void includedChannelsFiles() {
         this.configManager = new FlexConfigurationManager(this.context, "classpath:org/springframework/flex/core/services-config-4.6.xml");
 
         MessagingConfiguration messagingConfiguration = this.configManager.getMessagingConfiguration(this.config);

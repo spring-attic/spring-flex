@@ -20,8 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +36,7 @@ import flex.messaging.messages.AcknowledgeMessage;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
 
-public class LoginMessageInterceptorTests extends TestCase {
+public class LoginMessageInterceptorTests {
 
     private CommandMessage inputMessage;
 
@@ -41,15 +44,23 @@ public class LoginMessageInterceptorTests extends TestCase {
 
     private LoginMessageInterceptor interceptor;
 
-    public final void testPostProcessPassThrough() {
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        this.interceptor = new LoginMessageInterceptor();
+    }
+
+    @Test
+    public void postProcessPassThrough() {
 
         this.inputMessage = new CommandMessage(CommandMessage.CLIENT_PING_OPERATION);
         this.outputMessage = new AcknowledgeMessage();
         assertSame(this.outputMessage, this.interceptor.postProcess(null, this.inputMessage, this.outputMessage));
     }
 
+    @Test
     @SuppressWarnings("rawtypes")
-	public final void testPostProcessSuccessfulLogin() {
+    public void postProcessSuccessfulLogin() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
@@ -67,17 +78,12 @@ public class LoginMessageInterceptorTests extends TestCase {
         assertEquals("ROLE_USER", ((String[]) authResult.get("authorities"))[0]);
     }
 
-    public final void testPreProcessPassThrough() {
+    @Test
+    public void preProcessPassThrough() {
 
         this.inputMessage = new CommandMessage(CommandMessage.LOGIN_OPERATION);
 
         assertSame(this.inputMessage, this.interceptor.preProcess(null, this.inputMessage));
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        this.interceptor = new LoginMessageInterceptor();
     }
 
 }

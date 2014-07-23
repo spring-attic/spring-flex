@@ -16,6 +16,10 @@
 
 package org.springframework.flex.security3;
 
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,29 +69,30 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
     
     private SpringSecurityLoginCommand cmd;
     
-    @Override
+    @Before
     public void setUp() throws Exception {
-    	this.request = new MockHttpServletRequest();
-    	this.response = new MockHttpServletResponse();
-    	FlexContext.setThreadLocalHttpRequest(this.request);
-    	FlexContext.setThreadLocalHttpResponse(this.response);
-    	MockitoAnnotations.initMocks(this);
-    	
-    	List<LogoutHandler> logoutHandlers = new ArrayList<LogoutHandler>();
-    	logoutHandlers.add(new SecurityContextLogoutHandler());
-    	this.cmd = new SpringSecurityLoginCommand(mgr);
-    	this.cmd.setLogoutHandlers(logoutHandlers);
-    	this.cmd.setSessionAuthenticationStrategy(sas);
-    	this.cmd.setRememberMeServices(rms);
-    	this.cmd.afterPropertiesSet();
+        this.request = new MockHttpServletRequest();
+        this.response = new MockHttpServletResponse();
+        FlexContext.setThreadLocalHttpRequest(this.request);
+        FlexContext.setThreadLocalHttpResponse(this.response);
+        MockitoAnnotations.initMocks(this);
+
+        List<LogoutHandler> logoutHandlers = new ArrayList<LogoutHandler>();
+        logoutHandlers.add(new SecurityContextLogoutHandler());
+        this.cmd = new SpringSecurityLoginCommand(mgr);
+        this.cmd.setLogoutHandlers(logoutHandlers);
+        this.cmd.setSessionAuthenticationStrategy(sas);
+        this.cmd.setRememberMeServices(rms);
+        this.cmd.afterPropertiesSet();
     }
 
-    @Override
-	protected void tearDown() throws Exception {
-		FlexContext.clearThreadLocalObjects();
-	}
+    @After
+    public void tearDown() throws Exception {
+        FlexContext.clearThreadLocalObjects();
+    }
 
-	public void testDoAuthentication_Failure() throws Exception {
+    @Test
+    public void failure() throws Exception {
 
         String username = "foo";
         String password = "bar";
@@ -103,7 +108,8 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         verify(rms).loginFail(request, response);
     }
 
-    public void testDoAuthentication_ValidLogin() throws Exception {
+    @Test
+    public void validLogin() throws Exception {
         String username = "foo";
         String password = "bar";
 
@@ -118,7 +124,8 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         verify(rms).loginSuccess(request, response, auth);
     }
 
-    public void testDoAuthorization_MatchingAuthority() throws Exception {
+    @Test
+    public void matchingAuthority() throws Exception {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         authorities.add(new GrantedAuthorityImpl("ROLE_ABUSER"));
@@ -130,7 +137,8 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         assertTrue("Authorization should pass", this.cmd.doAuthorization(principal, roles));
     }
 
-    public void testDoAuthorization_NoMatchingAuthority() throws Exception {
+    @Test
+    public void noMatchingAuthority() throws Exception {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         authorities.add(new GrantedAuthorityImpl("ROLE_ABUSER"));
@@ -141,7 +149,8 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         assertFalse("Authorization should not pass", this.cmd.doAuthorization(principal, roles));
     }
 
-    public void testLoginCommandRegisteredWithDefaultConfig() throws Exception {
+    @Test
+    public void loginCommandRegisteredWithDefaultConfig() throws Exception {
 
         setDirty();
 
@@ -154,7 +163,8 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
 
     }
 
-    public void testLoginCommandRegisteredWithPerClientConfig() throws Exception {
+    @Test
+    public void loginCommandRegisteredWithPerClientConfig() throws Exception {
 
         setDirty();
 
@@ -170,7 +180,8 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         assertTrue("Should be set to per client authentication", mgr.isPerClientAuthentication());
     }
 
-    public void testLogoutWithDefaults() throws Exception {
+    @Test
+    public void logoutWithDefaults() throws Exception {
         String username = "foo";
         String password = "bar";
 
@@ -185,8 +196,9 @@ public class SpringSecurityLoginCommandTests extends AbstractMessageBrokerTests 
         assertNull(this.request.getSession(false));
         assertTrue(originalSession.isInvalid());
     }
-    
-    public void testLogoutWithPerClientAuthentication() throws Exception {
+
+    @Test
+    public void logoutWithPerClientAuthentication() throws Exception {
         
         List<LogoutHandler> logoutHandlers = new ArrayList<LogoutHandler>();
         SecurityContextLogoutHandler handler = new SecurityContextLogoutHandler();

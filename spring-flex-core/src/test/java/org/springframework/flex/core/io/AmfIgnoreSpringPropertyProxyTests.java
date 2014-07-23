@@ -67,7 +67,7 @@ public class AmfIgnoreSpringPropertyProxyTests {
     }
     
     @Test
-    public void testSerializeIgnoredProperties() throws IOException, ClassNotFoundException {
+    public void serializeIgnoredProperties() throws IOException, ClassNotFoundException {
         PropertyProxyRegistry.getRegistry().register(IgnorablePropsObject.class, createSpringPropertyProxy());
         IgnorablePropsObject data = new IgnorablePropsObject();
         data.setFoo("foo");
@@ -86,10 +86,10 @@ public class AmfIgnoreSpringPropertyProxyTests {
         assertTrue(!result.containsKey("bazField"));
         assertEquals("baz", result.get("baz"));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
-    public void testDeserializeIgnoredProperties() throws IOException, ClassNotFoundException {
+    public void deserializeIgnoredProperties() throws IOException, ClassNotFoundException {
         PropertyProxyRegistry.getRegistry().register(IgnorablePropsObject.class, createSpringPropertyProxy());
         ASObject data = new ASObject(IgnorablePropsObject.class.getName());
         data.put("foo", "foo");
@@ -106,7 +106,7 @@ public class AmfIgnoreSpringPropertyProxyTests {
     }
     
     @Test
-    public void testSerializeIgnoredFields() throws IOException, ClassNotFoundException {
+    public void serializeIgnoredFields() throws IOException, ClassNotFoundException {
         PropertyProxyRegistry.getRegistry().register(IgnorablePropsObject.class, createSpringFieldProxy());
         IgnorablePropsObject data = new IgnorablePropsObject();
         data.setFoo("foo");
@@ -128,7 +128,7 @@ public class AmfIgnoreSpringPropertyProxyTests {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void testDeserializeIgnoredFields() throws IOException, ClassNotFoundException {
+    public void deserializeIgnoredFields() throws IOException, ClassNotFoundException {
         PropertyProxyRegistry.getRegistry().register(IgnorablePropsObject.class, createSpringFieldProxy());
         ASObject data = new ASObject(IgnorablePropsObject.class.getName());
         data.put("fooField", "foo");

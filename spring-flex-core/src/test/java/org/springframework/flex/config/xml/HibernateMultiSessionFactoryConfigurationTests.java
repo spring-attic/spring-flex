@@ -12,18 +12,22 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import flex.messaging.MessageBroker;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
 
 @ContextConfiguration(locations="classpath:org/springframework/flex/config/hibernate-message-broker.xml", inheritLocations=false, loader=HibernateMultiSessionFactoryConfigurationTests.ParentContextLoader.class)
 public class HibernateMultiSessionFactoryConfigurationTests extends AbstractFlexConfigurationTests {
-    
-    public void testMessageBroker_AutoDetectMultipleSessionFactories() {
+
+    @Test
+    public void autoDetectMultipleSessionFactories() {
         MessageBroker broker = applicationContext.getBean("multiSessionFactoryMessageBroker", MessageBroker.class);
         assertNotNull(broker);
         assertNotNull(applicationContext.getBean("sessionFactory"));
         assertNotNull(applicationContext.getBean("sessionFactory2"));
         assertEquals(1, applicationContext.getBeansOfType(HibernateConfigProcessor.class).entrySet().size());
     }
-    
+
     public static final class ParentContextLoader extends MessageBrokerContextLoader {
         @Override
         protected ConfigurableApplicationContext createParentContext() {

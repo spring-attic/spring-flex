@@ -16,6 +16,11 @@
 
 package org.springframework.flex.security3;
 
+import org.junit.After;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import org.junit.Before;
+import org.junit.Test;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -50,7 +53,7 @@ import flex.messaging.endpoints.AbstractEndpoint;
 import flex.messaging.messages.CommandMessage;
 import flex.messaging.messages.Message;
 
-public class EndpointInterceptorTests extends TestCase {
+public class EndpointInterceptorTests {
 
     @Mock
     private AuthenticationManager mgr;
@@ -69,7 +72,7 @@ public class EndpointInterceptorTests extends TestCase {
 
     private AbstractEndpoint advisedEndpoint;
 
-    @Override
+    @Before
     public void setUp() throws Exception{
         MockitoAnnotations.initMocks(this);
 
@@ -97,13 +100,14 @@ public class EndpointInterceptorTests extends TestCase {
         FlexContext.setThreadLocalHttpRequest(this.request);
     }
 
-    @Override
+    @After
     public void tearDown() {
         SecurityContextHolder.getContext().setAuthentication(null);
         FlexContext.clearThreadLocalObjects();
     }
 
-    public void testLoginCommand() throws Exception {
+    @Test
+    public void loginCommand() throws Exception {
         CommandMessage loginMessage = new CommandMessage(CommandMessage.LOGIN_OPERATION);
         when(this.endpoint.serviceMessage(loginMessage)).thenReturn(this.outMessage);
 
@@ -114,7 +118,8 @@ public class EndpointInterceptorTests extends TestCase {
         verify(this.endpoint, never()).getUrlForClient();
     }
 
-    public void testServiceAuthorized() throws Exception {
+    @Test
+    public void serviceAuthorized() throws Exception {
         when(this.endpoint.getUrlForClient()).thenReturn("http://foo.com/bar/spring/messagebroker/amf");
         when(this.endpoint.serviceMessage(this.inMessage)).thenReturn(this.outMessage);
 
@@ -128,7 +133,8 @@ public class EndpointInterceptorTests extends TestCase {
         assertSame(this.outMessage, result);
     }
 
-    public void testServiceUnauthenticated() throws Exception {
+    @Test
+    public void serviceUnauthenticated() throws Exception {
 
         this.request.setServletPath("/messagebroker");
         this.request.setPathInfo("/amf");
@@ -141,7 +147,8 @@ public class EndpointInterceptorTests extends TestCase {
         }
     }
 
-    public void testServiceUnauthorized() throws Exception {
+    @Test
+    public void serviceUnauthorized() throws Exception {
 
         this.request.setServletPath("/messagebroker");
         this.request.setPathInfo("/amf");
@@ -158,7 +165,8 @@ public class EndpointInterceptorTests extends TestCase {
         }
     }
 
-    public void testServiceUnsecured() throws Exception {
+    @Test
+    public void serviceUnsecured() throws Exception {
         when(this.endpoint.getUrlForClient()).thenReturn("http://foo.com/bar/spring/messagebroker/amfpolling");
         when(this.endpoint.serviceMessage(this.inMessage)).thenReturn(this.outMessage);
 

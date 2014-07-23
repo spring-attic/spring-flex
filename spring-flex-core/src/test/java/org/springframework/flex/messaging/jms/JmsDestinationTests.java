@@ -29,6 +29,12 @@ import org.springframework.flex.messaging.MessageDestinationFactory;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.services.MessageService;
+import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mark Fisher
@@ -39,17 +45,18 @@ public class JmsDestinationTests extends AbstractMessageBrokerTests {
 
     MessageDestinationFactory factory;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         configureFactory();
     }
 
-    @Override
+    @After
     public void tearDown() throws Exception {
         this.factory.destroy();
     }
 
-    public void testDestinationRegisteredWithDefaultConfig() throws Exception {
+    @Test
+    public void destinationRegisteredWithDefaultConfig() throws Exception {
         MessageService messageService = getMessageService();
         this.factory.afterPropertiesSet();
         MessageDestination messageDestination = (MessageDestination) messageService.getDestination(DEFAULT_ID);
@@ -59,7 +66,8 @@ public class JmsDestinationTests extends AbstractMessageBrokerTests {
         assertTrue("No channels set on destination", messageDestination.getChannels().size() > 0);
     }
 
-    public void testDestinationRegisteredWithDestinationId() throws Exception {
+    @Test
+    public void destinationRegisteredWithDestinationId() throws Exception {
         MessageService messageService = getMessageService();
         String destinationId = "myDestination";
         this.factory.setDestinationId(destinationId);
