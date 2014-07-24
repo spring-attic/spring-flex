@@ -51,9 +51,12 @@
 
     <properties>
 		<spring.version>4.0.6.RELEASE</spring.version>
-		<integration.version>2.0.3.RELEASE</integration.version>
-		<security.version>3.0.5.RELEASE</security.version>
+		<integration.version>2.2.6.RELEASE</integration.version>
+		<security.version>3.2.4.RELEASE</security.version>
 		<blazeds.version>4.0.0.14931</blazeds.version>
+		<!--<blazeds.version>4.6.0.23207</blazeds.version>-->
+		<hibernate.version>3.6.10.Final</hibernate.version>
+		<slf4j.version>1.7.7</slf4j.version>
 	</properties>
 
 	<dependencyManagement>
@@ -66,12 +69,12 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.6.6</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.6.6</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
@@ -81,7 +84,12 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>3.6.4.Final</version>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.annotation</groupId>
@@ -229,7 +237,7 @@
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>
-				<version>1.0.0</version>
+				<version>1.9.13</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
@@ -258,7 +266,7 @@
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-core</artifactId>
-				<version>5.1.0</version>
+				<version>5.7.0</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
