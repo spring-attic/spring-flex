@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.mockito.Mock;
@@ -34,7 +35,6 @@ import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import flex.messaging.MessageBroker;
 import flex.messaging.services.RemotingService;
 import flex.messaging.services.ServiceAdapter;
@@ -318,7 +318,8 @@ public class RemotingDestinationExporterTests extends AbstractMessageBrokerTests
         Iterator<?> i = adapter.getIncludeMethodIterator();
         while(i.hasNext()) {
             RemotingMethod method = (RemotingMethod) i.next();
-            assertTrue("Exclude method not properly configured", Arrays.asList(methodNames).contains(method.getName()));
+            assertTrue("Exclude method not properly configured", Arrays
+                    .asList(methodNames).contains(method.getName()));
         }
     }
 

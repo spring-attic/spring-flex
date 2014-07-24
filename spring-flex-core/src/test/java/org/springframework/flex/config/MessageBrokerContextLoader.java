@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.context.MergedContextConfiguration;
 import org.springframework.test.context.support.AbstractContextLoader;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
@@ -31,6 +32,10 @@ public class MessageBrokerContextLoader extends AbstractContextLoader {
         context.refresh();
         context.registerShutdownHook();
         return context;
+    }
+
+    public ApplicationContext loadContext(MergedContextConfiguration configuration) throws Exception {
+        return loadContext(configuration.getLocations());
     }
 
     @Override

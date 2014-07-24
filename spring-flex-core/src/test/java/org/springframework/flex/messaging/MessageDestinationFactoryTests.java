@@ -27,6 +27,7 @@ import static org.mockito.Mockito.verify;
 import java.beans.PropertyEditor;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -37,7 +38,6 @@ import org.springframework.flex.config.json.JsonConfigMapPropertyEditor;
 import org.springframework.flex.core.AbstractMessageBrokerTests;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import flex.messaging.FlexContext;
 import flex.messaging.MessageDestination;
 import flex.messaging.cluster.ClusterManager;

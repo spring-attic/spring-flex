@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import org.springframework.test.annotation.IfProfileValue;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 
 
@@ -31,7 +30,6 @@ import org.springframework.test.context.TestExecutionListeners;
  * @author Rohit Kumar
  * @author Jeremy Grelle
  */
-@ContextConfiguration
 @TestExecutionListeners(inheritListeners=false)
 public class RuntimeEnvironmentTests extends AbstractRuntimeEnvironmentAwareTests {
 

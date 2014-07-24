@@ -30,7 +30,6 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.util.RequestMatcher;
-import org.springframework.security.web.util.UrlMatcher;
 import org.springframework.util.Assert;
 
 import flex.messaging.FlexContext;

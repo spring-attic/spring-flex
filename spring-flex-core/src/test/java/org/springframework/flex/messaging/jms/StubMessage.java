@@ -16,6 +16,7 @@
 
 package org.springframework.flex.messaging.jms;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +24,6 @@ import java.util.Map;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * @author Mark Fisher

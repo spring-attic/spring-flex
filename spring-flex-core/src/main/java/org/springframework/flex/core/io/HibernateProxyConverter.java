@@ -16,14 +16,17 @@
 
 package org.springframework.flex.core.io;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
-import org.springframework.core.convert.support.PropertyTypeDescriptor;
 import org.springframework.util.Assert;
 
 /**
@@ -34,6 +37,7 @@ import org.springframework.util.Assert;
  * </ul>
  *
  * @author Jeremy Grelle
+ * @author Sebastien Deleuze
  */
 public class HibernateProxyConverter implements GenericConverter {
     
@@ -45,7 +49,11 @@ public class HibernateProxyConverter implements GenericConverter {
         Assert.isInstanceOf(HibernateProxy.class, source, "Expected an instance of HibernateProxy to convert");
         Assert.isAssignable(HibernateProxy.class, sourceType.getType(), "Expected a subclass of HibernateProxy for the source type");
         HibernateProxy proxy = (HibernateProxy) source;
-        if (targetType instanceof PropertyTypeDescriptor || targetType.getField() != null) {
+        boolean isField = targetType.getSource() instanceof Field;
+        boolean isProperty = targetType.getSource() instanceof MethodParameter &&
+            BeanUtils.findPropertyForMethod(((MethodParameter)targetType.getSource()).getMethod()) != null;
+
+        if (isField || isProperty) {
             if (!Hibernate.isInitialized(proxy)) {
                 return null;
             }

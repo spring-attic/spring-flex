@@ -16,6 +16,8 @@
 
 package org.springframework.flex.config.xml;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,7 +26,6 @@ import org.springframework.flex.config.AbstractFlexConfigurationTests;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import flex.messaging.MessageBroker;
 import flex.messaging.MessageDestination;
 import flex.messaging.cluster.ClusterManager;
