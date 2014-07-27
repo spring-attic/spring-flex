@@ -23,15 +23,14 @@ import javax.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.flex.core.io.HibernateConfigProcessor;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Specialized subclass of {@link org.springframework.flex.core.io.HibernateConfigProcessor} that can be used with a Hibernate-provided JPA {@link EntityManagerFactory}
+ * Specialized subclass of {@link HibernateConfigProcessor} that can be used with a Hibernate-provided JPA {@link EntityManagerFactory}
  * instead of the native Hibernate {@link SessionFactory}.
  * 
- * @see org.springframework.flex.core.io.HibernateConfigProcessor
+ * @see HibernateConfigProcessor
  * @author Jeremy Grelle
  */
 public class JpaHibernateConfigProcessor extends HibernateConfigProcessor {

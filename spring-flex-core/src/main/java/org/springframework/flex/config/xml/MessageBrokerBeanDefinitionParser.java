@@ -75,7 +75,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
 
-    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.HibernateSerializationConfigPostProcessor";
+    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.orm.hibernate3.config.HibernateSerializationConfigPostProcessor";
 
     private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
 
