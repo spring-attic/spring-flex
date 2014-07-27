@@ -19,13 +19,13 @@ public class SpringPropertyProxyCreationTests {
         PropertyProxy result = SpringPropertyProxy.proxyFor(Person.class, false, new GenericConversionService());
         assertEquals(SpringPropertyProxy.class, result.getClass());
     }
-    
+
     @Test
     public void testEnum() {
         PropertyProxy result = SpringPropertyProxy.proxyFor(MaritalStatus.class, false, new GenericConversionService());
         assertEquals(SpringPropertyProxy.class, result.getClass());
     }
-    
+
     @Test
     public void amfCreatorAnnotatedImmutableObject() {
         PropertyProxy result = SpringPropertyProxy.proxyFor(ImmutableValueObject.class, false, new GenericConversionService());

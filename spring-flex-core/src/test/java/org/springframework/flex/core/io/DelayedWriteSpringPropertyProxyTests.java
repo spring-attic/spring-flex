@@ -35,11 +35,11 @@ public class DelayedWriteSpringPropertyProxyTests {
     AmfTrace serializerTrace;
 
     AmfTrace deserializerTrace;
-    
+
     MockHttpServletResponse response;
 
     MockHttpServletRequest request;
-    
+
     @Before
     public void setUp() {
         GenericConversionService cs = new GenericConversionService();
@@ -50,7 +50,7 @@ public class DelayedWriteSpringPropertyProxyTests {
         PropertyProxyRegistry.getRegistry().register(Person.class, personProxy);
         SpringPropertyProxy addressProxy = SpringPropertyProxy.proxyFor(Address.class, false, cs);
         PropertyProxyRegistry.getRegistry().register(Address.class, addressProxy);
-        
+
         this.serializer = new AmfMessageSerializer();
         this.serializerTrace = new AmfTrace();
         this.response = new MockHttpServletResponse();
@@ -59,16 +59,16 @@ public class DelayedWriteSpringPropertyProxyTests {
         this.deserializerTrace = new AmfTrace();
         this.request = new MockHttpServletRequest();
     }
-    
+
     @Test
     public void deserializeAnnotatedImmutableObject() throws IOException, ClassNotFoundException {
         ImmutableValueObject data = new ImmutableValueObject("bar", new Integer(1));
         data.setPersonRef(createPerson());
         data.setVoRef(new ImmutableValueObject("zed", new Integer(5)));
         serialize(data);
-        
+
         ImmutableValueObject result = (ImmutableValueObject) deserialize();
-        
+
         assertEquals("bar", result.getFoo());
         assertEquals(new Integer(1), result.getZoo());
         assertNotNull(result.getPersonRef());
@@ -76,7 +76,7 @@ public class DelayedWriteSpringPropertyProxyTests {
         assertEquals("zed", result.getVoRef().getFoo());
         assertEquals(new Integer(5), result.getVoRef().getZoo());
     }
-    
+
     private void serialize(Object data) throws IOException {
         MessageBody body = new MessageBody();
         body.setData(data);
@@ -90,11 +90,11 @@ public class DelayedWriteSpringPropertyProxyTests {
         this.deserializer.readBody(body, 0);
         return body.getData();
     }
-    
+
     private Person createPerson() {
         Person father = new Person();
         father.setName("Dad");
-        
+
         Address address = new Address();
         address.setStreet("777 Techwood Drive");
         address.setCity("Atlanta");
@@ -102,7 +102,7 @@ public class DelayedWriteSpringPropertyProxyTests {
         address.setZipcode("30022");
         address.setRooms(5);
         address.setMoveInDate(new Date());
-        
+
         father.setAddress(address);
 
         Person mother = new Person();
@@ -129,7 +129,7 @@ public class DelayedWriteSpringPropertyProxyTests {
 
         father.setChildren(children);
         mother.setChildren(children);
-        
+
         return father;
     }
 }

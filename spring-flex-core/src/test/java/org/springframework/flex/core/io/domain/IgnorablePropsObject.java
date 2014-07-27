@@ -8,11 +8,11 @@ public class IgnorablePropsObject {
 
     @AmfIgnoreField
     private String fooField = "unset";
-    
-    @AmfIgnoreField(onDeserialization=false)
+
+    @AmfIgnoreField(onDeserialization = false)
     private String barField = "unset";
-    
-    @AmfIgnoreField(onSerialization=false)
+
+    @AmfIgnoreField(onSerialization = false)
     private String bazField = "unset";
 
     @AmfIgnore

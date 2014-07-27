@@ -32,7 +32,7 @@ public class AmfHttpMessageConverterTests {
     private MockHttpServletResponse response;
 
     private MockHttpServletRequest request;
-    
+
     @Before
     public void setUp() throws Exception {
         this.response = new MockHttpServletResponse();
@@ -56,9 +56,9 @@ public class AmfHttpMessageConverterTests {
         HttpOutputMessage outputMessage = new ServletServerHttpResponse(this.response);
         AmfHttpMessageConverter converter = new AmfHttpMessageConverter();
         converter.write("foo", this.amfContentType, outputMessage);
-        
+
         Object result = deserializeResponse();
-        
+
         assertEquals(this.amfContentType, outputMessage.getHeaders().getContentType());
         assertEquals("foo", result);
     }
@@ -68,7 +68,7 @@ public class AmfHttpMessageConverterTests {
         HttpOutputMessage outputMessage = new ServletServerHttpResponse(this.response);
         AmfHttpMessageConverter converter = new AmfHttpMessageConverter();
         converter.write(Person.stubPerson(), this.amfContentType, outputMessage);
-        
+
         Object result = deserializeResponse();
         assertEquals(this.amfContentType, outputMessage.getHeaders().getContentType());
         assertTrue(result instanceof Person);
@@ -83,7 +83,7 @@ public class AmfHttpMessageConverterTests {
         responseMessage.addBody(responseBody);
         responseBody.setData(Person.stubPerson());
         converter.write(responseMessage, this.amfContentType, outputMessage);
-        
+
         ActionMessage result = deserializeResponseToActionMessage();
         assertNotNull(result);
         assertEquals(1, result.getBodyCount());
@@ -144,7 +144,7 @@ public class AmfHttpMessageConverterTests {
         deserializer.setInputStream(this.request.getInputStream());
         return deserializer.readObject();
     }
-    
+
     private ActionMessage deserializeResponseToActionMessage() throws ClassNotFoundException, IOException {
         AmfMessageDeserializer deserializer = new AmfMessageDeserializer();
         this.request.setContent(this.response.getContentAsByteArray());

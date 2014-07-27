@@ -237,8 +237,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor;
-import org.springframework.flex.core.io.HibernateProxyConverter;
-import org.springframework.flex.core.io.PersistentCollectionConverterFactory;
+import org.springframework.flex.hibernate3.io.HibernateProxyConverter;
+import org.springframework.flex.hibernate3.io.PersistentCollectionConverterFactory;
 
 @Configuration
 public class CustomConverterConfiguration {
@@ -344,8 +344,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.flex.core.io.ClassPathScanningAmfConversionServiceConfigProcessor;
-import org.springframework.flex.core.io.HibernateProxyConverter;
-import org.springframework.flex.core.io.PersistentCollectionConverterFactory;
+import org.springframework.flex.hibernate3.HibernateProxyConverter;
+import org.springframework.flex.hibernate3.PersistentCollectionConverterFactory;
 
 @Configuration
 public class ApplicationConfig {

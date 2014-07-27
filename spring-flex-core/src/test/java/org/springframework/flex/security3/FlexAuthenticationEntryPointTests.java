@@ -1,3 +1,4 @@
+
 package org.springframework.flex.security3;
 
 import java.io.ByteArrayInputStream;
@@ -113,8 +114,8 @@ public class FlexAuthenticationEntryPointTests {
         private static final long serialVersionUID = 1L;
 
         public TestAuthenticationException() {
-			super("Test");
-		}
+            super("Test");
+        }
     }
 
     private static class TestExceptionTranslator implements ExceptionTranslator {
