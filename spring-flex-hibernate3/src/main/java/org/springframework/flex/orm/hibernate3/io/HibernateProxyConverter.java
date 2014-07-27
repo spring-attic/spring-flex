@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.flex.core.io;
+package org.springframework.flex.orm.hibernate3.io;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
