@@ -34,6 +34,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.io.AbstractAmfConversionServiceConfigProcessor;
+import org.springframework.flex.orm.hibernate3.io.HibernateProxyConverter;
 import org.springframework.flex.orm.hibernate3.io.PersistentCollectionConverterFactory;
 import org.springframework.util.Assert;
 
