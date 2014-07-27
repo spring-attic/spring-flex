@@ -464,10 +464,10 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     }
 
     private void registerHibernateSerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
-        if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
-            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME);
-            ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
-        }
+	    if (RuntimeEnvironment.isHibernateSupportAvailable() && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
+		    BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME);
+		    ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
+	    }
     }
 
     private void registerHandlerAdapterIfNecessary(Element element, ParserContext parserContext) {

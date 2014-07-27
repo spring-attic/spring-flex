@@ -54,8 +54,6 @@ import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
 import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
-import org.springframework.flex.core.io.SpringPropertyProxy;
-import org.springframework.flex.core.io.domain.Person;
 import org.springframework.flex.security3.EndpointInterceptor;
 import org.springframework.flex.security3.SecurityConfigurationPostProcessor;
 import org.springframework.flex.security3.SpringSecurityLoginCommand;
@@ -77,7 +75,6 @@ import flex.messaging.MessageException;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.endpoints.Endpoint;
-import flex.messaging.io.PropertyProxyRegistry;
 import flex.messaging.messages.Message;
 import flex.messaging.security.LoginCommand;
 import flex.messaging.services.MessageService;
@@ -131,28 +128,22 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             // Positive cases handled in separate test cases 
             try {
                 applicationContext.getBean("customServicesConfigPath" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("customConfigManager" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("customMappings" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("disabledHandlerMapping" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
         } catch (Exception e) {
             fail("Unexpected exception:" + e);
-            return;
         }
-    }
-
-    @Test
-    public void hibernateAutoConfigured() {
-        assertTrue(PropertyProxyRegistry.getRegistry().getProxy(Person.class) instanceof SpringPropertyProxy);
     }
 
     @Test
@@ -166,7 +157,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             assertTrue("Exception translation advice was not applied", a.getAdvice() instanceof ExceptionTranslationAdvice);
             ExceptionLogger logger = ((ExceptionTranslationAdvice) a.getAdvice()).getExceptionLogger();
             assertSame("Custom exception log not found", logger, applicationContext.getBean("exceptionLogger",
-                TestExceptionLogger.class));
+                                                                                            TestExceptionLogger.class));
         }
     }
 
@@ -608,7 +599,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         protected ConfigurableApplicationContext createParentContext() {
             GenericWebApplicationContext context = new GenericWebApplicationContext();
             context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
-            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml", "classpath:org/springframework/flex/core/io/hibernate-jpa-context.xml" });
+            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml"});
             AnnotationConfigUtils.registerAnnotationConfigProcessors(context);
             context.refresh();
             context.registerShutdownHook();

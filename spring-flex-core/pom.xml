@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.flex</groupId>
@@ -28,7 +27,7 @@
                                 <configuration>
                                     <breakiterator>true</breakiterator>
                                     <header>Spring BlazeDS Integration</header>
-                                    <source>1.5</source>
+                                    <source>1.6</source>
                                     <quiet>true</quiet>
                                     <javadocDirectory>${project.basedir}/../javadoc</javadocDirectory>
                                     <overview>${project.basedir}/../javadoc/overview.html</overview>
@@ -36,8 +35,8 @@
                                     <!-- copies doc-files subdirectory which contains image resources -->
                                     <docfilessubdirs>true</docfilessubdirs>
                                     <links>
-                                        <link>http://static.springframework.org/spring/docs/3.0.x/javadoc-api</link>
-                                        <link>http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs</link>
+                                        <link>http://static.springframework.org/spring/docs/4.0.x/javadoc-api</link>
+                                        <link>http://static.springsource.org/spring-security/site/docs/4.0.x/apidocs</link>
                                         <link>http://java.sun.com/javase/6/docs/api</link>
                                         <link>http://livedocs.adobe.com/blazeds/4/javadoc</link>
                                     </links>
@@ -174,11 +173,6 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
