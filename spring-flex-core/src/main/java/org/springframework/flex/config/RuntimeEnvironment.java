@@ -23,45 +23,54 @@ import flex.messaging.config.ConfigurationFileResolver;
 /**
  * Internal helper class to determine the type of runtime data services environment being used, to allow for
  * automatically adapting to the available capabilities.
- * 
+ *
  * @author Rohit Kumar
  * @author Jeremy Grelle
+ * @author Jose Barragan
  */
 public abstract class RuntimeEnvironment {
 
     private static final String ASYNC_MESSAGE_BROKER_CLASS_NAME = "flex.messaging.AsyncMessageBroker";
-
     private static final String SPRING_SUPPORT_CLASS_NAME = "flex.springintegration.core.DataServicesConfigProcessor";
-    
-    private static final boolean IS_LCDS_ENVIRONMENT;
-    
-    private static final boolean IS_SPRING_SUPPORT_AVAILABLE;
+	private static final String HIBERNATE_SUPPORT_CLASS_NAME = "org.hibernate.Hibernate";
 
+    private static final boolean IS_LCDS_ENVIRONMENT;
+    private static final boolean IS_SPRING_SUPPORT_AVAILABLE;
     private static final boolean IS_BLAZEDS_46;
+	private static final boolean IS_HIBERNATE_SUPPORT_AVAILABLE;
 
     static {
         boolean asyncMessageBrokerClassPresent;
         boolean springSupportClassPresent;
-        
+	    boolean hibernateSupportClassPresent;
+
         try {
             ClassUtils.forName(ASYNC_MESSAGE_BROKER_CLASS_NAME, null);
             asyncMessageBrokerClassPresent = true;
         } catch (ClassNotFoundException ex) {
             asyncMessageBrokerClassPresent = false;
         }
-        
+
         try {
         	ClassUtils.forName(SPRING_SUPPORT_CLASS_NAME, null);
             springSupportClassPresent = true;
         } catch (ClassNotFoundException ex) {
         	springSupportClassPresent = false;
         }
-        
+
+	    try {
+		    ClassUtils.forName(HIBERNATE_SUPPORT_CLASS_NAME, null);
+		    hibernateSupportClassPresent = true;
+	    } catch (ClassNotFoundException ex) {
+		    hibernateSupportClassPresent = false;
+	    }
+
         IS_BLAZEDS_46 = ClassUtils.getMethodIfAvailable(ConfigurationFileResolver.class, "getFiles", String.class) != null;
-        
+
 
         IS_LCDS_ENVIRONMENT = asyncMessageBrokerClassPresent;
         IS_SPRING_SUPPORT_AVAILABLE = springSupportClassPresent;
+	    IS_HIBERNATE_SUPPORT_AVAILABLE = hibernateSupportClassPresent;
     }
 
     /**
@@ -77,7 +86,7 @@ public abstract class RuntimeEnvironment {
     public static boolean isBlazeDS() {
         return !IS_LCDS_ENVIRONMENT;
     }
-    
+
     /**
      * Returns <code>true</code> if the runtime data services environment is BlazeDS 4.6 or greater.
      * @return
@@ -85,8 +94,12 @@ public abstract class RuntimeEnvironment {
     public static boolean isBlazeDS46(){
         return IS_BLAZEDS_46;
     }
-    
+
     public static boolean isSpringSupportAvailable() {
     	return IS_SPRING_SUPPORT_AVAILABLE;
     }
+
+	public static boolean isHibernateSupportAvailable(){
+		return IS_HIBERNATE_SUPPORT_AVAILABLE;
+	}
 }
