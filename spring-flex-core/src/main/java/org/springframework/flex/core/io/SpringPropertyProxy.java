@@ -193,7 +193,7 @@ public class SpringPropertyProxy extends BeanProxy {
             return true;
         }
         if (this.useDirectFieldAccess) {
-            AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
+            AmfIgnoreField ignoreField = accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onSerialization();
         } else {
             PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
@@ -207,7 +207,7 @@ public class SpringPropertyProxy extends BeanProxy {
             return true;
         }
         if (this.useDirectFieldAccess) {
-            AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
+            AmfIgnoreField ignoreField = accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onDeserialization();
         } else {
             PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
