@@ -32,7 +32,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.core.io.AbstractAmfConversionServiceConfigProcessor;
-import org.springframework.flex.core.io.HibernateConfigProcessor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
@@ -44,17 +43,15 @@ import org.springframework.util.ClassUtils;
  * </ol>
  *
  * @author Jeremy Grelle
+ * @author Jose Barragan
  */
 public class HibernateSerializationConfigPostProcessor implements BeanFactoryPostProcessor {
 
     private static final Log log = LogFactory.getLog(HibernateSerializationConfigPostProcessor.class);
     
-    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.core.io.HibernateConfigProcessor";
-    
-    private static final String JPA_HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.core.io.JpaHibernateConfigProcessor";
-    
+    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.orm.hibernate4.config.HibernateConfigProcessor";
+    private static final String JPA_HIBERNATE_CONFIG_PROCESSOR_CLASS = "org.springframework.flex.orm.hibernate4.config.JpaHibernateConfigProcessor";
     private static final String MESSAGE_BROKER_FACTORY_BEAN_CLASS_NAME = "org.springframework.flex.core.MessageBrokerFactoryBean";
-    
     private static final String CONFIG_PROCESSORS_PROPERTY = "configProcessors";
     
     @SuppressWarnings("unchecked")

@@ -17,7 +17,7 @@
 package org.springframework.flex.orm.hibernate4.io;
 
 import org.hibernate.Hibernate;
-import org.hibernate.collection.PersistentCollection;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
@@ -31,6 +31,7 @@ import org.springframework.core.convert.converter.ConverterFactory;
  * </ul>
  *
  * @author Jeremy Grelle
+ * @author Jose Barragan
  */
 public class PersistentCollectionConverterFactory implements ConverterFactory<PersistentCollection, Object> {
 

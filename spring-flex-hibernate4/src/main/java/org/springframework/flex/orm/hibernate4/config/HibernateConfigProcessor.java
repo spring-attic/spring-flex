@@ -34,30 +34,32 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.flex.config.MessageBrokerConfigProcessor;
 import org.springframework.flex.core.io.AbstractAmfConversionServiceConfigProcessor;
-import org.springframework.flex.core.io.PersistentCollectionConverterFactory;
+import org.springframework.flex.orm.hibernate4.io.HibernateProxyConverter;
+import org.springframework.flex.orm.hibernate4.io.PersistentCollectionConverterFactory;
 import org.springframework.util.Assert;
 
 import flex.messaging.io.PropertyProxyRegistry;
 
 /**
- * {@link MessageBrokerConfigProcessor} implementation that uses the Hibernate Metadata API to determine all classes that potentially need 
- * special AMF conversion rules applied to them to prevent lazy initialization errors.  Each type found will have a properly configured 
+ * {@link MessageBrokerConfigProcessor} implementation that uses the Hibernate Metadata API to determine all classes that potentially need
+ * special AMF conversion rules applied to them to prevent lazy initialization errors.  Each type found will have a properly configured
  * instance of {@link org.springframework.flex.core.io.SpringPropertyProxy} registered for it with the BlazeDS {@link PropertyProxyRegistry}.
  *
  * @author Jeremy Grelle
+ * @author Jose Barragan
  */
 public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfigProcessor implements BeanFactoryAware, InitializingBean {
 
     private Set<ClassMetadata> classMetadata = new HashSet<ClassMetadata>();
-    
+
     private Set<CollectionMetadata> collectionMetadata = new HashSet<CollectionMetadata>();
 
     private ListableBeanFactory beanFactory;
-    
+
     protected boolean hibernateConfigured = false;
-    
+
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -71,20 +73,20 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
         }
         super.afterPropertiesSet();
     }
-    
+
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         Assert.isInstanceOf(ListableBeanFactory.class, beanFactory, "HibernateConfigProcessor must be used in a ListableBeanFactory in order to auto-detect the necessary Hibernate configuration.");
-        this.beanFactory = (ListableBeanFactory) beanFactory;        
+        this.beanFactory = (ListableBeanFactory) beanFactory;
     }
-    
+
     /**
-     * Sets the Hibernate {@link SessionFactory} to be used for reading type metadata.  If this property is not 
-     * explicitly set, all available {@code SessionFactory} instances will be retrieved from the containing 
-     * {@link BeanFactory} and have their type metadata extracted for use in {@link #findTypesToRegister()} 
+     * Sets the Hibernate {@link SessionFactory} to be used for reading type metadata.  If this property is not
+     * explicitly set, all available {@code SessionFactory} instances will be retrieved from the containing
+     * {@link BeanFactory} and have their type metadata extracted for use in {@link #findTypesToRegister()}
      * @param sessionFactory the session factory from which to read metadata
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
@@ -92,7 +94,7 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -100,8 +102,8 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
         Set<Class<?>> typesToRegister = new HashSet<Class<?>>();
         if (hibernateConfigured) {
             for(ClassMetadata classMetadata : this.classMetadata) {
-                if (!classMetadata.getMappedClass(EntityMode.POJO).isInterface()) {
-                    typesToRegister.add(classMetadata.getMappedClass(EntityMode.POJO));
+                if (!classMetadata.getMappedClass().isInterface()) {
+                    typesToRegister.add(classMetadata.getMappedClass());
                     findComponentProperties(classMetadata.getPropertyTypes(), typesToRegister);
                 }
             }
@@ -119,7 +121,7 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -127,7 +129,7 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
         registry.addConverter(new HibernateProxyConverter());
         registry.addConverterFactory(new PersistentCollectionConverterFactory());
     }
-   
+
     /**
      * Provides access to the {@link BeanFactory} by subclasses.
      * @return the containing bean factory
@@ -135,9 +137,9 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
     protected ListableBeanFactory getBeanFactory() {
         return beanFactory;
     }
-    
+
     /**
-     * Extracts all {@link ClassMetadata} and {@link CollectionMetadata} from a given {@link SessionFactory} to be 
+     * Extracts all {@link ClassMetadata} and {@link CollectionMetadata} from a given {@link SessionFactory} to be
      * used in determining the types that need a {@link org.springframework.flex.core.io.SpringPropertyProxy} registered in {@link #findTypesToRegister()}
      * @param sessionFactory the session factory from which to read metadata
      */
@@ -147,7 +149,7 @@ public class HibernateConfigProcessor extends AbstractAmfConversionServiceConfig
         this.collectionMetadata.addAll(sessionFactory.getAllCollectionMetadata().values());
         this.hibernateConfigured = true;
     }
-    
+
     private void findComponentProperties(Type[] propertyTypes, Set<Class<?>> typesToRegister) {
         if (propertyTypes == null) {
             return;
