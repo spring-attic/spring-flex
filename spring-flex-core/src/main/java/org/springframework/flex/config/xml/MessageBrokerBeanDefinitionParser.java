@@ -49,6 +49,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jeremy Grelle
  * @author Rohit Kumar
+ * @author Jose Barragan
  */
 public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
@@ -75,7 +76,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
 
-    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.HibernateSerializationConfigPostProcessor";
+    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.orm.hibernate3.config.HibernateSerializationConfigPostProcessor";
 
     private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
 
@@ -320,9 +321,9 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         
         // Register LoginMessageInterceptor
         if (!interceptors.containsKey(MessageInterceptors.LOGIN_MESSAGE_INTERCEPTOR.getOrder())) {
-	        BeanDefinitionBuilder loginInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginMessageInterceptorClassName());
-	        String loginInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginInterceptorBuilder);
-	        interceptors.put(MessageInterceptors.LOGIN_MESSAGE_INTERCEPTOR.getOrder(), new RuntimeBeanReference(loginInterceptorBeanId));
+            BeanDefinitionBuilder loginInterceptorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginMessageInterceptorClassName());
+            String loginInterceptorBeanId = ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginInterceptorBuilder);
+            interceptors.put(MessageInterceptors.LOGIN_MESSAGE_INTERCEPTOR.getOrder(), new RuntimeBeanReference(loginInterceptorBeanId));
         }
 
         registerEndpointInterceptorIfNecessary(securedElement, parserContext, interceptors, authManager, accessManager);
@@ -464,7 +465,7 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     }
 
     private void registerHibernateSerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
-        if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
+        if (RuntimeEnvironment.isHibernateSupportAvailable() && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
             BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME);
             ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
         }
@@ -505,9 +506,9 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private void registerLoginCommand(String brokerId, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, Element securedElement,
         String authManager, boolean invalidateHttpSession, boolean perClientAuthentication) {
 
-    	String loginCommandId = securedElement.getAttribute(LOGIN_COMMAND_ATTR);
-    	if (!StringUtils.hasText(loginCommandId)) {
-    		loginCommandId = brokerId + BeanIds.LOGIN_COMMAND_SUFFIX;
+        String loginCommandId = securedElement.getAttribute(LOGIN_COMMAND_ATTR);
+        if (!StringUtils.hasText(loginCommandId)) {
+            loginCommandId = brokerId + BeanIds.LOGIN_COMMAND_SUFFIX;
 
             BeanDefinitionBuilder loginCommandBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getLoginCommandClassName());
             loginCommandBuilder.addConstructorArgReference(authManager);
@@ -515,8 +516,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             loginCommandBuilder.getRawBeanDefinition().setAttribute(INVALIDATE_HTTP_SESSION_PROPERTY, invalidateHttpSession);
 
             ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, loginCommandBuilder, loginCommandId);
-    	}
-    	
+        }
+
         BeanDefinitionBuilder loginCommandProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(LOGIN_COMMAND_PROCESSOR_CLASS_NAME);
         loginCommandProcessorBuilder.addConstructorArgReference(loginCommandId);
         loginCommandProcessorBuilder.addPropertyValue(PER_CLIENT_AUTHENTICATION_PROPERTY, perClientAuthentication);
@@ -527,31 +528,31 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     }
     
     private void registerSecurityConfigPostProcessorIfNecessary(ParserContext parserContext, Element securedElement) {
-    	if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.SECURITY_CONFIG_POST_PROCESSOR)) {
-	    	BeanDefinitionBuilder securityConfigPostProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getSecurityConfigPostProcessorClassName());
-	    	securityConfigPostProcessorBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-	    	securityConfigPostProcessorBuilder.setDependencyCheck(AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
-	    	ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, securityConfigPostProcessorBuilder, BeanIds.SECURITY_CONFIG_POST_PROCESSOR);
-    	}
+        if (!parserContext.getRegistry().containsBeanDefinition(BeanIds.SECURITY_CONFIG_POST_PROCESSOR)) {
+            BeanDefinitionBuilder securityConfigPostProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getSecurityConfigPostProcessorClassName());
+            securityConfigPostProcessorBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+            securityConfigPostProcessorBuilder.setDependencyCheck(AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
+            ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, securityConfigPostProcessorBuilder, BeanIds.SECURITY_CONFIG_POST_PROCESSOR);
+        }
     }
     
     private void configureCustomInterceptors(Element element, ParserContext parserContext, ManagedList<RuntimeBeanReference> advisors, Map<Integer, RuntimeBeanReference> interceptors,
             List<Element> messageInterceptorElements) {
-    	if (!CollectionUtils.isEmpty(messageInterceptorElements)) {
+        if (!CollectionUtils.isEmpty(messageInterceptorElements)) {
             Iterator<Element> i = messageInterceptorElements.iterator();
             while (i.hasNext()) {
                 Element messageInterceptorElement = i.next();
                 int key = MessageInterceptors.FIRST.getOrder();
                 if (messageInterceptorElement.hasAttribute(POSITION_ATTR)) {
-                	key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(POSITION_ATTR)).getOrder();
+                    key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(POSITION_ATTR)).getOrder();
                 } else if (messageInterceptorElement.hasAttribute(AFTER_ATTR)) {
-                	key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(AFTER_ATTR)).getOrder() + 1;
+                    key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(AFTER_ATTR)).getOrder() + 1;
                 } else if (messageInterceptorElement.hasAttribute(BEFORE_ATTR)) {
-                	key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(BEFORE_ATTR)).getOrder() - 50;
+                    key = MessageInterceptors.valueOf(messageInterceptorElement.getAttribute(BEFORE_ATTR)).getOrder() - 50;
                 }
                 while (interceptors.get(key) != null) {
-            		key++;
-            	}
+                    key++;
+                }
                 interceptors.put(key, new RuntimeBeanReference(messageInterceptorElement.getAttribute(REF_ATTR)));
             }
         }

@@ -28,7 +28,7 @@ public class SpringSecurityConfigResolver {
 
     private static final String SECURITY3_CONFIG_HELPER_CLASSNAME = "org.springframework.flex.config.xml.SpringSecurity3ConfigHelper";
     
-    static SpringSecurityConfigHelper resolve() {
+    public static SpringSecurityConfigHelper resolve() {
         return createConfigHelper(SECURITY3_CONFIG_HELPER_CLASSNAME);
     }
     

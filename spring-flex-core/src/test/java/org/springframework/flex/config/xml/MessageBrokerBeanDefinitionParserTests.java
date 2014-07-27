@@ -54,8 +54,6 @@ import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
 import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
-import org.springframework.flex.core.io.SpringPropertyProxy;
-import org.springframework.flex.core.io.domain.Person;
 import org.springframework.flex.security3.EndpointInterceptor;
 import org.springframework.flex.security3.SecurityConfigurationPostProcessor;
 import org.springframework.flex.security3.SpringSecurityLoginCommand;
@@ -77,7 +75,6 @@ import flex.messaging.MessageException;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.endpoints.Endpoint;
-import flex.messaging.io.PropertyProxyRegistry;
 import flex.messaging.messages.Message;
 import flex.messaging.security.LoginCommand;
 import flex.messaging.services.MessageService;
@@ -89,9 +86,8 @@ import org.junit.Test;
 @ContextConfiguration(locations="classpath:org/springframework/flex/config/message-broker.xml", loader=MessageBrokerBeanDefinitionParserTests.ParentContextLoader.class)
 public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
 
-	private static final String DATA_SERVICES_PROCESSOR_CLASS_NAME = 
-		(String) ReflectionTestUtils.getField(new MessageBrokerBeanDefinitionParser(), "DATASERVICES_PROCESSOR_CLASS_NAME");
-	
+    private static final String DATA_SERVICES_PROCESSOR_CLASS_NAME = (String) ReflectionTestUtils.getField(new MessageBrokerBeanDefinitionParser(), "DATASERVICES_PROCESSOR_CLASS_NAME");
+
     private MessageBroker broker;
 
     @Test
@@ -123,7 +119,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
 
         try {
-        	Class<?> dsConfigProcessorClazz = Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME);
+            Class<?> dsConfigProcessorClazz = Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME);
 
             // The bean is only present when either a custom exception translator or message interceptor is present, 
             // or in case when the message broker is secured.
@@ -131,28 +127,22 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             // Positive cases handled in separate test cases 
             try {
                 applicationContext.getBean("customServicesConfigPath" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("customConfigManager" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("customMappings" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("disabledHandlerMapping" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
         } catch (Exception e) {
             fail("Unexpected exception:" + e);
-            return;
         }
-    }
-
-    @Test
-    public void hibernateAutoConfigured() {
-        assertTrue(PropertyProxyRegistry.getRegistry().getProxy(Person.class) instanceof SpringPropertyProxy);
     }
 
     @Test
@@ -165,8 +155,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advisor a = advisedEndpoint.getAdvisors()[0];
             assertTrue("Exception translation advice was not applied", a.getAdvice() instanceof ExceptionTranslationAdvice);
             ExceptionLogger logger = ((ExceptionTranslationAdvice) a.getAdvice()).getExceptionLogger();
-            assertSame("Custom exception log not found", logger, applicationContext.getBean("exceptionLogger",
-                TestExceptionLogger.class));
+            assertSame("Custom exception log not found", logger, applicationContext.getBean("exceptionLogger", TestExceptionLogger.class));
         }
     }
 
@@ -180,10 +169,8 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advisor a = advisedEndpoint.getAdvisors()[0];
             assertTrue("Exception translation advice was not applied", a.getAdvice() instanceof ExceptionTranslationAdvice);
             Set<ExceptionTranslator> translators = ((ExceptionTranslationAdvice) a.getAdvice()).getExceptionTranslators();
-            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator1",
-                TestExceptionTranslator.class)));
-            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator2",
-                TestExceptionTranslator.class)));
+            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator1", TestExceptionTranslator.class)));
+            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator2", TestExceptionTranslator.class)));
         }
     }
 
@@ -196,12 +183,8 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         try {
             Set<ExceptionTranslator> translators = getExceptionTranslators(getDataServicesConfigProcessor("customExceptionTranslators"));
             assertEquals(2, translators.size());
-            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator1",
-                TestExceptionTranslator.class)));
-            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator2",
-                TestExceptionTranslator.class)));
-            return;
-            
+            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator1", TestExceptionTranslator.class)));
+            assertTrue("Custom translator not found", translators.contains(applicationContext.getBean("translator2", TestExceptionTranslator.class)));
         } catch(NoSuchBeanDefinitionException e) {
             fail("Expected " + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX + "to be registered");
         } catch (Exception e) {
@@ -213,8 +196,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
     public void customMappings() {
         this.broker = applicationContext.getBean("customMappings", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
-        SimpleUrlHandlerMapping defaultMapping = (SimpleUrlHandlerMapping) applicationContext.getBean("customMappingsDefaultHandlerMapping",
-            SimpleUrlHandlerMapping.class);
+        SimpleUrlHandlerMapping defaultMapping = (SimpleUrlHandlerMapping) applicationContext.getBean("customMappingsDefaultHandlerMapping", SimpleUrlHandlerMapping.class);
         assertEquals(0, defaultMapping.getOrder());
         assertTrue("Path mapping not correct", defaultMapping.getUrlMap().containsKey("/foo"));
         assertEquals("Target mapping not correct", "customMappings", defaultMapping.getUrlMap().get("/foo"));
@@ -232,18 +214,15 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advisor a = advisedEndpoint.getAdvisors()[1];
             assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
             List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>(((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors());
-            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor1",
-                TestMessageInterceptor.class));
-            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor2",
-                TestMessageInterceptor.class));
-            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor3",
-                TestResourceHandlingInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor1", TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor2", TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor3", TestResourceHandlingInterceptor.class));
         }
     }
 
     @Test
     public void customMessageInterceptorsSpecifiedOrder() {
-    	this.broker = applicationContext.getBean("customMessageInterceptorsOrdered", MessageBroker.class);
+        this.broker = applicationContext.getBean("customMessageInterceptorsOrdered", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         for (Endpoint endpoint : this.broker.getEndpoints().values()) {
             assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
@@ -251,18 +230,15 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advisor a = advisedEndpoint.getAdvisors()[1];
             assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
             List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>(((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors());
-            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor1",
-                TestMessageInterceptor.class));
-            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor2",
-                TestMessageInterceptor.class));
-            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor3",
-                TestResourceHandlingInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor1", TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor2", TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor3", TestResourceHandlingInterceptor.class));
         }
     }
 
     @Test
     public void customMessageInterceptorsReplaceDefault() {
-    	this.broker = applicationContext.getBean("customMessageInterceptorsReplaced", MessageBroker.class);
+        this.broker = applicationContext.getBean("customMessageInterceptorsReplaced", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         for (Endpoint endpoint : this.broker.getEndpoints().values()) {
             assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
@@ -270,18 +246,15 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advisor a = advisedEndpoint.getAdvisors()[1];
             assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
             List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>(((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors());
-            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor1",
-                TestMessageInterceptor.class));
-            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor2",
-                TestMessageInterceptor.class));
-            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor3",
-                TestResourceHandlingInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(2), applicationContext.getBean("interceptor1", TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor2", TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor3", TestResourceHandlingInterceptor.class));
         }
     }
 
     @Test
     public void customMessageInterceptorsBeforeAfter() {
-    	this.broker = applicationContext.getBean("customMessageInterceptorsBeforeAfter", MessageBroker.class);
+        this.broker = applicationContext.getBean("customMessageInterceptorsBeforeAfter", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         for (Endpoint endpoint : this.broker.getEndpoints().values()) {
             assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
@@ -289,12 +262,9 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advisor a = advisedEndpoint.getAdvisors()[1];
             assertTrue("Message interception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
             List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>(((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors());
-            assertSame("Custom interceptor not found", interceptors.get(4), applicationContext.getBean("interceptor1",
-                TestMessageInterceptor.class));
-            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor2",
-                TestMessageInterceptor.class));
-            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor3",
-                TestResourceHandlingInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(4), applicationContext.getBean("interceptor1", TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(0), applicationContext.getBean("interceptor2", TestMessageInterceptor.class));
+            assertSame("Custom interceptor not found", interceptors.get(1), applicationContext.getBean("interceptor3", TestResourceHandlingInterceptor.class));
         }
     }
 
@@ -307,13 +277,9 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         try {
             Set<MessageInterceptor> interceptors = getMessageInterceptors(getDataServicesConfigProcessor("customMessageInterceptors"));
             assertEquals(3, interceptors.size());
-            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor1",
-                TestMessageInterceptor.class)));
-            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor2",
-                TestMessageInterceptor.class)));
-            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor3",
-                TestResourceHandlingInterceptor.class)));
-            return;
+            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor1", TestMessageInterceptor.class)));
+            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor2", TestMessageInterceptor.class)));
+            assertTrue("Custom interceptor not found", interceptors.contains(applicationContext.getBean("interceptor3", TestResourceHandlingInterceptor.class)));
         } catch(NoSuchBeanDefinitionException e) {
             fail("Expected " + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX + "to be registered");
         } catch (Exception e) {
@@ -407,10 +373,8 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             // Should contain org.springframework.flex.security3.SecurityExceptionTranslator
             Set<ExceptionTranslator> translators = getExceptionTranslators(dataServicesConfigProcessor);
             assertEquals(1, translators.size());
-            assertEquals(SpringSecurityConfigResolver.resolve().getSecurityExceptionTranslatorClassName(),
-                translators.iterator().next().getClass().getName());
+            assertEquals(SpringSecurityConfigResolver.resolve().getSecurityExceptionTranslatorClassName(), translators.iterator().next().getClass().getName());
 
-            return;
         } catch(NoSuchBeanDefinitionException e) {
             fail("Expected " + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX + "to be registered");
         } catch (Exception e) {
@@ -434,9 +398,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advised advisedEndpoint = (Advised) endpoint;
             Advisor a = advisedEndpoint.getAdvisors()[1];
             assertTrue("MessageInterception advice was not applied", a.getAdvice() instanceof MessageInterceptionAdvice);
-            Iterator<MessageInterceptor> m = ((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors().iterator();
-            while (m.hasNext()) {
-                MessageInterceptor interceptor = m.next();
+            for (MessageInterceptor interceptor : ((MessageInterceptionAdvice) a.getAdvice()).getMessageInterceptors()) {
                 if (interceptor instanceof EndpointInterceptor) {
                     Collection<ConfigAttribute> definitions = ((EndpointInterceptor) interceptor).getObjectDefinitionSource().getAllConfigAttributes();
                     assertEquals("Incorrect number of EnpointDefinitionSource instances", 3, definitions.size());
@@ -501,10 +463,8 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertNotNull("MessageBroker bean not found for default ID", this.broker);
         assertTrue("MessageBroker should be started", this.broker.isStarted());
         assertNotNull("MessageBroker should have a RemotingService", this.broker.getServiceByType(RemotingService.class.getName()));
-        assertNotNull("MessageBrokerHandlerAdapter not found", applicationContext.getBean(BeanIds.MESSAGE_BROKER_HANDLER_ADAPTER,
-            MessageBrokerHandlerAdapter.class));
-        SimpleUrlHandlerMapping defaultMapping = (SimpleUrlHandlerMapping) applicationContext.getBean(
-            BeanIds.MESSAGE_BROKER + "DefaultHandlerMapping", SimpleUrlHandlerMapping.class);
+        assertNotNull("MessageBrokerHandlerAdapter not found", applicationContext.getBean(BeanIds.MESSAGE_BROKER_HANDLER_ADAPTER, MessageBrokerHandlerAdapter.class));
+        SimpleUrlHandlerMapping defaultMapping = (SimpleUrlHandlerMapping) applicationContext.getBean(BeanIds.MESSAGE_BROKER + "DefaultHandlerMapping", SimpleUrlHandlerMapping.class);
         assertTrue("Default mapping not correct", defaultMapping.getUrlMap().containsKey("/*"));
         assertEquals("Default mapping not correct", BeanIds.MESSAGE_BROKER, defaultMapping.getUrlMap().get("/*"));
     }
@@ -608,7 +568,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         protected ConfigurableApplicationContext createParentContext() {
             GenericWebApplicationContext context = new GenericWebApplicationContext();
             context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
-            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml", "classpath:org/springframework/flex/core/io/hibernate-jpa-context.xml" });
+            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] {"classpath:org/springframework/flex/config/security-context.xml"});
             AnnotationConfigUtils.registerAnnotationConfigProcessors(context);
             context.refresh();
             context.registerShutdownHook();
@@ -618,42 +578,40 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
     
     public static final class TestLoginCommand implements LoginCommand {
 
-		public void start(ServletConfig config) {
-			
-		}
+        public void start(ServletConfig config) {
 
-		public void stop() {
+        }
 
-		}
+        public void stop() {
 
-		public Principal doAuthentication(String username, Object credentials) {
-			return null;
-		}
+        }
 
-		@SuppressWarnings("rawtypes")
-		public boolean doAuthorization(Principal principal, List roles) {
-			return false;
-		}
+        public Principal doAuthentication(String username, Object credentials) {
+            return null;
+        }
 
-		public boolean logout(Principal principal) {
-			return false;
-		}
+        @SuppressWarnings("rawtypes")
+        public boolean doAuthorization(Principal principal, List roles) {
+            return false;
+        }
+
+        public boolean logout(Principal principal) {
+            return false;
+        }
     }
     
     public static final class TestExceptionLogger implements ExceptionLogger {
 
-		public void log(Throwable throwable) {
+        public void log(Throwable throwable) {
 
-		}    	
+        }
     }
 
     /**
      * Returns the Data Services Config processor associated with given message broker bean
      */
     private Object getDataServicesConfigProcessor(String messageBrokerId) throws ClassNotFoundException {
-        Object dataServicesConfigProcessor = applicationContext.getBean(
-            messageBrokerId + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, 
-            Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME));
+        Object dataServicesConfigProcessor = applicationContext.getBean(messageBrokerId + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME));
         return dataServicesConfigProcessor;
     }
 

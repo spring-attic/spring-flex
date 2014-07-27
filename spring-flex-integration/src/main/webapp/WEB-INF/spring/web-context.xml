@@ -26,7 +26,7 @@
 		</flex:secured>
 	</flex:message-broker>
 	
-	<bean id="hibernateConfigProcessor" class="org.springframework.flex.core.io.HibernateConfigProcessor">
+	<bean id="hibernateConfigProcessor" class="org.springframework.flex.orm.hibernate3.config.HibernateConfigProcessor">
 		<constructor-arg ref="sessionFactory"/>
 	</bean>
 

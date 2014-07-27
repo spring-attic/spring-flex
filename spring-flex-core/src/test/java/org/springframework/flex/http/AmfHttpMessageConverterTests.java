@@ -3,7 +3,6 @@ package org.springframework.flex.http;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.springframework.flex.core.io.domain.Person;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -20,7 +19,6 @@ import flex.messaging.io.amf.ActionMessage;
 import flex.messaging.io.amf.Amf3Input;
 import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfMessageDeserializer;
-import flex.messaging.io.amf.MessageBody;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,33 +62,6 @@ public class AmfHttpMessageConverterTests {
     }
 
     @Test
-    public void writeObject() throws Exception {
-        HttpOutputMessage outputMessage = new ServletServerHttpResponse(this.response);
-        AmfHttpMessageConverter converter = new AmfHttpMessageConverter();
-        converter.write(Person.stubPerson(), this.amfContentType, outputMessage);
-        
-        Object result = deserializeResponse();
-        assertEquals(this.amfContentType, outputMessage.getHeaders().getContentType());
-        assertTrue(result instanceof Person);
-    }
-
-    @Test
-    public void writeActionMessage() throws Exception {
-        HttpOutputMessage outputMessage = new ServletServerHttpResponse(this.response);
-        AmfHttpMessageConverter converter = new AmfHttpMessageConverter();
-        ActionMessage responseMessage = new ActionMessage();
-        MessageBody responseBody = new MessageBody();
-        responseMessage.addBody(responseBody);
-        responseBody.setData(Person.stubPerson());
-        converter.write(responseMessage, this.amfContentType, outputMessage);
-        
-        ActionMessage result = deserializeResponseToActionMessage();
-        assertNotNull(result);
-        assertEquals(1, result.getBodyCount());
-        assertTrue(result.getBody(0).getData() instanceof Person);
-    }
-
-    @Test
     public void readSimpleString() throws Exception {
         this.request.setContentType(new MediaType("application", "x-amf").toString());
         this.request.setContent(serializeToByteArray("foo"));
@@ -99,17 +70,6 @@ public class AmfHttpMessageConverterTests {
 
         Object result = converter.read(Object.class, inputMessage);
         assertEquals("foo", result);
-    }
-
-    @Test
-    public void readObject() throws Exception {
-        this.request.setContentType(new MediaType("application", "x-amf").toString());
-        this.request.setContent(serializeToByteArray(Person.stubPerson()));
-        HttpInputMessage inputMessage = new ServletServerHttpRequest(this.request);
-        AmfHttpMessageConverter converter = new AmfHttpMessageConverter();
-
-        Object result = converter.read(Object.class, inputMessage);
-        assertTrue(result instanceof Person);
     }
 
     @Test
