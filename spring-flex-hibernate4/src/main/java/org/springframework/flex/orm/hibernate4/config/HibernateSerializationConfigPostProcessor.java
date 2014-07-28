@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.flex.config;
+package org.springframework.flex.orm.hibernate4.config;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +30,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.ManagedSet;
+import org.springframework.flex.config.BeanIds;
 import org.springframework.flex.core.io.AbstractAmfConversionServiceConfigProcessor;
 import org.springframework.flex.core.io.HibernateConfigProcessor;
 import org.springframework.util.Assert;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.flex.core.io;
+package org.springframework.flex.orm.hibernate4.io;
 
 import org.hibernate.Hibernate;
 import org.hibernate.collection.PersistentCollection;
