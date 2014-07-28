@@ -9,14 +9,14 @@
 
     <jdbc:embedded-database type="H2" id="dataSource" />
     
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     
     <tx:annotation-driven />
     
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-    	<property name="mappingLocations" value="classpath:**/mappings.hbm.xml"/>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    	<property name="mappingLocations" value="classpath:org/springframework/flex/core/io/mappings.hbm.xml"/>
         <property name="dataSource" ref="dataSource" />
         <property name="packagesToScan" value="org.springframework.flex.core.io.domain" />
         <property name="hibernateProperties">

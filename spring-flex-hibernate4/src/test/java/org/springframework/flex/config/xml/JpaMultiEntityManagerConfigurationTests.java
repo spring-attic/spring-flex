@@ -1,5 +1,6 @@
 package org.springframework.flex.config.xml;
 
+import org.junit.Assert;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
@@ -25,7 +26,7 @@ public class JpaMultiEntityManagerConfigurationTests extends AbstractFlexConfigu
         assertNotNull(broker);
         assertNotNull(applicationContext.getBean("entityManagerFactory"));
         assertNotNull(applicationContext.getBean("entityManagerFactory2"));
-        assertEquals(1, applicationContext.getBeansOfType(JpaHibernateConfigProcessor.class).entrySet().size());
+        Assert.assertEquals(1, applicationContext.getBeansOfType(JpaHibernateConfigProcessor.class).entrySet().size());
     }
 
     public static final class ParentContextLoader extends MessageBrokerContextLoader {
