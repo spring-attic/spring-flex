@@ -1,0 +1,14 @@
+{
+	"network" : {
+		"subscription-timeout-minutes" : 1, 
+		"throttle-inbound" : {"max-frequency" : 500, "policy" : "ERROR"},
+		"throttle-outbound" : {"max-frequency" : 500, "policy" : "IGNORE"}
+	},
+	"server" : {
+		"allow-subtopics" : true,
+		"cluster-message-routing" : "broadcast",
+		"disallow-wildcard-subtopics": false,
+		"message-time-to-live" : 1,
+		"subtopic-separator" : "/"
+	}
+}
