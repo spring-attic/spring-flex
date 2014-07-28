@@ -1,0 +1,3 @@
+<channel-definition id="my-included-amf" class="mx.messaging.channels.AMFChannel">
+	<endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+</channel-definition>
