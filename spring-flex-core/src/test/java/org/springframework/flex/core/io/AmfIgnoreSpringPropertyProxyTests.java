@@ -31,24 +31,21 @@ import flex.messaging.io.amf.MessageBody;
 public class AmfIgnoreSpringPropertyProxyTests {
 
     private static final Log log = LogFactory.getLog(AmfIgnoreSpringPropertyProxyTests.class);
-        
-    AmfMessageSerializer serializer;
 
+    AmfMessageSerializer   serializer;
     AmfMessageDeserializer deserializer;
 
     AmfTrace serializerTrace;
-
     AmfTrace deserializerTrace;
-    
-    MockHttpServletResponse response;
 
-    MockHttpServletRequest request;
-    
+    MockHttpServletResponse response;
+    MockHttpServletRequest  request;
+
     @BeforeClass
     public static void ensureBeanProxyInitialization() {
         BeanProxy.addIgnoreProperty(ASObject.class, "type");
     }
-    
+
     @Before
     public void setUp() {
         this.serializer = new AmfMessageSerializer();
@@ -59,13 +56,13 @@ public class AmfIgnoreSpringPropertyProxyTests {
         this.deserializerTrace = new AmfTrace();
         this.request = new MockHttpServletRequest();
     }
-    
+
     @After
     public void trace() throws UnsupportedEncodingException {
         log.info("Serializer Trace:\n" + serializerTrace);
         log.info("Deserializer Trace:\n" + deserializerTrace);
     }
-    
+
     @Test
     public void serializeIgnoredProperties() throws IOException, ClassNotFoundException {
         PropertyProxyRegistry.getRegistry().register(IgnorablePropsObject.class, createSpringPropertyProxy());
@@ -74,11 +71,11 @@ public class AmfIgnoreSpringPropertyProxyTests {
         data.setBar("bar");
         data.setBaz("baz");
         serialize(data);
-        
+
         PropertyProxyRegistry.getRegistry().register(IgnorablePropsObject.class, new ASObjectProxy());
-        
+
         ASObject result = (ASObject) deserialize();
-        
+
         assertTrue(!result.containsKey("foo"));
         assertTrue(!result.containsKey("fooField"));
         assertTrue(!result.containsKey("bar"));
@@ -97,14 +94,14 @@ public class AmfIgnoreSpringPropertyProxyTests {
         data.put("baz", "baz");
         data.put("zoo", "zoo");
         serialize(data);
-        
+
         IgnorablePropsObject result = (IgnorablePropsObject) deserialize();
-        
+
         assertEquals("unset", result.getFoo());
         assertEquals("bar", result.getBar());
         assertEquals("unset", result.getBaz());
     }
-    
+
     @Test
     public void serializeIgnoredFields() throws IOException, ClassNotFoundException {
         PropertyProxyRegistry.getRegistry().register(IgnorablePropsObject.class, createSpringFieldProxy());
@@ -113,11 +110,11 @@ public class AmfIgnoreSpringPropertyProxyTests {
         data.setBar("bar");
         data.setBaz("baz");
         serialize(data);
-        
+
         PropertyProxyRegistry.getRegistry().register(IgnorablePropsObject.class, new ASObjectProxy());
-        
+
         ASObject result = (ASObject) deserialize();
-        
+
         assertTrue(!result.containsKey("foo"));
         assertTrue(!result.containsKey("fooField"));
         assertTrue(!result.containsKey("bar"));
@@ -125,7 +122,7 @@ public class AmfIgnoreSpringPropertyProxyTests {
         assertTrue(!result.containsKey("baz"));
         assertEquals("baz", result.get("bazField"));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
     public void deserializeIgnoredFields() throws IOException, ClassNotFoundException {
@@ -136,14 +133,14 @@ public class AmfIgnoreSpringPropertyProxyTests {
         data.put("bazField", "baz");
         data.put("zooField", "zoo");
         serialize(data);
-        
+
         IgnorablePropsObject result = (IgnorablePropsObject) deserialize();
-        
+
         assertEquals("unset", result.getFoo());
         assertEquals("bar", result.getBar());
         assertEquals("unset", result.getBaz());
     }
-    
+
     private void serialize(Object data) throws IOException {
         MessageBody body = new MessageBody();
         body.setData(data);
@@ -157,28 +154,26 @@ public class AmfIgnoreSpringPropertyProxyTests {
         this.deserializer.readBody(body, 0);
         return body.getData();
     }
-    
+
     private PropertyProxy createSpringPropertyProxy() {
         GenericConversionService cs = new GenericConversionService();
         cs.addConverter(new NumberConverter());
         SpringPropertyProxy voProxy = SpringPropertyProxy.proxyFor(IgnorablePropsObject.class, false, cs);
         return voProxy;
     }
-    
+
     private PropertyProxy createSpringFieldProxy() {
         GenericConversionService cs = new GenericConversionService();
         cs.addConverter(new NumberConverter());
         SpringPropertyProxy voProxy = SpringPropertyProxy.proxyFor(IgnorablePropsObject.class, true, cs);
         return voProxy;
     }
-    
+
     @SuppressWarnings("serial")
     public static final class ASObjectProxy extends MapProxy {
-
         @Override
         public Object createInstance(String className) {
             return super.createInstance(null);
         }
-        
     }
 }

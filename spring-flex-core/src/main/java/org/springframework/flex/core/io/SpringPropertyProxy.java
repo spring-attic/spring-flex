@@ -47,6 +47,7 @@ import flex.messaging.io.amf.ASObject;
  * on the objects being serialized/deserialized.
  *
  * @author Jeremy Grelle
+ * @author Jose Barragan
  */
 public class SpringPropertyProxy extends BeanProxy {
 
@@ -193,7 +194,7 @@ public class SpringPropertyProxy extends BeanProxy {
             return true;
         }
         if (this.useDirectFieldAccess) {
-            AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
+            AmfIgnoreField ignoreField = accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onSerialization();
         } else {
             PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
@@ -207,7 +208,7 @@ public class SpringPropertyProxy extends BeanProxy {
             return true;
         }
         if (this.useDirectFieldAccess) {
-            AmfIgnoreField ignoreField = (AmfIgnoreField) accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
+            AmfIgnoreField ignoreField = accessor.getPropertyTypeDescriptor(propertyName).getAnnotation(AmfIgnoreField.class);
             return ignoreField != null && ignoreField.onDeserialization();
         } else {
             PropertyDescriptor pd = ((BeanWrapper)accessor).getPropertyDescriptor(propertyName);
@@ -221,7 +222,7 @@ public class SpringPropertyProxy extends BeanProxy {
      *
      * @author Jeremy Grelle
      */
-    static final class DelayedWriteSpringPropertyProxy extends SpringPropertyProxy {
+    public static final class DelayedWriteSpringPropertyProxy extends SpringPropertyProxy {
 
         private static final long serialVersionUID = -5330475591068260312L;
         

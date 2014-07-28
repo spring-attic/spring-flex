@@ -48,6 +48,14 @@
     		<organizationUrl>http://www.spring.io</organizationUrl>
     	</developer>
     </developers>
+    
+    <contributors>
+        <contributor>
+            <name>Jose Barragan</name>
+            <organization>Codeoscopic</organization>
+            <organizationUrl>http://www.codeoscopic.com</organizationUrl>
+        </contributor>
+    </contributors>
 
     <properties>
 		<spring.version>4.0.6.RELEASE</spring.version>
@@ -55,7 +63,6 @@
 		<security.version>3.2.4.RELEASE</security.version>
 		<blazeds.version>4.0.0.14931</blazeds.version>
 		<!--<blazeds.version>4.6.0.23207</blazeds.version>-->
-		<hibernate.version>3.6.10.Final</hibernate.version>
 		<slf4j.version>1.7.7</slf4j.version>
 	</properties>
 
@@ -80,16 +87,6 @@
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.17</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernate.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.annotation</groupId>
