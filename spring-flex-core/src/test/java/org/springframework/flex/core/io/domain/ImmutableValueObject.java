@@ -12,8 +12,6 @@ public class ImmutableValueObject {
     
     ImmutableValueObject voRef;
     
-    Person personRef;
-    
     @AmfCreator
     public ImmutableValueObject(@AmfProperty("foo") String foo, @AmfProperty("zoo") Integer zoo) {
         this.foo = foo;
@@ -26,14 +24,6 @@ public class ImmutableValueObject {
     
     public Integer getZoo() {
         return this.zoo;
-    }
-    
-    public Person getPersonRef() {
-        return personRef;
-    }
-
-    public void setPersonRef(Person personRef) {
-        this.personRef = personRef;
     }
     
     public ImmutableValueObject getVoRef() {

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.springframework.flex.hibernate3.core.io.domain" default-access="field">
+    <class name="org.springframework.flex.hibernate3.core.io.domain.Company">
+        <id name="id">
+            <generator class="native"/>
+        </id>
+        <version name="version"/>
+        <property name="name"/>
+    </class>
+
+    <class name="org.springframework.flex.hibernate3.core.io.domain.PrimitiveCompany">
+        <id name="id">
+            <generator class="native"/>
+        </id>
+        <version name="version"/>
+        <property name="name"/>
+    </class>
+
+    <class name="org.springframework.flex.hibernate3.core.io.domain.CompanyNP">
+        <id name="id">
+            <generator class="native"/>
+        </id>
+        <version name="version"/>
+        <property name="name"/>
+    </class>
+
+    <class name="org.springframework.flex.hibernate3.core.io.domain.PrimitiveCompanyNP">
+        <id name="id">
+            <generator class="native"/>
+        </id>
+        <version name="version"/>
+        <property name="name"/>
+    </class>
+</hibernate-mapping>

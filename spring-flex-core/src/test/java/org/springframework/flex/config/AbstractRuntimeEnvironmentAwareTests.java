@@ -21,6 +21,11 @@ import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.util.Assert;
 
+/**
+ * @author Jeremy Grelle
+ * @author Sébastien Deleuze
+ * @author Jose Barragan
+ */
 @ProfileValueSourceConfiguration(AbstractRuntimeEnvironmentAwareTests.RuntimeEnvironmentProfileValueSource.class)
 public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit4SpringContextTests {
 
@@ -29,6 +34,7 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
     protected static final String BLAZEDS_46 = "blazeds46";
     protected static final String LCDS = "lcds";
     protected static final String LCDS_LEGACY = "lcdslegacy";
+    protected static final String HIBERNATE = "hibernate";
 
     public static final class RuntimeEnvironmentProfileValueSource implements ProfileValueSource {
 
@@ -44,7 +50,9 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
            } else if (RuntimeEnvironment.isLCDS() && RuntimeEnvironment.isSpringSupportAvailable()) {
                return LCDS;
            } else if (RuntimeEnvironment.isLCDS()) {
-        	   return LCDS_LEGACY;
+               return LCDS_LEGACY;
+           } else if (RuntimeEnvironment.isHibernateSupportAvailable() && RuntimeEnvironment.isSpringSupportAvailable()) {
+               return HIBERNATE;
            } else {
                throw new IllegalStateException("Runtime data services environment is unknown.");
            }

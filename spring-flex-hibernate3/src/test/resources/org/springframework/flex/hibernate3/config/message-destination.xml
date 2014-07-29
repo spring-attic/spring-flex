@@ -1,0 +1,60 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:flex="http://www.springframework.org/schema/flex"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://www.springframework.org/schema/flex 
+              http://www.springframework.org/schema/flex/spring-flex-1.5.xsd">
+
+    <!-- Default config -->
+    <flex:message-broker id="messageServiceBroker">
+        <flex:config-processor ref="clusterManagerProcessor"/>
+    </flex:message-broker>
+
+    <flex:message-destination id="nativeDefaultConfig"/>
+
+    <flex:message-destination id="nativeCustomAdapter" service-adapter="myCustomMessagingAdapter"/>
+
+    <flex:message-destination id="nativeCustomConfig" allow-subtopics="true" channels="my-polling-amf, my-secure-amf"
+        cluster-message-routing="broadcast" cluster-ref="default-cluster" disallow-wildcard-subtopics="false" message-broker="messageServiceBroker" message-time-to-live="1" send-security-constraint="fooConstraint"
+        subscribe-security-constraint="barConstraint" subscription-timeout-minutes="1" subtopic-separator="/" throttle-inbound-max-frequency="500"
+        throttle-inbound-policy="ERROR" throttle-outbound-max-frequency="500" throttle-outbound-policy="IGNORE" />
+
+
+    <flex:jms-message-destination id="jmsCustomReferences" jms-destination="testJmsDestination" />
+    <!--  message-converter="testMessageConverter"
+        destination-resolver="testDestinationResolver" transaction-manager="testTransactionManager"/> -->
+
+    <flex:jms-message-destination id="jmsCustomConnectionFactoryDestination" jms-destination="testJmsDestination" connection-factory="customConnectionFactory"/>
+
+    <flex:jms-message-destination id="jmsCustomConfig" jms-destination="testJmsDestination" allow-subtopics="true" channels="my-polling-amf, my-secure-amf"
+        cluster-message-routing="broadcast" cluster-ref="default-cluster" disallow-wildcard-subtopics="false" message-broker="messageServiceBroker" message-time-to-live="1" send-security-constraint="fooConstraint"
+        subscribe-security-constraint="barConstraint" subscription-timeout-minutes="1" subtopic-separator="/" throttle-inbound-max-frequency="500"
+        throttle-inbound-policy="ERROR" throttle-outbound-max-frequency="500" throttle-outbound-policy="IGNORE" />
+
+    <flex:jms-message-destination id="jmsQueueDestination" queue-name="myJmsQueue"/>
+
+    <flex:jms-message-destination id="jmsTopicDestination" topic-name="myJmsTopic"/>
+
+
+    <flex:integration-message-destination id="integrationSimpleConfig" message-channel="testIntegrationChannel" />
+
+    <flex:integration-message-destination id="integrationCustomConfig" message-channel="testIntegrationChannel" allow-subtopics="true" channels="my-polling-amf, my-secure-amf"
+        cluster-message-routing="broadcast" cluster-ref="default-cluster" disallow-wildcard-subtopics="false" extract-payload="false" message-broker="messageServiceBroker" message-time-to-live="1" send-security-constraint="fooConstraint"
+        subscribe-security-constraint="barConstraint" subscription-timeout-minutes="1" subtopic-separator="/" throttle-inbound-max-frequency="500"
+        throttle-inbound-policy="ERROR" throttle-outbound-max-frequency="500" throttle-outbound-policy="IGNORE" />
+
+    <bean id="connectionFactory" class="org.springframework.flex.hibernate3.config.xml.JmsMessageDestinationBeanDefinitionParserTests$TestConnectionFactory"/>
+    <bean id="testJmsDestination" class="org.springframework.flex.hibernate3.config.xml.JmsMessageDestinationBeanDefinitionParserTests$TestDestination"/>
+
+    <bean id="customConnectionFactory" class="org.springframework.flex.hibernate3.config.xml.JmsMessageDestinationBeanDefinitionParserTests$TestConnectionFactory"/>
+
+    <bean id="myCustomMessagingAdapter" class="org.springframework.flex.core.ManageableComponentFactoryBean">
+        <constructor-arg value="org.springframework.flex.hibernate3.config.xml.MessageDestinationBeanDefinitionParserTests$TestMessagingAdapter"/>
+    </bean>
+
+    <bean id="testIntegrationChannel" class="org.springframework.flex.hibernate3.config.xml.IntegrationMessageDestinationBeanDefinitionParserTests$TestMessageChannel"/>
+
+    <bean id="clusterManagerProcessor" class="org.springframework.flex.hibernate3.config.xml.AbstractMessageDestinationBeanDefinitionParserTests$ClusterManagerConfigProcessor"/>
+
+</beans>
