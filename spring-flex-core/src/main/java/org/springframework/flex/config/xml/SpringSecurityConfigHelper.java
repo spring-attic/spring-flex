@@ -25,7 +25,7 @@ package org.springframework.flex.config.xml;
  *
  * @author Jeremy Grelle
  */
-interface SpringSecurityConfigHelper {
+public interface SpringSecurityConfigHelper {
 
     String getAuthenticationManagerId();
 
@@ -45,6 +45,6 @@ interface SpringSecurityConfigHelper {
 
     String getLoginCommandClassName();
 
-	String getSecurityConfigPostProcessorClassName();
+    String getSecurityConfigPostProcessorClassName();
 
 }

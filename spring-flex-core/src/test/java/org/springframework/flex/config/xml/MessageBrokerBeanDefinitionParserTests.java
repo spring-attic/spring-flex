@@ -54,8 +54,6 @@ import org.springframework.flex.core.MessageInterceptionAdvice;
 import org.springframework.flex.core.MessageInterceptor;
 import org.springframework.flex.core.MessageProcessingContext;
 import org.springframework.flex.core.ResourceHandlingMessageInterceptor;
-import org.springframework.flex.core.io.SpringPropertyProxy;
-import org.springframework.flex.core.io.domain.Person;
 import org.springframework.flex.security3.EndpointInterceptor;
 import org.springframework.flex.security3.SecurityConfigurationPostProcessor;
 import org.springframework.flex.security3.SpringSecurityLoginCommand;
@@ -77,7 +75,6 @@ import flex.messaging.MessageException;
 import flex.messaging.config.ConfigMap;
 import flex.messaging.config.MessagingConfiguration;
 import flex.messaging.endpoints.Endpoint;
-import flex.messaging.io.PropertyProxyRegistry;
 import flex.messaging.messages.Message;
 import flex.messaging.security.LoginCommand;
 import flex.messaging.services.MessageService;
@@ -89,9 +86,9 @@ import org.junit.Test;
 @ContextConfiguration(locations="classpath:org/springframework/flex/config/message-broker.xml", loader=MessageBrokerBeanDefinitionParserTests.ParentContextLoader.class)
 public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigurationTests {
 
-	private static final String DATA_SERVICES_PROCESSOR_CLASS_NAME = 
-		(String) ReflectionTestUtils.getField(new MessageBrokerBeanDefinitionParser(), "DATASERVICES_PROCESSOR_CLASS_NAME");
-	
+    private static final String DATA_SERVICES_PROCESSOR_CLASS_NAME =
+        (String) ReflectionTestUtils.getField(new MessageBrokerBeanDefinitionParser(), "DATASERVICES_PROCESSOR_CLASS_NAME");
+
     private MessageBroker broker;
 
     @Test
@@ -123,7 +120,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
 
         try {
-        	Class<?> dsConfigProcessorClazz = Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME);
+            Class<?> dsConfigProcessorClazz = Class.forName(DATA_SERVICES_PROCESSOR_CLASS_NAME);
 
             // The bean is only present when either a custom exception translator or message interceptor is present, 
             // or in case when the message broker is secured.
@@ -131,28 +128,22 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             // Positive cases handled in separate test cases 
             try {
                 applicationContext.getBean("customServicesConfigPath" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("customConfigManager" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("customMappings" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
 
             try {
                 applicationContext.getBean("disabledHandlerMapping" + BeanIds.DATASERVICES_CONFIG_PROCESSOR_SUFFIX, dsConfigProcessorClazz);
-            } catch (NoSuchBeanDefinitionException e) {}
+            } catch (NoSuchBeanDefinitionException ignored) {}
         } catch (Exception e) {
             fail("Unexpected exception:" + e);
-            return;
         }
-    }
-
-    @Test
-    public void hibernateAutoConfigured() {
-        assertTrue(PropertyProxyRegistry.getRegistry().getProxy(Person.class) instanceof SpringPropertyProxy);
     }
 
     @Test
@@ -165,8 +156,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
             Advisor a = advisedEndpoint.getAdvisors()[0];
             assertTrue("Exception translation advice was not applied", a.getAdvice() instanceof ExceptionTranslationAdvice);
             ExceptionLogger logger = ((ExceptionTranslationAdvice) a.getAdvice()).getExceptionLogger();
-            assertSame("Custom exception log not found", logger, applicationContext.getBean("exceptionLogger",
-                TestExceptionLogger.class));
+            assertSame("Custom exception log not found", logger, applicationContext.getBean("exceptionLogger", TestExceptionLogger.class));
         }
     }
 
@@ -243,7 +233,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 
     @Test
     public void customMessageInterceptorsSpecifiedOrder() {
-    	this.broker = applicationContext.getBean("customMessageInterceptorsOrdered", MessageBroker.class);
+        this.broker = applicationContext.getBean("customMessageInterceptorsOrdered", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         for (Endpoint endpoint : this.broker.getEndpoints().values()) {
             assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
@@ -262,7 +252,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 
     @Test
     public void customMessageInterceptorsReplaceDefault() {
-    	this.broker = applicationContext.getBean("customMessageInterceptorsReplaced", MessageBroker.class);
+        this.broker = applicationContext.getBean("customMessageInterceptorsReplaced", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         for (Endpoint endpoint : this.broker.getEndpoints().values()) {
             assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
@@ -281,7 +271,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
 
     @Test
     public void customMessageInterceptorsBeforeAfter() {
-    	this.broker = applicationContext.getBean("customMessageInterceptorsBeforeAfter", MessageBroker.class);
+        this.broker = applicationContext.getBean("customMessageInterceptorsBeforeAfter", MessageBroker.class);
         assertNotNull("MessageBroker bean not found for custom id", this.broker);
         for (Endpoint endpoint : this.broker.getEndpoints().values()) {
             assertTrue("Endpoint should be proxied", AopUtils.isAopProxy(endpoint));
@@ -608,7 +598,7 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
         protected ConfigurableApplicationContext createParentContext() {
             GenericWebApplicationContext context = new GenericWebApplicationContext();
             context.setServletContext(new MockServletContext(new TestWebInfResourceLoader(context)));
-            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml", "classpath:org/springframework/flex/core/io/hibernate-jpa-context.xml" });
+            new XmlBeanDefinitionReader(context).loadBeanDefinitions(new String[] { "classpath:org/springframework/flex/config/security-context.xml"});
             AnnotationConfigUtils.registerAnnotationConfigProcessors(context);
             context.refresh();
             context.registerShutdownHook();
@@ -618,33 +608,33 @@ public class MessageBrokerBeanDefinitionParserTests extends AbstractFlexConfigur
     
     public static final class TestLoginCommand implements LoginCommand {
 
-		public void start(ServletConfig config) {
-			
-		}
+        public void start(ServletConfig config) {
 
-		public void stop() {
+        }
 
-		}
+        public void stop() {
 
-		public Principal doAuthentication(String username, Object credentials) {
-			return null;
-		}
+        }
 
-		@SuppressWarnings("rawtypes")
-		public boolean doAuthorization(Principal principal, List roles) {
-			return false;
-		}
+        public Principal doAuthentication(String username, Object credentials) {
+            return null;
+        }
 
-		public boolean logout(Principal principal) {
-			return false;
-		}
+        @SuppressWarnings("rawtypes")
+        public boolean doAuthorization(Principal principal, List roles) {
+            return false;
+        }
+
+        public boolean logout(Principal principal) {
+            return false;
+        }
     }
     
     public static final class TestExceptionLogger implements ExceptionLogger {
 
-		public void log(Throwable throwable) {
+        public void log(Throwable throwable) {
 
-		}    	
+        }
     }
 
     /**

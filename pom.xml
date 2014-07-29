@@ -49,9 +49,18 @@
         </developer>
     </developers>
 
+    <contributors>
+        <contributor>
+            <name>Jose Barragan</name>
+            <organization>Codeoscopic</organization>
+            <organizationUrl>http://www.codeoscopic.com</organizationUrl>
+        </contributor>
+    </contributors>
+
     <modules>
         <module>spring-flex-parent</module>
         <module>spring-flex-core</module>
+        <module>spring-flex-hibernate4</module>
     </modules>
 
     <profiles>
