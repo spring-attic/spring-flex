@@ -2,22 +2,23 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
 	<http>
 		<anonymous enabled="false"/>
 	    <form-login default-target-url="/secured/secured.html" login-page="/login.jsp" />
-		<remember-me key="testdrive" services-ref="rememberMeServices"/>
+		<remember-me key="testdrive" services-ref="rememberMeServices" />
 	</http>
 	
 	<beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
-		<beans:property name="key" value="testdrive"/>
+		<beans:constructor-arg index="0" value="testdrive" />
+		<beans:constructor-arg index="1" ref="userService" />
 		<beans:property name="alwaysRemember" value="true"/>
 	</beans:bean>
 	
 	<authentication-manager>
 		<authentication-provider>
-			<user-service>
+			<user-service id="userService">
 				<user name="john" password="john" authorities="ROLE_USER" />
 				<user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN" />
 				<user name="guest" password="guest" authorities="ROLE_GUEST" />
