@@ -76,7 +76,9 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
     private static final String REMOTING_ANNOTATION_PROCESSOR_CLASS_NAME = "org.springframework.flex.config.RemotingAnnotationPostProcessor";
 
-    private static final String HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.hibernate3.config.HibernateSerializationConfigPostProcessor";
+    private static final String HIBERNATE_3_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.hibernate3.config.HibernateSerializationConfigPostProcessor";
+
+    private static final String HIBERNATE_4_CONFIG_PROCESSOR_CLASS_NAME = "org.springframework.flex.hibernate4.config.HibernateSerializationConfigPostProcessor";
 
     private static final String CUSTOM_EDITOR_CONFIGURER_CLASS_NAME = "org.springframework.beans.factory.config.CustomEditorConfigurer";
 
@@ -280,7 +282,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         registerFlexRemotingAnnotationPostProcessorIfNecessary(source, parserContext);
 
-        registerHibernateSerializationConfigPostProcessorIfNecessary(source, parserContext);
+        registerHibernate3SerializationConfigPostProcessorIfNecessary(source, parserContext);
+        registerHibernate4SerializationConfigPostProcessorIfNecessary(source, parserContext);
     }
 
     private void configureSecurity(Element parent, ParserContext parserContext, ManagedSet<RuntimeBeanReference> configProcessors, ManagedList<RuntimeBeanReference> advisors,
@@ -464,9 +467,16 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
         }
     }
 
-    private void registerHibernateSerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
-        if (RuntimeEnvironment.isHibernateSupportAvailable() && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
-            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_CONFIG_PROCESSOR_CLASS_NAME);
+    private void registerHibernate3SerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
+        if (RuntimeEnvironment.isHibernate3SupportAvailable() && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
+            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_3_CONFIG_PROCESSOR_CLASS_NAME);
+            ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
+        }
+    }
+
+    private void registerHibernate4SerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
+        if (RuntimeEnvironment.isHibernate4SupportAvailable() && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
+            BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_4_CONFIG_PROCESSOR_CLASS_NAME);
             ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
         }
     }

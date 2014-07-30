@@ -65,6 +65,7 @@
 		<!--<blazeds.version>4.6.0.23207</blazeds.version>-->
 		<slf4j.version>1.7.7</slf4j.version>
 		<hibernate3.version>3.6.10.Final</hibernate3.version>
+		<hibernate4.version>4.3.5.Final</hibernate4.version>
 	</properties>
 
 	<dependencyManagement>

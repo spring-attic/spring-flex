@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.flex.config;
+package org.springframework.flex.hibernate4.config;
 
+import org.springframework.flex.config.RuntimeEnvironment;
 import org.springframework.test.annotation.ProfileValueSource;
 import org.springframework.test.annotation.ProfileValueSourceConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -34,8 +35,7 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
     protected static final String BLAZEDS_46 = "blazeds46";
     protected static final String LCDS = "lcds";
     protected static final String LCDS_LEGACY = "lcdslegacy";
-    protected static final String HIBERNATE_3 = "hibernate3";
-    protected static final String HIBERNATE_4 = "hibernate4";
+    protected static final String HIBERNATE = "hibernate";
 
     public static final class RuntimeEnvironmentProfileValueSource implements ProfileValueSource {
 
@@ -52,10 +52,8 @@ public abstract class AbstractRuntimeEnvironmentAwareTests extends AbstractJUnit
                return LCDS;
            } else if (RuntimeEnvironment.isLCDS()) {
                return LCDS_LEGACY;
-           } else if (RuntimeEnvironment.isHibernate3SupportAvailable() && RuntimeEnvironment.isSpringSupportAvailable()) {
-               return HIBERNATE_3;
-           } else if (RuntimeEnvironment.isHibernate4SupportAvailable() && RuntimeEnvironment.isSpringSupportAvailable()) {
-               return HIBERNATE_4;
+           } else if (RuntimeEnvironment.isHibernateSupportAvailable() && RuntimeEnvironment.isSpringSupportAvailable()) {
+               return HIBERNATE;
            } else {
                throw new IllegalStateException("Runtime data services environment is unknown.");
            }

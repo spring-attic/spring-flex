@@ -61,6 +61,7 @@
         <module>spring-flex-parent</module>
         <module>spring-flex-core</module>
         <module>spring-flex-hibernate3</module>
+        <module>spring-flex-hibernate4</module>
     </modules>
 
     <profiles>

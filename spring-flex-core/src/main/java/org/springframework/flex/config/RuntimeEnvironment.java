@@ -36,6 +36,10 @@ public abstract class RuntimeEnvironment {
 
     private static final String HIBERNATE_SUPPORT_CLASS_NAME = "org.hibernate.Hibernate";
 
+    private static final String HIBERNATE_3_SUPPORT_CLASS_NAME = "org.hibernate.classic.Validatable";
+
+    private static final String HIBERNATE_4_SUPPORT_CLASS_NAME = "org.hibernate.MultiTenancyStrategy";
+
     private static final boolean IS_LCDS_ENVIRONMENT;
 
     private static final boolean IS_SPRING_SUPPORT_AVAILABLE;
@@ -44,10 +48,16 @@ public abstract class RuntimeEnvironment {
 
     private static final boolean IS_HIBERNATE_SUPPORT_AVAILABLE;
 
+    private static final boolean IS_HIBERNATE_3_SUPPORT_AVAILABLE;
+
+    private static final boolean IS_HIBERNATE_4_SUPPORT_AVAILABLE;
+
     static {
         boolean asyncMessageBrokerClassPresent;
         boolean springSupportClassPresent;
         boolean hibernateSupportClassPresent;
+        boolean hibernate3SupportClassPresent;
+        boolean hibernate4SupportClassPresent;
 
         try {
             ClassUtils.forName(ASYNC_MESSAGE_BROKER_CLASS_NAME, null);
@@ -70,12 +80,28 @@ public abstract class RuntimeEnvironment {
             hibernateSupportClassPresent = false;
         }
 
+        try {
+            ClassUtils.forName(HIBERNATE_3_SUPPORT_CLASS_NAME, null);
+            hibernate3SupportClassPresent = true;
+        } catch (ClassNotFoundException ex) {
+            hibernate3SupportClassPresent = false;
+        }
+
+        try {
+            ClassUtils.forName(HIBERNATE_4_SUPPORT_CLASS_NAME, null);
+            hibernate4SupportClassPresent = true;
+        } catch (ClassNotFoundException ex) {
+            hibernate4SupportClassPresent = false;
+        }
+
         IS_BLAZEDS_46 = ClassUtils.getMethodIfAvailable(ConfigurationFileResolver.class, "getFiles", String.class) != null;
 
 
         IS_LCDS_ENVIRONMENT = asyncMessageBrokerClassPresent;
         IS_SPRING_SUPPORT_AVAILABLE = springSupportClassPresent;
         IS_HIBERNATE_SUPPORT_AVAILABLE = hibernateSupportClassPresent;
+        IS_HIBERNATE_3_SUPPORT_AVAILABLE = hibernate3SupportClassPresent;
+        IS_HIBERNATE_4_SUPPORT_AVAILABLE = hibernate4SupportClassPresent;
     }
 
     /**
@@ -106,5 +132,13 @@ public abstract class RuntimeEnvironment {
 
     public static boolean isHibernateSupportAvailable(){
         return IS_HIBERNATE_SUPPORT_AVAILABLE;
+    }
+
+    public static boolean isHibernate3SupportAvailable(){
+        return IS_HIBERNATE_3_SUPPORT_AVAILABLE;
+    }
+
+    public static boolean isHibernate4SupportAvailable(){
+        return IS_HIBERNATE_4_SUPPORT_AVAILABLE;
     }
 }
