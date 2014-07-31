@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2002-2014 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,11 @@ public abstract class RuntimeEnvironment {
 
     private static final String HIBERNATE_3_SUPPORT_CLASS_NAME = "org.hibernate.classic.Validatable";
 
+    private static final String SPRING_FLEX_HIBERNATE_3_SUPPORT_CLASS_NAME = "org.springframework.flex.hibernate3.HibernateProxyConverter";
+
     private static final String HIBERNATE_4_SUPPORT_CLASS_NAME = "org.hibernate.MultiTenancyStrategy";
+
+    private static final String SPRING_FLEX_HIBERNATE_4_SUPPORT_CLASS_NAME = "org.springframework.flex.hibernate4.HibernateProxyConverter";
 
     private static final boolean IS_LCDS_ENVIRONMENT;
 
@@ -50,14 +54,20 @@ public abstract class RuntimeEnvironment {
 
     private static final boolean IS_HIBERNATE_3_SUPPORT_AVAILABLE;
 
+    private static final boolean IS_SPRING_FLEX_HIBERNATE_3_SUPPORT_AVAILABLE;
+
     private static final boolean IS_HIBERNATE_4_SUPPORT_AVAILABLE;
+
+    private static final boolean IS_SPRING_FLEX_HIBERNATE_4_SUPPORT_AVAILABLE;
 
     static {
         boolean asyncMessageBrokerClassPresent;
         boolean springSupportClassPresent;
         boolean hibernateSupportClassPresent;
         boolean hibernate3SupportClassPresent;
+        boolean springFlexHibernate3SupportClassPresent;
         boolean hibernate4SupportClassPresent;
+        boolean springFlexHibernate4SupportClassPresent;
 
         try {
             ClassUtils.forName(ASYNC_MESSAGE_BROKER_CLASS_NAME, null);
@@ -88,20 +98,35 @@ public abstract class RuntimeEnvironment {
         }
 
         try {
+            ClassUtils.forName(SPRING_FLEX_HIBERNATE_3_SUPPORT_CLASS_NAME, null);
+            springFlexHibernate3SupportClassPresent = true;
+        } catch (ClassNotFoundException ex) {
+            springFlexHibernate3SupportClassPresent = false;
+        }
+
+        try {
             ClassUtils.forName(HIBERNATE_4_SUPPORT_CLASS_NAME, null);
             hibernate4SupportClassPresent = true;
         } catch (ClassNotFoundException ex) {
             hibernate4SupportClassPresent = false;
         }
 
-        IS_BLAZEDS_46 = ClassUtils.getMethodIfAvailable(ConfigurationFileResolver.class, "getFiles", String.class) != null;
+        try {
+            ClassUtils.forName(SPRING_FLEX_HIBERNATE_4_SUPPORT_CLASS_NAME, null);
+            springFlexHibernate4SupportClassPresent = true;
+        } catch (ClassNotFoundException ex) {
+            springFlexHibernate4SupportClassPresent = false;
+        }
 
+        IS_BLAZEDS_46 = ClassUtils.getMethodIfAvailable(ConfigurationFileResolver.class, "getFiles", String.class) != null;
 
         IS_LCDS_ENVIRONMENT = asyncMessageBrokerClassPresent;
         IS_SPRING_SUPPORT_AVAILABLE = springSupportClassPresent;
         IS_HIBERNATE_SUPPORT_AVAILABLE = hibernateSupportClassPresent;
         IS_HIBERNATE_3_SUPPORT_AVAILABLE = hibernate3SupportClassPresent;
+        IS_SPRING_FLEX_HIBERNATE_3_SUPPORT_AVAILABLE = springFlexHibernate3SupportClassPresent;
         IS_HIBERNATE_4_SUPPORT_AVAILABLE = hibernate4SupportClassPresent;
+        IS_SPRING_FLEX_HIBERNATE_4_SUPPORT_AVAILABLE = springFlexHibernate4SupportClassPresent;
     }
 
     /**
@@ -138,7 +163,15 @@ public abstract class RuntimeEnvironment {
         return IS_HIBERNATE_3_SUPPORT_AVAILABLE;
     }
 
+    public static boolean isSpringFlexHibernate3SupportAvailable(){
+        return IS_SPRING_FLEX_HIBERNATE_3_SUPPORT_AVAILABLE;
+    }
+
     public static boolean isHibernate4SupportAvailable(){
         return IS_HIBERNATE_4_SUPPORT_AVAILABLE;
+    }
+
+    public static boolean isSpringFlexHibernate4SupportAvailable(){
+        return IS_SPRING_FLEX_HIBERNATE_4_SUPPORT_AVAILABLE;
     }
 }

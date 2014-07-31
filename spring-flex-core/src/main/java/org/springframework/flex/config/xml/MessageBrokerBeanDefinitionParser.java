@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2011 the original author or authors.
+ * Copyright 2002-2014 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -468,14 +468,16 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     }
 
     private void registerHibernate3SerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
-        if (RuntimeEnvironment.isHibernate3SupportAvailable() && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
+        if (RuntimeEnvironment.isHibernate3SupportAvailable() && RuntimeEnvironment.isSpringFlexHibernate3SupportAvailable()
+                && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
             BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_3_CONFIG_PROCESSOR_CLASS_NAME);
             ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
         }
     }
 
     private void registerHibernate4SerializationConfigPostProcessorIfNecessary(Element source, ParserContext parserContext) {
-        if (RuntimeEnvironment.isHibernate4SupportAvailable() && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
+        if (RuntimeEnvironment.isHibernate4SupportAvailable() && RuntimeEnvironment.isSpringFlexHibernate4SupportAvailable()
+                && !parserContext.getRegistry().containsBeanDefinition(BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR)) {
             BeanDefinitionBuilder processorBuilder = BeanDefinitionBuilder.genericBeanDefinition(HIBERNATE_4_CONFIG_PROCESSOR_CLASS_NAME);
             ParsingUtils.registerInfrastructureComponent(source, parserContext, processorBuilder, BeanIds.HIBERNATE_SERIALIZATION_PROCESSOR);
         }

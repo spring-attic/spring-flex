@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2002-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,5 +55,25 @@ public class RuntimeEnvironmentTests extends AbstractRuntimeEnvironmentAwareTest
     @IfProfileValue(name=ENVIRONMENT, value=LCDS)
     public void isLCDSInLCDSEnvironment() {
         assertTrue(RuntimeEnvironment.isLCDS());
+    }
+
+    @Test
+    public void isHibernate3SupportAvailable() {
+        assertFalse(RuntimeEnvironment.isHibernate3SupportAvailable());
+    }
+
+    @Test
+    public void isHibernate4SupportAvailable() {
+        assertFalse(RuntimeEnvironment.isHibernate4SupportAvailable());
+    }
+
+    @Test
+    public void isSpringFlexHibernate3SupportAvailable() {
+        assertFalse(RuntimeEnvironment.isSpringFlexHibernate3SupportAvailable());
+    }
+
+    @Test
+    public void isSpringFlexHibernate4SupportAvailable() {
+        assertFalse(RuntimeEnvironment.isSpringFlexHibernate4SupportAvailable());
     }
 }
