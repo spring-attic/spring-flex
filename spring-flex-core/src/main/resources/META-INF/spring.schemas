@@ -1,1 +1,3 @@
 http\://www.springframework.org/schema/flex/spring-flex-1.5.xsd=org/springframework/flex/config/xml/spring-flex-1.5.xsd
+http\://www.springframework.org/schema/flex/spring-flex-1.6.xsd=org/springframework/flex/config/xml/spring-flex-1.6.xsd
+http\://www.springframework.org/schema/flex/spring-flex.xsd=org/springframework/flex/config/xml/spring-flex-1.6.xsd
