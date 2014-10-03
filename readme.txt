@@ -1,5 +1,5 @@
-SPRING BLAZEDS INTEGRATION 1.6.0.BUILD-SNAPSHOT
------------------------------------------------
+SPRING BLAZEDS INTEGRATION 1.6
+------------------------------
 
 1. INTRODUCTION
 ---------------
@@ -32,9 +32,10 @@ Please report issues via the Spring Flex JIRA at https://jira.spring.io/browse/F
 -------------------------
 
 Spring Flex snapshot builds are available from http://repo.spring.io/libs-snapshot/
+SPring Flex release candidates are avaialble from http://repo.spring.io/libs-milestone/
 Spring Flex release builds are available from Maven Central.
 
-Both are using the org.springframework.flex groupId.
+They are using the org.springframework.flex groupId.
 
 
 
