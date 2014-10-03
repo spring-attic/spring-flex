@@ -6,13 +6,13 @@
         <title>Spring BlazeDS Integration Reference Guide</title>
         <titleabbrev>Spring BlazeDS Integration</titleabbrev>
         <productname>Spring BlazeDS Integration</productname>
-        <releaseinfo>Version 1.5.2.RELEASE</releaseinfo>
-        <pubdate>November 2011</pubdate>
+        <releaseinfo>Version 1.6.0.RC1</releaseinfo>
+        <pubdate>October 2014</pubdate>
         <authorgroup>
             <author>
                 <firstname>Jeremy</firstname>
                 <surname>Grelle</surname>
-                <affiliation>SpringSource</affiliation>
+                <affiliation>Pivotal</affiliation>
             </author>
         </authorgroup>
         <legalnotice>

@@ -1,6 +1,6 @@
 SPRING BLAZEDS INTEGRATION CHANGELOG
-=========================
-http://www.springsource.org/spring-flex
+====================================
+https://github.com/spring-projects/spring-flex
 
 Changes in version Spring BlazeDS Integration 1.5.2.RELEASE (11.07.2011)
 _________________________________________
