@@ -19,12 +19,12 @@
         </para>
     </sect1>
     <sect1 id="system-requirements">
-        <title>Minimum major dependency versions Spring BlazeDS Integration 1.5 requires to run</title>
+        <title>Minimum major dependency versions Spring BlazeDS Integration 1.6 requires to run</title>
         <para>
-            Java 5
+            Java 6
         </para>
         <para>
-            Spring 3.0
+            Spring 4.0
         </para>
         <para>
             Adobe BlazeDS 4.0
@@ -40,13 +40,6 @@
         </para>
         <para>
             Hibernate 3.5
-        </para>
-    </sect1>
-    <sect1 id="support">
-        <title>Where to get support</title>
-        <para>
-            Professional from-the-source support on Spring BlazeDS Integration is available from
-            <ulink url="http://www.springsource.com">SpringSource</ulink>, the company behind Spring.
         </para>
     </sect1>
 </chapter>

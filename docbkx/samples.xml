@@ -42,47 +42,25 @@ mvn tomcat:run
         <sect2 id="blazeds-4-maven">
             <title>Using BlazeDS 4 with Maven</title>
             <para>
-                Spring BlazeDS Integration 1.5 requires BlazeDS 4, but as of this writing the BlazeDS 4 artifacts have not yet been published to Maven central.  
+                Spring BlazeDS Integration 1.6 requires BlazeDS 4, but as of this writing the BlazeDS 4 artifacts have not yet been published to Maven central.
                 The artifacts have been published to the Spring External maven repository (as required for the Spring BlazeDS Integration automated builds).  Declaring a 
-                dependency on the spring-flex-core-1.5.0.RELEASE jar *should* cause the BlazeDS 4 artifacts to be pulled down transitively from the Spring External repository, 
+                dependency on the spring-flex-core jar *should* cause the BlazeDS 4 artifacts to be pulled down transitively from the Spring External repository,
                 but if you encounter any problems, add the following repository entry (either to settings.xml or to your project's pom.xml):
             </para>
             <programlisting language="xml"><![CDATA[
 <repository>
     <id>spring-external</id>
-    <name>Spring External Repository</name>
-    <url>http://maven.springframework.org/external</url>
-    <releases>
-        <enabled>true</enabled>
-    </releases>
-    <snapshots>
-        <enabled>false</enabled>
-    </snapshots>
+    <name>Spring repository for third party libraries</name>
+    <url>http://repo.spring.io/ext-release-local</url>
 </repository>
 ]]>
             </programlisting>
-        </sect2>
-        <sect2 id="pre-built-samples">
-            <title>Download the Pre-packaged Test Drive</title>
-            <para>
-                As a convenience for anyone who is adverse to using Maven and just wants to get the Test Drive up and running quickly in Eclipse, pre-packaged builds 
-                of the Test Drive can be downloaded directly via the following links:
-            </para>
-            <itemizedlist>
-                <listitem>
-                    <para><ulink url="http://static.springsource.org/spring-flex/docs/1.5.x/samples/spring-flex-testdrive-spring3.zip">Spring BlazeDS Integration Test Drive with Spring 3.0</ulink></para>
-                </listitem>
-            </itemizedlist>
-            <para>
-               Unzip the download and then follow the directions below for importing into Eclipse, substituting the unzipped directory in place of the 
-               {project distribution root}/spring-flex-samples/spring-flex-testdrive path.
-            </para>
         </sect2>
         <sect2 id="samples-eclipse">
             <title>Importing and Running the Test Drive in Eclipse</title>
             <para>
                 The individual Test Drive projects are pre-configured to be imported in Eclipse and run with WTP.  (There are a number of individual projects, so you may want to consider creating a fresh
-                workspace or at least create a new working set to manage the projects.)  We recommend using the free <ulink url="http://www.springsource.com/products/sts">SpringSource Tool Suite</ulink> to work with the samples so that you can take full 
+                workspace or at least create a new working set to manage the projects.)  We recommend using the free <ulink url="http://spring.io/tools">SpringSource Tool Suite</ulink> to work with the samples so that you can take full
                 advantage of its extensive Spring support, but any version of Eclipse 3.5+ with WTP should work.  
             </para>
             <para>  

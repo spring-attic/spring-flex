@@ -5,7 +5,7 @@
         <title>Introduction</title>
         <para>
             Spring MVC 3 introduced support for building RESTful services using the <ulink
-            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-controller">@Controller</ulink> programming
+            url="http://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-controller">@Controller</ulink> programming
             model. This allows for serving multiple representations of the same content based on what the client has requested. For example, a single RESTful
             endpoint could be configured to serve HTML, XML, or JSON all from a single request handling Java method on the @Controller class. This approach
             allows a single service implementation to support a variety of different client types, automatically providing the representation that a particular
@@ -22,9 +22,9 @@
         <title>Using AmfView</title>
         <para>
             <code>AmfView</code> is a Spring MVC <ulink
-            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-viewresolver">View</ulink> implementation that is
+            url="http://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-viewresolver">View</ulink> implementation that is
             intended to be used in conjunction with Spring MVC's <ulink
-            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-multiple-representations">ContentNegotiatingViewResolver</ulink>.
+            url="http://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-multiple-representations">ContentNegotiatingViewResolver</ulink>.
             In particular, it is expected that it will be configured as a "default" singleton view implementation that can render any MVC model as AMF, rather
             than needing to have a unique instance per logical view name.
         </para>
