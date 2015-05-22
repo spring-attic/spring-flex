@@ -16,10 +16,7 @@
 
 package org.springframework.flex.security3;
 
-import org.junit.After;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -28,12 +25,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
-import org.springframework.security.web.util.RequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import flex.messaging.FlexContext;
 import flex.messaging.endpoints.AMFEndpoint;

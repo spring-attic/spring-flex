@@ -16,11 +16,8 @@
 
 package org.springframework.flex.security3;
 
-import org.junit.After;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.Test;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,6 +27,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.ProxyFactory;
@@ -44,9 +44,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.RequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import flex.messaging.FlexContext;
 import flex.messaging.endpoints.AbstractEndpoint;
@@ -124,7 +124,7 @@ public class EndpointInterceptorTests {
         when(this.endpoint.serviceMessage(this.inMessage)).thenReturn(this.outMessage);
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
