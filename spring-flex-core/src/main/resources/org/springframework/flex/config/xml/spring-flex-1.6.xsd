@@ -806,6 +806,20 @@ Enables per-client authentication in BlazeDS when set to true.  Default is false
 				</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
+		<xsd:attribute name="session-authentication-strategy" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+A bean reference to the Spring Security SessionAuthenticationStrategy. Only required when there are multiple beans of type SessionAuthenticationStrategy. 								
+]]>
+				</xsd:documentation>
+				<xsd:appinfo>
+					<tool:annotation kind="ref">
+						<tool:expected-type type="org.springframework.security.web.authentication.session.SessionAuthenticationStrategy"/>
+					</tool:annotation>
+				</xsd:appinfo>
+			</xsd:annotation>
+		</xsd:attribute>
 	</xsd:complexType>
 	
 	<xsd:complexType name="securedChannelType">

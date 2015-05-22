@@ -114,6 +114,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private static final String ACCESS_MANAGER_ATTR = "access-decision-manager";
     
     private static final String LOGIN_COMMAND_ATTR = "login-command";
+    
+    private static final String SESSION_AUTHENTICATION_STRATEGY_ATTR = "session-authentication-strategy";
 
     private static final String INVALIDATE_HTTP_SESSION_ATTR = "invalidate-http-session";
     
@@ -145,6 +147,8 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
     private static final String MESSAGE_INTERCEPTORS_PROPERTY = "messageInterceptors";
 
     private static final String CUSTOM_EDITORS_PROPERTY = "customEditors";
+    
+    private static final String SESSION_AUTHENTICATION_STRATEGY_PROPERTY = "sessionAuthenticationStrategy";
 
     // --------------------------- XML Child Elements ------------------------//
     private static final String MAPPING_PATTERN_ELEMENT = "mapping";
@@ -544,6 +548,12 @@ public class MessageBrokerBeanDefinitionParser extends AbstractSingleBeanDefinit
             BeanDefinitionBuilder securityConfigPostProcessorBuilder = BeanDefinitionBuilder.genericBeanDefinition(securityHelper.getSecurityConfigPostProcessorClassName());
             securityConfigPostProcessorBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             securityConfigPostProcessorBuilder.setDependencyCheck(AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
+            
+            String sessionAuthenticationStrategyId = securedElement.getAttribute(SESSION_AUTHENTICATION_STRATEGY_ATTR);
+            if (StringUtils.hasText(sessionAuthenticationStrategyId)) {
+            	securityConfigPostProcessorBuilder.addPropertyReference(SESSION_AUTHENTICATION_STRATEGY_PROPERTY, sessionAuthenticationStrategyId);
+            }
+            
             ParsingUtils.registerInfrastructureComponent(securedElement, parserContext, securityConfigPostProcessorBuilder, BeanIds.SECURITY_CONFIG_POST_PROCESSOR);
         }
     }
