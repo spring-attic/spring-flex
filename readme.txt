@@ -1,6 +1,8 @@
 SPRING BLAZEDS INTEGRATION 1.6
 ------------------------------
 
+This project is not active anymore.
+
 1. INTRODUCTION
 ---------------
 Spring BlazeDS Integration is a top-level Spring project, and a component of the complete Spring Web stack.  The project's purpose is to make it easier to build Spring-powered 
@@ -26,7 +28,7 @@ Spring BlazeDS Integration is released under the terms of the Apache Software Li
 
 3. ISSUE TRACKING
 -----------------
-Please report issues via the Spring Flex JIRA at https://jira.spring.io/browse/FLEX
+You will find issues one the Spring Flex JIRA at https://jira.spring.io/browse/FLEX
 
 4. DISTRIBUTION JAR FILES
 -------------------------
