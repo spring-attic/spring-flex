@@ -22,6 +22,8 @@ import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfMessageDeserializer;
 import flex.messaging.io.amf.MessageBody;
 import static org.junit.Assert.*;
+
+import flex.messaging.validators.ClassDeserializationValidator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,10 +35,15 @@ public class AmfHttpMessageConverterTests {
 
     private MockHttpServletRequest request;
 
+    private ClassDeserializationValidator deserializationValidator;
+
     @Before
     public void setUp() throws Exception {
         this.response = new MockHttpServletResponse();
         this.request = new MockHttpServletRequest();
+        this.deserializationValidator = new ClassDeserializationValidator();
+        this.deserializationValidator.addAllowClassPattern("org.springframework.flex.core.io.domain.Person");
+		this.deserializationValidator.addAllowClassPattern("org.springframework.flex.core.io.domain.Address");
     }
 
     @Test
@@ -107,6 +114,7 @@ public class AmfHttpMessageConverterTests {
         this.request.setContent(serializeToByteArray(Person.stubPerson()));
         HttpInputMessage inputMessage = new ServletServerHttpRequest(this.request);
         AmfHttpMessageConverter converter = new AmfHttpMessageConverter();
+		converter.setDeserializationValidator(this.deserializationValidator);
 
         Object result = converter.read(Object.class, inputMessage);
         assertTrue(result instanceof Person);
@@ -128,7 +136,11 @@ public class AmfHttpMessageConverterTests {
 
     private byte[] serializeToByteArray(Object data) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Amf3Output serializer = new Amf3Output(new SerializationContext());
+		SerializationContext serializationContext = new SerializationContext();
+		serializationContext.setDeserializationValidator(this.deserializationValidator);
+		SerializationContext.setSerializationContext(serializationContext); // Seems to be required
+		Amf3Output serializer = new Amf3Output(serializationContext);
+
         serializer.setOutputStream(out);
         serializer.writeObject(data);
         try {
@@ -139,7 +151,10 @@ public class AmfHttpMessageConverterTests {
     }
 
     private Object deserializeResponse() throws ClassNotFoundException, IOException {
-        Amf3Input deserializer = new Amf3Input(new SerializationContext());
+		SerializationContext serializationContext = new SerializationContext();
+		serializationContext.setDeserializationValidator(this.deserializationValidator);
+        Amf3Input deserializer = new Amf3Input(serializationContext);
+		SerializationContext.setSerializationContext(serializationContext); // Seems to be required
         this.request.setContent(this.response.getContentAsByteArray());
         deserializer.setInputStream(this.request.getInputStream());
         return deserializer.readObject();
@@ -148,7 +163,10 @@ public class AmfHttpMessageConverterTests {
     private ActionMessage deserializeResponseToActionMessage() throws ClassNotFoundException, IOException {
         AmfMessageDeserializer deserializer = new AmfMessageDeserializer();
         this.request.setContent(this.response.getContentAsByteArray());
-        deserializer.initialize(new SerializationContext(), this.request.getInputStream(), null);
+		SerializationContext serializationContext = new SerializationContext();
+		serializationContext.setDeserializationValidator(this.deserializationValidator);
+		SerializationContext.setSerializationContext(serializationContext); // Seems to be required
+        deserializer.initialize(serializationContext, this.request.getInputStream(), null);
         ActionMessage result = new ActionMessage();
         deserializer.readMessage(result, new ActionContext());
         return result;

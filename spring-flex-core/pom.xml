@@ -96,20 +96,20 @@
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.adobe.blazeds</groupId>
-			<artifactId>blazeds-core</artifactId>
+			<groupId>org.apache.flex.blazeds</groupId>
+			<artifactId>flex-messaging-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.adobe.blazeds</groupId>
-			<artifactId>blazeds-common</artifactId>
+			<groupId>org.apache.flex.blazeds</groupId>
+			<artifactId>flex-messaging-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.adobe.blazeds</groupId>
-			<artifactId>blazeds-proxy</artifactId>
+			<groupId>org.apache.flex.blazeds</groupId>
+			<artifactId>flex-messaging-proxy</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.adobe.blazeds</groupId>
-			<artifactId>blazeds-remoting</artifactId>
+			<groupId>org.apache.flex.blazeds</groupId>
+			<artifactId>flex-messaging-remoting</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.jms</groupId>

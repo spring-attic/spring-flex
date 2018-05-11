@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import flex.messaging.validators.ClassDeserializationValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.convert.support.GenericConversionService;
@@ -85,7 +86,13 @@ public class DelayedWriteSpringPropertyProxyFieldAccessTests {
 
     private Object deserialize() throws ClassNotFoundException, IOException {
         this.request.setContent(this.response.getContentAsByteArray());
-        this.deserializer.initialize(new SerializationContext(), this.request.getInputStream(), deserializerTrace);
+        SerializationContext context = new SerializationContext();
+        ClassDeserializationValidator validator = new ClassDeserializationValidator();
+        validator.addAllowClassPattern("org.springframework.flex.core.io.domain.Person");
+        validator.addAllowClassPattern("org.springframework.flex.core.io.domain.Address");
+        context.setDeserializationValidator(validator);
+        SerializationContext.setSerializationContext(context);
+        this.deserializer.initialize(context, this.request.getInputStream(), deserializerTrace);
         MessageBody body = new MessageBody();
         this.deserializer.readBody(body, 0);
         return body.getData();

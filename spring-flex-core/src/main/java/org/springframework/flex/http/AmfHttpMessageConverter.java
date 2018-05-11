@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import flex.messaging.validators.DeserializationValidator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpInputMessage;
@@ -58,12 +59,19 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
     private static final String AMF_ERROR = "Could not read input message body as AMF";
 	private static final String ACTION_MSG_ERROR = "Could not read input message body as "+ActionMessage.class.getName();
 	private static final Log log = LogFactory.getLog(AmfHttpMessageConverter.class);
+
+	private DeserializationValidator deserializationValidator;
     
     public AmfHttpMessageConverter() {
         super(MediaType.parseMediaType(MessageIOConstants.AMF_CONTENT_TYPE));
     }
 
-    /**
+	public void setDeserializationValidator(DeserializationValidator deserializationValidator) {
+		this.deserializationValidator = deserializationValidator;
+
+	}
+
+	/**
      * {@inheritDoc}
      */
 	@Override
@@ -133,7 +141,12 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
     }
     
     private Object readObject(HttpInputMessage inputMessage, AmfTrace trace) throws IOException {
-    	Amf3Input deserializer = new Amf3Input(new SerializationContext());
+    	SerializationContext serializationContext = new SerializationContext();
+    	if (this.deserializationValidator != null) {
+    		serializationContext.setDeserializationValidator(this.deserializationValidator);
+		}
+		SerializationContext.setSerializationContext(serializationContext); // Seems to be required
+    	Amf3Input deserializer = new Amf3Input(serializationContext);
     	deserializer.setInputStream(inputMessage.getBody());
     	deserializer.setDebugTrace(trace);
     	try {
@@ -146,8 +159,13 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
 	}
 
 	private ActionMessage readActionMessage(HttpInputMessage inputMessage, AmfTrace trace) throws IOException {
+		SerializationContext serializationContext = new SerializationContext();
+		if (this.deserializationValidator != null) {
+			serializationContext.setDeserializationValidator(this.deserializationValidator);
+		}
+		SerializationContext.setSerializationContext(serializationContext); // Seems to be required
     	AmfMessageDeserializer deserializer = new AmfMessageDeserializer();
-    	deserializer.initialize(new SerializationContext(), inputMessage.getBody(), trace);
+    	deserializer.initialize(serializationContext, inputMessage.getBody(), trace);
     	
     	try {
         	ActionContext context = new ActionContext();
@@ -164,10 +182,15 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
 	
 	private void writeActionMessage(ActionMessage message,
 			HttpOutputMessage outputMessage, AmfTrace trace) throws IOException {
-		AmfMessageSerializer serializer = new AmfMessageSerializer();
+		SerializationContext serializationContext = new SerializationContext();
+		if (this.deserializationValidator != null) {
+			serializationContext.setDeserializationValidator(this.deserializationValidator);
+		}
+		SerializationContext.setSerializationContext(serializationContext); // Seems to be required
+    	AmfMessageSerializer serializer = new AmfMessageSerializer();
 		ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
 		serializer.setVersion(message.getVersion());
-		serializer.initialize(new SerializationContext(), outBuffer, trace);
+		serializer.initialize(serializationContext, outBuffer, trace);
         
 		try {
         	ActionContext context = new ActionContext();
@@ -185,8 +208,13 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
     
     private void writeObject(Object data, HttpOutputMessage outputMessage,
 			AmfTrace trace) throws IOException {
+		SerializationContext serializationContext = new SerializationContext();
+		if (this.deserializationValidator != null) {
+			serializationContext.setDeserializationValidator(this.deserializationValidator);
+		}
+		SerializationContext.setSerializationContext(serializationContext); // Seems to be required
     	ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
-    	Amf3Output serializer = new Amf3Output(new SerializationContext());
+    	Amf3Output serializer = new Amf3Output(serializationContext);
     	serializer.setOutputStream(outBuffer);
     	serializer.setDebugTrace(trace);
         try {

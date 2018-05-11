@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import flex.messaging.validators.ClassDeserializationValidator;
+import flex.messaging.validators.DeserializationValidator;
 import junit.framework.TestCase;
 
 import org.springframework.flex.core.io.domain.Person;
@@ -71,7 +73,13 @@ public class AmfViewTests {
     }
 
     private Object deserialize() throws ClassNotFoundException, IOException {
-        Amf3Input deserializer = new Amf3Input(new SerializationContext());
+        SerializationContext context = new SerializationContext();
+        ClassDeserializationValidator validator = new ClassDeserializationValidator();
+        validator.addAllowClassPattern("org.springframework.flex.core.io.domain.Person");
+        validator.addAllowClassPattern("org.springframework.flex.core.io.domain.Address");
+        context.setDeserializationValidator(validator);
+        SerializationContext.setSerializationContext(context);
+        Amf3Input deserializer = new Amf3Input(context);
         this.request.setContent(this.response.getContentAsByteArray());
         deserializer.setInputStream(this.request.getInputStream());
         return deserializer.readObject();

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import flex.messaging.validators.ClassDeserializationValidator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.LazyInitializationException;
@@ -389,7 +390,13 @@ public class SpringPropertyProxyHibernateNativeTests {
 
     private Object deserialize() throws ClassNotFoundException, IOException {
         this.request.setContent(this.response.getContentAsByteArray());
-        this.deserializer.initialize(new SerializationContext(), this.request.getInputStream(), deserializerTrace);
+        SerializationContext context = new SerializationContext();
+        ClassDeserializationValidator validator = new ClassDeserializationValidator();
+        validator.addAllowClassPattern("org.springframework.flex.hibernate4.domain.Person");
+        validator.addAllowClassPattern("org.springframework.flex.hibernate4.domain.Address");
+        context.setDeserializationValidator(validator);
+        SerializationContext.setSerializationContext(context);
+        this.deserializer.initialize(context, this.request.getInputStream(), deserializerTrace);
         MessageBody body = new MessageBody();
         this.deserializer.readBody(body, 0);
         return body.getData();
