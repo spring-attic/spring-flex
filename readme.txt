@@ -1,7 +1,14 @@
+THIS PROJECT IS NOT ACTIVE ANYMORE !
+
+If you still have projects running in production, be aware that BlazeDS 4.7.2 and earlier
+are vulnerable to CVE-2017-5641. Even if this project is not maintained anymore, you
+should be able to use BlazeDS 4.7.3+ by using this updated AmfHttpMessageConverter (copy
+it in your project with a different package) that allows to specify a DeserializationValidator:
+https://github.com/spring-projects/spring-flex/blob/apache-flex/spring-flex-core/src/main/java/org/springframework/flex/http/AmfHttpMessageConverter.java
+
+
 SPRING BLAZEDS INTEGRATION 1.6
 ------------------------------
-
-This project is not active anymore.
 
 1. INTRODUCTION
 ---------------
