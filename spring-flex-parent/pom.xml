@@ -18,7 +18,7 @@
     <licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -34,17 +34,17 @@
     	<developer>
     		<name>Jeremy Grelle</name>
     		<organization>Pivotal Software, Inc.</organization>
-    		<organizationUrl>http://www.spring.io</organizationUrl>
+    		<organizationUrl>https://www.spring.io</organizationUrl>
     	</developer>
     	<developer>
     		<name>Mark Fisher</name>
     		<organization>Pivotal Software, Inc.</organization>
-    		<organizationUrl>http://www.spring.io</organizationUrl>
+    		<organizationUrl>https://www.spring.io</organizationUrl>
     	</developer>
     	<developer>
     		<name>Sebastien Deleuze</name>
     		<organization>Pivotal Software, Inc.</organization>
-    		<organizationUrl>http://www.spring.io</organizationUrl>
+    		<organizationUrl>https://www.spring.io</organizationUrl>
     	</developer>
     </developers>
 
@@ -52,7 +52,7 @@
         <contributor>
             <name>Jose Barragan</name>
             <organization>Codeoscopic</organization>
-            <organizationUrl>http://www.codeoscopic.com</organizationUrl>
+            <organizationUrl>https://www.codeoscopic.com</organizationUrl>
         </contributor>
     </contributors>
 
@@ -399,7 +399,7 @@
 		<repository>
 			<id>repo.spring.io-ext-release-local</id>
 			<name>Spring repository for third party libraries</name>
-			<url>http://repo.spring.io/ext-release-local</url>
+			<url>https://repo.spring.io/ext-release-local</url>
 		</repository>
 	</repositories>
 

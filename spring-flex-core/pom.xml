@@ -36,8 +36,8 @@
                                     <!-- copies doc-files subdirectory which contains image resources -->
                                     <docfilessubdirs>true</docfilessubdirs>
                                     <links>
-                                        <link>http://static.springframework.org/spring/docs/4.0.x/javadoc-api</link>
-                                        <link>http://static.springsource.org/spring-security/site/docs/4.0.x/apidocs</link>
+                                        <link>https://docs.spring.io/spring/docs/4.0.x/javadoc-api</link>
+                                        <link>https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs</link>
                                         <link>http://java.sun.com/javase/6/docs/api</link>
                                         <link>http://livedocs.adobe.com/blazeds/4/javadoc</link>
                                     </links>
