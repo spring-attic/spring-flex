@@ -39,7 +39,7 @@
 
 		<repository>
 			<id>flex-mojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<url>https://repository.sonatype.org/content/groups/flexgroup</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -50,7 +50,7 @@
 
 		<repository>
 			<id>ObjectWEB</id>
-			<url>http://maven.ow2.org/maven2/</url>
+			<url>https://repository.ow2.org/nexus/content/repositories/ow2-legacy/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -64,7 +64,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>flex-mojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<url>https://repository.sonatype.org/content/groups/flexgroup</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
