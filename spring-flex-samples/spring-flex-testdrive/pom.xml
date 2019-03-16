@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.flex</groupId>
@@ -39,7 +39,7 @@
 
 		<repository>
 			<id>flex-mojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<url>https://repository.sonatype.org/content/groups/flexgroup</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -50,7 +50,7 @@
 
 		<repository>
 			<id>ObjectWEB</id>
-			<url>http://maven.ow2.org/maven2/</url>
+			<url>https://repository.ow2.org/nexus/content/repositories/ow2-legacy/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -64,7 +64,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>flex-mojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<url>https://repository.sonatype.org/content/groups/flexgroup</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
