@@ -45,8 +45,8 @@ You will find issues one the Spring Flex JIRA at https://jira.spring.io/browse/F
 4. DISTRIBUTION JAR FILES
 -------------------------
 
-Spring Flex snapshot builds are available from http://repo.spring.io/libs-snapshot/
-SPring Flex release candidates are available from http://repo.spring.io/libs-milestone/
+Spring Flex snapshot builds are available from https://repo.spring.io/libs-snapshot/
+SPring Flex release candidates are available from https://repo.spring.io/libs-milestone/
 Spring Flex release builds are available from Maven Central.
 
 They are using the org.springframework.flex groupId.

@@ -1,5 +1,5 @@
-/*!	SWFObject v2.2 <http://code.google.com/p/swfobject/> 
-	is released under the MIT License <http://www.opensource.org/licenses/mit-license.php> 
+/*!	SWFObject v2.2 <https://code.google.com/p/swfobject/> 
+	is released under the MIT License <https://www.opensource.org/licenses/mit-license.php> 
 */
 
 var swfobject = function() {
@@ -42,7 +42,7 @@ var swfobject = function() {
 			windows = p ? /win/.test(p) : /win/.test(u),
 			mac = p ? /mac/.test(p) : /mac/.test(u),
 			webkit = /webkit/.test(u) ? parseFloat(u.replace(/^.*webkit\/(\d+(\.\d+)?).*$/, "$1")) : false, // returns either the webkit version or false if not webkit
-			ie = !+"\v1", // feature detection based on Andrea Giammarchi's solution: http://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
+			ie = !+"\v1", // feature detection based on Andrea Giammarchi's solution: https://webreflection.blogspot.com/2009/01/32-bytes-to-know-if-your-browser-is-ie.html
 			playerVersion = [0,0,0],
 			d = null;
 		if (typeof nav.plugins != UNDEF && typeof nav.plugins[SHOCKWAVE_FLASH] == OBJECT) {
@@ -146,7 +146,7 @@ var swfobject = function() {
 	}
 	
 	/* Cross-browser onload
-		- Based on James Edwards' solution: http://brothercake.com/site/resources/scripts/onload/
+		- Based on James Edwards' solution: https://brothercake.com/site/resources/scripts/onload/
 		- Will fire an event as soon as a web page including all of its assets are loaded 
 	 */
 	function addLoadEvent(fn) {
@@ -307,7 +307,7 @@ var swfobject = function() {
 	}
 	
 	/* Show the Adobe Express Install dialog
-		- Reference: http://www.adobe.com/cfusion/knowledgebase/index.cfm?id=6a253b75
+		- Reference: https://www.adobe.com/cfusion/knowledgebase/index.cfm?id=6a253b75
 	*/
 	function showExpressInstall(att, par, replaceElemIdStr, callbackFn) {
 		isExpressInstallActive = true;
@@ -537,7 +537,7 @@ var swfobject = function() {
 	}
 	
 	/* Cross-browser dynamic CSS creation
-		- Based on Bobby van der Sluis' solution: http://www.bobbyvandersluis.com/articles/dynamicCSS.php
+		- Based on Bobby van der Sluis' solution: https://www.bobbyvandersluis.com/articles/dynamicCSS.php
 	*/	
 	function createCSS(sel, decl, media, newStyle) {
 		if (ua.ie && ua.mac) { return; }
@@ -621,7 +621,7 @@ var swfobject = function() {
 	
 	return {
 		/* Public API
-			- Reference: http://code.google.com/p/swfobject/wiki/documentation
+			- Reference: https://code.google.com/p/swfobject/wiki/documentation
 		*/ 
 		registerObject: function(objectIdStr, swfVersionStr, xiSwfUrlStr, callbackFn) {
 			if (ua.w3 && objectIdStr && swfVersionStr) {
