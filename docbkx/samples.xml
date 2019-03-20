@@ -51,7 +51,7 @@ mvn tomcat:run
 <repository>
     <id>spring-external</id>
     <name>Spring repository for third party libraries</name>
-    <url>http://repo.spring.io/ext-release-local</url>
+    <url>https://repo.spring.io/ext-release-local</url>
 </repository>
 ]]>
             </programlisting>
@@ -60,7 +60,7 @@ mvn tomcat:run
             <title>Importing and Running the Test Drive in Eclipse</title>
             <para>
                 The individual Test Drive projects are pre-configured to be imported in Eclipse and run with WTP.  (There are a number of individual projects, so you may want to consider creating a fresh
-                workspace or at least create a new working set to manage the projects.)  We recommend using the free <ulink url="http://spring.io/tools">SpringSource Tool Suite</ulink> to work with the samples so that you can take full
+                workspace or at least create a new working set to manage the projects.)  We recommend using the free <ulink url="https://spring.io/tools">SpringSource Tool Suite</ulink> to work with the samples so that you can take full
                 advantage of its extensive Spring support, but any version of Eclipse 3.5+ with WTP should work.  
             </para>
             <para>  

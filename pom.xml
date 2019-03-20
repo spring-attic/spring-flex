@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.flex</groupId>
     <artifactId>spring-flex</artifactId>
@@ -35,17 +35,17 @@
     	<developer>
             <name>Jeremy Grelle</name>
             <organization>Pivotal Software, Inc.</organization>
-            <organizationUrl>http://www.spring.io</organizationUrl>
+            <organizationUrl>https://www.spring.io</organizationUrl>
         </developer>
         <developer>
             <name>Mark Fisher</name>
             <organization>Pivotal Software, Inc.</organization>
-            <organizationUrl>http://www.spring.io</organizationUrl>
+            <organizationUrl>https://www.spring.io</organizationUrl>
         </developer>
         <developer>
             <name>Sebastien Deleuze</name>
             <organization>Pivotal Software, Inc.</organization>
-            <organizationUrl>http://www.spring.io</organizationUrl>
+            <organizationUrl>https://www.spring.io</organizationUrl>
         </developer>
     </developers>
 
@@ -53,7 +53,7 @@
         <contributor>
             <name>Jose Barragan</name>
             <organization>Codeoscopic</organization>
-            <organizationUrl>http://www.codeoscopic.com</organizationUrl>
+            <organizationUrl>https://www.codeoscopic.com</organizationUrl>
         </contributor>
     </contributors>
 
@@ -162,9 +162,9 @@
                                     </groups>
                                     <excludePackageNames>org.springframework.flex.roo.addon:org.springframework.flex.samples</excludePackageNames>
                                     <links>
-                                        <link>http://docs.spring.io/spring/docs/current/javadoc-api</link>
-                                        <link>http://docs.spring.io/spring-security/site/docs/3.2.x/apidocs</link>
-                                        <link>http://java.sun.com/javase/6/docs/api</link>
+                                        <link>https://docs.spring.io/spring/docs/current/javadoc-api</link>
+                                        <link>https://docs.spring.io/spring-security/site/docs/3.2.x/apidocs</link>
+                                        <link>https://java.sun.com/javase/6/docs/api</link>
                                         <link>http://livedocs.adobe.com/blazeds/4/javadoc</link>
                                     </links>
                                 </configuration>
