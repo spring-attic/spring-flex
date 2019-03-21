@@ -6,7 +6,7 @@
 		version="1.3">
 
 	<info organisation="org.springframework.flex.samples" module="${ant.project.name}">
-		<license name="Apache 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
+		<license name="Apache 2.0" url="https://www.apache.org/licenses/LICENSE-2.0"/>
 		<ivyauthor name="Jeremy Grelle"/>
 	</info>
 
