@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.flex</groupId>
@@ -36,9 +36,9 @@
                                     <!-- copies doc-files subdirectory which contains image resources -->
                                     <docfilessubdirs>true</docfilessubdirs>
                                     <links>
-                                        <link>http://static.springframework.org/spring/docs/4.0.x/javadoc-api</link>
-                                        <link>http://static.springsource.org/spring-security/site/docs/4.0.x/apidocs</link>
-                                        <link>http://java.sun.com/javase/6/docs/api</link>
+                                        <link>https://docs.spring.io/spring/docs/4.0.x/javadoc-api</link>
+                                        <link>https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs</link>
+                                        <link>https://java.sun.com/javase/6/docs/api</link>
                                         <link>http://livedocs.adobe.com/blazeds/4/javadoc</link>
                                     </links>
                                 </configuration>

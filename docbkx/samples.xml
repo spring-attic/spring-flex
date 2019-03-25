@@ -36,7 +36,7 @@ mvn tomcat:run
 ]]>
             </programlisting>
             <para>
-                Once the application has started successfully, you can access the samples walk-through at <ulink url="http://localhost:8080/testdrive/index.html">http://localhost:8080/testdrive/index.html</ulink>
+                Once the application has started successfully, you can access the samples walk-through at <ulink url="https://localhost:8080/testdrive/index.html">https://localhost:8080/testdrive/index.html</ulink>
             </para>
         </sect2>
         <sect2 id="blazeds-4-maven">
@@ -51,7 +51,7 @@ mvn tomcat:run
 <repository>
     <id>spring-external</id>
     <name>Spring repository for third party libraries</name>
-    <url>http://repo.spring.io/ext-release-local</url>
+    <url>https://repo.spring.io/ext-release-local</url>
 </repository>
 ]]>
             </programlisting>
@@ -60,7 +60,7 @@ mvn tomcat:run
             <title>Importing and Running the Test Drive in Eclipse</title>
             <para>
                 The individual Test Drive projects are pre-configured to be imported in Eclipse and run with WTP.  (There are a number of individual projects, so you may want to consider creating a fresh
-                workspace or at least create a new working set to manage the projects.)  We recommend using the free <ulink url="http://spring.io/tools">SpringSource Tool Suite</ulink> to work with the samples so that you can take full
+                workspace or at least create a new working set to manage the projects.)  We recommend using the free <ulink url="https://spring.io/tools">SpringSource Tool Suite</ulink> to work with the samples so that you can take full
                 advantage of its extensive Spring support, but any version of Eclipse 3.5+ with WTP should work.  
             </para>
             <para>  
@@ -70,7 +70,7 @@ mvn tomcat:run
             <para>
                 There is an individual project for each Flex sample, and one WTP project for the 'testdrive' WAR.  Once the projects have been imported, you can start the web application by selecting the 
                 'testdrive' project, right-clicking and selecting Run As->Run on Server.  The samples have been most thoroughly tested in Tomcat 6.0, but should run in any Servlet 2.4 container that WTP supports.  Once 
-                the application has started successfully, you can access the samples walk-through at <ulink url="http://localhost:8080/testdrive/index.html">http://localhost:8080/testdrive/index.html</ulink> (If running on a server other than 
+                the application has started successfully, you can access the samples walk-through at <ulink url="https://localhost:8080/testdrive/index.html">https://localhost:8080/testdrive/index.html</ulink> (If running on a server other than 
                 Tomcat, change the port number as needed.)
             </para>
         </sect2>

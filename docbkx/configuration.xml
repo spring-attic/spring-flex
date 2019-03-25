@@ -37,14 +37,14 @@ requests -->
         </para>
         <programlisting language="xml"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:flex="http://www.springframework.org/schema/flex"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="https://www.springframework.org/schema/beans"
+       xmlns:flex="https://www.springframework.org/schema/flex"
+       xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-           http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans.xsd
-           http://www.springframework.org/schema/flex 
-           http://www.springframework.org/schema/flex/spring-flex.xsd">
+           https://www.springframework.org/schema/beans
+           https://www.springframework.org/schema/beans/spring-beans.xsd
+           https://www.springframework.org/schema/flex 
+           https://www.springframework.org/schema/flex/spring-flex.xsd">
 ...
 </beans>
 ]]>         
@@ -233,7 +233,7 @@ requests -->
         </programlisting>
         <para>
             In addition to setting up the consolidated mapping strategy, you will also have to manually enable the correct <code>HandlerMapping</code> and <code>HandlerAdapter</code> for your Spring MVC controllers 
-            <ulink url="http://static.springframework.org/spring/docs/2.5.x/reference/mvc.html#mvc-ann-setup">as described in the Spring MVC documentation</ulink>, due to the fact that alternate <code>HandlerMapping</code> and 
+            <ulink url="https://docs.spring.io/spring/docs/2.5.x/reference/mvc.html#mvc-ann-setup">as described in the Spring MVC documentation</ulink>, due to the fact that alternate <code>HandlerMapping</code> and 
             <code>HandlerAdapter</code> beans are configured automatically when using the <code>message-broker</code> tag.
         </para>
     </sect1>

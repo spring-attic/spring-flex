@@ -5,7 +5,7 @@
         <title>Introduction</title>
         <para>
             Spring MVC 3 introduced support for building RESTful services using the <ulink
-            url="http://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-controller">@Controller</ulink> programming
+            url="https://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-controller">@Controller</ulink> programming
             model. This allows for serving multiple representations of the same content based on what the client has requested. For example, a single RESTful
             endpoint could be configured to serve HTML, XML, or JSON all from a single request handling Java method on the @Controller class. This approach
             allows a single service implementation to support a variety of different client types, automatically providing the representation that a particular
@@ -22,9 +22,9 @@
         <title>Using AmfView</title>
         <para>
             <code>AmfView</code> is a Spring MVC <ulink
-            url="http://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-viewresolver">View</ulink> implementation that is
+            url="https://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-viewresolver">View</ulink> implementation that is
             intended to be used in conjunction with Spring MVC's <ulink
-            url="http://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-multiple-representations">ContentNegotiatingViewResolver</ulink>.
+            url="https://docs.spring.io/spring/docs/4.1.x/spring-framework-reference/html/mvc.html#mvc-multiple-representations">ContentNegotiatingViewResolver</ulink>.
             In particular, it is expected that it will be configured as a "default" singleton view implementation that can render any MVC model as AMF, rather
             than needing to have a unique instance per logical view name.
         </para>
@@ -71,8 +71,8 @@ public class ContactsController {
         ]]>
         </programlisting>
         <para>
-            an HTTP <code>GET</code> request issued to either <code>http://localhost/myapp/contacts.amf</code> <emphasis>without</emphasis> an appropriate
-            <code>Accept</code> header or to<code>http://localhost/myapp/contacts</code> <emphasis>with</emphasis> an accept header of
+            an HTTP <code>GET</code> request issued to either <code>https://localhost/myapp/contacts.amf</code> <emphasis>without</emphasis> an appropriate
+            <code>Accept</code> header or to<code>https://localhost/myapp/contacts</code> <emphasis>with</emphasis> an accept header of
             <code>application/x-amf</code> will return the list of contacts as an AMF message that may then be deserialized to an <code>ArrayCollection</code> 
             of ActionScript objects on the Flex client.
         </para>
@@ -81,13 +81,13 @@ public class ContactsController {
         <title>Using AmfHttpMessageConverter</title>
         <para>
             <code>AmfHttpMessageConverter</code> is a <ulink
-            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/remoting.html#rest-message-conversion"
+            url="https://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/remoting.html#rest-message-conversion"
             >HttpMessageConverter</ulink> implementation that can convert to and from AMF. In order to be able to convert HTTP <code>POST</code> and
             <code>PUT</code> request message bodies from AMF to Java objects to be passed as a <ulink
-            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-ann-requestbody" >@RequestBody</ulink> arguments
+            url="https://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/mvc.html#mvc-ann-requestbody" >@RequestBody</ulink> arguments
             to <code>@Controller</code> methods, it must be added to the converters used by Spring MVC's <code>AnnotationMethodHandlerAdapter</code>. In order
             to add AMF support while also leaving the framework's default <code>HttpMessageConverters</code> in place, a simple <ulink
-            url="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/beans.html#beans-factory-extension-bpp"
+            url="https://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/beans.html#beans-factory-extension-bpp"
             >BeanPostProcessor</ulink> such as the following example can be used:
         </para>
         <programlisting language="java" >
@@ -145,7 +145,7 @@ public class ContactsController {
     </sect1>
     <para>
         the Flex client can send an HTTP <code>POST</code> request with an ActionScript <code>Contact</code> serialized to AMF in the message body to
-        <code>http://localhost/myapp/contacts</code> in order to persist that contact to the database.
+        <code>https://localhost/myapp/contacts</code> in order to persist that contact to the database.
     </para>
     <sect1 id="amf-rest-client">
         <title>Interacting with RESTful AMF Endpoints from the Flex Client</title>
@@ -162,9 +162,9 @@ public class ContactsController {
         </para>
         <para>
             The second major limitation is the inability to properly send HTTP <code>PUT</code> and <code>DELETE</code> requests. Spring provides the <ulink
-            url="http://static.springsource.org/spring/docs/3.0.x/javadoc-api/index.html?org/springframework/web/filter/HiddenHttpMethodFilter.html"
+            url="https://docs.spring.io/spring/docs/3.0.x/javadoc-api/index.html?org/springframework/web/filter/HiddenHttpMethodFilter.html"
             >HiddenHttpMethodFilter</ulink> to help cope with this. With the filter configured, a <code>DELETE</code> request (for example) could be simulated
-            by sending a <code>POST</code> request to a URL such as <code>http://localhost/myapp/contacts/1.amf?_method=DELETE</code>.
+            by sending a <code>POST</code> request to a URL such as <code>https://localhost/myapp/contacts/1.amf?_method=DELETE</code>.
         </para>
         <para>    
             A complete <code>insync-rest</code> example of interacting with a Spring MVC @Controller is now provided in the <link linkend="samples">Test
