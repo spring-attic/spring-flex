@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -8,19 +8,19 @@
 <body>
 
 <h1>Spring BlazeDS Integration Test Drive</h1>
-<p>In this Test Drive, you  run a series of short sample applications that demonstrate the key features of Spring BlazeDS Integration. This Test Drive is a continual work in progress and will be updated with each release of the project. Please submit your feedback to the Spring BlazeDS Integration team via the <a href="http://forum.springsource.org/forumdisplay.php?f=61">project forum</a>.</p>
+<p>In this Test Drive, you  run a series of short sample applications that demonstrate the key features of Spring BlazeDS Integration. This Test Drive is a continual work in progress and will be updated with each release of the project. Please submit your feedback to the Spring BlazeDS Integration team via the <a href="https://forum.spring.io/forumdisplay.php?f=61">project forum</a>.</p>
 <p>These samples have been developed in collaboration between Adobe and SpringSource, with contributions from:</p> 
 <ul>
-<li><a href="http://coenraets.org">Christophe Coenraets</a></li>
-<li><a href="http://blog.springsource.com/author/jgrelle/">Jeremy Grelle</a></li>
-<li><a href="http://blog.springsource.com/author/markf/">Mark Fisher</a></li>
+<li><a href="http://coenraets.org/blog/">Christophe Coenraets</a></li>
+<li><a href="https://spring.io/team/jgrelle/">Jeremy Grelle</a></li>
+<li><a href="https://spring.io/team/markf/">Mark Fisher</a></li>
 </ul>
 <br />
 <div class="highlight">
 <h2>Spring Architecture</h2>
-<p>This version of the Test Drive uses a layered Spring configuration, with the core domain services and supporting infrastructure loaded in a root application context via the <a href="http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/web/context/ContextLoaderListener.html">ContextLoaderListener</a>, 
-and  both the Flex integration  and the Spring MVC RESTful  @Controllers configured separately via the <a href="http://static.springframework.org/spring/docs/2.5.x/api/org/springframework/web/servlet/DispatcherServlet.html">DispatcherServlet's</a> child application context.  This layered approach with explicit separation of concerns is by no means required, but 
-it does have some benefits over a non-layered approach such as opening up the option of writing out-of-container <a href="http://static.springframework.org/spring/docs/2.5.x/reference/testing.html#testcontext-framework">integration tests</a> for the core domain services without having to load the web 
+<p>This version of the Test Drive uses a layered Spring configuration, with the core domain services and supporting infrastructure loaded in a root application context via the <a href="https://docs.spring.io/spring/docs/2.5.x/api/org/springframework/web/context/ContextLoaderListener.html">ContextLoaderListener</a>, 
+and  both the Flex integration  and the Spring MVC RESTful  @Controllers configured separately via the <a href="https://docs.spring.io/spring/docs/2.5.x/api/org/springframework/web/servlet/DispatcherServlet.html">DispatcherServlet's</a> child application context.  This layered approach with explicit separation of concerns is by no means required, but 
+it does have some benefits over a non-layered approach such as opening up the option of writing out-of-container <a href="https://docs.spring.io/spring/docs/2.5.x/reference/testing.html#testcontext-framework">integration tests</a> for the core domain services without having to load the web 
 infrastructure.</p>
 
 <h2>Samples Index</h2>

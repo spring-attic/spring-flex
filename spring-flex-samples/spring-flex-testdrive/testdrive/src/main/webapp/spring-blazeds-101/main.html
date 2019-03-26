@@ -8,7 +8,7 @@ This application was built using Adobe Flex, an open source framework
 for building rich Internet applications that get delivered via the
 Flash Player or to desktops via Adobe AIR. 
 
-Learn more about Flex at http://flex.org 
+Learn more about Flex at https://flex.org 
 // -->
 
 <head>
@@ -72,7 +72,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 		"name", "main",
 		"allowScriptAccess","sameDomain",
 		"type", "application/x-shockwave-flash",
-		"pluginspage", "http://www.adobe.com/go/getflashplayer"
+		"pluginspage", "https://www.adobe.com/go/getflashplayer"
 	);
 } else if (hasRequestedVersion) {
 	// if we've detected an acceptable version
@@ -88,12 +88,12 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"name", "main",
 			"allowScriptAccess","sameDomain",
 			"type", "application/x-shockwave-flash",
-			"pluginspage", "http://www.adobe.com/go/getflashplayer"
+			"pluginspage", "https://www.adobe.com/go/getflashplayer"
 	);
   } else {  // flash is too old or we can't detect the plugin
     var alternateContent = 'Alternate HTML content should be placed here. '
   	+ 'This content requires the Adobe Flash Player. '
-   	+ '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
+   	+ '<a href=https://www.adobe.com/go/getflash/>Get Flash</a>';
     document.write(alternateContent);  // insert non-flash content
   }
 // -->
@@ -101,7 +101,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 <noscript>
   	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 			id="main" width="100%" height="100%"
-			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+			codebase="https://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
 			<param name="movie" value="main.swf" />
 			<param name="quality" value="high" />
 			<param name="bgcolor" value="#869ca7" />
@@ -113,7 +113,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 				quality="high"
 				allowScriptAccess="sameDomain"
 				type="application/x-shockwave-flash"
-				pluginspage="http://www.adobe.com/go/getflashplayer">
+				pluginspage="https://www.adobe.com/go/getflashplayer">
 			</embed>
 	</object>
 </noscript>
