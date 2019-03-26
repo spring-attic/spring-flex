@@ -120,7 +120,7 @@ public class EndpointInterceptorTests {
 
     @Test
     public void serviceAuthorized() throws Exception {
-        when(this.endpoint.getUrlForClient()).thenReturn("http://foo.com/bar/spring/messagebroker/amf");
+        when(this.endpoint.getUrlForClient()).thenReturn("http://www.foo.com/bar/spring/messagebroker/amf");
         when(this.endpoint.serviceMessage(this.inMessage)).thenReturn(this.outMessage);
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -169,7 +169,7 @@ public class EndpointInterceptorTests {
 
     @Test
     public void serviceUnsecured() throws Exception {
-        when(this.endpoint.getUrlForClient()).thenReturn("http://foo.com/bar/spring/messagebroker/amfpolling");
+        when(this.endpoint.getUrlForClient()).thenReturn("http://www.foo.com/bar/spring/messagebroker/amfpolling");
         when(this.endpoint.serviceMessage(this.inMessage)).thenReturn(this.outMessage);
 
         Message result = this.advisedEndpoint.serviceMessage(this.inMessage);

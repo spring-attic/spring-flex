@@ -78,18 +78,18 @@ public class EndpointConfigProcessorTests {
         this.broker = new MessageBroker();
 
         when(this.endpoint1.getId()).thenReturn("bar");
-        when(this.endpoint1.getUrl()).thenReturn("http://foo.com/bar");
+        when(this.endpoint1.getUrl()).thenReturn("http://www.foo.com/bar");
         when(this.endpoint1.serviceMessage(this.testMessage)).thenReturn(this.testMessage);
         this.broker.addEndpoint(this.endpoint1);
 
         when(this.endpoint2.getId()).thenReturn("baz");
-        when(this.endpoint2.getUrl()).thenReturn("http://foo.com/baz");
+        when(this.endpoint2.getUrl()).thenReturn("http://www.foo.com/baz");
         when(this.endpoint2.serviceMessage(this.testMessage)).thenReturn(this.testMessage);
         this.broker.addEndpoint(this.endpoint2);
         
         this.endpoint3 = new CustomEndpoint();
         this.endpoint3.setId("custom");
-        this.endpoint3.setUrl("http://foo.com/custom");
+        this.endpoint3.setUrl("http://www.foo.com/custom");
         this.broker.addEndpoint(this.endpoint3);
     }
 

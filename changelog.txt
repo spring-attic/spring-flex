@@ -146,7 +146,7 @@ Changes in version 1.0.2.RELEASE (02.08.2010)
 General
 * Spring Security 3 support has been added and the bundled Test Drive sample now has an additional Maven build 
 profile for building the sample to use Spring 3 and Spring Security 3.  See the docs at 
-http://static.springsource.org/spring-flex/docs/1.0.x/reference/html/ch06.html for instructions on how to enable
+https://docs.spring.io/spring-flex/docs/1.0.x/reference/html/ch06.html for instructions on how to enable
 this optional profile.
 
 Enhancements
@@ -202,7 +202,7 @@ Bug Fixes
 Changes in version 1.0.0.RELEASE (06.09.2009)
 -----------------------------------------
 General
-* Maven central compatible POMs will be mirrored to http://repo1.maven.org
+* Maven central compatible POMs will be mirrored to https://repo1.maven.org
 * Marked Jackson and CGLib dependencies as required in ivy and pom configurations since they are almost always needed in practice
 * Added documentation about using Spring MVC controllers alongside Spring BlazeDS Integration in the same application.
 
@@ -216,7 +216,7 @@ Changes in version 1.0.0.RC2 (05.19.2009)
 -----------------------------------------
 General
 * The Test Drive samples are now included in the distribution and configured for use with Eclipse WTP
-* Maven central compatible POMs have been published to the repository at http://maven.springframework.org/milestone/
+* Maven central compatible POMs have been published to the repository at https://maven.springframework.org/milestone/
 * Minor revisions to the documentation including a new chapter on working with the test drive sample 
 
 Enhancements
@@ -287,7 +287,7 @@ Bug Fixes
 Changes in version 1.0.0.M1 (12.15.2008)
 ----------------------------------------
 General
-* Performed an initial code drop at http://src.springframework.org/svn/spring-flex
+* Performed an initial code drop at https://src.springframework.org/svn/spring-flex
 * Organized project structure to use spring-build and create OSGi-ready build artifacts
 * Added an initial draft of the reference manual
 
