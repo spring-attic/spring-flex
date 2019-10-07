@@ -15,20 +15,38 @@
 
         <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <properties>
+				<serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
+			</properties>
         </channel-definition>
         
         <channel-definition id="my-protected-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/protected/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <properties>
+				<serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
+			</properties>
         </channel-definition>
         
         <channel-definition id="my-protected-by-id-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/spring/protected2/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <properties>
+				<serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
+			</properties>
         </channel-definition>
 
         <channel-definition id="my-secure-amf" class="mx.messaging.channels.SecureAMFChannel">
             <endpoint url="https://{server.name}:{server.port}/{context.root}/messagebroker/amfsecure" class="flex.messaging.endpoints.SecureAMFEndpoint"/>
             <properties>
                 <add-no-cache-headers>false</add-no-cache-headers>
+                <serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
             </properties>
         </channel-definition>
 
@@ -37,6 +55,9 @@
             <properties>
                 <polling-enabled>true</polling-enabled>
                 <polling-interval-seconds>4</polling-interval-seconds>
+                <serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
             </properties>
         </channel-definition>
 
@@ -71,4 +92,14 @@
         </target>
     </logging>
 
+	<validators>
+		<validator
+			class="flex.messaging.validators.ClassDeserializationValidator">
+			<properties>
+				<allow-classes>
+					<class name="org.*" />
+				</allow-classes>
+			</properties>
+		</validator>
+	</validators>
 </services-config>

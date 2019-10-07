@@ -9,8 +9,23 @@
 
         <channel-definition id="my-custom-path-channel" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <properties>
+				<serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
+			</properties>
         </channel-definition>
 
      </channels>
 
+	<validators>
+		<validator
+			class="flex.messaging.validators.ClassDeserializationValidator">
+			<properties>
+				<allow-classes>
+					<class name="org.*" />
+				</allow-classes>
+			</properties>
+		</validator>
+	</validators>
 </services-config>

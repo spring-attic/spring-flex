@@ -38,6 +38,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.flex.core.ExceptionTranslator;
 import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -157,9 +158,11 @@ public class SecurityConfigurationPostProcessor implements MergedBeanDefinitionP
     	public FilterChainAccessor(FilterChainProxy proxy) {    		
     		this.filters = new LinkedHashSet<Filter>();
 
-            for (List<Filter> filters : proxy.getFilterChainMap().values()) {
-                this.filters.addAll(filters);
-            }
+    		List<SecurityFilterChain> mappings = proxy.getFilterChains();
+    		for(SecurityFilterChain entry : mappings) {
+    			List<Filter> filters = entry.getFilters();
+    			this.filters.addAll(filters);
+    		}
     	}
     	
     	public Set<Filter> getFilters() {

@@ -53,6 +53,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.annotation</groupId>
@@ -94,22 +95,22 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.adobe.blazeds</groupId>
-			<artifactId>blazeds-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.blazeds</groupId>
-			<artifactId>blazeds-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.blazeds</groupId>
-			<artifactId>blazeds-proxy</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.blazeds</groupId>
-			<artifactId>blazeds-remoting</artifactId>
-		</dependency>
+ 		<dependency>
+            <groupId>org.apache.flex.blazeds</groupId>
+            <artifactId>flex-messaging-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flex.blazeds</groupId>
+            <artifactId>flex-messaging-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flex.blazeds</groupId>
+            <artifactId>flex-messaging-proxy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flex.blazeds</groupId>
+            <artifactId>flex-messaging-remoting</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms-api</artifactId>
