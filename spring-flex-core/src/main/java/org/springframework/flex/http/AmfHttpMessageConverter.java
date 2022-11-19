@@ -41,6 +41,7 @@ import flex.messaging.io.amf.Amf3Output;
 import flex.messaging.io.amf.AmfMessageDeserializer;
 import flex.messaging.io.amf.AmfMessageSerializer;
 import flex.messaging.io.amf.AmfTrace;
+import flex.messaging.validators.DeserializationValidator;
 
 /**
  * Implementation of {@link org.springframework.http.converter.HttpMessageConverter HttpMessageConverter}
@@ -59,10 +60,16 @@ public class AmfHttpMessageConverter extends AbstractHttpMessageConverter<Object
 	private static final String ACTION_MSG_ERROR = "Could not read input message body as "+ActionMessage.class.getName();
 	private static final Log log = LogFactory.getLog(AmfHttpMessageConverter.class);
     
+	private DeserializationValidator deserializationValidator;
+	
     public AmfHttpMessageConverter() {
         super(MediaType.parseMediaType(MessageIOConstants.AMF_CONTENT_TYPE));
     }
 
+	public void setDeserializationValidator(DeserializationValidator deserializationValidator) {
+		this.deserializationValidator = deserializationValidator;
+	}
+	
     /**
      * {@inheritDoc}
      */

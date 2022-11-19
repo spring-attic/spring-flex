@@ -8,6 +8,11 @@
 			<endpoint
 				url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf"
 				class="flex.messaging.endpoints.AMFEndpoint" />
+			<properties>
+				<serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
+			</properties>
 		</channel-definition>
 
 		<channel-definition id="my-secure-amf"
@@ -17,6 +22,9 @@
 				class="flex.messaging.endpoints.SecureAMFEndpoint" />
 			<properties>
 				<add-no-cache-headers>false</add-no-cache-headers>
+				<serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
 			</properties>
 		</channel-definition>
 
@@ -28,22 +36,19 @@
 			<properties>
 				<polling-enabled>true</polling-enabled>
 				<polling-interval-seconds>4</polling-interval-seconds>
+				<serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
 			</properties>
 		</channel-definition>
 
-		<!--
-			<channel-definition id="my-http"
-			class="mx.messaging.channels.HTTPChannel"> <endpoint
-			url="http://{server.name}:{server.port}/{context.root}/messagebroker/http"
-			class="flex.messaging.endpoints.HTTPEndpoint"/> </channel-definition>
-
-			<channel-definition id="my-secure-http"
-			class="mx.messaging.channels.SecureHTTPChannel"> <endpoint
-			url="https://{server.name}:{server.port}/{context.root}/messagebroker/httpsecure"
-			class="flex.messaging.endpoints.SecureHTTPEndpoint"/> <properties>
-			<add-no-cache-headers>false</add-no-cache-headers> </properties>
-			</channel-definition>
-		-->
+		<!-- <channel-definition id="my-http" class="mx.messaging.channels.HTTPChannel"> 
+			<endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/http" 
+			class="flex.messaging.endpoints.HTTPEndpoint"/> </channel-definition> <channel-definition 
+			id="my-secure-http" class="mx.messaging.channels.SecureHTTPChannel"> <endpoint 
+			url="https://{server.name}:{server.port}/{context.root}/messagebroker/httpsecure" 
+			class="flex.messaging.endpoints.SecureHTTPEndpoint"/> <properties> <add-no-cache-headers>false</add-no-cache-headers> 
+			</properties> </channel-definition> -->
 	</channels>
 
 	<logging>
@@ -63,6 +68,17 @@
 		</target>
 	</logging>
 
+	<validators>
+		<validator
+			class="flex.messaging.validators.ClassDeserializationValidator">
+			<properties>
+				<allow-classes>
+					<class name="org.*" />
+				</allow-classes>
+			</properties>
+		</validator>
+	</validators>
+	
 	<security>
 		<security-constraint id="fooConstraint">
 			<roles>

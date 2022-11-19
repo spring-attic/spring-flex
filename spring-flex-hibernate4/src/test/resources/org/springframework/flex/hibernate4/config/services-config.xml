@@ -8,6 +8,11 @@
             <endpoint
                 url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf"
                 class="flex.messaging.endpoints.AMFEndpoint" />
+            <properties>
+				<serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
+			</properties>
         </channel-definition>
 
         <channel-definition id="my-secure-amf"
@@ -17,6 +22,9 @@
                 class="flex.messaging.endpoints.SecureAMFEndpoint" />
             <properties>
                 <add-no-cache-headers>false</add-no-cache-headers>
+                <serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
             </properties>
         </channel-definition>
 
@@ -28,6 +36,9 @@
             <properties>
                 <polling-enabled>true</polling-enabled>
                 <polling-interval-seconds>4</polling-interval-seconds>
+                <serialization>
+					<allow-xml>true</allow-xml>
+				</serialization>
             </properties>
         </channel-definition>
 
@@ -63,6 +74,17 @@
         </target>
     </logging>
 
+	<validators>
+		<validator
+			class="flex.messaging.validators.ClassDeserializationValidator">
+			<properties>
+				<allow-classes>
+					<class name="org.*" />
+				</allow-classes>
+			</properties>
+		</validator>
+	</validators>
+	
     <security>
         <security-constraint id="fooConstraint">
             <roles>

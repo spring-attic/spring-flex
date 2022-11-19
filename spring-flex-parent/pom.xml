@@ -57,9 +57,9 @@
     </contributors>
 
     <properties>
-		<spring.version>4.1.1.RELEASE</spring.version>
+		<spring.version>5.1.2.RELEASE</spring.version>
 		<integration.version>2.2.6.RELEASE</integration.version>
-		<security.version>3.2.4.RELEASE</security.version>
+		<security.version>5.1.2.RELEASE</security.version>
 		<blazeds.version>4.0.0.14931</blazeds.version>
 		<!--<blazeds.version>4.6.0.23207</blazeds.version>-->
 		<slf4j.version>1.7.7</slf4j.version>
@@ -186,26 +186,31 @@
 				<artifactId>spring-flex-core</artifactId>
 				<version>1.6.0.RC1</version>
 			</dependency>
-			<dependency>
-				<groupId>com.adobe.blazeds</groupId>
-				<artifactId>blazeds-core</artifactId>
-				<version>${blazeds.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.adobe.blazeds</groupId>
-				<artifactId>blazeds-common</artifactId>
-				<version>${blazeds.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.adobe.blazeds</groupId>
-				<artifactId>blazeds-proxy</artifactId>
-				<version>${blazeds.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.adobe.blazeds</groupId>
-				<artifactId>blazeds-remoting</artifactId>
-				<version>${blazeds.version}</version>
-			</dependency>
+			
+			<!-- STARTS NEW LIBS -->
+			<!-- Add a reference to Apache Flex BlazeDS -->
+	        <dependency>
+	            <groupId>org.apache.flex.blazeds</groupId>
+	            <artifactId>flex-messaging-core</artifactId>
+	            <version>4.7.3</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.apache.flex.blazeds</groupId>
+	            <artifactId>flex-messaging-common</artifactId>
+	            <version>4.7.3</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.apache.flex.blazeds</groupId>
+	            <artifactId>flex-messaging-proxy</artifactId>
+	            <version>4.7.3</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.apache.flex.blazeds</groupId>
+	            <artifactId>flex-messaging-remoting</artifactId>
+	            <version>4.7.3</version>
+	        </dependency>
+			<!--  END NEW LIBS -->
+	
 			<dependency>
 				<groupId>javax.jms</groupId>
 				<artifactId>jms-api</artifactId>
@@ -245,7 +250,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.9</version>
+				<version>4.12</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>

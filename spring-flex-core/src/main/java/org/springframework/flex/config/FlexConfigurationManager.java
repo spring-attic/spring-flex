@@ -36,7 +36,6 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.JdkVersion;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -98,7 +97,19 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
      */
     @SuppressWarnings("unchecked")
     public MessagingConfiguration getMessagingConfiguration(ServletConfig servletConfig) {
-        Assert.isTrue(JdkVersion.getMajorJavaVersion() >= JdkVersion.JAVA_15, "Spring BlazeDS Integration requires a minimum of Java 1.5");
+    	String[] javaVersionElements = System.getProperty("java.version").split("\\.");
+	int major = 0;
+    	 // Check about Java version
+    	 // If Java version is greater or equals than 10 we get the first element (i.e. JDK 12.0.2 get 12)
+    	 // Else Java version lower then 10 get the second element (i.e. JDK 1.8.260 get 8)
+         if (javaVersionElements.length>0 && Integer.parseInt(javaVersionElements[0])>=10) {
+             major = Integer.parseInt(javaVersionElements[0]);
+         }else if (javaVersionElements.length>1){
+             major = Integer.parseInt(javaVersionElements[1]);
+         }
+		
+        Assert.isTrue(major >= 5, "Spring BlazeDS Integration requires a minimum of Java 1.5");
+
         Assert.notNull(servletConfig, "FlexConfigurationManager requires a non-null ServletConfig - "
             + "Is it being used outside a WebApplicationContext?");
 

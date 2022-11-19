@@ -48,9 +48,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.RequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import flex.messaging.FlexContext;
 import flex.messaging.MessageBroker;
@@ -65,7 +65,7 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
 
     private EndpointSecurityMetadataSource source;
 
-    private final AccessDecisionManager adm = new AffirmativeBased();
+    private AccessDecisionManager adm;
 
     @Mock
     private AuthenticationManager mgr;
@@ -85,10 +85,10 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
         requestMap.put(new AntPathRequestMatcher("/messagebroker/**"), attrs);
         this.source = new EndpointSecurityMetadataSource(requestMap);
 
-        List<AccessDecisionVoter> voters = new ArrayList<AccessDecisionVoter>();
+        List<AccessDecisionVoter<? extends Object>> voters = new ArrayList<AccessDecisionVoter<? extends Object>>();
         voters.add(new RoleVoter());
-        ((AffirmativeBased) this.adm).setDecisionVoters(voters);
-
+        this.adm = new AffirmativeBased(voters);
+        
         initializeInterceptors();
         
         this.request = new MockHttpServletRequest();
@@ -103,7 +103,7 @@ public class EndpointSecurityIntegrationTests extends AbstractMessageBrokerTests
     @Test
     public void serviceAuthorized() throws Exception {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 

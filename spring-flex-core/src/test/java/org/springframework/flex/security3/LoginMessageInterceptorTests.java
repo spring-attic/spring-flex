@@ -29,7 +29,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import flex.messaging.messages.AcknowledgeMessage;
@@ -62,7 +62,7 @@ public class LoginMessageInterceptorTests {
     @SuppressWarnings("rawtypes")
     public void postProcessSuccessfulLogin() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         Authentication auth = new UsernamePasswordAuthenticationToken("foo", "bar", authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
