@@ -98,7 +98,15 @@ public class FlexConfigurationManager implements ConfigurationManager, ResourceL
     @SuppressWarnings("unchecked")
     public MessagingConfiguration getMessagingConfiguration(ServletConfig servletConfig) {
     	String[] javaVersionElements = System.getProperty("java.version").split("\\.");
-		int major = Integer.parseInt(javaVersionElements[1]);
+	int major = 0;
+    	 // Check about Java version
+    	 // If Java version is greater or equals than 10 we get the first element (i.e. JDK 12.0.2 get 12)
+    	 // Else Java version lower then 10 get the second element (i.e. JDK 1.8.260 get 8)
+         if (javaVersionElements.length>0 && Integer.parseInt(javaVersionElements[0])>=10) {
+             major = Integer.parseInt(javaVersionElements[0]);
+         }else if (javaVersionElements.length>1){
+             major = Integer.parseInt(javaVersionElements[1]);
+         }
 		
         Assert.isTrue(major >= 5, "Spring BlazeDS Integration requires a minimum of Java 1.5");
 
